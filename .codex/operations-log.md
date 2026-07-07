@@ -42,4 +42,10 @@
 - 已新增 `.gitignore`，忽略 `.idea/` 与 `.DS_Store`。
 - 提交范围：`.codex/`、`docs/`、`PROJECT_ROUTE_LOCK.md`、`.gitignore`。
 - 验证命令：`git diff --check` 通过。
-- 状态：准备提交并推送。
+- 已创建提交：`0a3f375 初始化 NextStep 项目真源`。
+- 推送结果：失败。
+- 失败原因：HTTPS 远程需要 GitHub 凭据，当前环境返回 `could not read Username for 'https://github.com': Device not configured`。
+- 替代检查：
+  - `gh auth status`：本机未安装 `gh`。
+  - `ssh -T git@github.com`：SSH 公钥未授权，返回 `Permission denied (publickey)`。
+- 当前状态：本地提交已完成，远程推送等待 GitHub 凭据或 SSH 授权。
