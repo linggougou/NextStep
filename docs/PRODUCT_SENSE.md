@@ -50,3 +50,9 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 - 路线锁：`PROJECT_ROUTE_LOCK.md`
 - 活动计划：`docs/PLANS.md`
 - 变更入口：`docs/change-requests/index.md`
+
+## 当前阶段
+
+- 当前里程碑：P2 产品原型、设计真源与技术前置
+- 当前生命周期阶段：S2 产品原型
+- 当前状态：进行中

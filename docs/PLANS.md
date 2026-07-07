@@ -2,23 +2,23 @@
 
 ## 当前阶段
 
-- 生命周期阶段：S1 产品定义 / PRD
-- 当前里程碑：P1 完整项目蓝图
-- 当前状态：进行中，待用户会签
+- 生命周期阶段：S2 产品原型
+- 当前里程碑：P2 产品原型、设计真源与技术前置
+- 当前状态：进行中
 
 ## 当前活动计划
 
-- [P1 完整项目蓝图执行计划](./exec-plans/active/p1-complete-project-blueprint.md)
+- [P2 产品原型、设计真源与技术前置执行计划](./exec-plans/active/p2-product-prototype-design-tech-prep.md)
 
 ## 当前阶段交付物
 
-- [NextStep 完整项目蓝图](./product-specs/002-complete-project-blueprint.md)
-- [NextStep 用户旅程](./product-specs/003-user-journey.md)
-- [NextStep 能力地图](./product-specs/004-capability-map.md)
+- P2 产品原型：待建立
+- P2 UI 设计真源输入要求：待建立
+- P2 技术前置清单：待建立
 
 ## 下一阶段入口
 
-P1 通过后进入 P2 产品原型、设计真源与技术前置。
+P2 当前目标是把已会签的产品蓝图转成产品原型，并为 UI 设计真源和技术架构准备输入。
 
 P2 应输出：
 

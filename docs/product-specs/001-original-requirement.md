@@ -1,8 +1,8 @@
 # NextStep 原始需求真源
 
-状态：已记录，待用户最终会签  
-记录日期：2026-07-07  
-项目名称：NextStep  
+状态：已记录，P1 会签通过
+记录日期：2026-07-07
+项目名称：NextStep
 仓库：`https://github.com/linggougou/NextStep.git`
 
 ## 1. 原始痛点

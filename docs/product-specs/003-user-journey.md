@@ -1,7 +1,7 @@
 # NextStep 用户旅程
 
-状态：P1 草案，待用户会签  
-记录日期：2026-07-07  
+状态：P1 已会签
+记录日期：2026-07-07
 上游真源：`docs/product-specs/002-complete-project-blueprint.md`
 
 ## 1. 核心旅程

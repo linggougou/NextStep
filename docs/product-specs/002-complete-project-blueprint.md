@@ -1,8 +1,8 @@
 # NextStep 完整项目蓝图
 
-状态：P1 草案，待用户会签  
-记录日期：2026-07-07  
-上游真源：`docs/product-specs/001-original-requirement.md`  
+状态：P1 已会签
+记录日期：2026-07-07
+上游真源：`docs/product-specs/001-original-requirement.md`
 路线锁：`PROJECT_ROUTE_LOCK.md`
 
 ## 1. 项目定义

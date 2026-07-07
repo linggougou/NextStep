@@ -141,3 +141,36 @@
   - 术语残留扫描通过。
   - `git diff --check` 通过。
 - 状态：会签前小修已完成，等待最终验证和用户会签。
+
+## 2026-07-07 P1 会签通过并进入 P2
+
+- 任务目标：根据用户回复 `ok`，将 P1 完整项目蓝图标记为会签通过，并切换到 P2 产品原型、设计真源与技术前置。
+- 路线锁判断：用户确认 P1 后，允许按路线锁从 P1 进入 P2；本轮只做阶段切换和计划归档，不生成原型、UI、技术方案或代码。
+- 生命周期阶段：从 S1 产品定义 / PRD 切换到 S2 产品原型。
+- 里程碑状态：
+  - P1 完整项目蓝图：门禁通过。
+  - P2 产品原型、设计真源与技术前置：进行中。
+- 已归档文件：
+  - `docs/exec-plans/active/p1-complete-project-blueprint.md` 移动到 `docs/exec-plans/completed/p1-complete-project-blueprint.md`。
+- 已创建文件：
+  - `docs/exec-plans/active/p2-product-prototype-design-tech-prep.md`。
+- 已更新文件：
+  - `PROJECT_ROUTE_LOCK.md`
+  - `docs/PLANS.md`
+  - `docs/PRODUCT_SENSE.md`
+  - `docs/product-specs/001-original-requirement.md`
+  - `docs/product-specs/002-complete-project-blueprint.md`
+  - `docs/product-specs/003-user-journey.md`
+  - `docs/product-specs/004-capability-map.md`
+  - `.codex/operations-log.md`
+  - `.codex/verification-report.md`
+- 明确不做：不生成 P2 产品原型，不生成 UI 设计真源，不做技术选型，不进入 P3 版本与里程碑拆解。
+- 验证结果：
+  - P1 计划归档检查通过。
+  - P2 活动计划检查通过。
+  - 路线锁阶段检查通过，当前为 P2 / S2 产品原型。
+  - 产品规格状态检查通过。
+  - 尾随空格检查通过。
+  - 占位文本和补丁残留检查通过。
+  - `git diff --check` 通过。
+- 状态：P1 会签通过，P2 已进入。
