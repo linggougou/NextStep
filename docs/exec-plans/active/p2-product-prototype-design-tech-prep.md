@@ -1,6 +1,6 @@
 # P2 产品原型、设计真源与技术前置执行计划
 
-状态：进行中
+状态：进行中，待用户会签
 记录日期：2026-07-07
 
 ## 1. 阶段目标
@@ -15,9 +15,9 @@
 
 ## 3. 可验收交付物
 
-- `docs/design-docs/p2-product-prototype.md`
-- `docs/design-docs/p2-ui-design-source-requirements.md`
-- `docs/architecture/p2-technical-prep.md`
+- `docs/design-docs/p2-product-prototype.md`：已建立，待用户会签
+- `docs/design-docs/p2-ui-design-source-requirements.md`：已建立，待用户会签
+- `docs/architecture/p2-technical-prep.md`：已建立，待用户会签
 - `docs/PLANS.md`
 - `PROJECT_ROUTE_LOCK.md`
 

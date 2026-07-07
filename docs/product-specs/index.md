@@ -7,9 +7,14 @@
 - [NextStep 用户旅程](./003-user-journey.md)
 - [NextStep 能力地图](./004-capability-map.md)
 
-## 待建立
+## P2 待会签真源
 
-- 产品原型
+- [P2 产品原型](../design-docs/p2-product-prototype.md)
+- [P2 UI 设计真源输入要求](../design-docs/p2-ui-design-source-requirements.md)
+- [P2 技术前置清单](../architecture/p2-technical-prep.md)
+
+## 后续待建立
+
 - UI 设计真源
 - 技术选型与架构
 - 版本路线图

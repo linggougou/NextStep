@@ -174,3 +174,46 @@
   - 占位文本和补丁残留检查通过。
   - `git diff --check` 通过。
 - 状态：P1 会签通过，P2 已进入。
+
+## 2026-07-07 P2 产品原型与前置真源启动
+
+- 任务目标：根据当前路线锁推进 P2，产出产品原型、UI 设计真源输入要求和技术前置清单。
+- 项目特化规则：项目根当前不存在 `AGENTS.md`，按全局协议和 `PROJECT_ROUTE_LOCK.md` 执行。
+- 路线锁判断：当前阶段为 S2 产品原型，当前里程碑为 P2 产品原型、设计真源与技术前置，本轮只补 P2 文档真源。
+- 生命周期阶段：S2 产品原型。
+- 当前里程碑真源：`docs/exec-plans/active/p2-product-prototype-design-tech-prep.md`。
+- 本轮阶段出口：用户可审核 P2 产品原型、UI 设计输入要求和技术前置清单。
+- 本轮最小可验收闭环：至少产出可会签的产品原型，并明确后续 UI 设计和技术架构输入。
+- 本轮明确不做：不生成高保真 UI 设计稿，不冻结技术栈，不写代码，不拆版本路线、大里程碑或小里程碑。
+- 允许修改范围：`PROJECT_ROUTE_LOCK.md`、`docs/`、`.codex/`。
+- 禁止修改范围：不得改变产品定位、核心生命周期、P2 阶段出口或提前进入 P3/P4/P5。
+- 变更判断：本轮属于 P2 计划内交付物补齐；发现的 P1/P2 表述残留属于当前阶段一致性修复，不改变路线。
+- 高危动作判断：不涉及重写骨架、替换技术栈、删除门禁或提前开发。
+- Skills 检查：已读取 `using-superpowers` 与 `brainstorming`；因 P2 已有路线锁和活动计划，且本轮是文本原型与前置真源落地，采用现有会签真源继续推进，不另开高保真视觉伴随流程。
+- 已创建上下文摘要：`.codex/context-summary-p2-product-prototype-design-tech-prep.md`。
+- 已创建文件：
+  - `docs/design-docs/p2-product-prototype.md`
+  - `docs/design-docs/p2-ui-design-source-requirements.md`
+  - `docs/architecture/p2-technical-prep.md`
+- 已更新文件：
+  - `PROJECT_ROUTE_LOCK.md`
+  - `docs/PLANS.md`
+  - `docs/PRODUCT_SENSE.md`
+  - `docs/product-specs/001-original-requirement.md`
+  - `docs/product-specs/002-complete-project-blueprint.md`
+  - `docs/product-specs/004-capability-map.md`
+  - `docs/product-specs/index.md`
+  - `docs/change-requests/index.md`
+  - `docs/exec-plans/active/p2-product-prototype-design-tech-prep.md`
+  - `docs/exec-plans/completed/p1-complete-project-blueprint.md`
+- 一致性修复：
+  - 修复 P1 蓝图末尾残留的旧 P2 入口。
+  - 将 P2 输出统一为产品原型、UI 设计真源输入要求和技术前置清单。
+  - 将容易误解为 P2 直接产出高保真 UI 或冻结技术栈的表述降级为后续阶段输入。
+  - 将部分正式执行口径中的“模块”统一为“小里程碑”。
+- 验证结果：
+  - P2 三份交付物存在性检查通过。
+  - 当前真源中旧 P2 入口和阶段偷跑表述扫描通过。
+  - 占位文本和补丁残留扫描通过。
+  - `git diff --check` 通过。
+- 状态：P2 交付物已建立，待用户会签；未进入 S3、S4、P3 或实现阶段。

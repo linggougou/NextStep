@@ -51,6 +51,12 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 - 活动计划：`docs/PLANS.md`
 - 变更入口：`docs/change-requests/index.md`
 
+## P2 待会签交付物
+
+- 产品原型：`docs/design-docs/p2-product-prototype.md`
+- UI 设计真源输入要求：`docs/design-docs/p2-ui-design-source-requirements.md`
+- 技术前置清单：`docs/architecture/p2-technical-prep.md`
+
 ## 当前阶段
 
 - 当前里程碑：P2 产品原型、设计真源与技术前置
