@@ -57,12 +57,16 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 - UI 设计真源输入要求：`docs/design-docs/p2-ui-design-source-requirements.md`，用户会签通过
 - 技术前置清单：`docs/architecture/p2-technical-prep.md`，用户会签通过
 
-## P2.1 待会签交付物
+## P2.1 已会签交付物
 
-- 后续真源文档契约：`docs/product-specs/005-stage-document-contracts.md`
+- 后续真源文档契约：`docs/product-specs/005-stage-document-contracts.md`，用户会签通过
+
+## S3 当前交付物
+
+- UI 设计真源：`docs/design-docs/s3-ui-design-source.md`，待建立
 
 ## 当前阶段
 
-- 当前里程碑：P2.1 后续真源文档契约
-- 当前生命周期阶段：S2 产品原型后置文档契约
+- 当前里程碑：S3 UI 设计真源
+- 当前生命周期阶段：S3 UI 设计真源
 - 当前状态：进行中

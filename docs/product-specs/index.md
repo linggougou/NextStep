@@ -13,7 +13,7 @@
 - [P2 UI 设计真源输入要求](../design-docs/p2-ui-design-source-requirements.md)
 - [P2 技术前置清单](../architecture/p2-technical-prep.md)
 
-## P2.1 待会签真源
+## P2.1 已会签真源
 
 - [后续真源文档契约](./005-stage-document-contracts.md)
 

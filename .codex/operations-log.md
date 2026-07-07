@@ -246,3 +246,39 @@
   - `.codex/operations-log.md`
   - `.codex/verification-report.md`
 - 状态：P2 已会签通过，P2.1 文档契约已建立，待用户会签。
+
+## 2026-07-08 P2.1 会签通过并进入 S3
+
+- 任务目标：根据用户明确回复 `P2.1 后续真源文档契约可以会签通过`，记录 P2.1 门禁通过，并明确下一阶段进入 S3 UI 设计真源。
+- 项目特化规则：项目根当前不存在 `AGENTS.md`，按全局协议和 `PROJECT_ROUTE_LOCK.md` 执行。
+- 路线锁判断：P2.1 已满足阶段出口；按真实项目流程和已会签产品原则，产品原型和文档契约之后应先进入 S3 UI 设计真源，再进入 S4 技术架构和 P3 版本拆解。
+- 生命周期阶段：从 S2 产品原型后置文档契约切换到 S3 UI 设计真源。
+- 当前里程碑：S3 UI 设计真源。
+- 本轮阶段出口：完成阶段切换，创建 S3 活动计划，并补强 S3 契约证据字段。
+- 本轮最小可验收闭环：P2.1 会签记录落盘，S3 成为唯一下一阶段入口。
+- 本轮明确不做：不生成实际 UI 设计稿，不做技术选型，不写技术架构，不拆版本路线、大里程碑或小里程碑，不写代码。
+- 允许修改范围：`PROJECT_ROUTE_LOCK.md`、`docs/`、`.codex/`。
+- 禁止修改范围：不得改变产品定位，不得进入 S4、P3、S5、S6 或实现阶段。
+- 变更判断：用户提出的 S3 证据链字段属于 P2.1 非阻塞小修，已纳入已会签契约；下一阶段选择属于阶段切换，已按路线锁更新。
+- 高危动作判断：涉及阶段切换，但用户已明确会签 P2.1；未替换技术栈、未重写骨架、未删除门禁。
+- 已归档文件：
+  - `docs/exec-plans/active/p2.1-document-contracts.md` 移动到 `docs/exec-plans/completed/p2.1-document-contracts.md`。
+- 已创建文件：
+  - `docs/exec-plans/active/s3-ui-design-source.md`
+- 已更新文件：
+  - `PROJECT_ROUTE_LOCK.md`
+  - `docs/PLANS.md`
+  - `docs/PRODUCT_SENSE.md`
+  - `docs/product-specs/005-stage-document-contracts.md`
+  - `docs/product-specs/index.md`
+  - `.codex/operations-log.md`
+  - `.codex/verification-report.md`
+- 验证结果：
+  - P2.1 计划归档检查通过。
+  - S3 活动计划存在性检查通过。
+  - S3 契约字段补强检查通过，已覆盖设计稿链接、截图证据和设计版本号。
+  - 路线锁和计划入口已切换到 S3 UI 设计真源。
+  - 阶段偷跑扫描通过，未发现 S4、P3、技术栈或版本拆解误进入。
+  - 占位文本和补丁残留扫描通过。
+  - `git diff --check` 通过。
+- 状态：P2.1 已会签通过，当前进入 S3 UI 设计真源；S3 设计真源正文尚未建立。

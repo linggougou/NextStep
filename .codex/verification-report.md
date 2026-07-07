@@ -166,3 +166,29 @@
   - 每类格式包含必填字段、合格标准和禁止提前写入内容：通过。
   - 未生成真实 UI、技术方案、版本路线、里程碑或验收结论：通过。
 - 阶段门禁判断：P2 已通过；P2.1 需用户会签。
+
+## 2026-07-08 P2.1 会签与 S3 阶段切换验证
+
+- 验证范围：P2.1 会签记录、P2.1 计划归档、S3 活动计划、S3 契约字段补强、路线锁、PLANS 和 `.codex` 留痕。
+- 本地测试：当前阶段无代码，不运行测试。
+- 构建验证：当前阶段无工程实现，不运行构建。
+- 命令验证：
+  - `test -f docs/exec-plans/completed/p2.1-document-contracts.md && test ! -f docs/exec-plans/active/p2.1-document-contracts.md`：通过。
+  - `test -f docs/exec-plans/active/s3-ui-design-source.md`：通过。
+  - `rg -n "设计稿链接|截图证据|设计版本号" docs/product-specs/005-stage-document-contracts.md docs/exec-plans/active/s3-ui-design-source.md`：通过。
+  - `rg -n "生命周期阶段：S3 UI 设计真源|当前里程碑：S3 UI 设计真源|S3 UI 设计真源执行计划|P2.1 后续真源文档契约.*用户会签通过" PROJECT_ROUTE_LOCK.md docs/PLANS.md docs/PRODUCT_SENSE.md docs/exec-plans/completed/p2.1-document-contracts.md`：通过。
+  - `rg -n "当前里程碑：P2\\.1|P2\\.1.*待用户会签|P2\\.1.*待会签|S4 技术架构.*进行中|P3 版本与里程碑拆解.*进行中|技术栈：.*React|技术栈：.*Next|V1 边界：|大里程碑目标：" PROJECT_ROUTE_LOCK.md docs/PLANS.md docs/PRODUCT_SENSE.md docs/product-specs docs/exec-plans/active`：通过，未发现阶段偷跑。
+  - `rg -n "<{7}|>{7}|T[O]DO|T[B]D|\\.[r]ej|\\.[o]rig" docs PROJECT_ROUTE_LOCK.md .codex`：通过，未发现占位或补丁残留。
+  - `git diff --check`：通过。
+- 用户会签：
+  - P2.1 后续真源文档契约：通过。
+- 阶段选择：
+  - 下一阶段明确为 S3 UI 设计真源。
+  - 未进入 S4 技术架构、P3 版本与里程碑拆解、S5 里程碑计划或 S6 小里程碑开发。
+- 阶段 DoD 覆盖：
+  - P2.1 会签通过记录明确：通过。
+  - S3 UI 设计真源补充设计稿链接、截图证据和设计版本号字段：通过。
+  - S3 活动计划已建立：通过。
+  - 当前路线锁已切换到 S3 UI 设计真源：通过。
+  - 未生成实际 UI、技术方案、版本路线、里程碑或验收结论：通过。
+- 阶段门禁判断：P2.1 已通过；S3 已进入。
