@@ -1,6 +1,6 @@
 # P2 产品原型、设计真源与技术前置执行计划
 
-状态：进行中，待用户会签
+状态：已完成，用户会签通过
 记录日期：2026-07-07
 
 ## 1. 阶段目标
@@ -15,9 +15,9 @@
 
 ## 3. 可验收交付物
 
-- `docs/design-docs/p2-product-prototype.md`：已建立，待用户会签
-- `docs/design-docs/p2-ui-design-source-requirements.md`：已建立，待用户会签
-- `docs/architecture/p2-technical-prep.md`：已建立，待用户会签
+- `docs/design-docs/p2-product-prototype.md`：已建立，用户会签通过
+- `docs/design-docs/p2-ui-design-source-requirements.md`：已建立，用户会签通过
+- `docs/architecture/p2-technical-prep.md`：已建立，用户会签通过
 - `docs/PLANS.md`
 - `PROJECT_ROUTE_LOCK.md`
 
@@ -47,3 +47,10 @@
 - 路线锁一致性检查。
 - 占位文本和补丁残留检查。
 - 用户会签确认。
+
+## 8. 完成记录
+
+- 会签结论：通过。
+- 会签来源：用户在会话中明确回复 `会签通过`。
+- 验证摘要：用户确认三份 P2 草案和路线锁守住 P2 边界，没有冻结技术栈、没有生成高保真 UI、没有提前拆版本 / 大里程碑 / 小里程碑。
+- 后续阶段：先进入 P2.1 后续真源文档契约，定义后续文档格式，不直接进入 S3、S4 或 P3。

@@ -217,3 +217,32 @@
   - 占位文本和补丁残留扫描通过。
   - `git diff --check` 通过。
 - 状态：P2 交付物已建立，待用户会签；未进入 S3、S4、P3 或实现阶段。
+
+## 2026-07-07 P2 会签通过并进入 P2.1 文档契约
+
+- 任务目标：根据用户明确回复 `会签通过`，将 P2 标记为门禁通过，并建立后续真源文档契约阶段。
+- 项目特化规则：项目根当前不存在 `AGENTS.md`，按全局协议和 `PROJECT_ROUTE_LOCK.md` 执行。
+- 路线锁判断：用户确认 P2 产品原型、UI 设计输入和技术前置清单均守住边界，允许从 P2 切换到 P2.1；本轮不进入 S3、S4、P3 或实现。
+- 生命周期阶段：S2 产品原型后置文档契约。
+- 当前里程碑：P2.1 后续真源文档契约。
+- 本轮阶段出口：形成可约束后续 S3、S4、P3 和验收阶段的文档格式契约。
+- 本轮最小可验收闭环：`docs/product-specs/005-stage-document-contracts.md` 覆盖四类后续文档格式，并明确禁止提前内容。
+- 本轮明确不做：不生成高保真 UI，不冻结技术栈，不定义 V1/V2/Backlog 边界，不拆真实大/小里程碑，不生成真实验收报告，不写代码。
+- 允许修改范围：`PROJECT_ROUTE_LOCK.md`、`docs/`、`.codex/`。
+- 禁止修改范围：不得改变产品定位，不得进入 UI 设计真源、技术架构、版本拆解或开发实现。
+- 变更判断：用户新增的“文档契约”是当前路线的前置门禁增强项，影响当前阶段出口，因此纳入当前路线锁并新增 P2.1。
+- 高危动作判断：涉及路线锁阶段更新，但用户已明确授权；本轮未替换技术栈、未重写骨架、未删除门禁。
+- 已归档文件：
+  - `docs/exec-plans/active/p2-product-prototype-design-tech-prep.md` 移动到 `docs/exec-plans/completed/p2-product-prototype-design-tech-prep.md`。
+- 已创建文件：
+  - `.codex/context-summary-p2.1-document-contracts.md`
+  - `docs/product-specs/005-stage-document-contracts.md`
+  - `docs/exec-plans/active/p2.1-document-contracts.md`
+- 已更新文件：
+  - `PROJECT_ROUTE_LOCK.md`
+  - `docs/PLANS.md`
+  - `docs/PRODUCT_SENSE.md`
+  - `docs/product-specs/index.md`
+  - `.codex/operations-log.md`
+  - `.codex/verification-report.md`
+- 状态：P2 已会签通过，P2.1 文档契约已建立，待用户会签。

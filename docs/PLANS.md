@@ -2,33 +2,34 @@
 
 ## 当前阶段
 
-- 生命周期阶段：S2 产品原型
-- 当前里程碑：P2 产品原型、设计真源与技术前置
+- 生命周期阶段：S2 产品原型后置文档契约
+- 当前里程碑：P2.1 后续真源文档契约
 - 当前状态：进行中
 
 ## 当前活动计划
 
-- [P2 产品原型、设计真源与技术前置执行计划](./exec-plans/active/p2-product-prototype-design-tech-prep.md)
+- [P2.1 后续真源文档契约执行计划](./exec-plans/active/p2.1-document-contracts.md)
 
 ## 当前阶段交付物
 
-- [P2 产品原型](./design-docs/p2-product-prototype.md)：待用户会签
-- [P2 UI 设计真源输入要求](./design-docs/p2-ui-design-source-requirements.md)：待用户会签
-- [P2 技术前置清单](./architecture/p2-technical-prep.md)：待用户会签
+- [P2 产品原型](./design-docs/p2-product-prototype.md)：用户会签通过
+- [P2 UI 设计真源输入要求](./design-docs/p2-ui-design-source-requirements.md)：用户会签通过
+- [P2 技术前置清单](./architecture/p2-technical-prep.md)：用户会签通过
+- [P2.1 后续真源文档契约](./product-specs/005-stage-document-contracts.md)：待用户会签
 
 ## 下一阶段入口
 
-P2 当前目标是把已会签的产品蓝图转成产品原型，并为 UI 设计真源和技术架构准备输入。
+P2 已由用户会签通过。当前 P2.1 只定义后续真源文档契约，防止 S3、S4、P3 和验收阶段自由发挥。
 
-P2 应输出：
+P2.1 应输出：
 
-- 产品原型。
-- 用户原型会签标准。
-- UI 设计真源输入要求。
-- 技术前置清单。
-- 技术风险和后续验证问题。
+- S3 UI 设计真源格式。
+- S4 技术架构文档格式。
+- P3 版本与里程碑拆解格式。
+- 后续验收报告格式。
+- 每类格式的必填字段、合格标准和禁止提前写入内容。
 
-P2 不生成高保真 UI 设计稿，不冻结技术栈，也不冻结可执行里程碑。若 P2 中需要讨论版本路线，只能标记为高层假设。
+P2.1 不生成高保真 UI 设计稿，不冻结技术栈，不冻结版本路线、大里程碑或小里程碑，也不生成真实验收报告。
 
 P3 才输出：
 

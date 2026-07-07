@@ -139,3 +139,30 @@
 - 审查建议：P2 文档可以进入用户会签；会签前不进入 S3 UI 设计真源、S4 技术架构、P3 版本与里程碑拆解或开发实现。
 - 残余风险：P2 仍是原型和输入要求层，后续 UI 设计真源、技术架构和里程碑拆解尚未完成。
 - 阶段门禁判断：需用户会签。
+
+## 2026-07-07 P2 会签与 P2.1 文档契约验证
+
+- 验证范围：P2 会签记录、P2 计划归档、P2.1 活动计划、后续真源文档契约、路线锁、PLANS 和 `.codex` 留痕。
+- 本地测试：当前阶段无代码，不运行测试。
+- 构建验证：当前阶段无工程实现，不运行构建。
+- 命令验证：
+  - `test -f docs/exec-plans/completed/p2-product-prototype-design-tech-prep.md && test ! -f docs/exec-plans/active/p2-product-prototype-design-tech-prep.md`：通过。
+  - `test -f docs/exec-plans/active/p2.1-document-contracts.md && test -f docs/product-specs/005-stage-document-contracts.md`：通过。
+  - `rg -n "S3 UI 设计真源格式|S4 技术架构文档格式|P3 版本与里程碑拆解格式|后续验收报告格式|必填字段|禁止提前写入" docs/product-specs/005-stage-document-contracts.md`：通过。
+  - `rg -n "当前里程碑：P2 产品原型|P2 待会签|P2 产品原型、设计真源与技术前置执行计划\\]\\(./exec-plans/active|P2 产品原型.*待用户会签|P2 UI.*待用户会签|P2 技术.*待用户会签" PROJECT_ROUTE_LOCK.md docs/PLANS.md docs/PRODUCT_SENSE.md docs/product-specs/index.md docs/exec-plans/active`：通过，未发现 P2 待会签旧状态残留。
+  - `rg -n "React|Next\\.js|Supabase|Postgres|SQLite|Tailwind|Vercel|Cloudflare|状态：已会签" docs/product-specs/005-stage-document-contracts.md docs/exec-plans/active/p2.1-document-contracts.md`：通过，未发现真实技术栈或已会签状态偷跑。
+  - `rg -n "<{7}|>{7}|T[O]DO|T[B]D|\\.[r]ej|\\.[o]rig" docs PROJECT_ROUTE_LOCK.md .codex`：通过，未发现占位或补丁残留。
+  - `git diff --check`：通过。
+- 用户会签：
+  - P2 产品原型：通过。
+  - P2 UI 设计真源输入要求：通过。
+  - P2 技术前置清单：通过。
+- 阶段 DoD 覆盖：
+  - P2 会签通过记录明确：通过。
+  - S3 UI 设计真源格式明确：通过。
+  - S4 技术架构文档格式明确：通过。
+  - P3 版本与里程碑拆解格式明确：通过。
+  - 后续验收报告格式明确：通过。
+  - 每类格式包含必填字段、合格标准和禁止提前写入内容：通过。
+  - 未生成真实 UI、技术方案、版本路线、里程碑或验收结论：通过。
+- 阶段门禁判断：P2 已通过；P2.1 需用户会签。
