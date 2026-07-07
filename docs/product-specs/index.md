@@ -3,11 +3,12 @@
 ## 当前真源
 
 - [NextStep 原始需求真源](./001-original-requirement.md)
+- [NextStep 完整项目蓝图](./002-complete-project-blueprint.md)
+- [NextStep 用户旅程](./003-user-journey.md)
+- [NextStep 能力地图](./004-capability-map.md)
 
 ## 待建立
 
-- 完整 PRD
-- 用户旅程
 - 版本路线图
 - 模块闭环清单
 - 验收指标矩阵

@@ -38,5 +38,9 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 ## 当前文档真源
 
 - 原始需求：`docs/product-specs/001-original-requirement.md`
+- 完整项目蓝图：`docs/product-specs/002-complete-project-blueprint.md`
+- 用户旅程：`docs/product-specs/003-user-journey.md`
+- 能力地图：`docs/product-specs/004-capability-map.md`
 - 路线锁：`PROJECT_ROUTE_LOCK.md`
+- 活动计划：`docs/PLANS.md`
 - 变更入口：`docs/change-requests/index.md`

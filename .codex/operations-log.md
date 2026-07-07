@@ -49,3 +49,34 @@
   - `gh auth status`：本机未安装 `gh`。
   - `ssh -T git@github.com`：SSH 公钥未授权，返回 `Permission denied (publickey)`。
 - 当前状态：本地提交已完成，远程推送等待 GitHub 凭据或 SSH 授权。
+
+## 2026-07-07 P1 完整项目蓝图
+
+- 任务目标：按用户确认推进 P1，把 NextStep 原始需求整合成完整项目蓝图。
+- 路线锁判断：用户已确认进入下一步，P0 项目真源建立视为门禁通过；本轮将当前里程碑推进到 P1 完整项目蓝图。
+- 生命周期阶段：S1 产品定义 / PRD。
+- 当前里程碑：P1 完整项目蓝图。
+- 本轮阶段出口：形成可供 P2 版本路线和模块闭环拆解使用的产品真源。
+- 本轮最小可验收闭环：落地完整项目蓝图、用户旅程、能力地图和活动计划入口。
+- 本轮明确不做：不做技术选型、不做 UI 原型、不写代码、不拆具体开发任务、不新增 Agent 市场或多 Agent 编排。
+- 允许修改范围：`PROJECT_ROUTE_LOCK.md`、`docs/`、`.codex/`。
+- 禁止修改范围：不得改变 NextStep 的产品定位，不得进入工程实现。
+- 变更判断：这是路线锁内从 P0 到 P1 的阶段推进，不是产品定位变更。
+- 已创建文件：
+  - `.codex/context-summary-p1-complete-project-blueprint.md`
+  - `docs/product-specs/002-complete-project-blueprint.md`
+  - `docs/product-specs/003-user-journey.md`
+  - `docs/product-specs/004-capability-map.md`
+  - `docs/exec-plans/active/p1-complete-project-blueprint.md`
+  - `docs/PLANS.md`
+- 已更新文件：
+  - `PROJECT_ROUTE_LOCK.md`
+  - `docs/product-specs/index.md`
+  - `docs/PRODUCT_SENSE.md`
+  - `.codex/operations-log.md`
+  - `.codex/verification-report.md`
+- 验证结果：
+  - 文档文件存在性检查通过。
+  - 占位文本和补丁残留检查通过。
+  - `git diff --check` 通过。
+- 状态：文档已落盘并完成自查，等待用户会签。
