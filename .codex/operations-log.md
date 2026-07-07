@@ -96,3 +96,28 @@
   - 占位文本和补丁残留检查通过。
   - `git diff --check` 通过。
 - 状态：审查反馈已处理，等待用户会签。
+
+## 2026-07-07 P1 流程补强
+
+- 任务目标：根据用户反馈完善原始需求真源和 P1 蓝图中的完整项目开发流程。
+- 路线锁判断：当前仍处于 S1 / P1 产品定义阶段，本轮只补强产品流程真源，不进入技术选型、UI 原型或代码实现。
+- 用户反馈要点：
+  - 原始需求是用户需求，AI 意图理解是为了补全需求。
+  - AI 与用户讨论完需求后，需要先记录和冻结需求。
+  - 冻结需求后要站在产品经理角度构建产品，而不是直接开发。
+  - 完整流程应包含产品原型、用户会签、UI 设计效果图、技术选型、大里程碑、小里程碑、测试验收、UI 验收、产品验收和交付归档。
+- 已更新文件：
+  - `docs/product-specs/001-original-requirement.md`
+  - `docs/product-specs/002-complete-project-blueprint.md`
+  - `docs/product-specs/003-user-journey.md`
+  - `docs/product-specs/004-capability-map.md`
+  - `docs/PRODUCT_SENSE.md`
+  - `docs/PLANS.md`
+  - `docs/exec-plans/active/p1-complete-project-blueprint.md`
+  - `PROJECT_ROUTE_LOCK.md`
+- 明确不做：不进入 P2 拆解，不冻结最终版本路线，不生成原型，不做 UI，不做技术选型，不写代码。
+- 验证结果：
+  - 流程关键词覆盖检查通过，已覆盖需求冻结、产品定义、产品原型、UI 设计、技术选型、大里程碑、小里程碑、测试验收、UI 验收、产品验收和交付归档。
+  - 占位文本和补丁残留检查通过。
+  - `git diff --check` 通过。
+- 状态：流程补强已完成，等待用户继续会签。
