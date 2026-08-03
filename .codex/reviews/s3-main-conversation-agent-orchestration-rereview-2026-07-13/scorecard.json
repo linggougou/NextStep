@@ -1,0 +1,153 @@
+{
+  "review_id": "s3-main-conversation-agent-orchestration-rereview-2026-07-13",
+  "task_id": "cr-002-design-rereview",
+  "lane": "design-review",
+  "review_level": "L2",
+  "rubric_id": "nextstep-s3-orchestration-design-v1",
+  "artifact_refs": [
+    "docs/design-docs/s3-main-conversation-agent-orchestration-design.md",
+    "docs/change-requests/002-main-conversation-agent-orchestration.md",
+    "docs/change-requests/index.md",
+    ".codex/reviews/s3-main-conversation-agent-orchestration-2026-07-13/verdict.md",
+    ".codex/reviews/s3-main-conversation-agent-orchestration-2026-07-13/scorecard.json"
+  ],
+  "hard_gates": [
+    {
+      "name": "路线与阶段边界",
+      "status": "pass",
+      "evidence": "设计、CR 002 与索引均保持 S3 书面设计边界，明确复审和迁移、四份材料分别会签前不得进入 S4。证据：design:316-327；cr002:14-32,148-165；cr-index:3-6。"
+    },
+    {
+      "name": "主对话无需读取项目文件",
+      "status": "pass",
+      "evidence": "主对话职责明确禁止读写项目文件；依赖判定由集成控制面完成，主对话只接收机器控制信封。证据：design:71-86,176-204,227-242。"
+    },
+    {
+      "name": "依赖任务调度基本握手",
+      "status": "pass",
+      "evidence": "已定义 dispatch-ready 产生者和接收者、dispatch-ack 字段、持久化确认、同键重发、已创建未确认窗口恢复及过期拒绝。证据：design:95-97,176-204。迟到旧基线的撤销代际仍作为 P1 质量缺口记录。"
+    },
+    {
+      "name": "精确最终集成产物独立复验",
+      "status": "fail",
+      "evidence": "design:262 要求全部正式真源和状态进入最终快照，但 design:266 与 design:97 又允许提升成功后更新会签、阶段、真源、检查点和留痕；cr002:90 仍写先合入并更新真源再完成整体验证。无法证明正式状态与独立复验绑定的是同一不可变摘要。"
+    },
+    {
+      "name": "Codex 宿主能力前置核验",
+      "status": "pass",
+      "evidence": "host-bootstrap 不依赖项目任务，证明隔离任务创建和查询后才运行 project-probe；能力矩阵和 full/manual-isolated/blocked 均有强制失败结论，串行同任务不可静默退化。证据：design:29-57。"
+    },
+    {
+      "name": "Change Intake 完整性",
+      "status": "pass",
+      "evidence": "CR 002 已列出运行时风险与控制、验证成本和频率、迁移顺序、失败回滚及能力不可用决策。证据：cr002:120-171。"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "产品目标与路线一致性",
+      "score": 19,
+      "max_score": 20,
+      "reason": "目标继续聚焦主对话语义稳定与 S3 Skill-first 路线，迁移和会签门禁清楚。",
+      "evidence_refs": [
+        "design:8-27",
+        "design:307-327",
+        "cr002:12-32"
+      ]
+    },
+    {
+      "name": "职责与上下文边界",
+      "score": 19,
+      "max_score": 20,
+      "reason": "三层职责、内部控制消息、用户摘要和恢复任务边界明确，主对话无需读取项目文件。",
+      "evidence_refs": [
+        "design:69-112",
+        "design:142-225",
+        "design:227-242"
+      ]
+    },
+    {
+      "name": "调度与状态机正确性",
+      "score": 21,
+      "max_score": 25,
+      "reason": "握手主体已经闭合，但同一计划内基线变化缺少可验证的单调代际或撤销墓碑，迟到旧信封仍存在误派发解释。",
+      "evidence_refs": [
+        "design:176-204",
+        "design:240-253"
+      ]
+    },
+    {
+      "name": "集成、验证与恢复可靠性",
+      "score": 16,
+      "max_score": 20,
+      "reason": "已增加精确最终摘要独立复验和内容变化失效规则，但提升后更新正式状态的表述与快照事务边界冲突。",
+      "evidence_refs": [
+        "design:95-100",
+        "design:256-268",
+        "cr002:88-96",
+        "cr002:120-146"
+      ]
+    },
+    {
+      "name": "运行时适配与变更治理",
+      "score": 14,
+      "max_score": 15,
+      "reason": "两阶段预检、三态结论、不可静默退化、风险成本和回滚已完整形成门禁；官方手册不可用时也未把宿主能力猜测为保证。",
+      "evidence_refs": [
+        "design:29-67",
+        "cr002:120-171",
+        "cr-index:3-6"
+      ]
+    }
+  ],
+  "penalties": [
+    {
+      "severity": "P0",
+      "deduction": 0,
+      "reason": "复验后仍可能更新正式状态，作为精确最终产物硬门禁失败处理，不重复扣分。",
+      "evidence_refs": [
+        "design:97",
+        "design:262-266",
+        "cr002:90-96"
+      ]
+    },
+    {
+      "severity": "P1",
+      "deduction": 0,
+      "reason": "旧基线 dispatch-ready 的失效缺少单调代际或撤销传播规则，已在调度维度扣分，不重复扣分。",
+      "evidence_refs": [
+        "design:180-204",
+        "design:240-250"
+      ]
+    }
+  ],
+  "totals": {
+    "raw_score": 89,
+    "penalty_total": 0,
+    "final_score": 89
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "统一最终集成事务边界：全部正式真源与受门禁状态在最终快照中复验，复验后只允许内容不变的原子提升；同步修正 CR 002 中先更新真源再完成验证的旧顺序。",
+    "增加单调控制代际或撤销墓碑协议，使主对话无需读项目文件也能确定性拒绝乱序到达的旧计划或旧基线 dispatch-ready，并纳入确认与恢复重放。"
+  ],
+  "nice_to_have": [
+    "在正式迁移时把内部控制信封的 JSON Schema 和状态转换表放到唯一契约位置，其他文档只引用。",
+    "将归档明确标为非关键能力，避免其失败与正式产物正确性混用。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "路线、主对话隔离、两阶段预检和 Change Intake 硬门禁通过；精确最终产物身份因提升后状态写入矛盾未通过。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "上一轮四项缺口已大幅修复，但最终事务边界仍有 P0，控制信封失效代际有 P1。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "REVISE；修正两项后再独立复审，当前不得迁移正式材料或进入 S4。"
+    }
+  ],
+  "reviewed_at": "2026-07-13T00:00:00+08:00"
+}

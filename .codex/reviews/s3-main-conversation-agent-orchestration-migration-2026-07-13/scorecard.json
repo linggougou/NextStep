@@ -1,0 +1,139 @@
+{
+  "review_id": "s3-main-conversation-agent-orchestration-migration-2026-07-13",
+  "task_id": "cr-002-migration-review",
+  "lane": "migration-review",
+  "review_level": "L2",
+  "rubric_id": "nextstep-s3-orchestration-migration-v1",
+  "artifact_refs": [
+    "docs/product-specs/007-s3-skill-interaction-contract.md",
+    "docs/product-specs/008-downstream-interaction-product-acceptance-contract.md",
+    "docs/design-docs/s3-skill-interaction-source.md",
+    "docs/architecture/009-s4-technical-input-supplement.md",
+    "docs/exec-plans/active/s3-skill-interaction-source.md",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/PLANS.md",
+    "docs/change-requests/002-main-conversation-agent-orchestration.md",
+    "docs/change-requests/index.md"
+  ],
+  "hard_gates": [
+    {
+      "name": "007 产品交互边界",
+      "status": "pass",
+      "evidence": "007 只规定主对话唯一入口、三层职责、默认安静、上下文隔离、计划内分派与例外边界，并明确首要目标是保护语义稳定性和用户心流。证据：007:35-58,68-78。"
+    },
+    {
+      "name": "008 独立验证与正式提升",
+      "status": "pass",
+      "evidence": "008 分离候选验证、产品与交互评估、独立审查、精确最终复验和正式提升，禁止集成 Agent 自批并规定身份变化失效。证据：008:71-87,96-109。"
+    },
+    {
+      "name": "S3 正文协议覆盖与唯一职责",
+      "status": "fail",
+      "evidence": "S3 正文完整覆盖任务包、结果信封、dispatch 握手、代际/墓碑/恢复、迟到与身份冲突、最终内容快照、外部凭证、审计锚及 CAS，并在 s3-source:438 声明为唯一详细协议；但原设计稿仍标为待迁移和设计真源，CR 002:107 仍称其为详细设计真源，形成第二个当前详细协议入口。证据：s3-source:202-294,438；design:3,353；cr002:107。"
+    },
+    {
+      "name": "009 S4 技术输入边界",
+      "status": "pass",
+      "evidence": "009 覆盖 host-bootstrap/project-probe、full/manual-isolated/blocked、能力对象和风险验证，明确不定义最终 API/MCP/数据模型或 S4 正文。证据：009:25-31,46-65,69-124,126-134。"
+    },
+    {
+      "name": "显式上游无循环",
+      "status": "pass",
+      "evidence": "007 不依赖 008/S3/009；008 依赖 007；S3 依赖 007/008 但不依赖 009；009 再依赖 007/008/S3，保持 007 -> 008 -> S3 -> 009。证据：007:6-10；008:6-11；s3-source:6-16；009:6-13。"
+    },
+    {
+      "name": "会签、CR 与 S4 状态门禁",
+      "status": "pass",
+      "evidence": "四份材料均待会签，CR 002 为已迁移待复审，路线锁标明 S4 未开始，复审只恢复会签入口且不替代会签。证据：007:3；008:3；009:3；s3-source:3；cr002:3,164；route-lock:68-70,108。"
+    },
+    {
+      "name": "第三次设计复审 P0/P1 保持关闭",
+      "status": "pass",
+      "evidence": "派发握手、控制与结果代际、墓碑、恢复、最终内容快照、项目外凭证、项目根审计锚、CAS 及失败恢复均已迁入 S3 正文和 009。证据：s3-source:218-294；009:57-65,73-87,99-124。"
+    },
+    {
+      "name": "宿主能力不被误报为已验证",
+      "status": "pass",
+      "evidence": "材料把 Codex 能力视为候选宿主能力，要求 S4/preflight 按具体宿主、版本、项目和权限组合验证，未声称当前迁移已证明运行时能力。证据：009:57,73-75,99-106,118-124；known-risks:2。"
+    },
+    {
+      "name": "迁移计划与路线入口一致且未越过 S3",
+      "status": "pass",
+      "evidence": "活动计划、路线锁和 PLANS 均明确不实现 Agent 编排、不冻结最终 API/MCP/schema、不进入 S4。证据：migration-plan:13-20,128-134；s3-plan:51-64；route-lock:43-56；plans:54,67-72。"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "路线与产品意图",
+      "score": 19,
+      "max_score": 20,
+      "reason": "产品目标、Skill-first 路线、语义稳定性和用户心流均保持，阶段出口无倒退；原设计稿待迁移状态造成轻微路线状态歧义。",
+      "evidence_refs": ["007:68-78", "s3-source:44-73", "route-lock:3-57", "design:3"]
+    },
+    {
+      "name": "职责与唯一真源",
+      "score": 13,
+      "max_score": 20,
+      "reason": "007/008/009 的分层准确，但 S3 正文与原设计稿同时被指为当前详细协议真源，违反唯一职责硬门禁。",
+      "evidence_refs": ["migration-plan:24-53", "s3-source:438", "design:3,353", "cr002:107"]
+    },
+    {
+      "name": "控制与恢复协议",
+      "score": 24,
+      "max_score": 25,
+      "reason": "任务包、结果信封、握手、代际、墓碑、恢复、迟到/冲突结果和最终 CAS 闭环完整迁移。",
+      "evidence_refs": ["s3-source:202-294", "s3-source:372-438"]
+    },
+    {
+      "name": "验证与正式提升",
+      "score": 19,
+      "max_score": 20,
+      "reason": "五类独立结论、精确最终复验、外部凭证、审计锚与 CAS 边界完整，集成 Agent 不得自批。",
+      "evidence_refs": ["008:71-87", "s3-source:279-294", "009:61-65,85-87"]
+    },
+    {
+      "name": "治理与 S4 边界",
+      "score": 12,
+      "max_score": 15,
+      "reason": "四会签与 S4 门禁正确，运行时能力留给 S4；但原设计稿状态和 CR 真源引用未随迁移完成同步。",
+      "evidence_refs": ["route-lock:43-56,68-70,108", "cr002:3,107,155-177", "009:25-31,126-142"]
+    }
+  ],
+  "penalties": [
+    {
+      "severity": "P1",
+      "deduction": 0,
+      "reason": "唯一详细交互协议的真源切换未闭合，已在职责与唯一真源、治理维度扣分，不重复扣分。",
+      "evidence_refs": ["s3-source:438", "design:3,353", "cr002:107", "migration-plan:28,51-53"]
+    }
+  ],
+  "totals": {
+    "raw_score": 87,
+    "penalty_total": 0,
+    "final_score": 87
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "将原编排设计稿明确标为已迁移的历史设计与复审证据，移除其当前设计真源和待迁移语义。",
+    "将 CR 002 的详细设计真源改指 S3 Skill 交互真源正文，原设计稿只作为迁移来源和历史证据引用。",
+    "重新扫描真源、详细协议和待迁移引用，证明当前详细交互协议只有 S3 正文一份。"
+  ],
+  "nice_to_have": [
+    "在迁移计划 Task 5 中增加对历史设计状态与所有真源指向的显式断言，避免后续迁移再次留下双真源。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "除唯一详细协议职责外，其余八项硬门禁通过；迁移字段覆盖、上游图、四会签和 S4 边界均符合要求。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "控制与验证协议迁移质量高，但当前原设计稿状态和 CR 引用使两个详细协议入口同时有效，构成 P1。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "REVISE；通过小步修订关闭双真源后重新审查，不得据此恢复四份材料会签入口或进入 S4。"
+    }
+  ],
+  "reviewed_at": "2026-07-13T00:00:00+08:00"
+}

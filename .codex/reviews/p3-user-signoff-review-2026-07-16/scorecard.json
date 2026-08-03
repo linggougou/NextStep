@@ -1,0 +1,137 @@
+{
+  "review_id": "p3-user-signoff-review-2026-07-16",
+  "task_id": "p3-version-and-milestone-breakdown",
+  "lane": "planning-signoff",
+  "review_level": "L3",
+  "rubric_id": "judge-harness-planning-signoff-v1",
+  "artifact_refs": [
+    "docs/exec-plans/active/p3-version-and-milestone-breakdown.md",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/PLANS.md",
+    "docs/product-specs/008-downstream-interaction-product-acceptance-contract.md",
+    ".codex/verification-report.md",
+    ".codex/reviews/p3-planning-review-2026-07-15/scorecard.json",
+    ".codex/reviews/p3-planning-review-2026-07-15/verdict.md"
+  ],
+  "artifact_digests": {
+    "docs/exec-plans/active/p3-version-and-milestone-breakdown.md": "4aff585cf1c0125df001de3e51d04bd56aa394c2b9d11b29b012c7777c6520b7",
+    "PROJECT_ROUTE_LOCK.md": "92093ec86cef1e3a99ac7df77cf26b390849cd79920213f3284a3ea8930ff86a",
+    "docs/PLANS.md": "11edac96a289336cb245f858790427593931cbde8da8b00c1a326a2aedb5c945",
+    "docs/product-specs/008-downstream-interaction-product-acceptance-contract.md": "61f4c5ad26c9c3b45c9a22b25765b1b7455d20229754b3da9a1dd53f33742497",
+    ".codex/verification-report.md": "dbc50ff3e772cb36206275c1b472f00ebbade7538ca83af7a88bc43911671296",
+    ".codex/reviews/p3-planning-review-2026-07-15/scorecard.json": "70d3ef07cc3d86f9a1e9cc24e3fbd8bc437078ad7a3e8d4aad27c695281aebdd",
+    ".codex/reviews/p3-planning-review-2026-07-15/verdict.md": "1b527b0671b6c0b8c059290052d576221ce564008550fef54a24d153b6c28680"
+  },
+  "hard_gates": [
+    {
+      "id": "lifecycle_and_scope_lock",
+      "status": "pass",
+      "evidence": "PROJECT_ROUTE_LOCK.md:9-42 and p3-version-and-milestone-breakdown.md:318-323 keep the project in P3 and block P4/P5/coding before user signoff."
+    },
+    {
+      "id": "structural_completeness",
+      "status": "pass",
+      "evidence": "Fresh local assertions returned P3_FRESH_COUNTS_OK pc=20 major=9 small=18 metrics=12 matrix=14 versions=5 and P3_FRESH_FORMAT_OK."
+    },
+    {
+      "id": "implementation_handoff_is_unambiguous",
+      "status": "fail",
+      "evidence": "p3-version-and-milestone-breakdown.md:232-235,249-257,263-280 name existing requirements, PRDs, plans and reports as version/milestone outputs without requiring a runnable NextStep capability and target-project fixture evidence."
+    },
+    {
+      "id": "acceptance_profile_scope_is_separated",
+      "status": "fail",
+      "evidence": "p3-version-and-milestone-breakdown.md:150 lets an independent acceptance task declare UI applicability, while lines 157-173 and 303-316 mark NextStep delivery objects as UI-conditional; lines 207-212 require route conflict rejection and limit independent tasks to evidence provision."
+    },
+    {
+      "id": "independent_review_bundle_is_valid",
+      "status": "fail",
+      "evidence": "The prior L3 scorecard declares deduction=5 but penalty_total=0/final_score=95, and its reviewers omit the L3-required Anti-Slop Judge."
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "coverage_and_structure",
+      "score": 23,
+      "max_score": 25,
+      "reason": "All required tables and counts exist, and PC/TG/version/milestone coverage is broad.",
+      "evidence_refs": [
+        "docs/exec-plans/active/p3-version-and-milestone-breakdown.md:108",
+        "docs/exec-plans/active/p3-version-and-milestone-breakdown.md:228"
+      ]
+    },
+    {
+      "id": "implementation_handoff_quality",
+      "score": 18,
+      "max_score": 25,
+      "reason": "The sequence and dependencies are readable, but outputs do not reliably distinguish bootstrap truth sources from runnable NextStep product capabilities.",
+      "evidence_refs": [
+        "docs/exec-plans/active/p3-version-and-milestone-breakdown.md:232",
+        "docs/exec-plans/active/p3-version-and-milestone-breakdown.md:263"
+      ]
+    },
+    {
+      "id": "acceptance_and_route_alignment",
+      "score": 18,
+      "max_score": 25,
+      "reason": "The three Acceptance Profile rules are recorded, but the matrices conflate target-project UI evidence with NextStep's own headless delivery gate.",
+      "evidence_refs": [
+        "docs/exec-plans/active/p3-version-and-milestone-breakdown.md:150",
+        "docs/exec-plans/active/p3-version-and-milestone-breakdown.md:203",
+        "docs/exec-plans/active/p3-version-and-milestone-breakdown.md:299"
+      ]
+    },
+    {
+      "id": "evidence_integrity",
+      "score": 15,
+      "max_score": 25,
+      "reason": "Local structural assertions are reproducible, but the prior L3 review package has invalid score arithmetic and an incomplete mandatory role set.",
+      "evidence_refs": [
+        ".codex/reviews/p3-planning-review-2026-07-15/scorecard.json:84",
+        "/Users/ling/.codex/skills/judge-harness/references/review-core.md:23"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 74,
+    "penalty_total": 0,
+    "final_score": 74
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "Rewrite V1-V4, major milestones and small-milestone outputs so each future delivery proves a runnable NextStep capability on target-project fixtures; mark the current repository documents as bootstrap inputs, not product-completion evidence.",
+    "Separate Acceptance Profile applicability from evidence provision: derive headless/UI from the accepted target-project route, reject conflicts, keep NextStep's own implementation acceptance I/X/P, and verify UI behavior with headless/UI/conflict fixtures rather than requesting UI evidence from NextStep itself.",
+    "Regenerate the independent L3 review package with correct score arithmetic, all required roles including Anti-Slop Judge, fixed artifact digests and line-addressable evidence; then sync P3/route/PLANS status to the new verdict."
+  ],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Generator",
+      "conclusion": "SUBMITTED",
+      "notes": "The existing P3 candidate and self-check package were treated as the submitted artifacts and were not modified by this review."
+    },
+    {
+      "role": "Verifier",
+      "conclusion": "FAIL",
+      "notes": "Structural counts, status and format passed; implementation handoff clarity, Acceptance Profile separation and prior review-bundle integrity failed."
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "REVISE",
+      "score": 74,
+      "notes": "The package is recoverable, but three P1 issues block user signoff."
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "REVISE",
+      "notes": "Table completeness masks semantic reuse of already-existing planning artifacts as future product deliverables, and the prior scorecard contains template-level arithmetic inconsistency."
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "REVISE",
+      "notes": "Return P3 to revision. Do not sign off, archive, switch to P4 or begin coding until all required fixes are reverified."
+    }
+  ],
+  "reviewed_at": "2026-07-16T17:00:15+08:00"
+}

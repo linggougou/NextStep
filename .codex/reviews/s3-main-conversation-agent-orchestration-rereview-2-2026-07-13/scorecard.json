@@ -1,0 +1,165 @@
+{
+  "review_id": "s3-main-conversation-agent-orchestration-rereview-2-2026-07-13",
+  "task_id": "cr-002-design-rereview-2",
+  "lane": "design-review",
+  "review_level": "L2",
+  "rubric_id": "nextstep-s3-orchestration-design-v1",
+  "artifact_refs": [
+    "docs/design-docs/s3-main-conversation-agent-orchestration-design.md",
+    "docs/change-requests/002-main-conversation-agent-orchestration.md",
+    "docs/change-requests/index.md",
+    ".codex/reviews/s3-main-conversation-agent-orchestration-rereview-2026-07-13/verdict.md",
+    ".codex/reviews/s3-main-conversation-agent-orchestration-rereview-2026-07-13/scorecard.json",
+    "/Users/ling/.codex/project-codex-traceability.md",
+    "/Users/ling/.codex/codex-development-workflow.md"
+  ],
+  "hard_gates": [
+    {
+      "name": "路线与阶段边界",
+      "status": "pass",
+      "evidence": "设计、CR 002 与索引仍把本轮限定在 S3 书面设计；迁移复审和四份材料分别会签前不得进入 S4。证据：design:334-345；cr002:14-32,150-167；cr-index:3-6。"
+    },
+    {
+      "name": "主对话上下文与项目文件隔离",
+      "status": "pass",
+      "evidence": "主对话禁止读写项目文件，只接收机器控制信封、阶段摘要和例外上报；恢复由隔离恢复任务读取真源。证据：design:71-86,176-240,242-257。"
+    },
+    {
+      "name": "依赖任务派发握手与旧信封撤销",
+      "status": "pass",
+      "evidence": "dispatch-ready/dispatch-ack 已定义产生、确认、同键恢复；generation-advance/generation-ack、最高代际缓存和 generation-snapshot 使低代际派发信封可确定性拒绝。证据：design:180-219,255-257。"
+    },
+    {
+      "name": "控制代际覆盖完整消息生命周期",
+      "status": "fail",
+      "evidence": "结果信封只包含任务 ID、基线和状态，未携带 plan_generation/task_attempt；低代际优先规则只明确作用于 dispatch-ready。已创建旧任务的迟到结果缺少确定性失效与拒绝规则。证据：design:164-174,207-219,263-266。"
+    },
+    {
+      "name": "精确最终集成产物独立复验",
+      "status": "pass",
+      "evidence": "最终快照预含全部项目内状态；项目外凭证绑定 verification_run_id、快照摘要和预期基线；提升仅允许原子引用移动，补写内容或基线变化使凭证失效。证据：design:97,272-285；cr002:53-57,90。"
+    },
+    {
+      "name": "Codex 宿主能力前置核验",
+      "status": "fail",
+      "evidence": "两阶段预检与三态降级仍存在，但能力表和 project-probe 未验证新最终事务必需的项目外不可变凭证存储/读取、凭证摘要校验、正式引用 CAS/原子移动及提升失败恢复。证据：design:29-55 对照 design:278-283。"
+    },
+    {
+      "name": "项目验证留痕可执行性",
+      "status": "fail",
+      "evidence": "设计将最终复验结论写入项目外不可变凭证并禁止提升后修改项目内验证留痕；快照仅预写 verification_run_id，无法包含尚未产生的最终结论。全局协议要求验证和审查结论写入项目根 .codex/verification-report.md。证据：design:278-283；traceability:22,76-82；workflow:14-20。"
+    },
+    {
+      "name": "Change Intake 基础完整性",
+      "status": "pass",
+      "evidence": "CR 002 保留运行时风险、验证成本、迁移失败回滚和宿主能力不可用四部分；新增凭证/CAS 与最终留痕风险仍列为本轮 P1 补充项。证据：cr002:120-173。"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "产品目标与路线一致性",
+      "score": 19,
+      "max_score": 20,
+      "reason": "严格隔离目标、Skill-first 路线和 S3/S4 门禁保持一致。",
+      "evidence_refs": [
+        "design:8-27",
+        "design:325-345",
+        "cr002:12-32"
+      ]
+    },
+    {
+      "name": "职责与上下文边界",
+      "score": 19,
+      "max_score": 20,
+      "reason": "三层职责、主对话禁读项目文件、最小控制上下文和用户摘要边界清楚。",
+      "evidence_refs": [
+        "design:69-112",
+        "design:142-174",
+        "design:221-257"
+      ]
+    },
+    {
+      "name": "调度与状态机正确性",
+      "score": 20,
+      "max_score": 25,
+      "reason": "派发侧代际和墓碑已闭合，但代际身份未传播到结果、验证和审查信封，旧任务迟到结果仍可能被采纳。",
+      "evidence_refs": [
+        "design:164-219",
+        "design:255-270"
+      ]
+    },
+    {
+      "name": "集成、验证与恢复可靠性",
+      "score": 17,
+      "max_score": 20,
+      "reason": "最终快照与原子提升的内容身份已严密闭合，但最终复验凭证与项目内强制留痕之间缺少无自引用的落盘契约。",
+      "evidence_refs": [
+        "design:272-285",
+        "traceability:22,76-82",
+        "workflow:14-20"
+      ]
+    },
+    {
+      "name": "运行时适配与变更治理",
+      "score": 13,
+      "max_score": 15,
+      "reason": "既有两阶段预检和 CR 治理完整，但新引入的外部凭证与 CAS 提升能力没有加入预检、降级和风险回滚矩阵。",
+      "evidence_refs": [
+        "design:29-57",
+        "design:278-283",
+        "cr002:120-173"
+      ]
+    }
+  ],
+  "penalties": [
+    {
+      "severity": "P1",
+      "deduction": 0,
+      "reason": "控制代际未覆盖旧任务结果采纳，已在调度与状态机维度扣分，不重复扣分。",
+      "evidence_refs": [
+        "design:164-174",
+        "design:207-219",
+        "design:263-266"
+      ]
+    },
+    {
+      "severity": "P1",
+      "deduction": 0,
+      "reason": "新最终事务依赖未进入预检，且项目内最终验证留痕未闭合，已在集成可靠性和运行时适配维度扣分，不重复扣分。",
+      "evidence_refs": [
+        "design:29-55",
+        "design:278-283",
+        "traceability:22,76-82"
+      ]
+    }
+  ],
+  "totals": {
+    "raw_score": 88,
+    "penalty_total": 0,
+    "final_score": 88
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "将单调代际身份传播到任务包、执行结果、候选验证、审查和最终复验信封；集成控制面和恢复任务必须先按最高代际确定性拒绝旧任务结果，再允许其驱动依赖或集成。",
+    "把项目外凭证存储/读取、凭证摘要校验、正式引用 CAS/原子移动和提升失败恢复加入 capability preflight 与三态降级；设计符合项目 .codex 强制留痕且不产生最终快照自引用的验收元数据方案，并在 CR 002 补齐对应风险、成本和回滚。"
+  ],
+  "nice_to_have": [
+    "正式迁移时为控制信封与复验凭证提供唯一 JSON Schema，并让其他文档只引用该契约。",
+    "明确提升事务 CAS 失败后的状态仍是待正式提升，且不得发送成功阶段摘要或归档任务。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "上一轮最终事务和派发墓碑缺口已通过；消息全生命周期代际、宿主新能力预检和项目内最终留痕未通过。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "主体设计已接近可迁移，但新事务方案引入的两个 P1 会影响迟到结果正确性和运行时可执行性。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "REVISE；本轮无 P0，修复两项 P1 后重新独立复审，当前不得迁移正式材料或进入 S4。"
+    }
+  ],
+  "reviewed_at": "2026-07-13T00:00:00+08:00"
+}

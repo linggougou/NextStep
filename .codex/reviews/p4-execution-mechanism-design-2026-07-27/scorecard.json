@@ -1,0 +1,145 @@
+{
+  "review_id": "p4-execution-mechanism-design-2026-07-27",
+  "task_id": "p4-execution-mechanism-design",
+  "lane": "planning",
+  "review_level": "L3",
+  "rubric_id": "judge-harness-planning-gate-v1",
+  "artifact_refs": [
+    "docs/design-docs/p4-execution-mechanism-design.md",
+    "docs/exec-plans/active/p4-execution-mechanism-design.md",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/PLANS.md",
+    "docs/exec-plans/completed/p3-version-and-milestone-breakdown.md",
+    "docs/architecture/s4-technical-architecture.md",
+    "docs/product-specs/008-downstream-interaction-product-acceptance-contract.md"
+  ],
+  "artifact_digests": {
+    "docs/design-docs/p4-execution-mechanism-design.md": "d6985fe0d8ba51f221e5ace73157aa0cf2b725835da40a53efd2690562d797db",
+    "docs/exec-plans/active/p4-execution-mechanism-design.md": "f9dc21a94e6699b72b7ff692e4cf32ade866f7d0ec3428062bdb47fa3ac6ecf8",
+    "PROJECT_ROUTE_LOCK.md": "62db89315ab661c9f66349c28cbf0682367c0bf74726e8388c99b0206bde3ec7",
+    "docs/PLANS.md": "0ddb9feac378f306c9729302377be69622813e87dacf6d607bed6f89cfe21e64",
+    "docs/exec-plans/completed/p3-version-and-milestone-breakdown.md": "4e8f658d6bd3151211df4b9c5c1112502e836cd97e0a9ca914cf38424901fc4c",
+    "docs/architecture/s4-technical-architecture.md": "60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+    "docs/product-specs/008-downstream-interaction-product-acceptance-contract.md": "61f4c5ad26c9c3b45c9a22b25765b1b7455d20229754b3da9a1dd53f33742497"
+  },
+  "hard_gates": [
+    {
+      "id": "lifecycle_and_scope_lock",
+      "status": "pass",
+      "evidence": "Route lock and PLANS are in P4, keep P5/coding blocked, and require L3 review plus user signoff before transition."
+    },
+    {
+      "id": "upstream_contract_alignment",
+      "status": "pass",
+      "evidence": "The candidate reuses P3 PC boundaries, S4 formal/control refs and evidence chain, S3 orchestration, and 008 acceptance semantics without changing signed upstream sources."
+    },
+    {
+      "id": "structural_completeness",
+      "status": "pass",
+      "evidence": "Fresh assertions returned P4_STRUCTURE_OK pc=12 scenarios=18 objects=12 roles=8 tools=8."
+    },
+    {
+      "id": "acceptance_profile_separation",
+      "status": "pass",
+      "evidence": "The target project's accepted route determines Profile applicability; independent tasks provide evidence only; NextStep itself remains headless I/X/P; route conflicts fail closed."
+    },
+    {
+      "id": "promotion_and_recovery_integrity",
+      "status": "pass",
+      "evidence": "The design includes immutable candidates, five conclusions, exact final snapshot verification, create-once credential/proof, anchor whitelist, formal-ref CAS, control-ref fencing, stale/conflict handling and archive recovery."
+    },
+    {
+      "id": "implementation_handoff_is_unambiguous",
+      "status": "pass",
+      "evidence": "Field semantics, state transitions, refusal conditions, logical tool boundaries, dry-run/JSON requirements, security checks and 18 fixture scenarios are explicit while physical schemas remain P5 implementation work."
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "coverage_and_traceability",
+      "score": 24,
+      "max_score": 25,
+      "reason": "PC-09 through PC-20 are independently traceable, key TG/S4 risks have controls, and 18 scenarios cover positive blocking and recovery behavior.",
+      "evidence_refs": [
+        "docs/design-docs/p4-execution-mechanism-design.md:332",
+        "docs/design-docs/p4-execution-mechanism-design.md:395",
+        "P4_STRUCTURE_OK pc=12 scenarios=18 objects=12 roles=8 tools=8"
+      ]
+    },
+    {
+      "id": "execution_contract_quality",
+      "score": 24,
+      "max_score": 25,
+      "reason": "Packet, envelope, registry, generation, outbox, claim, fencing, candidate, transaction and state contracts are implementable and fail closed.",
+      "evidence_refs": [
+        "docs/design-docs/p4-execution-mechanism-design.md:73",
+        "docs/design-docs/p4-execution-mechanism-design.md:97",
+        "docs/design-docs/p4-execution-mechanism-design.md:145"
+      ]
+    },
+    {
+      "id": "acceptance_safety_and_recovery",
+      "score": 24,
+      "max_score": 25,
+      "reason": "Role separation, Profile ownership, four-state reports, exact final verification, CAS failure, dirty-worktree protection and archive-failure semantics are explicit.",
+      "evidence_refs": [
+        "docs/design-docs/p4-execution-mechanism-design.md:58",
+        "docs/design-docs/p4-execution-mechanism-design.md:239",
+        "docs/design-docs/p4-execution-mechanism-design.md:253",
+        "docs/design-docs/p4-execution-mechanism-design.md:301"
+      ]
+    },
+    {
+      "id": "implementation_handoff_and_evidence",
+      "score": 23,
+      "max_score": 25,
+      "reason": "The design separates planning from product delivery and gives P5 logical tool contracts, security requirements and fixture expectations; exact physical schema layout appropriately remains for P5 coding.",
+      "evidence_refs": [
+        "docs/design-docs/p4-execution-mechanism-design.md:7",
+        "docs/design-docs/p4-execution-mechanism-design.md:364",
+        "docs/design-docs/p4-execution-mechanism-design.md:380",
+        "docs/design-docs/p4-execution-mechanism-design.md:432"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 95,
+    "penalty_total": 0,
+    "final_score": 95
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "P5 should preserve these logical contracts with versioned JSON Schema and target-project fixture tests rather than infer fields from Markdown at runtime."
+  ],
+  "reviewers": [
+    {
+      "role": "Generator",
+      "conclusion": "SUBMITTED",
+      "notes": "Submitted the P4 candidate, active plan, route state and self-check assertions; did not approve itself."
+    },
+    {
+      "role": "Verifier",
+      "conclusion": "PASS",
+      "notes": "Structure, semantics, scope, status synchronization, score arithmetic and format gates passed."
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "PASS",
+      "score": 95,
+      "notes": "The candidate is a complete P5 handoff design with no P0/P1 gap against P3, S4, S3 or 008."
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "PASS",
+      "notes": "The document separates design evidence from runnable product delivery, avoids vague completion claims, and uses object-specific refusal and recovery rules."
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "PASS",
+      "notes": "P4 may enter the user signoff queue. Do not archive the active plan, enter P5 or code until the user signs off."
+    }
+  ],
+  "reviewed_at": "2026-07-27T23:36:07+08:00"
+}

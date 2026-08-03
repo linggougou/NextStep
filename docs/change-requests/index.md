@@ -1,6 +1,9 @@
 # Change Requests
 
-当前暂无已分流变更。
+## 已完成变更
+
+- [S3 独立复审 P1 修复](./001-s3-review-p1-remediation.md)：修复、独立复审与四份材料会签均已完成。
+- [主对话 Agent 编排与上下文隔离](./002-main-conversation-agent-orchestration.md)：设计、迁移、独立复审与四份材料会签均已完成；实现留待后续阶段。
 
 ## 分流规则
 

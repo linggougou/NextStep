@@ -1,0 +1,53 @@
+{
+  "review_id": "s3-main-conversation-agent-orchestration-2026-07-13",
+  "task_id": "cr-002-design-review",
+  "lane": "design-review",
+  "review_level": "L2",
+  "rubric_id": "nextstep-s3-orchestration-design-v1",
+  "artifact_refs": [
+    "docs/design-docs/s3-main-conversation-agent-orchestration-design.md",
+    "docs/change-requests/002-main-conversation-agent-orchestration.md",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/product-specs/007-s3-skill-interaction-contract.md",
+    "docs/product-specs/008-downstream-interaction-product-acceptance-contract.md",
+    "docs/architecture/009-s4-technical-input-supplement.md",
+    "docs/design-docs/s3-skill-interaction-source.md"
+  ],
+  "hard_gates": [
+    {"name": "路线与阶段边界", "status": "pass", "evidence": "设计保持 Skill-first 路线，明确不迁移、不自动会签、不进入 S4。"},
+    {"name": "主对话上下文隔离目标", "status": "pass", "evidence": "设计定义三层职责、最小任务包、结果信封、阶段摘要和例外上报。"},
+    {"name": "依赖任务可执行调度闭环", "status": "fail", "evidence": "依赖满足后要求主对话创建验证任务，但主对话既不读取任务注册表，也默认不接收普通任务状态；缺少 dispatch-ready 控制信封、触发者和去重确认。"},
+    {"name": "独立验证覆盖精确集成产物", "status": "fail", "evidence": "验证结果与候选产出一起进入集成任务，集成 Agent 随后仍可处理冲突并改变产物；缺少对精确集成提交或快照的独立后置验证。"},
+    {"name": "Codex 宿主能力前置核验", "status": "fail", "evidence": "设计把自动创建隔离任务、候选快照启动、角色只读权限和自动归档视为可用组合，但未定义 capability preflight、降级路径和不可用时的阻塞结论。"},
+    {"name": "Change Intake 完整性", "status": "fail", "evidence": "CR 002 未独立列出运行时能力风险、验证成本、迁移失败回滚和降级策略。"}
+  ],
+  "dimensions": [
+    {"name": "产品目标与路线一致性", "score": 19, "max_score": 20, "reason": "目标聚焦主对话语义稳定和持续落地，避免演变为通用多 Agent 平台。", "evidence_refs": ["design:8-27", "design:228-248"]},
+    {"name": "职责与上下文边界", "score": 18, "max_score": 20, "reason": "三层职责、最小通信和唯一用户入口清晰，但控制面消息尚未与用户可见摘要分离。", "evidence_refs": ["design:48-89", "design:113-166"]},
+    {"name": "调度与状态机正确性", "score": 17, "max_score": 25, "reason": "状态与幂等目标完整，但依赖满足后的任务触发链无法按当前规则执行。", "evidence_refs": ["design:91-111", "design:183-192"]},
+    {"name": "集成、验证与恢复可靠性", "score": 17, "max_score": 20, "reason": "有隔离、恢复和职责分离，但缺少对精确最终集成产物的独立验证和状态提升协议。", "evidence_refs": ["design:67-78", "design:183-210"]},
+    {"name": "运行时适配与变更治理", "score": 13, "max_score": 15, "reason": "已区分 Codex 与 NextStep 职责，但宿主能力假设和 Change Intake 风险成本尚未形成门禁。", "evidence_refs": ["design:29-46", "cr002:12-30"]}
+  ],
+  "penalties": [
+    {"severity": "P0", "deduction": 0, "reason": "依赖任务触发握手缺失，作为硬门禁失败处理，不重复扣分。", "evidence_refs": ["design:96-111", "design:147-166"]},
+    {"severity": "P0", "deduction": 0, "reason": "最终集成产物未被独立验证，作为硬门禁失败处理，不重复扣分。", "evidence_refs": ["design:69-78", "design:202-210"]}
+  ],
+  "totals": {"raw_score": 84, "penalty_total": 0, "final_score": 84},
+  "verdict": "REVISE",
+  "required_fixes": [
+    "定义机器可读的 dispatch-ready 控制信封、产生者、接收者、确认、幂等和恢复规则，使主对话无需读取项目文件即可创建依赖任务。",
+    "把集成流程拆成候选物化、独立验证、受控合入、精确集成产物独立复验、正式状态提升；冲突处理改变内容后必须重新验证。",
+    "增加 Codex capability preflight，逐项判定独立任务、worktree 起点、只读约束、候选产出物化、线程读取与自动归档是否可用，并定义降级或阻塞。",
+    "为 CR 002 增加风险、验证成本、迁移/回滚与宿主能力不可用时的处理。"
+  ],
+  "nice_to_have": [
+    "把用户可见阶段摘要与内部控制面消息明确拆成两种信封。",
+    "明确候选产出必须物化为不可变提交或等价快照，禁止只传活动 worktree 路径。"
+  ],
+  "reviewers": [
+    {"role": "Verifier", "conclusion": "两个关键执行硬门禁失败，其余结构和边界断言通过。"},
+    {"role": "Strict Judge", "conclusion": "方向成立，但调度触发与最终验证顺序不足以支撑正式迁移。"},
+    {"role": "Chief Reviewer", "conclusion": "REVISE，修复后重新审查书面设计，再决定是否迁移四份正式材料。"}
+  ],
+  "reviewed_at": "2026-07-13T00:00:00+08:00"
+}

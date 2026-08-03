@@ -1,0 +1,139 @@
+{
+  "review_id": "s3-main-conversation-agent-orchestration-migration-rereview-2026-07-13",
+  "task_id": "cr-002-migration-rereview",
+  "lane": "migration-rereview",
+  "review_level": "L2",
+  "rubric_id": "nextstep-s3-orchestration-migration-rereview-v1",
+  "artifact_refs": [
+    "docs/design-docs/s3-main-conversation-agent-orchestration-design.md",
+    "docs/change-requests/002-main-conversation-agent-orchestration.md",
+    "docs/design-docs/s3-skill-interaction-source.md",
+    "docs/exec-plans/active/s3-main-conversation-agent-orchestration-migration.md",
+    "docs/product-specs/007-s3-skill-interaction-contract.md",
+    "docs/product-specs/008-downstream-interaction-product-acceptance-contract.md",
+    "docs/architecture/009-s4-technical-input-supplement.md",
+    "docs/exec-plans/active/s3-skill-interaction-source.md",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/PLANS.md",
+    ".codex/migration-rereview-self-check.txt",
+    ".codex/migration-rereview-known-risks.txt",
+    ".codex/migration-rereview-sha256.txt",
+    ".codex/reviews/s3-main-conversation-agent-orchestration-migration-2026-07-13/verdict.md",
+    ".codex/reviews/s3-main-conversation-agent-orchestration-migration-2026-07-13/scorecard.json"
+  ],
+  "hard_gates": [
+    {
+      "name": "首轮唯一 P1 已关闭",
+      "status": "pass",
+      "evidence": "原设计稿状态为已迁移、历史设计与复审证据，其迁移章节明确不再承载当前详细协议；CR 002 将当前详细协议唯一指向 S3 正文并明确原稿不再是当前协议真源。证据：design:3,353,362；cr002:107-108,165；migration-plan:28,51-53。"
+    },
+    {
+      "name": "全快照无双真源或迁移状态冲突",
+      "status": "pass",
+      "evidence": "对真源、详细协议、详细设计、待迁移、已迁移的全快照扫描未发现另一个活动协议入口；历史复审包和迁移前上下文摘要中的旧状态有明确历史语境，不承担当前规范职责。当前路线锁只列 S3 正文为待会签交互真源。证据：route-lock:87-93；design:353；cr002:107-108。"
+    },
+    {
+      "name": "四份正式材料仍待会签",
+      "status": "pass",
+      "evidence": "007、008、009 和 S3 正文头部均为状态：待会签，正文也明确四份必须分别会签。证据：007:3,86；008:3,117；009:3,142；s3-source:3,410,454。"
+    },
+    {
+      "name": "S4 未开始且复审不替代会签",
+      "status": "pass",
+      "evidence": "路线锁将 S4 标为未开始并明确迁移复审不替代四份会签；S3 活动计划说明复审只恢复分别会签入口，不开放 S4。证据：route-lock:43-44,70,108；s3-plan:60-64；plans:67-72。"
+    },
+    {
+      "name": "显式上游保持 007 -> 008 -> S3 -> 009 且无循环",
+      "status": "pass",
+      "evidence": "007 不引用 008/S3/009；008 显式依赖 007；S3 显式依赖 007/008 且不依赖 009；009 依赖 007/008/S3。迁移计划同样锁定该 DAG。证据：007:6-10；008:6-11；s3-source:6-16；009:6-13；migration-plan:52。"
+    },
+    {
+      "name": "字段覆盖与职责边界无倒退",
+      "status": "pass",
+      "evidence": "007 保留主对话入口、三层职责、上下文防火墙、分派/例外和恢复边界；008 保留五类独立结论及不得自批；S3 正文承载唯一详细协议；009 仅承载 S4 技术输入。证据：007:35-58；008:71-87；s3-source:202-294,438；009:25-31,46-65。"
+    },
+    {
+      "name": "控制代际、最终复验与 CAS 无倒退",
+      "status": "pass",
+      "evidence": "S3 正文保留 dispatch 握手、plan_generation/task_attempt、generation-advance/ack/snapshot、stale-result/identity-conflict、精确最终内容快照、项目外凭证、审计锚、独立锚验证与 CAS 失败恢复。证据：s3-source:202-294,372-438。"
+    },
+    {
+      "name": "宿主 preflight 门禁无倒退",
+      "status": "pass",
+      "evidence": "009 保留 host-bootstrap/project-probe 两阶段、full/manual-isolated/blocked 三态、项目外凭证/审计锚/CAS 能力对象和风险验证，并明确不定义最终 API/MCP/schema 或 S4 正文。证据：009:25-31,46-65,69-124,126-134。"
+    },
+    {
+      "name": "四份正式协议相对首轮输入未改变",
+      "status": "pass",
+      "evidence": "migration-rereview-sha256 清单中 007、008、009 与 S3 正文摘要逐项校验通过；self-check 同时记录 FORMAL_PROTOCOL_INPUTS_UNCHANGED_OK。证据：migration-rereview-sha256:3,5-7；migration-rereview-self-check:3；新鲜输出 SNAPSHOT_SHA256_MANIFEST_OK。"
+    },
+    {
+      "name": "相关文件 whitespace 检查通过",
+      "status": "pass",
+      "evidence": "对 007、008、009、S3 正文、历史设计、CR 002、两份活动计划、路线锁和 PLANS 逐文件执行 diff --no-index --check，均无 whitespace 错误。新鲜输出：RELEVANT_FILES_WHITESPACE_CHECK_OK。"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "单一真源与迁移闭环",
+      "score": 25,
+      "max_score": 25,
+      "reason": "首轮 P1 的状态和引用归属均已闭合，全快照未发现有效的第二协议真源。",
+      "evidence_refs": ["design:3,353,362", "cr002:107-108,165", "migration-plan:28,51-53", "route-lock:87-93"]
+    },
+    {
+      "name": "协议完整性与职责分层",
+      "score": 24,
+      "max_score": 25,
+      "reason": "007、008、S3、009 的职责分层和协议覆盖完整；保留一分给跨文档协议的固有维护复杂度，不构成缺陷。",
+      "evidence_refs": ["007:35-58", "008:71-87", "s3-source:202-294,438", "009:46-65"]
+    },
+    {
+      "name": "控制、恢复与正式提升",
+      "score": 24,
+      "max_score": 25,
+      "reason": "控制身份、单调代际、墓碑、恢复、迟到结果、最终复验、审计锚和 CAS 闭环保持完整。",
+      "evidence_refs": ["s3-source:202-294", "s3-source:372-438", "008:71-98"]
+    },
+    {
+      "name": "治理、上游与阶段门禁",
+      "score": 15,
+      "max_score": 15,
+      "reason": "四会签、S4 未开始、复审边界与 007 -> 008 -> S3 -> 009 无循环上游全部一致。",
+      "evidence_refs": ["route-lock:43-56,68-70,108", "s3-plan:60-77", "plans:67-72"]
+    },
+    {
+      "name": "证据质量与可复核性",
+      "score": 8,
+      "max_score": 10,
+      "reason": "SHA 清单、自检、首轮包与新鲜断言形成可复核证据链；快照不是 Git 仓库，因此 whitespace 采用逐文件 no-index 检查，且内容不变依赖提供的冻结摘要清单。",
+      "evidence_refs": ["migration-rereview-self-check:2-4", "migration-rereview-sha256:1-7", "fresh-assertions"]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 96,
+    "penalty_total": 0,
+    "final_score": 96
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "后续会签完成时同步 CR、活动计划、PLANS 与路线锁状态，继续避免历史设计稿重新成为当前协议入口。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "十项硬门禁全部通过；SHA 清单、上游 DAG、状态门禁、协议回归与 whitespace 新鲜检查均通过。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "首轮唯一 P1 已通过最小状态和引用修订关闭，没有新 P0/P1；协议内容与阶段边界无倒退。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "PASS；允许恢复四份材料的分别会签入口，但本结论不替代会签，也不允许进入 S4。"
+    }
+  ],
+  "reviewed_at": "2026-07-13T22:11:14+08:00"
+}

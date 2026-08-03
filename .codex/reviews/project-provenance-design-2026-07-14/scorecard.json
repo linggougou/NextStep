@@ -1,0 +1,131 @@
+{
+  "review_id": "project-provenance-design-2026-07-14",
+  "task_id": "s4-project-provenance-input-review",
+  "lane": "architecture-design-review",
+  "review_level": "L2",
+  "rubric_id": "nextstep-s4-architecture-input-v1",
+  "artifact_refs": [
+    "/Users/ling/.codex/attachments/bc4319a1-4198-4879-bd83-baa294484fba/pasted-text.txt",
+    "docs/architecture/p2-technical-prep.md",
+    "docs/architecture/009-s4-technical-input-supplement.md",
+    "docs/design-docs/s3-skill-interaction-source.md",
+    "docs/product-specs/008-downstream-interaction-product-acceptance-contract.md",
+    "PROJECT_ROUTE_LOCK.md"
+  ],
+  "hard_gates": [
+    {
+      "name": "当前阶段落位",
+      "status": "pass",
+      "evidence": "P2 与 009 已将来源、审计、不可变候选、最终快照、凭证、CAS 和安全回滚列为 S4 必答项；核心模型可在 S4 决定。"
+    },
+    {
+      "name": "既有五类结论链保持",
+      "status": "fail",
+      "evidence": "附件第 38-46、98-107 行压缩为单一 Verification 链，未映射 008 第 72-88 行的五类独立结论。"
+    },
+    {
+      "name": "提交和记录无循环身份",
+      "status": "fail",
+      "evidence": "附件第 249-267、279-300 行让 Git 内 Integration Record 保存 formal_commit，并由目标提交 trailer 反向引用，存在目标提交 OID 自引用或 CAS 后补写风险。"
+    },
+    {
+      "name": "输入基线可精确复现",
+      "status": "fail",
+      "evidence": "附件第 210-228 行仅以 base_commit 和部分 input_sources 描述输入，无法覆盖脏工作区、未跟踪文件、mode、symlink 和 submodule。"
+    },
+    {
+      "name": "部分采纳可精确归因",
+      "status": "fail",
+      "evidence": "附件第 249-275 行只记录 accepted_files，不能证明同一文件部分 hunk 或冲突处理后的实际集成内容。"
+    },
+    {
+      "name": "安全回退判定充分",
+      "status": "fail",
+      "evidence": "附件第 304-340 行仅按相关文件后续是否修改分流 revert/补偿，遗漏跨文件语义依赖、路径变化、用户未提交改动和最终独立复验。"
+    },
+    {
+      "name": "生命周期边界",
+      "status": "fail",
+      "evidence": "附件第 375-391 行提前冻结第一版范围；具体版本裁剪应进入 P3，回退执行编排应进入 P4。"
+    },
+    {
+      "name": "数据最小化",
+      "status": "fail",
+      "evidence": "附件第 18 行声明不保存完整对话，第 87-92、357-363 行又要求项目外保存宿主任务完整过程，政策自相矛盾。"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "目标与路线一致性",
+      "score": 18,
+      "max_score": 20,
+      "reason": "目标与 S4 的可追溯、可验证、可回滚路线一致。",
+      "evidence_refs": ["attachment:9-18", "p2:68-75,98-103", "009:62-66,95-108"]
+    },
+    {
+      "name": "对象复用与边界",
+      "score": 16,
+      "max_score": 20,
+      "reason": "任务中心对象合理，但需要映射既有 Task Registry、控制身份和五类结论，避免双真源。",
+      "evidence_refs": ["attachment:96-118", "s3:203-295", "008:72-88"]
+    },
+    {
+      "name": "身份与完整性",
+      "score": 15,
+      "max_score": 20,
+      "reason": "已有摘要和 blob 思路，但身份自报、commit 自引用、Git 防篡改边界和脏基线仍不闭合。",
+      "evidence_refs": ["attachment:183-300"]
+    },
+    {
+      "name": "验证与恢复可靠性",
+      "score": 15,
+      "max_score": 20,
+      "reason": "回退作为新变更方向正确，但部分采纳和文件级重叠不足以支撑安全回退。",
+      "evidence_refs": ["attachment:61-74,249-275,304-340", "s3:328-334"]
+    },
+    {
+      "name": "生命周期与数据治理",
+      "score": 14,
+      "max_score": 20,
+      "reason": "S4/P3/P4 内容混合，且完整对话保留策略与数据最小化目标冲突。",
+      "evidence_refs": ["attachment:76-93,344-391", "route-lock:34-42,56-59"]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 78,
+    "penalty_total": 0,
+    "final_score": 78
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "将单一 Verification Record 映射为既有五类独立结论链",
+    "消除项目内记录对目标提交自身 OID 的循环引用",
+    "区分声明身份、宿主绑定身份和已验证身份",
+    "定义干净或完整物化的不可变输入基线",
+    "把部分采纳物化为新的精确最终快照并重新复验",
+    "把回退判定升级为精确 delta、三方 dry-run、语义影响分析和完整复验",
+    "删除默认保存完整宿主对话的要求或先走 Change Request",
+    "把版本范围和具体执行编排分别移交 P3、P4"
+  ],
+  "nice_to_have": [
+    "为记录定义 JSON Schema、确定性序列化、完整 OID 算法和 fail-closed 重建状态",
+    "将 Git trailer 限定为发现索引，规范记录和项目外提升回执作为裁决证据",
+    "把详细 schema 放入 S4 从属附录，主 S4 保留规范性裁决和唯一引用"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "核心能力属于当前 S4，但附件混入 P3/P4 内容，且多项硬门禁未闭合。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "方向可保留；身份、提交拓扑、精确基线、部分采纳和回退安全必须重构。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "REVISE；作为 S4 输入修订，不整份退回前阶段，也不原样升格为真源。"
+    }
+  ],
+  "reviewed_at": "2026-07-14T00:00:00+08:00"
+}

@@ -1,0 +1,153 @@
+{
+  "review_id": "p4-p5-upstream-readiness-2026-07-27",
+  "task_id": "p4-execution-mechanism-design-upstream-readiness",
+  "lane": "planning-gate",
+  "review_level": "L3",
+  "rubric_id": "judge-harness-planning-gate-v1",
+  "artifact_refs": [
+    "docs/design-docs/p4-execution-mechanism-design.md",
+    "docs/exec-plans/active/p4-execution-mechanism-design.md",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/PLANS.md",
+    "docs/exec-plans/completed/p3-version-and-milestone-breakdown.md",
+    "docs/architecture/s4-technical-architecture.md",
+    "docs/product-specs/008-downstream-interaction-product-acceptance-contract.md",
+    ".codex/reviews/p4-execution-mechanism-design-2026-07-27/scorecard.json",
+    ".codex/reviews/p4-execution-mechanism-design-2026-07-27/verdict.md"
+  ],
+  "artifact_digests": {
+    "docs/design-docs/p4-execution-mechanism-design.md": "d6985fe0d8ba51f221e5ace73157aa0cf2b725835da40a53efd2690562d797db",
+    "docs/exec-plans/active/p4-execution-mechanism-design.md": "f9dc21a94e6699b72b7ff692e4cf32ade866f7d0ec3428062bdb47fa3ac6ecf8",
+    "PROJECT_ROUTE_LOCK.md": "62db89315ab661c9f66349c28cbf0682367c0bf74726e8388c99b0206bde3ec7",
+    "docs/PLANS.md": "0ddb9feac378f306c9729302377be69622813e87dacf6d607bed6f89cfe21e64",
+    "docs/exec-plans/completed/p3-version-and-milestone-breakdown.md": "4e8f658d6bd3151211df4b9c5c1112502e836cd97e0a9ca914cf38424901fc4c",
+    "docs/architecture/s4-technical-architecture.md": "60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+    "docs/product-specs/008-downstream-interaction-product-acceptance-contract.md": "61f4c5ad26c9c3b45c9a22b25765b1b7455d20229754b3da9a1dd53f33742497",
+    ".codex/reviews/p4-execution-mechanism-design-2026-07-27/scorecard.json": "b2abdfbe1c704c29289b4c56d3ddf551cd8cf8a6f938eb61fcba8e40e1194cbf",
+    ".codex/reviews/p4-execution-mechanism-design-2026-07-27/verdict.md": "8cbbddb279e9d61b51ff28539cfede18279a3bbc346616bfc8999cca484ab60f"
+  },
+  "hard_gates": [
+    {
+      "id": "route_lock_and_lifecycle",
+      "status": "pass",
+      "evidence": "PROJECT_ROUTE_LOCK.md keeps the project in P4, requires user signoff before P5, and forbids coding or real execution packets before signoff."
+    },
+    {
+      "id": "p3_s4_008_alignment",
+      "status": "pass",
+      "evidence": "P4 preserves P3 PC-09..PC-20, S4 formal/control refs, evidence credentials, anchor proof, CAS, and 008 I/X/P/Profile boundaries."
+    },
+    {
+      "id": "implementation_upstream_completeness",
+      "status": "pass",
+      "evidence": "P4 defines packet/envelope/registry/candidate/snapshot/credential/anchor/CAS semantics, recovery states, Change Intake, and 8 P5 logical tool entries."
+    },
+    {
+      "id": "independence_and_no_self_approval",
+      "status": "pass",
+      "evidence": "The design separates integration, execution, candidate verification, product/interaction evaluation, independent review, final verification, and anchor verification, with explicit self-approval rejection."
+    },
+    {
+      "id": "scope_no_p5_or_code",
+      "status": "pass",
+      "evidence": "Active plan remains P4 only; no P5 active plan, product code, executable schema, scripts, or real execution packet were created."
+    },
+    {
+      "id": "review_evidence_integrity",
+      "status": "pass",
+      "evidence": "Existing P4 L3 scorecard has all five judge-harness roles and score arithmetic is consistent: dimension_sum=95, raw_score=95, penalty_total=0, final_score=95."
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "coverage_and_traceability",
+      "score": 24,
+      "max_score": 25,
+      "reason": "PC-09..PC-20, key TG/S4 risks, Final Acceptance, host archive, and Change Intake all have direct P4 handoff points.",
+      "evidence_refs": [
+        "docs/design-docs/p4-execution-mechanism-design.md:332",
+        "docs/design-docs/p4-execution-mechanism-design.md:349",
+        "docs/exec-plans/completed/p3-version-and-milestone-breakdown.md:125"
+      ]
+    },
+    {
+      "id": "execution_contract_quality",
+      "score": 24,
+      "max_score": 25,
+      "reason": "Control identity, Execution Packet, Control Envelope, Task Registry, Result Envelope, immutable candidate, write transaction, and CAS rules are specific enough for P5 schema and type work.",
+      "evidence_refs": [
+        "docs/design-docs/p4-execution-mechanism-design.md:73",
+        "docs/design-docs/p4-execution-mechanism-design.md:97",
+        "docs/design-docs/p4-execution-mechanism-design.md:123",
+        "docs/design-docs/p4-execution-mechanism-design.md:139",
+        "docs/design-docs/p4-execution-mechanism-design.md:170"
+      ]
+    },
+    {
+      "id": "acceptance_and_safety",
+      "score": 23,
+      "max_score": 25,
+      "reason": "The acceptance chain is safe and fail-closed. One wording point should be preserved carefully in P5: integration-side checks must remain diagnostic and must not replace independent I/X/P conclusions.",
+      "evidence_refs": [
+        "docs/design-docs/p4-execution-mechanism-design.md:71",
+        "docs/design-docs/p4-execution-mechanism-design.md:200",
+        "docs/design-docs/p4-execution-mechanism-design.md:217",
+        "docs/product-specs/008-downstream-interaction-product-acceptance-contract.md:84",
+        "docs/product-specs/008-downstream-interaction-product-acceptance-contract.md:98"
+      ]
+    },
+    {
+      "id": "p5_handoff_readiness",
+      "score": 23,
+      "max_score": 25,
+      "reason": "P4 correctly leaves physical schemas, command names, and storage layout to P5 while freezing logical semantics, refusal rules, dry-run/JSON expectations, and fixture scenarios.",
+      "evidence_refs": [
+        "docs/design-docs/p4-execution-mechanism-design.md:380",
+        "docs/design-docs/p4-execution-mechanism-design.md:395",
+        "docs/design-docs/p4-execution-mechanism-design.md:432",
+        "docs/design-docs/p4-execution-mechanism-design.md:441"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 94,
+    "penalty_total": 0,
+    "final_score": 94
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "P5 should encode P4 sections 6-18 as versioned JSON Schema and TypeScript types with fixture tests instead of inferring executable behavior from Markdown.",
+    "P5 should implement integration-side acceptance checks as diagnostics only; official I/X/P conclusions must come from independent gate evaluation and final verification."
+  ],
+  "reviewers": [
+    {
+      "role": "Generator",
+      "conclusion": "SUBMITTED",
+      "notes": "Submitted the P4 candidate, active plan, route state, existing L3 review package, and verifier evidence for upstream-readiness review."
+    },
+    {
+      "role": "Verifier",
+      "conclusion": "PASS",
+      "notes": "Verified route lock, artifact digests, active-plan scope, no P5/code artifact creation, existing scorecard arithmetic, and upstream alignment."
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "PASS",
+      "score": 94,
+      "notes": "No P0/P1 issue blocks P4 from becoming P5 upstream after user signoff. P5 must preserve the independent gate interpretation for integration acceptance."
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "PASS",
+      "notes": "The candidate avoids template-only completion claims, explicitly says P4 is not product delivery, and binds future proof to runnable NextStep fixture behavior."
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "PASS",
+      "notes": "P4 is acceptable as P5 formal implementation upstream once the user signs off. Do not enter P5 before signoff."
+    }
+  ],
+  "reviewed_at": "2026-07-27T23:50:46+08:00"
+}

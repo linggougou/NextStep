@@ -1,7 +1,8 @@
 # P2 技术前置清单
 
-状态：待用户会签
+状态：已会签
 记录日期：2026-07-07
+会签日期：2026-07-07
 上游真源：
 
 - `docs/product-specs/001-original-requirement.md`

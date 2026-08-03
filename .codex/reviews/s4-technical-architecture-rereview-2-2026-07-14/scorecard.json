@@ -1,0 +1,121 @@
+{
+  "review_id": "s4-technical-architecture-rereview-2-2026-07-14",
+  "task_id": "s4-technical-architecture-final-p1-remediation-rereview",
+  "lane": "architecture-design-review",
+  "review_level": "L2",
+  "rubric_id": "nextstep-s4-technical-architecture-rereview-v2",
+  "artifact_refs": [
+    "/tmp/nextstep-s4-rereview2-input/s4-technical-architecture.md",
+    "/tmp/nextstep-s4-rereview2-input/005-stage-document-contracts.md",
+    "/tmp/nextstep-s4-rereview2-input/008-downstream-interaction-product-acceptance-contract.md",
+    "/tmp/nextstep-s4-rereview2-input/009-s4-technical-input-supplement.md",
+    "/tmp/nextstep-s4-rereview2-input/s3-skill-interaction-source.md",
+    "/tmp/nextstep-s4-rereview2-input/PROJECT_ROUTE_LOCK.md",
+    ".codex/reviews/s4-technical-architecture-rereview-2-2026-07-14/review-brief.md",
+    ".codex/reviews/s4-technical-architecture-rereview-2026-07-14/verdict.md"
+  ],
+  "hard_gates": [
+    {
+      "name": "固定候选身份",
+      "status": "pass",
+      "evidence": "s4-technical-architecture.md SHA-256 为 68d90c936ae1c842949322647dc362923fcb2505f4d5dd90f7f469a3d8c16e30，与第三次复审 brief 一致。"
+    },
+    {
+      "name": "宿主接收端原子 fencing 与幂等创建",
+      "status": "pass",
+      "evidence": "s4-technical-architecture.md:353-358 要求 Adapter 原子 create-or-return、同临界区最高 fence、稳定键一次创建/返回原 ID，拒绝旧 fence、同 fence不同 payload 和无法证明的结果；非原子查询后创建禁止 full。"
+    },
+    {
+      "name": "项目外凭证 no-replace 与崩溃持久性",
+      "status": "pass",
+      "evidence": "s4-technical-architecture.md:427-428 规定 exclusive-create、文件 fsync、no-replace install、父目录 fsync、目标逐字节校验及能力不足 blocked；:521-522 有覆盖、删除和各崩溃点故障注入。"
+    },
+    {
+      "name": "正式引用后代与快进约束",
+      "status": "pass",
+      "evidence": "s4-technical-architecture.md:444、:503、:525 明确 CAS 前后代/快进硬校验，首次初始化为唯一无前驱例外，并有非后代锚回归测试。"
+    },
+    {
+      "name": "005、008、009 与 S3 完整性",
+      "status": "pass",
+      "evidence": "s4-technical-architecture.md:179-225、:411-421、:449-460 覆盖 Stage、Interaction Source、必需领域对象、五类门禁与分支验收；与固定上游会签契约一致。"
+    },
+    {
+      "name": "Git 自引用、工作树保护与证据生命周期",
+      "status": "pass",
+      "evidence": "s4-technical-architecture.md:403-447、:484-488 将 formal ref 与编辑视图分离，凭证先于锚、证明绑定锚、提升后禁止项目内补写，历史正式锚引用证据不得自动删除。"
+    },
+    {
+      "name": "范围与生命周期边界",
+      "status": "pass",
+      "evidence": "s4-technical-architecture.md:34-43、:552-562、:593-599 排除常驻服务、数据库、独立编排平台、Project Provenance Store、P3/P4 实例和代码实现；候选仍为待会签。"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "契约与领域模型",
+      "score": 20,
+      "max_score": 20,
+      "reason": "005 必需对象、Stage/Stage Gate、Interaction Source 追踪与 008/009 门禁映射完整且无回归。",
+      "evidence_refs": ["s4:179-225", "s4:241-267", "005:98-127", "008:72-110", "009:47-107"]
+    },
+    {
+      "name": "控制并发与恢复",
+      "score": 19,
+      "max_score": 20,
+      "reason": "控制 ref CAS、outbox、claim、lease、fence 与接收端原子 create-or-return 已形成闭环；实现期可再显式覆盖更高 fence 携带不同 payload 的冲突用例。",
+      "evidence_refs": ["s4:347-378", "s4:514-518"]
+    },
+    {
+      "name": "凭证、锚与正式提升",
+      "score": 20,
+      "max_score": 20,
+      "reason": "内容寻址、no-replace 发布、文件和目录持久化、独立锚证明、职责分离、后代/快进与 CAS 顺序完整。",
+      "evidence_refs": ["s4:423-447", "s4:503", "s4:520-525"]
+    },
+    {
+      "name": "正式视图与用户改动保护",
+      "score": 20,
+      "max_score": 20,
+      "reason": "formal ref 永不检出，正式读取与编辑视图分离，用户分支仅在干净且可快进时允许独立自动同步。",
+      "evidence_refs": ["s4:403-409", "s4:526"]
+    },
+    {
+      "name": "一致性、验证与范围控制",
+      "score": 19,
+      "max_score": 20,
+      "reason": "高风险假设均有本地故障注入、失败语义和回滚；范围与阶段边界清晰，保留少量实现期测试细化空间。",
+      "evidence_refs": ["s4:507-531", "s4:533-562", "s4:564-599", "route-lock:32-42,56-58"]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 98,
+    "penalty_total": 0,
+    "final_score": 98
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    {
+      "severity": "P2",
+      "location": "s4-technical-architecture.md:355-357,374,516",
+      "fix": "P3/P4 实现测试中单列更高 fence 但同一 effect_key 携带不同 payload_digest 的 identity-conflict，确保接管只能恢复完全相同副作用。"
+    }
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "固定候选哈希一致；第二次复审的接收端原子 fencing、凭证 no-replace/目录刷盘和 formal 快进三项均有正文契约与故障注入证据，全部硬门禁通过。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "架构在不引入数据库或常驻服务的约束下，对并发副作用、崩溃持久性、最终复验和正式引用连续性给出了可验证且 fail-closed 的设计；仅保留一项实现期测试细化建议。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "PASS；P0 = 0，P1 = 0，P2 = 1。候选可提交用户会签，但独立审查不替代用户确认，也不开放 P3/P4 或编码。"
+    }
+  ],
+  "reviewed_at": "2026-07-14T00:00:00+08:00"
+}

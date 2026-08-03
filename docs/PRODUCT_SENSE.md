@@ -22,8 +22,9 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 - 项目真源先于执行。
 - 需求补全和冻结先于产品定义。
 - 产品定义先于产品原型。
-- 产品原型会签先于 UI 设计。
-- UI 设计真源先于工程实现。
+- 产品原型会签与产品载体裁决先于 UI 设计或技术架构。
+- 主载体先于辅助入口，辅助入口先于集成面。
+- 交互真源先于工程实现。
 - 技术选型与架构先于里程碑实施。
 - 完整项目蓝图先于版本拆分。
 - 版本路线先于大里程碑。
@@ -61,12 +62,34 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 
 - 后续真源文档契约：`docs/product-specs/005-stage-document-contracts.md`，用户会签通过
 
-## S3 当前交付物
+## 当前产品载体判断
 
-- UI 设计真源：`docs/design-docs/s3-ui-design-source.md`，待建立
+- 当前已确认主交互载体为 `Skill / 聊天入口`。
+- 当前已确认正式事实承载方式为 `项目文档真源 + PROJECT_ROUTE_LOCK.md + 对应阶段真源文档`。
+- `Web` 暂不进入主路线，但保留为 `Web / UI` 候选分支。
+- 已会签的 P2 原型与 P2 UI 输入要求，只能视为 `Web / UI` 候选分支输入，不等于当前主路线。
 
 ## 当前阶段
 
-- 当前里程碑：S3 UI 设计真源
-- 当前生命周期阶段：S3 UI 设计真源
+- 当前里程碑：P3 版本与里程碑拆解
+- 当前生命周期阶段：P3 版本与里程碑拆解
 - 当前状态：进行中
+
+## S3 已会签交付物
+
+- 产品载体裁决：`docs/product-specs/006-product-carrier-decision.md`，已会签
+- S3 Skill 交互真源补充契约：`docs/product-specs/007-s3-skill-interaction-contract.md`，已会签
+- 后续交互与产品验收补充契约：`docs/product-specs/008-downstream-interaction-product-acceptance-contract.md`，已会签
+- S3 Skill 交互真源：`docs/design-docs/s3-skill-interaction-source.md`，已会签
+- S4 技术输入补充契约：`docs/architecture/009-s4-technical-input-supplement.md`，已会签
+- S3 UI 设计真源草稿：`docs/design-docs/s3-ui-design-source.md`，当前作为 `Web / UI` 候选分支暂停
+
+## S4 已会签交付物
+
+- S4 技术架构：`docs/architecture/s4-technical-architecture.md`，独立技术复审 `PASS / 98`，已会签
+- S4 执行计划：`docs/exec-plans/completed/s4-technical-architecture.md`，已归档
+
+## 当前交付物
+
+- P3 版本与里程碑拆解计划：`docs/exec-plans/active/p3-version-and-milestone-breakdown.md`，进行中
+- P3 完整项目能力覆盖、连续实施版本链、全部大/小里程碑、量化指标、验收矩阵和 Final Acceptance：待形成候选

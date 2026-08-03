@@ -1,0 +1,121 @@
+{
+  "review_id": "s3-main-conversation-agent-orchestration-rereview-3-2026-07-13",
+  "task_id": "cr-002-design-rereview-3",
+  "lane": "design-review",
+  "review_level": "L2",
+  "rubric_id": "nextstep-s3-orchestration-design-v1",
+  "artifact_refs": [
+    "docs/design-docs/s3-main-conversation-agent-orchestration-design.md",
+    "docs/change-requests/002-main-conversation-agent-orchestration.md",
+    "docs/change-requests/index.md",
+    ".codex/reviews/s3-main-conversation-agent-orchestration-2026-07-13/verdict.md",
+    ".codex/reviews/s3-main-conversation-agent-orchestration-rereview-2026-07-13/verdict.md",
+    ".codex/reviews/s3-main-conversation-agent-orchestration-rereview-2-2026-07-13/verdict.md"
+  ],
+  "hard_gates": [
+    {
+      "name": "路线与阶段边界",
+      "status": "pass",
+      "evidence": "CR 002 与索引仍限定本轮为 S3 书面设计，复审通过后只能进入小步迁移；迁移包复审及 007/008/009/S3 正文分别会签前不得进入 S4。证据：cr002:14-32,155-175；cr-index:3-6；design:351-362。"
+    },
+    {
+      "name": "控制代际覆盖完整消息生命周期",
+      "status": "pass",
+      "evidence": "任务包、执行结果、候选验证、评估、审查和最终复验均绑定 plan_generation/task_attempt、控制消息与任务包摘要；低代际结果被确定性拒绝，恢复先合并 generation-snapshot 再重放。证据：design:148-186,219-231,271-283。"
+    },
+    {
+      "name": "项目外凭证与摘要校验预检",
+      "status": "pass",
+      "evidence": "project-probe 和能力矩阵验证项目外不可变凭证保存、读取、摘要校验以及验证任务身份、控制代际和内容快照绑定；不可满足时进入 manual-isolated 或 blocked。证据：design:31-58。"
+    },
+    {
+      "name": "项目根审计锚留痕与内容不变",
+      "status": "pass",
+      "evidence": "审计锚只允许修改项目根 .codex/verification-report.md、.codex/operations-log.md 和任务专属 reviews 路径；独立验证父快照、路径白名单、凭证一致性及业务/真源子树摘要不变。证据：design:291-301；cr002:129-131。"
+    },
+    {
+      "name": "正式引用 CAS 与失败恢复预检",
+      "status": "pass",
+      "evidence": "能力矩阵覆盖预期基线 CAS/快进和失败安全恢复；正式提升一次移动到审计锚，CAS 失败保持待正式提升，不发成功摘要，基线不变重试、变化则凭证失效重做。证据：design:51,295-299；cr002:170-172。"
+    },
+    {
+      "name": "职责分离与精确最终复验",
+      "status": "pass",
+      "evidence": "候选验证、评估、审查和最终复验绑定不可变摘要；最终复验 Agent 与审计锚验证器均独立于集成 Agent，集成 Agent 不可自批。证据：design:285-301,311-320。"
+    },
+    {
+      "name": "Change Intake 完整性",
+      "status": "pass",
+      "evidence": "CR 002 同步覆盖迟到结果、审计锚、项目外凭证、CAS 能力不可用、验证成本、迁移次序及各失败恢复路径。证据：cr002:120-181。"
+    },
+    {
+      "name": "此前 P0/P1 保持关闭",
+      "status": "pass",
+      "evidence": "首轮四项缺口、第一轮复审的最终事务 P0 与派发代际 P1、第二轮复审的结果代际和最终凭证/留痕 P1 均在当前设计及 CR 中保留对应控制，无回退表述。证据：前三轮 review 包；design:29-60,169-231,285-301；cr002:120-181。"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "产品目标与路线一致性",
+      "score": 19,
+      "max_score": 20,
+      "reason": "严格隔离目标、Skill-first 路线和 S3/S4 门禁保持一致，PASS 不越权形成正式材料会签。",
+      "evidence_refs": ["design:8-27", "design:342-362", "cr002:12-32,155-175"]
+    },
+    {
+      "name": "职责与上下文边界",
+      "score": 19,
+      "max_score": 20,
+      "reason": "三层职责、主对话禁读项目文件、最小控制上下文、结构化结果和独立审批边界清楚。",
+      "evidence_refs": ["design:72-115", "design:146-186", "design:303-320"]
+    },
+    {
+      "name": "调度与状态机正确性",
+      "score": 24,
+      "max_score": 25,
+      "reason": "派发握手、单调代际、撤销墓碑、结果拒绝和恢复重放已覆盖消息全生命周期。",
+      "evidence_refs": ["design:188-231", "design:254-283", "cr002:124-127,145-150"]
+    },
+    {
+      "name": "集成、验证与恢复可靠性",
+      "score": 20,
+      "max_score": 20,
+      "reason": "最终内容快照、外部复验凭证、项目根审计锚、独立锚验证和 CAS 提升形成无自引用且可恢复的闭环。",
+      "evidence_refs": ["design:285-301", "cr002:128-131,147-150,170-172"]
+    },
+    {
+      "name": "运行时适配与变更治理",
+      "score": 14,
+      "max_score": 15,
+      "reason": "两阶段预检覆盖新增最终事务能力，三态降级、成本、迁移和回滚明确；具体宿主组合仍须运行时实测。",
+      "evidence_refs": ["design:29-60", "cr002:120-181", "cr-index:3-6"]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 96,
+    "penalty_total": 0,
+    "final_score": 96
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "迁移到正式契约时为控制信封、复验凭证和锚定证明建立唯一 schema 真源，其他材料只引用。",
+    "在运行时实现阶段以故障注入验证 CAS 竞争、凭证不可用和墓碑乱序，而不是仅依赖文档契约。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "全部硬门禁通过；指定修订覆盖控制代际全生命周期、最终事务能力预检、项目根审计留痕与 CAS 恢复。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "此前 P0/P1 均保持关闭，设计与 CR 一致，未发现影响迁移门禁的必须修改项。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "PASS；允许按 CR 002 进入小步迁移及迁移后复审，不代表四份正式材料会签或 S4 放行。"
+    }
+  ],
+  "reviewed_at": "2026-07-13T00:00:00+08:00"
+}

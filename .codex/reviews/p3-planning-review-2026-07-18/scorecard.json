@@ -1,0 +1,132 @@
+{
+  "review_id": "p3-planning-review-2026-07-18",
+  "task_id": "p3-version-and-milestone-breakdown",
+  "lane": "planning",
+  "review_level": "L3",
+  "rubric_id": "judge-harness-planning-gate-v1",
+  "artifact_refs": [
+    "docs/exec-plans/active/p3-version-and-milestone-breakdown.md",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/PLANS.md",
+    ".codex/verification-report.md",
+    ".codex/reviews/p3-user-signoff-review-2026-07-16/scorecard.json",
+    ".codex/reviews/p3-user-signoff-review-2026-07-16/verdict.md"
+  ],
+  "artifact_digests": {
+    "docs/exec-plans/active/p3-version-and-milestone-breakdown.md": "4d8cebcb46de890df0c48ab99b40897e0602b8e0380e3a7037822c7e8bdfbd61",
+    "PROJECT_ROUTE_LOCK.md": "f3527ba2e2db81ee2111f3b7dd414a94692fcd8c5659146a4bc0f4bda3fccd9e",
+    "docs/PLANS.md": "4c444fe47ead3a0337aee65271ffa4f38961f963100e1db310ca382a89dddb3b",
+    ".codex/verification-report.md": "3bbe438bec8dc8c4968f3342fbf0e4e188837c8ae60496c1a3486f623ae1a0d3",
+    ".codex/reviews/p3-user-signoff-review-2026-07-16/scorecard.json": "3700d0ecc3975bcd251f3717a8186275943f03a310a372fa333ca0c54b56020c",
+    ".codex/reviews/p3-user-signoff-review-2026-07-16/verdict.md": "4c938331b7687ceacadf1a430d678629034f63baa2547f6e5022886f1466f9be"
+  },
+  "hard_gates": [
+    {
+      "id": "lifecycle_and_scope_lock",
+      "status": "pass",
+      "evidence": "PROJECT_ROUTE_LOCK.md keeps the project in P3, blocks P4/P5/coding, and requires independent review plus user signoff before stage transition."
+    },
+    {
+      "id": "structural_completeness",
+      "status": "pass",
+      "evidence": "Fresh assertion returned P3_REVISE_REMEDIATION_COUNTS_OK pc=20 major=9 small=18 metrics=12 matrix=14 versions=5."
+    },
+    {
+      "id": "implementation_handoff_is_unambiguous",
+      "status": "pass",
+      "evidence": "p3-version-and-milestone-breakdown.md:154 and :236-284 distinguish bootstrap inputs from future product completion evidence and require runnable NextStep behavior on target-project fixtures."
+    },
+    {
+      "id": "acceptance_profile_scope_is_separated",
+      "status": "pass",
+      "evidence": "p3-version-and-milestone-breakdown.md:150-154 and :270 define NextStep's own headless I/X/P gate, target-project route-derived Profile applicability, and independent tasks as evidence providers only."
+    },
+    {
+      "id": "independent_review_bundle_is_valid",
+      "status": "pass",
+      "evidence": "This L3 scorecard includes Generator, Verifier, Strict Judge, Anti-Slop Judge and Chief Reviewer; totals use raw_score=94, penalty_total=0, final_score=94."
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "coverage_and_structure",
+      "score": 24,
+      "max_score": 25,
+      "reason": "PC coverage, version chain, 9 major milestones, 18 small milestones, 12 metrics and 14 matrix entries are present and section-scoped assertions pass.",
+      "evidence_refs": [
+        "P3_REVISE_REMEDIATION_COUNTS_OK pc=20 major=9 small=18 metrics=12 matrix=14 versions=5"
+      ]
+    },
+    {
+      "id": "implementation_handoff_quality",
+      "score": 24,
+      "max_score": 25,
+      "reason": "The revised plan consistently asks future versions to prove runnable NextStep behavior on target-project fixtures; existing documents are framed as bootstrap inputs or expected samples.",
+      "evidence_refs": [
+        "docs/exec-plans/active/p3-version-and-milestone-breakdown.md:154",
+        "docs/exec-plans/active/p3-version-and-milestone-breakdown.md:236-284"
+      ]
+    },
+    {
+      "id": "acceptance_and_route_alignment",
+      "score": 23,
+      "max_score": 25,
+      "reason": "Acceptance Profile responsibilities are separated and testable through headless, UI and conflict fixtures; residual risk is user interpretation before signoff.",
+      "evidence_refs": [
+        "docs/exec-plans/active/p3-version-and-milestone-breakdown.md:150-154",
+        "docs/exec-plans/active/p3-version-and-milestone-breakdown.md:270",
+        "docs/exec-plans/active/p3-version-and-milestone-breakdown.md:295"
+      ]
+    },
+    {
+      "id": "evidence_integrity",
+      "score": 23,
+      "max_score": 25,
+      "reason": "The new L3 package supersedes the invalid 2026-07-15 PASS package and fixes role coverage plus score arithmetic; final user signoff remains pending.",
+      "evidence_refs": [
+        ".codex/reviews/p3-user-signoff-review-2026-07-16/scorecard.json",
+        ".codex/reviews/p3-planning-review-2026-07-18/scorecard.json"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 94,
+    "penalty_total": 0,
+    "final_score": 94
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "User signoff should explicitly confirm that the P3 candidate may become the formal P4 upstream plan source while P4 remains blocked until that signoff."
+  ],
+  "reviewers": [
+    {
+      "role": "Generator",
+      "conclusion": "SUBMITTED",
+      "notes": "The revised P3 candidate, route lock and PLANS state were treated as the submitted artifacts; the generator does not approve itself."
+    },
+    {
+      "role": "Verifier",
+      "conclusion": "PASS",
+      "notes": "Counts, remediation semantics, negative status scan and format checks passed."
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "PASS",
+      "score": 94,
+      "notes": "The three REVISE / 74 P1 findings are closed at planning level; no P0/P1 blocker remains before user signoff."
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "PASS",
+      "notes": "The revised tables no longer mask manual planning artifacts as product delivery, and the review package arithmetic is internally consistent."
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "PASS",
+      "notes": "P3 may move from revision back to user signoff queue. Do not archive the active plan, switch to P4 or begin coding until the user signs off."
+    }
+  ],
+  "reviewed_at": "2026-07-18T03:52:29+08:00"
+}

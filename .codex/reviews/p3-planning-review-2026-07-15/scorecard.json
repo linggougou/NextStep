@@ -1,0 +1,123 @@
+{
+  "review_id": "p3-planning-review-2026-07-15",
+  "task_id": "p3-version-and-milestone-breakdown",
+  "lane": "planning",
+  "review_level": "L3",
+  "rubric_id": "judge-harness-planning-gate-v1",
+  "artifact_refs": [
+    "docs/exec-plans/active/p3-version-and-milestone-breakdown.md",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/PLANS.md",
+    ".codex/verification-report.md"
+  ],
+  "hard_gates": [
+    {
+      "id": "pc_fields_frozen",
+      "status": "pass",
+      "evidence": "PC-01..PC-20 all have upstream source, 004 mapping, TG/S4 risk, acceptance type, main version, and Final Acceptance relationship."
+    },
+    {
+      "id": "version_chain_complete",
+      "status": "pass",
+      "evidence": "V1 / V2 / V3 / V4 / Final Acceptance cover all PC items; V1 is explicitly not complete-project completion."
+    },
+    {
+      "id": "milestone_fields_complete",
+      "status": "pass",
+      "evidence": "9 major milestones and 18 small milestones include required fields and rollback entrances."
+    },
+    {
+      "id": "metrics_and_matrix_complete",
+      "status": "pass",
+      "evidence": "Q1..Q12 include metric口径、threshold、sample、evidence source and failure judgment; acceptance matrix has 14 objects."
+    },
+    {
+      "id": "no_phase_or_scope_escape",
+      "status": "pass",
+      "evidence": "No P4 switch, no coding, no real execution packet, no Web/UI route restoration, no Project Provenance Store inclusion."
+    },
+    {
+      "id": "state_sources_synced",
+      "status": "pass",
+      "evidence": "P3 plan header, PROJECT_ROUTE_LOCK.md, docs/PLANS.md and latest verification report now agree: P3 candidate formed, pending independent review/user signoff."
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "coverage",
+      "score": 24,
+      "max_score": 25,
+      "reason": "Full PC/TG/version/milestone coverage is present; residual risk is user interpretation of V1 semantics.",
+      "evidence_refs": [
+        "docs/exec-plans/active/p3-version-and-milestone-breakdown.md"
+      ]
+    },
+    {
+      "id": "gate_alignment",
+      "score": 24,
+      "max_score": 25,
+      "reason": "P3 remains pre-P4 and pre-coding; user signoff remains required.",
+      "evidence_refs": [
+        "PROJECT_ROUTE_LOCK.md",
+        "docs/PLANS.md"
+      ]
+    },
+    {
+      "id": "traceability",
+      "score": 23,
+      "max_score": 25,
+      "reason": "Latest verification supersedes prior intermediate notes and records the REVISE repair loop.",
+      "evidence_refs": [
+        ".codex/verification-report.md"
+      ]
+    },
+    {
+      "id": "review_readiness",
+      "score": 24,
+      "max_score": 25,
+      "reason": "Candidate is ready for user signoff after independent review; no P0/P1 blockers remain.",
+      "evidence_refs": [
+        ".codex/reviews/p3-planning-review-2026-07-15/verdict.md"
+      ]
+    }
+  ],
+  "penalties": [
+    {
+      "severity": "minor",
+      "deduction": 5,
+      "reason": "Prior intermediate verification entries remain in history and must be read with the latest superseding record.",
+      "evidence_refs": [
+        ".codex/verification-report.md"
+      ]
+    }
+  ],
+  "totals": {
+    "raw_score": 95,
+    "penalty_total": 0,
+    "final_score": 95
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "User signoff should explicitly confirm that V1 as an upstream source/signoff-chain version has the intended product meaning."
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "PASS",
+      "notes": "Local assertions passed: P3_STATUS_SYNC_OK, P3_COUNTS_OK pc=20 small=18 metrics=12 matrix=14, P3_FORMAT_OK."
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "PASS",
+      "score": 95,
+      "notes": "Independent reviewer confirmed the two P1 findings were closed and found no new P0/P1 blockers."
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "PASS",
+      "notes": "P3 candidate may proceed to user signoff; P4 remains blocked until user signoff."
+    }
+  ],
+  "reviewed_at": "2026-07-15T00:00:00+08:00"
+}
