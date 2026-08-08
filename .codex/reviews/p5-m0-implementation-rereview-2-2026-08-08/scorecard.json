@@ -1,0 +1,145 @@
+{
+  "review_id": "p5-m0-implementation-rereview-2-2026-08-08",
+  "task_id": "p5-m0-implementation-readiness",
+  "lane": "implementation-gate",
+  "review_level": "L3",
+  "rubric_id": "judge-harness-implementation-gate-v1",
+  "artifact_refs": [
+    "git:187f599edbaa63d74a6df3a8949c0b52f2dfc02e",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/exec-plans/active/p5-product-implementation-milestones.md",
+    "src/domain/machine-receipt.ts",
+    "schemas/v1/machine-receipt.schema.json",
+    "tests/domain/machine-receipt-schema.test.ts"
+  ],
+  "reviewed_snapshot": {
+    "git_commit": "187f599edbaa63d74a6df3a8949c0b52f2dfc02e",
+    "git_tree": "31cd1ec70a25cd27e0d18e706f7cecca17f144a5",
+    "worktree_clean": true
+  },
+  "hard_gates": [
+    {
+      "id": "baseline_and_clean_checkout",
+      "status": "pass",
+      "evidence": "全新 --no-local 克隆冻结安装、pnpm check 和官方 audit 通过；40/40，覆盖率 90.84/87.68/97.06。"
+    },
+    {
+      "id": "prior_review_remediation",
+      "status": "pass",
+      "evidence": "前两轮全部 P1 已关闭。"
+    },
+    {
+      "id": "embedded_payload_semantics",
+      "status": "fail",
+      "evidence": "成功回执 canonical_json 未重新验证 JCS、摘要一致性和字符串内敏感字段，可伪造结构完整成功。"
+    },
+    {
+      "id": "scope_and_non_claims",
+      "status": "pass",
+      "evidence": "无 S1.1、真实任务包、正式 refs、runtime 或 PC/宿主支持冒领。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "implementation_correctness",
+      "score": 22,
+      "max_score": 25,
+      "reason": "主要边界正确，但成功回执嵌入载荷缺跨字段校验。",
+      "evidence_refs": [
+        "src/domain/machine-receipt.ts:55"
+      ]
+    },
+    {
+      "id": "contract_rigor",
+      "score": 14,
+      "max_score": 20,
+      "reason": "Schema 只能检查形状，未验证 canonical_json、digest 和敏感内容关系。",
+      "evidence_refs": [
+        "schemas/v1/machine-receipt.schema.json:54"
+      ]
+    },
+    {
+      "id": "architecture_and_isolation",
+      "score": 20,
+      "max_score": 20,
+      "reason": "依赖方向、fixture、固定 OID 和干净检出均通过。",
+      "evidence_refs": [
+        "tests/architecture/dependency-direction.test.ts",
+        "tests/support/git-fixture.test.ts"
+      ]
+    },
+    {
+      "id": "maintainability",
+      "score": 9,
+      "max_score": 10,
+      "reason": "模块职责清晰，语义修复位置单一。",
+      "evidence_refs": [
+        "src/domain/machine-receipt.ts"
+      ]
+    },
+    {
+      "id": "test_sufficiency",
+      "score": 12,
+      "max_score": 15,
+      "reason": "覆盖率达标，但缺非法/非 JCS、摘要不匹配和嵌入敏感字段负例。",
+      "evidence_refs": [
+        "tests/domain/machine-receipt-schema.test.ts"
+      ]
+    },
+    {
+      "id": "route_alignment",
+      "score": 10,
+      "max_score": 10,
+      "reason": "路线状态一致且未越界。",
+      "evidence_refs": [
+        "PROJECT_ROUTE_LOCK.md",
+        "docs/PLANS.md"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 87,
+    "penalty_total": 0,
+    "final_score": 87
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "成功回执结构验证后严格解析 canonical_json JCS 字节。",
+    "对解析载荷执行敏感字段扫描并验证 digest 一致性。",
+    "修正成功夹具摘要，新增非法 JSON、非 JCS、摘要不匹配和嵌入敏感字段负例。",
+    "绑定新 OID，完成干净检出和完整 L3。"
+  ],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Generator",
+      "conclusion": "SUBMITTED",
+      "notes": "提交固定 OID 与干净检出证据，不自我批准。"
+    },
+    {
+      "role": "Verifier",
+      "conclusion": "REVISE",
+      "notes": "发现嵌入成功载荷缺少 JCS、摘要和敏感内容语义校验。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "REVISE",
+      "score": 87,
+      "notes": "将摘要/JCS与嵌入敏感内容列为同一解析边界的两个表现。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "PASS",
+      "score": 100,
+      "notes": "未发现状态、空壳、冒领、秘密或污染问题。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "REVISE",
+      "score": 87,
+      "notes": "规范化为一个 P1 根因；修订必须形成新 OID 后复审。"
+    }
+  ],
+  "reviewed_at": "2026-08-08T13:08:21+08:00"
+}

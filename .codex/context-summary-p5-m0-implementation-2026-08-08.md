@@ -26,8 +26,8 @@
 ## 验证结果
 
 - `pnpm install --frozen-lockfile`：通过。
-- `pnpm check`：通过，40/40 测试。
-- 覆盖率：行 90.84%，分支 87.68%，函数 97.06%。
+- `pnpm check`：通过，41/41 测试。
+- 覆盖率：行 91.08%，分支 87.94%，函数 97.06%。
 - `pnpm audit --registry=https://registry.npmjs.org --audit-level=high`：无已知漏洞。
 - `git diff --check`、尾随空白、秘密、调试输出和 TODO 扫描：通过。
 - `package.json` 和 Schema JSON：`jq` 解析通过。
@@ -46,6 +46,12 @@
 - 固定 OID `7e3974b9caa2b76337b2f531ba03d5c85be4c9f7` 的 Verifier 为 `PASS`，Anti-Slop Judge 为 `PASS / 98`，Strict Judge 与 Chief Reviewer 均为 `REVISE / 85`。
 - 第二轮发现并修复：非布尔 `dry_run` 运行时绕过、整个机器回执非 JCS 字节、成功回执 `data={}` 假成功。
 - 修复后 40/40；下一步仍需绑定新 OID、干净检出验证和完整 L3，不得进入 S1.1。
+
+## 第三轮 L3 修复
+
+- 固定 OID `187f599edbaa63d74a6df3a8949c0b52f2dfc02e` 的 Chief Reviewer 结论为 `REVISE / 87`，P0 = 0、P1 = 1、P2 = 0。
+- 已对成功回执的 `canonical_json` 重新执行 JCS 解析、敏感字段扫描和摘要一致性验证，并修正成功夹具。
+- 非法 JSON、非 JCS、摘要不匹配和嵌入敏感字段负例均通过；当前 41/41，仍待新 OID 干净检出和完整 L3。
 
 ## 工具替代
 

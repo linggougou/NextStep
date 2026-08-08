@@ -1,10 +1,14 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import { canonicalizeJson } from "../../src/domain/canonical-json.ts";
+import { digestJson } from "../../src/domain/content-digest.ts";
 import {
   MACHINE_RECEIPT_SCHEMA,
   parseMachineReceipt,
 } from "../../src/domain/machine-receipt.ts";
+
+const successfulSubject = { status: "accepted" };
 
 const successfulReceipt = {
   schema_version: "1.0",
@@ -12,8 +16,8 @@ const successfulReceipt = {
   ok: true,
   code: "CONTRACT_PROBE_SUCCEEDED",
   data: {
-    canonical_json: '{"status":"accepted"}',
-    digest: `sha256:${"a".repeat(64)}`,
+    canonical_json: canonicalizeJson(successfulSubject),
+    digest: digestJson(successfulSubject),
     dry_run: true,
     schema_version: "1.0",
   },
@@ -81,6 +85,36 @@ test("machine receipt schema rejects incomplete or mismatched data shapes", () =
     assert.throws(
       () => parseMachineReceipt(receipt),
       /data|digest|dry.run|schema|receipt|invalid/i,
+    );
+  }
+});
+
+test("successful machine receipts verify canonical payload semantics", () => {
+  const sensitiveSubject = { access_token: "must-not-pass" };
+
+  for (const data of [
+    {
+      ...successfulReceipt.data,
+      digest: `sha256:${"f".repeat(64)}`,
+    },
+    {
+      ...successfulReceipt.data,
+      canonical_json: "{broken",
+    },
+    {
+      ...successfulReceipt.data,
+      canonical_json: '{"z":1,"a":2}',
+      digest: digestJson({ z: 1, a: 2 }),
+    },
+    {
+      ...successfulReceipt.data,
+      canonical_json: canonicalizeJson(sensitiveSubject),
+      digest: digestJson(sensitiveSubject),
+    },
+  ]) {
+    assert.throws(
+      () => parseMachineReceipt({ ...successfulReceipt, data }),
+      /canonical|digest|mismatch|sensitive|token|json/i,
     );
   }
 });

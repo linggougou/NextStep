@@ -1,7 +1,8 @@
 import { Ajv, type ValidateFunction } from "ajv";
 
 import machineReceiptSchema from "../../schemas/v1/machine-receipt.schema.json" with { type: "json" };
-import { canonicalizeJson } from "./canonical-json.ts";
+import { canonicalizeJson, parseCanonicalJsonBytes } from "./canonical-json.ts";
+import { assertDigestMatches } from "./content-digest.ts";
 import { assertNoSensitiveFields } from "./sensitive-fields.ts";
 import { type UnknownRecord } from "./value-guards.ts";
 
@@ -59,6 +60,18 @@ export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
 
     if (!validateMachineReceipt(value)) {
       throw new TypeError(`Invalid machine receipt schema: ${formatSchemaErrors(validateMachineReceipt)}`);
+    }
+
+    if (value.ok) {
+      const canonicalJson = value.data.canonical_json;
+      const digest = value.data.digest;
+      if (typeof canonicalJson !== "string" || typeof digest !== "string") {
+        throw new TypeError("Invalid successful machine receipt data");
+      }
+
+      const subject = parseCanonicalJsonBytes(Buffer.from(canonicalJson, "utf8"));
+      assertNoSensitiveFields(subject);
+      assertDigestMatches(subject, digest);
     }
 
     return deepFreeze(structuredClone(value));

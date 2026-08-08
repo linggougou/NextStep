@@ -1346,3 +1346,11 @@
 - TDD RED/GREEN：非布尔 `dry_run`、整个 stdout 非 JCS、空成功回执和不完整 `data` 负例先失败；运行时结构校验、JCS 输出和分支 Schema 修复后全部通过。
 - 修复后 `pnpm check`：40/40；覆盖率行 `90.84%`、分支 `87.68%`、函数 `97.06%`；官方 registry audit 无已知漏洞，`git diff --check` 通过。
 - 门禁结论：第二轮保持 `REVISE`；当前工作树属于第三轮新候选，绑定新 OID 并完成干净检出与完整 L3 前不得关闭 P5-M0 或进入 S1.1。
+
+## 2026-08-08 P5-M0 第三轮 L3 修复验证
+
+- 送审身份：commit `187f599edbaa63d74a6df3a8949c0b52f2dfc02e`，tree `31cd1ec70a25cd27e0d18e706f7cecca17f144a5`；全新克隆冻结安装、40/40、覆盖率 90.84%/87.68%/97.06%、官方 audit 和零污染反扫通过。
+- 第三轮结论：Verifier `REVISE`；Strict Judge `REVISE / 87`；Anti-Slop Judge `PASS / 100`；Chief Reviewer `REVISE / 87`，P0 = 0、P1 = 1、P2 = 0。
+- TDD RED/GREEN：错误摘要、非法 JSON、非 JCS 和嵌入敏感字段均先被回执解析器错误接受；加入严格 JCS 解析、敏感扫描和摘要匹配后全部拒绝。
+- 修复后 `pnpm check`：41/41；覆盖率行 `91.08%`、分支 `87.94%`、函数 `97.06%`；官方 registry audit 无已知漏洞，`git diff --check` 通过。
+- 门禁结论：第三轮保持 `REVISE`；当前工作树属于第四轮新候选，绑定新 OID 并完成干净检出与完整 L3 前不得关闭 P5-M0 或进入 S1.1。

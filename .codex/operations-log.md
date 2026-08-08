@@ -1257,3 +1257,12 @@
 - TDD 修复：命令策略改为对 `unknown` 执行完整对象、命令和布尔类型校验；stdout 改为无尾随字节的 JCS；Schema 按成功/失败分支约束 `data` 必填、类型和额外字段；敏感字段扫描提前覆盖完整回执。
 - 新增负例后 `pnpm check` 为 40/40，覆盖率行 90.84%、分支 87.68%、函数 97.06%；官方 registry audit 无已知漏洞。
 - P5-M0 仍未关闭；必须形成新 OID、完成干净检出和第三轮完整 L3。
+
+## 2026-08-08 P5-M0 第三轮 L3 审查与修复
+
+- 第二轮修复绑定 commit `187f599edbaa63d74a6df3a8949c0b52f2dfc02e`、tree `31cd1ec70a25cd27e0d18e706f7cecca17f144a5`；全新克隆冻结安装、40/40、覆盖率和 audit 通过。
+- 第三轮角色：Verifier `REVISE`；Strict Judge `REVISE / 87`；Anti-Slop Judge `PASS / 100`；Chief Reviewer 将问题规范化为一个 P1，最终 `REVISE / 87`。审查包保存于 `.codex/reviews/p5-m0-implementation-rereview-2-2026-08-08/`。
+- 第三轮 P1：成功回执只校验 `canonical_json` 和 `digest` 字段形状，未校验嵌入载荷是否 JCS、摘要是否匹配、载荷内是否含敏感字段。
+- TDD 修复：成功回执 Schema 通过后，调用 `parseCanonicalJsonBytes`、`assertNoSensitiveFields` 和 `assertDigestMatches`；修正有效夹具摘要，新增非法 JSON、非 JCS、摘要不匹配和嵌入敏感字段负例。
+- 修复后 `pnpm check` 为 41/41，覆盖率行 91.08%、分支 87.94%、函数 97.06%；audit 和 diff 检查通过。
+- P5-M0 仍未关闭；必须形成新 OID 并进行干净检出与第四轮完整 L3。
