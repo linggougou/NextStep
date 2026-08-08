@@ -55,16 +55,16 @@ function formatSchemaErrors(validate: ValidateFunction): string {
 
 export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
   parse(value: unknown): MachineReceipt {
-    canonicalizeJson(value);
-    assertNoSensitiveFields(value);
+    const snapshot = JSON.parse(canonicalizeJson(value)) as unknown;
+    assertNoSensitiveFields(snapshot);
 
-    if (!validateMachineReceipt(value)) {
+    if (!validateMachineReceipt(snapshot)) {
       throw new TypeError(`Invalid machine receipt schema: ${formatSchemaErrors(validateMachineReceipt)}`);
     }
 
-    if (value.ok) {
-      const canonicalJson = value.data.canonical_json;
-      const digest = value.data.digest;
+    if (snapshot.ok) {
+      const canonicalJson = snapshot.data.canonical_json;
+      const digest = snapshot.data.digest;
       if (typeof canonicalJson !== "string" || typeof digest !== "string") {
         throw new TypeError("Invalid successful machine receipt data");
       }
@@ -74,7 +74,7 @@ export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
       assertDigestMatches(subject, digest);
     }
 
-    return deepFreeze(structuredClone(value));
+    return deepFreeze(snapshot);
   },
 };
 

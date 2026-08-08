@@ -35,6 +35,11 @@ test("command policy covers all eight P4 logical commands", () => {
 });
 
 test("command policy rejects malformed runtime invocations and non-boolean dry-run values", () => {
+  const accessorInvocation = Object.create(Object.prototype, {
+    command: { enumerable: true, get: () => "formal-promote" },
+    dry_run: { enumerable: true, value: true },
+  });
+
   for (const invocation of [
     null,
     {},
@@ -44,6 +49,7 @@ test("command policy rejects malformed runtime invocations and non-boolean dry-r
     { command: "formal-promote", dry_run: {} },
     { command: "formal-promote", dry_run: [] },
     { command: "formal-promote", dry_run: true, extra: true },
+    accessorInvocation,
   ]) {
     assert.throws(
       () => assertCommandPolicy(invocation),

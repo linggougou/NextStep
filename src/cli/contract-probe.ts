@@ -4,7 +4,10 @@ import {
   createProcessIoAdapter,
   type ProcessIoAdapter,
 } from "../adapters/node/process-io.ts";
-import { canonicalizeJson } from "../domain/canonical-json.ts";
+import {
+  canonicalizeJson,
+  parseCanonicalJsonBytes,
+} from "../domain/canonical-json.ts";
 import { assertSupportedContractVersion } from "../domain/contract-version.ts";
 import { digestJson } from "../domain/content-digest.ts";
 import { parseMachineReceipt, type MachineReceipt } from "../domain/machine-receipt.ts";
@@ -46,12 +49,15 @@ function readArguments(args: readonly string[]): { readonly dryRun: boolean } {
   throw new TypeError("Invalid contract probe arguments");
 }
 
-function parseProbeInput(rawInput: string): ProbeInput {
+function parseProbeInput(rawInput: Uint8Array): ProbeInput {
   let value: unknown;
   try {
-    value = JSON.parse(rawInput) as unknown;
-  } catch {
-    throw new SyntaxError("Invalid JSON input");
+    value = parseCanonicalJsonBytes(rawInput);
+  } catch (error) {
+    if (error instanceof TypeError && error.message === "Invalid canonical JSON input") {
+      throw new SyntaxError("Invalid JSON input");
+    }
+    throw error;
   }
 
   assertNoSensitiveFields(value);

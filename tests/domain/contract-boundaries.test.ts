@@ -95,10 +95,27 @@ test("assertNoSensitiveFields fails closed for prohibited fields at any nesting 
     { password: "not-allowed" },
     { apikey: "not-allowed" },
     { apiKey: "not-allowed" },
+    { secrets: ["not-allowed"] },
+    { tokens: ["not-allowed"] },
+    { privateKeys: ["not-allowed"] },
+    { apiKeys: ["not-allowed"] },
+    { accessTokens: ["not-allowed"] },
+    { clientSecrets: ["not-allowed"] },
   ]) {
     assert.throws(
       () => assertNoSensitiveFields(prohibited),
       /sensitive|secret|token|credential|password/i,
     );
   }
+});
+
+test("assertNoSensitiveFields rejects accessor-backed data", () => {
+  const value = Object.create(Object.prototype, {
+    status: { enumerable: true, get: () => "changes-on-read" },
+  });
+
+  assert.throws(
+    () => assertNoSensitiveFields(value),
+    /data propert|plain data/i,
+  );
 });

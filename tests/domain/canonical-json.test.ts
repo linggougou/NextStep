@@ -46,6 +46,21 @@ test("canonicalizeJson rejects cyclic values", () => {
   assert.throws(() => canonicalizeJson(cyclic), /cyclic|circular/i);
 });
 
+test("canonicalizeJson rejects accessor properties", () => {
+  const value = Object.create(Object.prototype, {
+    stable: {
+      configurable: true,
+      enumerable: true,
+      get: () => "changes-on-read",
+    },
+  });
+
+  assert.throws(
+    () => canonicalizeJson(value),
+    /accessor|data propert|plain json/i,
+  );
+});
+
 test("parseCanonicalJsonBytes accepts only original JCS UTF-8 bytes", () => {
   const bytes = Buffer.from('{"alpha":1,"zebra":3}', "utf8");
 

@@ -125,3 +125,21 @@ test("parseMachineReceipt deeply freezes the validated receipt", () => {
   assert.ok(Object.isFrozen(receipt));
   assert.ok(Object.isFrozen(receipt.data));
 });
+
+test("parseMachineReceipt rejects accessor-backed receipts", () => {
+  const receipt = Object.create(Object.prototype, {
+    schema_version: { enumerable: true, value: "1.0" },
+    receipt_id: { enumerable: true, value: "receipt-accessor" },
+    ok: { enumerable: true, value: true },
+    code: { enumerable: true, value: "CONTRACT_PROBE_SUCCEEDED" },
+    data: {
+      enumerable: true,
+      get: () => successfulReceipt.data,
+    },
+  });
+
+  assert.throws(
+    () => parseMachineReceipt(receipt),
+    /accessor|data propert|plain json/i,
+  );
+});

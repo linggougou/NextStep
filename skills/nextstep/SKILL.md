@@ -25,15 +25,10 @@ corepack pnpm install --frozen-lockfile
 pnpm build
 ```
 
-Pass one JSON object through standard input:
+Pass one RFC 8785 canonical JSON object through standard input:
 
 ```json
-{
-  "schema_version": "1.0",
-  "subject": {
-    "example": "value"
-  }
-}
+{"schema_version":"1.0","subject":{"example":"value"}}
 ```
 
 Invoke `node dist/src/cli/contract-probe.js --dry-run`. Treat standard output as one machine-readable receipt. Treat standard error as diagnostic text only.

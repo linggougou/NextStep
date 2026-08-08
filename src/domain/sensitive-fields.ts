@@ -22,13 +22,14 @@ function normalizeFieldName(field: string): string {
 
 function isSensitiveField(field: string): boolean {
   const normalized = normalizeFieldName(field);
-  return SENSITIVE_FIELD_PARTS.some(
-    (part) =>
-      normalized === part ||
-      normalized.startsWith(`${part}_`) ||
-      normalized.endsWith(`_${part}`) ||
-      normalized.includes(`_${part}_`) ||
-      (part === "credential" && normalized.includes("credentials")),
+  return SENSITIVE_FIELD_PARTS.some((part) =>
+    [part, `${part}s`].some(
+      (variant) =>
+        normalized === variant ||
+        normalized.startsWith(`${variant}_`) ||
+        normalized.endsWith(`_${variant}`) ||
+        normalized.includes(`_${variant}_`),
+    ),
   );
 }
 
@@ -44,7 +45,19 @@ function scanValue(value: unknown, path: string, ancestors: Set<object>): void {
   ancestors.add(value);
   try {
     if (Array.isArray(value)) {
-      value.forEach((item, index) => scanValue(item, `${path}[${index}]`, ancestors));
+      if (
+        Object.getOwnPropertySymbols(value).length > 0 ||
+        Object.getOwnPropertyNames(value).length !== value.length + 1
+      ) {
+        throw new TypeError(`Sensitive field scan requires plain array data at ${path}`);
+      }
+      for (let index = 0; index < value.length; index += 1) {
+        const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
+        if (!descriptor || !descriptor.enumerable || !("value" in descriptor)) {
+          throw new TypeError(`Sensitive field scan requires array data at ${path}[${index}]`);
+        }
+        scanValue(descriptor.value, `${path}[${index}]`, ancestors);
+      }
       return;
     }
 
@@ -52,11 +65,18 @@ function scanValue(value: unknown, path: string, ancestors: Set<object>): void {
       throw new TypeError(`Sensitive field scan requires plain data at ${path}`);
     }
 
-    for (const [field, child] of Object.entries(value)) {
+    if (Object.getOwnPropertySymbols(value).length > 0) {
+      throw new TypeError(`Sensitive field scan requires string-keyed data at ${path}`);
+    }
+
+    for (const [field, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(value))) {
+      if (!descriptor.enumerable || !("value" in descriptor)) {
+        throw new TypeError(`Sensitive field scan requires data properties at ${path}.${field}`);
+      }
       if (isSensitiveField(field)) {
         throw new Error(`Sensitive field detected at ${path}.${field}`);
       }
-      scanValue(child, `${path}.${field}`, ancestors);
+      scanValue(descriptor.value, `${path}.${field}`, ancestors);
     }
   } finally {
     ancestors.delete(value);

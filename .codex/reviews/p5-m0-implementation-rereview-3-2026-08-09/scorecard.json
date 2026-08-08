@@ -1,0 +1,171 @@
+{
+  "review_id": "p5-m0-implementation-rereview-3-2026-08-09",
+  "task_id": "p5-m0-implementation-readiness",
+  "lane": "implementation-gate",
+  "review_level": "L3",
+  "rubric_id": "judge-harness-implementation-gate-v1",
+  "artifact_refs": [
+    "git:389dadf9d699f032b9bebd3650939262815a17ee",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/exec-plans/active/p5-product-implementation-milestones.md",
+    "src/",
+    "tests/",
+    "schemas/v1/machine-receipt.schema.json",
+    "skills/nextstep/"
+  ],
+  "reviewed_snapshot": {
+    "git_commit": "389dadf9d699f032b9bebd3650939262815a17ee",
+    "git_tree": "223efe8aec894e90363509c721c2e6adab6d8a52",
+    "worktree_clean": true
+  },
+  "hard_gates": [
+    {
+      "id": "baseline_and_clean_checkout",
+      "status": "pass",
+      "evidence": "全新克隆冻结安装、41/41、覆盖率 91.08/87.94/97.06、audit 和零污染反扫通过。"
+    },
+    {
+      "id": "prior_review_remediation",
+      "status": "pass",
+      "evidence": "前三轮 required_fixes 均已关闭。"
+    },
+    {
+      "id": "canonical_input_envelope",
+      "status": "fail",
+      "evidence": "CLI 使用 JSON.parse，空白、乱序、尾随换行和重复键的非 JCS 信封可成功。"
+    },
+    {
+      "id": "sensitive_field_variants",
+      "status": "fail",
+      "evidence": "secrets/tokens/privateKeys/apiKeys/accessTokens/clientSecrets 等可绕过并进入 stdout。"
+    },
+    {
+      "id": "validated_snapshot_integrity",
+      "status": "fail",
+      "evidence": "带变化 data getter 的回执可在校验后 structuredClone 阶段返回未验证数据。"
+    },
+    {
+      "id": "scope_and_non_claims",
+      "status": "pass",
+      "evidence": "无 S1.1、真实任务包、正式 refs、runtime 或 PC/宿主冒领。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "implementation_correctness",
+      "score": 18,
+      "max_score": 25,
+      "reason": "存在原始输入、敏感别名和校验后复制三个运行时缺口。",
+      "evidence_refs": [
+        "src/cli/contract-probe.ts:49",
+        "src/domain/sensitive-fields.ts:23",
+        "src/domain/machine-receipt.ts:56"
+      ]
+    },
+    {
+      "id": "contract_rigor",
+      "score": 12,
+      "max_score": 20,
+      "reason": "JCS 原始字节边界和单快照语义尚未闭合。",
+      "evidence_refs": [
+        "src/domain/canonical-json.ts",
+        "src/domain/machine-receipt.ts"
+      ]
+    },
+    {
+      "id": "architecture_and_isolation",
+      "score": 20,
+      "max_score": 20,
+      "reason": "依赖方向、fixture、固定 OID 和干净检出通过。",
+      "evidence_refs": [
+        "tests/architecture/dependency-direction.test.ts",
+        "tests/support/git-fixture.test.ts"
+      ]
+    },
+    {
+      "id": "maintainability",
+      "score": 9,
+      "max_score": 10,
+      "reason": "模块清晰，修复边界可定位。",
+      "evidence_refs": [
+        "src/",
+        "tests/"
+      ]
+    },
+    {
+      "id": "test_sufficiency",
+      "score": 11,
+      "max_score": 15,
+      "reason": "缺非 JCS 信封、敏感变体和 getter 变化负例。",
+      "evidence_refs": [
+        "tests/cli/contract-probe.test.ts",
+        "tests/domain/machine-receipt-schema.test.ts"
+      ]
+    },
+    {
+      "id": "route_alignment",
+      "score": 10,
+      "max_score": 10,
+      "reason": "路线状态一致且无越界。",
+      "evidence_refs": [
+        "PROJECT_ROUTE_LOCK.md",
+        "docs/PLANS.md"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 80,
+    "penalty_total": 0,
+    "final_score": 80
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "CLI 对完整输入原始字节使用 parseCanonicalJsonBytes。",
+    "覆盖敏感字段复数与常见命名变体，并证明全通道不泄漏。",
+    "回执先形成单一 plain-data 快照，再在同一快照上完成全部验证和冻结；拒绝访问器。",
+    "补负例，绑定新 OID，完成干净检出和完整 L3。"
+  ],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Generator",
+      "conclusion": "SUBMITTED",
+      "notes": "提交固定 OID 与干净检出证据，不自我批准。"
+    },
+    {
+      "role": "Verifier",
+      "conclusion": "PASS",
+      "notes": "既有硬门禁通过，但未覆盖 Strict Judge 动态对象复现。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "REVISE",
+      "score": 80,
+      "notes": "首个请求被平台过滤无效；重派后发现三个 P1。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "PASS",
+      "score": 100,
+      "notes": "无状态、空壳、冒领、秘密或污染问题。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "REVISE",
+      "score": 80,
+      "notes": "Strict Judge 的三个动态边界问题可复现，第四轮唯一结论为 REVISE。"
+    }
+  ],
+  "invalid_attempts": [
+    {
+      "role": "all-reviewers",
+      "reason": "2026-08-08 本地 Agent 服务统一返回 503，未产生结论。"
+    },
+    {
+      "role": "Strict Judge",
+      "reason": "2026-08-09 首次请求被平台过滤，未产生结论；已以工程质量范围重派。"
+    }
+  ],
+  "reviewed_at": "2026-08-09T00:57:37+08:00"
+}

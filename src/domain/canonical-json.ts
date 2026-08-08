@@ -53,11 +53,24 @@ function assertCanonicalizable(
   ancestors.add(value);
   try {
     if (Array.isArray(value)) {
+      if (Object.getOwnPropertySymbols(value).length > 0) {
+        throw new TypeError(`Symbol keys are not allowed at ${path}`);
+      }
+
+      const propertyNames = Object.getOwnPropertyNames(value);
+      if (propertyNames.length !== value.length + 1) {
+        throw new TypeError(`Only indexed array data properties are allowed at ${path}`);
+      }
+
       for (let index = 0; index < value.length; index += 1) {
-        if (!(index in value)) {
+        const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
+        if (!descriptor) {
           throw new TypeError(`Sparse JSON array is not allowed at ${path}[${index}]`);
         }
-        assertCanonicalizable(value[index], `${path}[${index}]`, ancestors);
+        if (!descriptor.enumerable || !("value" in descriptor)) {
+          throw new TypeError(`Only array data properties are allowed at ${path}[${index}]`);
+        }
+        assertCanonicalizable(descriptor.value, `${path}[${index}]`, ancestors);
       }
       return;
     }
@@ -70,9 +83,13 @@ function assertCanonicalizable(
       throw new TypeError(`Symbol keys are not allowed at ${path}`);
     }
 
-    for (const key of Object.keys(value)) {
+    const descriptors = Object.getOwnPropertyDescriptors(value);
+    for (const [key, descriptor] of Object.entries(descriptors)) {
+      if (!descriptor.enumerable || !("value" in descriptor)) {
+        throw new TypeError(`Only enumerable data properties are allowed at ${path}.${key}`);
+      }
       assertValidUnicode(key, `${path} key`);
-      assertCanonicalizable(value[key], `${path}.${key}`, ancestors);
+      assertCanonicalizable(descriptor.value, `${path}.${key}`, ancestors);
     }
   } finally {
     ancestors.delete(value);

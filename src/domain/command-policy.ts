@@ -20,23 +20,40 @@ export interface CommandInvocation {
 export function assertCommandPolicy(invocation: unknown): void {
   if (
     !isPlainRecord(invocation) ||
-    Object.keys(invocation).length !== 2 ||
-    typeof invocation.command !== "string" ||
-    typeof invocation.dry_run !== "boolean"
+    Object.getOwnPropertyNames(invocation).length !== 2 ||
+    Object.getOwnPropertySymbols(invocation).length !== 0
   ) {
     throw new TypeError("Invalid command invocation");
   }
 
-  if (READONLY_COMMANDS.has(invocation.command)) {
+  const commandDescriptor = Object.getOwnPropertyDescriptor(invocation, "command");
+  const dryRunDescriptor = Object.getOwnPropertyDescriptor(invocation, "dry_run");
+  if (
+    !commandDescriptor ||
+    !("value" in commandDescriptor) ||
+    !commandDescriptor.enumerable ||
+    typeof commandDescriptor.value !== "string" ||
+    !dryRunDescriptor ||
+    !("value" in dryRunDescriptor) ||
+    !dryRunDescriptor.enumerable ||
+    typeof dryRunDescriptor.value !== "boolean"
+  ) {
+    throw new TypeError("Invalid command invocation");
+  }
+
+  const command = commandDescriptor.value;
+  const dryRun = dryRunDescriptor.value;
+
+  if (READONLY_COMMANDS.has(command)) {
     return;
   }
 
-  if (!MUTATING_COMMANDS.has(invocation.command)) {
-    throw new TypeError(`Unknown command policy: ${invocation.command}`);
+  if (!MUTATING_COMMANDS.has(command)) {
+    throw new TypeError(`Unknown command policy: ${command}`);
   }
 
-  if (invocation.dry_run !== true) {
-    throw new Error(`Mutating command requires dry-run: ${invocation.command}`);
+  if (dryRun !== true) {
+    throw new Error(`Mutating command requires dry-run: ${command}`);
   }
 }
 import { isPlainRecord } from "./value-guards.ts";

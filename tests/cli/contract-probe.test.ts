@@ -4,7 +4,10 @@ import { readdir } from "node:fs/promises";
 import { resolve } from "node:path";
 import test from "node:test";
 
-import { parseCanonicalJsonBytes } from "../../src/domain/canonical-json.ts";
+import {
+  canonicalizeJson,
+  parseCanonicalJsonBytes,
+} from "../../src/domain/canonical-json.ts";
 import { createTemporaryGitFixture } from "../support/git-fixture.ts";
 
 const compiledProbePath = resolve(
@@ -148,7 +151,7 @@ function runGit(repositoryRoot: string, ...args: string[]): Promise<ProbeResult>
 
 test("contract probe emits one successful machine receipt with canonical JSON and a SHA-256 digest", async () => {
   const result = await runProbe(
-    JSON.stringify({
+    canonicalizeJson({
       schema_version: "1.0",
       subject: { zebra: 3, alpha: { later: true, earlier: false } },
     }),
@@ -186,7 +189,7 @@ test("contract probe returns a structured failure receipt for malformed JSON and
 test("contract probe fails closed for sensitive input without leaking the sensitive value", async () => {
   const sensitiveValue = "p5-m0-sensitive-value-must-not-escape";
   const result = await runProbe(
-    JSON.stringify({
+    canonicalizeJson({
       schema_version: "1.0",
       subject: { access_token: sensitiveValue },
     }),
@@ -216,7 +219,7 @@ test("contract probe rejects sensitive fields across the complete input envelope
       subject: { apikey: sensitiveValue },
     },
   ]) {
-    const result = await runProbe(JSON.stringify(input));
+    const result = await runProbe(canonicalizeJson(input));
 
     assert.notEqual(result.exitCode, 0);
     assert.doesNotMatch(result.stderr, new RegExp(sensitiveValue));
@@ -230,7 +233,7 @@ test("contract probe rejects sensitive fields across the complete input envelope
 
 test("contract probe rejects unknown envelope fields and invalid UTF-8", async () => {
   const unknownFieldResult = await runProbe(
-    JSON.stringify({
+    canonicalizeJson({
       schema_version: "1.0",
       subject: {},
       unexpected: true,
@@ -252,6 +255,45 @@ test("contract probe rejects unknown envelope fields and invalid UTF-8", async (
   assert.doesNotMatch(invalidUtf8Result.stderr, /\ufffd/);
 });
 
+test("contract probe rejects non-canonical input envelope bytes", async () => {
+  const canonicalInput = canonicalizeJson({ schema_version: "1.0", subject: {} });
+
+  for (const input of [
+    '{ "schema_version": "1.0", "subject": {} }',
+    '{"subject":{},"schema_version":"1.0"}',
+    `${canonicalInput}\n`,
+    '{"schema_version":"0.9","schema_version":"1.0","subject":{}}',
+  ]) {
+    const result = await runProbe(input);
+    assert.notEqual(result.exitCode, 0);
+    assert.equal(parseSingleReceipt(result.stdout).ok, false);
+  }
+});
+
+test("contract probe rejects sensitive field naming variants without leaking values", async () => {
+  const sensitiveValue = "variant-value-must-not-escape";
+
+  for (const field of [
+    "secrets",
+    "tokens",
+    "privateKeys",
+    "apiKeys",
+    "accessTokens",
+    "clientSecrets",
+  ]) {
+    const result = await runProbe(
+      canonicalizeJson({
+        schema_version: "1.0",
+        subject: { [field]: sensitiveValue },
+      }),
+    );
+    assert.notEqual(result.exitCode, 0);
+    assert.equal(parseSingleReceipt(result.stdout).code, "SENSITIVE_FIELD_DETECTED");
+    assert.doesNotMatch(result.stdout, new RegExp(sensitiveValue));
+    assert.doesNotMatch(result.stderr, new RegExp(sensitiveValue));
+  }
+});
+
 test("contract probe dry-run is explicit and leaves the fixture worktree and NextStep refs unchanged", async () => {
   const fixture = await createTemporaryGitFixture();
 
@@ -260,7 +302,7 @@ test("contract probe dry-run is explicit and leaves the fixture worktree and Nex
     const worktreeBefore = await readWorktreeState(fixture.path);
     const refsBefore = await readNextStepRefs(fixture.path);
     const result = await runProbe(
-      JSON.stringify({
+      canonicalizeJson({
         schema_version: "1.0",
         subject: { beta: 2, alpha: 1 },
       }),

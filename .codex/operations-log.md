@@ -1266,3 +1266,13 @@
 - TDD 修复：成功回执 Schema 通过后，调用 `parseCanonicalJsonBytes`、`assertNoSensitiveFields` 和 `assertDigestMatches`；修正有效夹具摘要，新增非法 JSON、非 JCS、摘要不匹配和嵌入敏感字段负例。
 - 修复后 `pnpm check` 为 41/41，覆盖率行 91.08%、分支 87.94%、函数 97.06%；audit 和 diff 检查通过。
 - P5-M0 仍未关闭；必须形成新 OID 并进行干净检出与第四轮完整 L3。
+
+## 2026-08-09 P5-M0 第四轮 L3 审查与修复
+
+- 第三轮修复绑定 commit `389dadf9d699f032b9bebd3650939262815a17ee`、tree `223efe8aec894e90363509c721c2e6adab6d8a52`；全新克隆冻结安装、41/41、覆盖率和 audit 通过。
+- 基础设施无效尝试：首轮派发的 Terra/Sol/Luna 均因本地 Agent 服务 503 未产生结论；重派后首个 Strict Judge 又被平台过滤，未产生结论。两类失败均未计入角色或评分，随后重新派发有效审查。
+- 有效第四轮角色：Verifier `PASS`；Anti-Slop Judge `PASS / 100`；重派 Strict Judge `REVISE / 80`；Chief Reviewer `REVISE / 80`。审查包保存于 `.codex/reviews/p5-m0-implementation-rereview-3-2026-08-09/`。
+- 第四轮 P1：CLI 接受非 JCS 原始信封；敏感字段复数/组合变体可绕过并回显；回执校验后重新 `structuredClone`，带变化访问器时可返回未验证状态。
+- TDD 修复：adapter 保留 stdin 原始字节，CLI 使用 `parseCanonicalJsonBytes`；敏感规则加入复数边界；canonical/sensitive/command 边界拒绝访问器；回执只从一次 canonical 快照验证并冻结；Skill 示例同步为单行 JCS。
+- 修复后 `pnpm check` 为 46/46，覆盖率行 91.43%、分支 88.24%、函数 97.06%；audit 和 diff 检查通过。
+- P5-M0 仍未关闭；必须形成新 OID 并进行干净检出与第五轮完整 L3。
