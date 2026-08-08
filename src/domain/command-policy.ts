@@ -25,6 +25,8 @@ export function assertCommandPolicy(invocation: unknown): Readonly<CommandInvoca
   if (
     !isPlainRecord(snapshot) ||
     Object.keys(snapshot).length !== 2 ||
+    !Object.hasOwn(snapshot, "command") ||
+    !Object.hasOwn(snapshot, "dry_run") ||
     typeof snapshot.command !== "string" ||
     typeof snapshot.dry_run !== "boolean"
   ) {

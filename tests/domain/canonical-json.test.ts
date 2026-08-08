@@ -75,10 +75,75 @@ test("snapshotJsonValue reads a shared input object only once and deeply freezes
   assert.equal(descriptorReads, 1);
   assert.ok(Object.isFrozen(snapshot));
   assert.ok(Object.isFrozen((snapshot as { left: unknown }).left));
+  assert.equal(Object.getPrototypeOf(snapshot), null);
+  assert.equal(Object.getPrototypeOf((snapshot as { left: object }).left), null);
   assert.equal(
     canonicalizeJson(snapshot),
     '{"left":{"stable":true},"right":{"stable":true}}',
   );
+});
+
+test("canonicalizeJson rejects every non-data array shape without invoking accessors", () => {
+  const sparse = new Array<unknown>(1);
+  const extra = [1];
+  Object.defineProperty(extra, "extra", { enumerable: true, value: 2 });
+  const hidden = [1];
+  Object.defineProperty(hidden, "hidden", { enumerable: false, value: 2 });
+  const symbolKeyed = [1];
+  Object.defineProperty(symbolKeyed, Symbol("extra"), { enumerable: true, value: 2 });
+  let getterReads = 0;
+  const accessor = [1];
+  Object.defineProperty(accessor, "0", {
+    enumerable: true,
+    get: () => {
+      getterReads += 1;
+      return 1;
+    },
+  });
+  const invalidLength = new Proxy([], {
+    getOwnPropertyDescriptor: (target, property) =>
+      property === "length"
+        ? { configurable: true, enumerable: true, value: 0, writable: true }
+        : Reflect.getOwnPropertyDescriptor(target, property),
+  });
+
+  for (const value of [sparse, extra, hidden, symbolKeyed, accessor, invalidLength]) {
+    assert.throws(
+      () => canonicalizeJson(value),
+      /array|sparse|symbol|data propert|descriptor|invariant|proxy/i,
+    );
+  }
+  assert.equal(getterReads, 0);
+});
+
+test("canonicalizeJson matches the RFC 8785 serialization and UTF-16 sorting vectors", () => {
+  assert.equal(
+    canonicalizeJson({
+      numbers: [333333333.33333329, 1e30, 4.5, 2e-3, 1e-27],
+      string: "€$\u000f\nA'B\"\\\\\"/",
+      literals: [null, true, false],
+    }),
+    "{\"literals\":[null,true,false],\"numbers\":[333333333.3333333,1e+30,4.5,0.002,1e-27],\"string\":\"€$\\u000f\\nA'B\\\"\\\\\\\\\\\"/\"}",
+  );
+
+  assert.equal(
+    canonicalizeJson({
+      "€": "Euro Sign",
+      "\r": "Carriage Return",
+      "דּ": "Hebrew Letter Dalet With Dagesh",
+      "1": "One",
+      "😀": "Emoji: Grinning Face",
+      "\u0080": "Control",
+      "ö": "Latin Small Letter O With Diaeresis",
+    }),
+    "{\"\\r\":\"Carriage Return\",\"1\":\"One\",\"\":\"Control\",\"ö\":\"Latin Small Letter O With Diaeresis\",\"€\":\"Euro Sign\",\"😀\":\"Emoji: Grinning Face\",\"דּ\":\"Hebrew Letter Dalet With Dagesh\"}",
+  );
+});
+
+test("canonicalizeJson rejects isolated Unicode surrogates in keys and values", () => {
+  for (const value of ["\ud800", "\udc00", "\ud800x", { ["\ud800"]: true }]) {
+    assert.throws(() => canonicalizeJson(value), /unicode|surrogate/i);
+  }
 });
 
 test("canonicalizeJson preserves __proto__ as data and follows ECMAScript number serialization", () => {
@@ -131,8 +196,9 @@ test("parseCanonicalJsonBytes accepts only original JCS UTF-8 bytes", () => {
   const bytes = Buffer.from('{"alpha":1,"zebra":3}', "utf8");
 
   const parsed = parseCanonicalJsonBytes(bytes);
-  assert.deepEqual(parsed, { alpha: 1, zebra: 3 });
+  assert.equal(canonicalizeJson(parsed), bytes.toString("utf8"));
   assert.ok(Object.isFrozen(parsed));
+  assert.equal(Object.getPrototypeOf(parsed), null);
 });
 
 test("parseCanonicalJsonBytes rejects non-canonical encodings and invalid UTF-8", () => {
@@ -155,7 +221,7 @@ test("parseCanonicalJsonBytes preserves Unicode code points without normalizatio
 
   const parsed = parseCanonicalJsonBytes(bytes);
 
-  assert.deepEqual(parsed, { label: decomposed });
   assert.notEqual((parsed as { label: string }).label, normalized);
+  assert.equal((parsed as { label: string }).label, decomposed);
   assert.equal(canonicalizeJson(parsed), bytes.toString("utf8"));
 });

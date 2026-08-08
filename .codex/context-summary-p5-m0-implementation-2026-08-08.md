@@ -75,6 +75,21 @@
 - 官方 registry audit、Skill 校验、格式、JSON、秘密、调试残留、refs/runtime/真实任务包和 P3/P4/S4 上游保护扫描均通过。
 - 下一步是绑定新 commit/tree OID，从 `--no-local` 全新克隆复验并执行第六轮完整 L3；当前仍不得进入 S1.1。
 
+## 第六轮 L3 修复入口
+
+- 固定 OID `35606ba9f894fdbdc3c6d978c1b7e6547e58d6fa` 的 Verifier 为 `PASS`，Anti-Slop Judge 为 `PASS / 100`，Strict Judge 与 Chief Reviewer 均为 `REVISE / 87`，P0 = 0、P1 = 1、P2 = 1。
+- 第六轮确认单快照、`toJSON`、投影和动态读取修复有效，但发现普通对象快照继承可变 `Object.prototype`，可让命令与回执由非自有必填字段通过并返回不稳定值。
+- 当前修复边界是无原型 JSON 对象/投影、自有字段断言、Ajv `ownProperties`，并补原型所有权、数组异常和 RFC 8785 永久测试。
+- P5-M0 仍未关闭，不得进入 S1.1，不得生成真实 Execution Packet。
+
+## 第六轮 L3 修复结果
+
+- JSON 对象快照和摘要投影改为无原型容器；`command`/`dry_run` 与回执根/分支必填字段均明确要求自有属性；Ajv 启用 `ownProperties: true`。
+- 原型继承命令、回执根字段和嵌套 `data` 负例均拒绝；有效回执根和 `data` 均为无原型、深冻结、自有字段稳定快照。
+- 补数组洞、额外/非枚举/Symbol/访问器/异常 length、RFC 8785 序列化与 UTF-16 排序、孤立 Unicode 代理项永久测试。
+- 完整门禁为 65/65；覆盖率行 95.37%、分支 94.80%、函数 97.56%；audit、Skill、格式和范围扫描通过。
+- 下一步是绑定新 OID、clean clone 和第七轮完整 L3；当前仍不得进入 S1.1。
+
 ## 工具替代
 
 - 默认 pnpm registry 的 audit endpoint 不存在，改用 npm 官方 registry 重跑并通过。

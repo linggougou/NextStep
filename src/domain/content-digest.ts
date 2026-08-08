@@ -48,7 +48,7 @@ export function projectForDigest(
     }
   }
 
-  const projection: Record<string, JsonValue> = {};
+  const projection = Object.create(null) as Record<string, JsonValue>;
   for (const [field, fieldValue] of Object.entries(snapshot)) {
     if (!excluded.has(field)) {
       Object.defineProperty(projection, field, {

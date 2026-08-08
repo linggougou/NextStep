@@ -161,10 +161,9 @@ test("contract probe emits one successful machine receipt with canonical JSON an
   assert.equal(result.stderr, "");
 
   const receipt = parseSingleReceipt(result.stdout);
-  assert.deepEqual(
-    parseCanonicalJsonBytes(Buffer.from(result.stdout, "utf8")),
-    receipt,
-  );
+  const parsedOutput = parseCanonicalJsonBytes(Buffer.from(result.stdout, "utf8"));
+  assert.equal(canonicalizeJson(parsedOutput), result.stdout);
+  assert.equal(Object.getPrototypeOf(parsedOutput), null);
   assert.equal(receipt.ok, true);
   assert.equal(receipt.code, "CONTRACT_PROBE_SUCCEEDED");
   assert.equal(

@@ -51,7 +51,8 @@ test("parseMachineReceipt accepts a complete machine-readable receipt", () => {
     data: { dry_run: false },
   };
 
-  assert.deepEqual(parseMachineReceipt(receipt), receipt);
+  const parsed = parseMachineReceipt(receipt);
+  assert.deepEqual({ ...parsed, data: { ...parsed.data } }, receipt);
 });
 
 test("parseMachineReceipt rejects malformed receipts rather than returning a partial success", () => {
@@ -142,8 +143,12 @@ test("assertNoSensitiveFields returns the frozen descriptor snapshot it scanned"
 
   const snapshot = assertNoSensitiveFields(value);
 
-  assert.deepEqual(snapshot, { status: "descriptor-value" });
+  assert.deepEqual(
+    { ...(snapshot as Record<string, unknown>) },
+    { status: "descriptor-value" },
+  );
   assert.ok(Object.isFrozen(snapshot));
+  assert.equal(Object.getPrototypeOf(snapshot), null);
 });
 
 test("assertNoSensitiveFields rejects hidden and Symbol data without executing accessors", () => {

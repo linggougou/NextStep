@@ -1298,3 +1298,22 @@
 - 范围：无 `refs/nextstep/formal`、`refs/nextstep/control`、`.codex/runtime`、真实 Execution Packet 或 PC 完成声明；P3/P4/S4 已会签正文零差异。
 - Agent 复核：Luna 给出攻击测试矩阵，Terra 给出单快照 API 和共享引用建议；均为只读，没有覆盖主线改动。主 Agent 完成集成与验证。
 - 当前门禁：本地候选通过，待新 OID、干净克隆和第六轮完整 L3；不得进入 S1.1。
+
+## 2026-08-09 P5-M0 第六轮 L3 审查与第七轮修复启动
+
+- 送审身份：commit `35606ba9f894fdbdc3c6d978c1b7e6547e58d6fa`，tree `01e45f71b156a80bb86028e80022dd49da784c18`；主工作树和 `--no-local` 克隆均清洁，克隆内冻结安装、59/59、覆盖率、audit 和 Skill 通过。
+- 第六轮角色：Verifier `PASS`；Anti-Slop Judge `PASS / 100`；Strict Judge `REVISE / 87`；Chief Reviewer `REVISE / 87`，P0 = 0、P1 = 1、P2 = 1。
+- 无效尝试：Chief 首次汇总请求被平台安全过滤，未产生结论、不计入 L3；改用工程质量口径重派后完成有效总裁决。
+- P1：普通对象快照继承可变 `Object.prototype`；命令和 Ajv 回执可由非自有必填字段通过，冻结回执仍可依赖未冻结的原型数据。主 Agent 在独立 Node 进程复现并在进程退出前清理原型。
+- P2：缺原型所有权、数组异常和完整 RFC 8785 永久回归证据。
+- 第七轮边界：无原型对象快照与投影、自有字段断言、Ajv `ownProperties` 和所需测试；不改变路线、Schema 业务语义或 P3/P4/S4 上游。
+- 当前门禁：第六轮 `REVISE`，P5-M0 未关闭；不得进入 S1.1。
+
+## 2026-08-09 P5-M0 第六轮问题 TDD 修复与本地门禁
+
+- TDD RED：无原型快照、命令自有字段、回执根自有字段、成功 `data` 自有字段测试按预期失败；数组异常、RFC 8785 与 Unicode 永久证据同步加入。首个回执污染夹具把 `Object.prototype.code` 设为只读并干扰 Node 断言对象，修正为可写且 `finally` 清理后，产品 RED 稳定复现。
+- 实现：JSON 对象快照与摘要投影使用 `Object.create(null)`；命令策略显式 `Object.hasOwn`；回执在 Ajv 前后分别断言根和分支 data 自有字段，Ajv 启用 `ownProperties: true`。
+- 测试契约：旧深相等断言改为分别核对字段内容、无原型和冻结属性，避免把普通对象原型误当成产品要求。
+- 完整验证：`pnpm check` 65/65；覆盖率行 95.37%、分支 94.80%、函数 97.56%，均高于 80%。
+- 安全与范围：官方 audit 无已知漏洞；Skill 官方校验、`git diff --check`、JSON、调试残留、NextStep refs 和 `.codex/runtime` 扫描通过；无真实 Execution Packet 或 PC 冒领。
+- 当前门禁：本地候选通过，待新 OID、clean clone 和第七轮完整 L3；不得进入 S1.1。

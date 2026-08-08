@@ -120,7 +120,7 @@ function snapshotValue(
       throw new TypeError(`Only plain JSON objects are allowed at ${path}`);
     }
 
-    const snapshot: Record<string, JsonValue> = {};
+    const snapshot = Object.create(null) as Record<string, JsonValue>;
     for (const key of descriptorKeys as string[]) {
       const descriptor = descriptors[key];
       if (!descriptor || !descriptor.enumerable || !("value" in descriptor)) {

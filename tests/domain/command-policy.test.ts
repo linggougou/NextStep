@@ -45,8 +45,9 @@ test("command policy returns the frozen descriptor snapshot it validated", () =>
 
   const validated = assertCommandPolicy(invocation);
 
-  assert.deepEqual(validated, { command: "formal-promote", dry_run: true });
+  assert.deepEqual({ ...validated }, { command: "formal-promote", dry_run: true });
   assert.ok(Object.isFrozen(validated));
+  assert.equal(Object.getPrototypeOf(validated), null);
 });
 
 test("command policy rejects malformed runtime invocations and non-boolean dry-run values", () => {
@@ -81,5 +82,30 @@ test("command policy rejects hidden and Symbol command data", () => {
 
   for (const invocation of [hidden, symbolKeyed]) {
     assert.throws(() => assertCommandPolicy(invocation), /enumerable|symbol|json|invocation/i);
+  }
+});
+
+test("command policy requires command and dry_run to be own properties", () => {
+  Object.defineProperties(Object.prototype, {
+    command: {
+      configurable: true,
+      enumerable: false,
+      value: "formal-promote",
+    },
+    dry_run: {
+      configurable: true,
+      enumerable: false,
+      value: true,
+    },
+  });
+
+  try {
+    assert.throws(
+      () => assertCommandPolicy({ unrelated_a: true, unrelated_b: true }),
+      /invocation|command|policy/i,
+    );
+  } finally {
+    Reflect.deleteProperty(Object.prototype, "command");
+    Reflect.deleteProperty(Object.prototype, "dry_run");
   }
 });

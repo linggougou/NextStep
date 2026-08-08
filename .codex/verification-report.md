@@ -1376,3 +1376,24 @@
 - 结构验证：Skill 官方校验、`git diff --check`、JSON、尾随空白、秘密、调试残留和 TODO 扫描通过。
 - 范围验证：无 NextStep formal/control refs、`.codex/runtime`、真实 Execution Packet 或 PC/宿主冒领；P3/P4/S4 已会签正文未修改。
 - 阶段门禁结论：当前是第六轮本地候选，尚未绑定固定 OID。创建提交并从 `--no-local` 全新检出复验后，才能执行第六轮 L3；当前不得关闭 P5-M0 或进入 S1.1。
+
+## 2026-08-09 P5-M0 第六轮 L3 验证
+
+- 送审身份：commit `35606ba9f894fdbdc3c6d978c1b7e6547e58d6fa`，tree `01e45f71b156a80bb86028e80022dd49da784c18`；主工作树和 `--no-local` 克隆均清洁。
+- clean clone：冻结安装、`pnpm check` 59/59、覆盖率行 92.99%/分支 90.45%/函数 97.44%、官方 audit、Skill 校验和零污染反扫通过。
+- 角色结论：Verifier `PASS`；Anti-Slop Judge `PASS / 100`；Strict Judge `REVISE / 87`；有效 Chief Reviewer `REVISE / 87`，P0 = 0、P1 = 1、P2 = 1。
+- 无效尝试：Chief 首次请求被平台安全过滤，未产生结论；重派后完成有效裁决。
+- 可执行 P1：普通对象快照继承原型，命令与回执可由非自有必填字段通过，且返回回执字段可在原型变化后改变；主 Agent 独立复现一致。
+- 审查包：`.codex/reviews/p5-m0-implementation-rereview-5-2026-08-09/`。
+- 门禁结论：第六轮保持 `REVISE`；修复对象所有权并补永久测试、绑定新 OID、完成 clean clone 与第七轮 L3 前，不得关闭 P5-M0 或进入 S1.1。
+
+## 2026-08-09 P5-M0 第六轮 L3 修复本地验证
+
+- TDD：对象所有权与返回稳定性用例先失败；夹具隔离修正后，命令、回执根字段和嵌套 data 继承绕过均稳定 RED，修复后 GREEN。
+- 实现验证：对象快照与投影无原型；命令必填字段自有；Ajv `ownProperties` 和回执显式自有字段断言生效；有效回执根与 data 无原型、深冻结且稳定。
+- 永久证据：数组洞、额外字符串/非枚举/Symbol 属性、访问器索引、异常 length、RFC 8785 核心序列化/UTF-16 排序和孤立 Unicode 代理项均有回归测试。
+- `pnpm check`：通过，65/65，失败、跳过、取消均为 0。
+- 覆盖率：行 95.37%、分支 94.80%、函数 97.56%。
+- `pnpm audit --registry=https://registry.npmjs.org --audit-level=high`：无已知漏洞。
+- Skill、格式、JSON、调试残留、refs/runtime/任务包与上游范围扫描：通过。
+- 门禁结论：第七轮本地候选通过，但尚未绑定固定 OID；完成提交、clean clone 和第七轮完整 L3 前不得关闭 P5-M0 或进入 S1.1。

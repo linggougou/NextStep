@@ -14,7 +14,7 @@ test("digest projection excludes only the explicitly named digest field", () => 
     task_id: "task-001",
   };
 
-  assert.deepEqual(projectForDigest(subject, ["packet_digest"]), {
+  assert.deepEqual({ ...projectForDigest(subject, ["packet_digest"]) }, {
     result_digest: "sha256:must-remain-in-projection",
     task_id: "task-001",
   });
@@ -97,6 +97,7 @@ test("digest projection returns a frozen projection from one descriptor snapshot
 
   const projection = projectForDigest(subject, ["packet_digest"]);
 
-  assert.deepEqual(projection, { task_id: "descriptor-value" });
+  assert.deepEqual({ ...projection }, { task_id: "descriptor-value" });
   assert.ok(Object.isFrozen(projection));
+  assert.equal(Object.getPrototypeOf(projection), null);
 });

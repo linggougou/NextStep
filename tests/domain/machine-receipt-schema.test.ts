@@ -24,8 +24,12 @@ const successfulReceipt = {
 };
 
 test("machine receipt is accepted through the executable schema", () => {
-  assert.deepEqual(MACHINE_RECEIPT_SCHEMA.parse(successfulReceipt), successfulReceipt);
-  assert.deepEqual(parseMachineReceipt(successfulReceipt), successfulReceipt);
+  for (const receipt of [
+    MACHINE_RECEIPT_SCHEMA.parse(successfulReceipt),
+    parseMachineReceipt(successfulReceipt),
+  ]) {
+    assert.deepEqual({ ...receipt, data: { ...receipt.data } }, successfulReceipt);
+  }
 });
 
 test("machine receipt schema rejects unknown codes and ok/code mismatches", () => {
@@ -172,4 +176,68 @@ test("parseMachineReceipt validates and returns one frozen Proxy descriptor snap
   assert.equal(parsed.receipt_id, "receipt-descriptor-view");
   assert.ok(Object.isFrozen(parsed));
   assert.ok(Object.isFrozen(parsed.data));
+  assert.equal(Object.getPrototypeOf(parsed), null);
+  assert.equal(Object.getPrototypeOf(parsed.data), null);
+});
+
+test("parseMachineReceipt requires every root field to be an own property", () => {
+  Object.defineProperties(Object.prototype, {
+    schema_version: {
+      configurable: true,
+      value: successfulReceipt.schema_version,
+      writable: true,
+    },
+    receipt_id: {
+      configurable: true,
+      value: successfulReceipt.receipt_id,
+      writable: true,
+    },
+    ok: { configurable: true, value: successfulReceipt.ok, writable: true },
+    code: { configurable: true, value: successfulReceipt.code, writable: true },
+    data: { configurable: true, value: successfulReceipt.data, writable: true },
+  });
+
+  try {
+    assert.throws(() => parseMachineReceipt({}), /receipt|schema|required|invalid/i);
+  } finally {
+    for (const field of ["schema_version", "receipt_id", "ok", "code", "data"]) {
+      Reflect.deleteProperty(Object.prototype, field);
+    }
+  }
+});
+
+test("parseMachineReceipt requires every successful data field to be an own property", () => {
+  Object.defineProperties(Object.prototype, {
+    canonical_json: {
+      configurable: true,
+      value: successfulReceipt.data.canonical_json,
+      writable: true,
+    },
+    digest: {
+      configurable: true,
+      value: successfulReceipt.data.digest,
+      writable: true,
+    },
+    dry_run: {
+      configurable: true,
+      value: successfulReceipt.data.dry_run,
+      writable: true,
+    },
+    schema_version: {
+      configurable: true,
+      value: successfulReceipt.data.schema_version,
+      writable: true,
+    },
+  });
+
+  try {
+    assert.throws(
+      () => parseMachineReceipt({ ...successfulReceipt, data: {} }),
+      /receipt|schema|required|data|invalid/i,
+    );
+  } finally {
+    for (const field of ["canonical_json", "digest", "dry_run", "schema_version"]) {
+      Reflect.deleteProperty(Object.prototype, field);
+    }
+  }
 });

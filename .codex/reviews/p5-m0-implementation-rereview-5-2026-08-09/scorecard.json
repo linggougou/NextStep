@@ -1,0 +1,158 @@
+{
+  "review_id": "p5-m0-implementation-rereview-5-2026-08-09",
+  "task_id": "p5-m0-implementation-readiness",
+  "lane": "implementation-gate",
+  "review_level": "L3",
+  "rubric_id": "judge-harness-implementation-gate-v1",
+  "artifact_refs": [
+    "git:35606ba9f894fdbdc3c6d978c1b7e6547e58d6fa",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/exec-plans/active/p5-product-implementation-milestones.md",
+    "src/",
+    "tests/",
+    "schemas/v1/machine-receipt.schema.json",
+    "skills/nextstep/"
+  ],
+  "reviewed_snapshot": {
+    "git_commit": "35606ba9f894fdbdc3c6d978c1b7e6547e58d6fa",
+    "git_tree": "01e45f71b156a80bb86028e80022dd49da784c18",
+    "worktree_clean": true
+  },
+  "hard_gates": [
+    {
+      "id": "baseline_and_clean_checkout",
+      "status": "pass",
+      "evidence": "固定 OID 工作树清洁；--no-local 检出冻结安装、59/59、覆盖率 92.99/90.45/97.44、官方 audit、Skill 和零污染反扫通过。"
+    },
+    {
+      "id": "fifth_review_remediation",
+      "status": "pass",
+      "evidence": "toJSON、摘要投影、描述符快照和动态读取问题均已关闭。"
+    },
+    {
+      "id": "own_property_isolation",
+      "status": "fail",
+      "evidence": "普通对象快照继承可变 Object.prototype；命令与回执可由非自有必填字段通过，并返回不稳定值。"
+    },
+    {
+      "id": "scope_and_non_claims",
+      "status": "pass",
+      "evidence": "无 S1.1、真实任务包、正式 refs、runtime 或 PC/宿主冒领。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "implementation_correctness",
+      "score": 20,
+      "max_score": 25,
+      "reason": "对象所有权缺口可让命令和回执接受非自有必填字段。",
+      "evidence_refs": [
+        "src/domain/canonical-json.ts:123",
+        "src/domain/command-policy.ts:27",
+        "src/domain/machine-receipt.ts:27"
+      ]
+    },
+    {
+      "id": "contract_rigor",
+      "score": 14,
+      "max_score": 20,
+      "reason": "冻结快照仍可能依赖快照外的可变原型数据。",
+      "evidence_refs": [
+        "src/domain/canonical-json.ts",
+        "src/domain/command-policy.ts",
+        "src/domain/machine-receipt.ts"
+      ]
+    },
+    {
+      "id": "architecture_and_isolation",
+      "score": 20,
+      "max_score": 20,
+      "reason": "依赖方向、fixture、固定 OID 和干净检出通过。",
+      "evidence_refs": [
+        "tests/architecture/dependency-direction.test.ts",
+        "tests/support/git-fixture.test.ts"
+      ]
+    },
+    {
+      "id": "maintainability",
+      "score": 9,
+      "max_score": 10,
+      "reason": "单快照边界清晰，缺口可在容器和字段所有权处集中修复。",
+      "evidence_refs": [
+        "src/domain/"
+      ]
+    },
+    {
+      "id": "test_sufficiency",
+      "score": 14,
+      "max_score": 15,
+      "reason": "现有行为测试充分，但缺对象所有权、数组异常和完整 RFC 8785 向量。",
+      "evidence_refs": [
+        "tests/domain/canonical-json.test.ts",
+        "tests/domain/command-policy.test.ts",
+        "tests/domain/machine-receipt-schema.test.ts"
+      ]
+    },
+    {
+      "id": "route_alignment",
+      "score": 10,
+      "max_score": 10,
+      "reason": "路线状态一致且无越界。",
+      "evidence_refs": [
+        "PROJECT_ROUTE_LOCK.md",
+        "docs/PLANS.md"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 87,
+    "penalty_total": 0,
+    "final_score": 87
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "所有 JSON 对象快照与投影使用无原型容器；命令和回执必填字段明确要求自有字段；Ajv 启用 ownProperties。",
+    "补原型污染下命令、回执根字段和嵌套 data 拒绝，以及返回回执自有、深冻结和稳定性测试。",
+    "补数组异常属性、RFC 8785 完整向量和对象所有权测试。",
+    "修订绑定新 commit/tree 后重跑 clean clone、全量门禁和四角色 L3。"
+  ],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Generator",
+      "conclusion": "SUBMITTED",
+      "notes": "提交固定 OID 与 clean clone 证据，不自我批准。"
+    },
+    {
+      "role": "Verifier",
+      "conclusion": "PASS",
+      "notes": "第五轮 required_fixes 和既有硬门禁通过。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "REVISE",
+      "score": 87,
+      "notes": "发现一个对象所有权 P1 和一组永久证据 P2。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "PASS",
+      "score": 100,
+      "notes": "无状态、死依赖、冒领、秘密或提交污染问题。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "REVISE",
+      "score": 87,
+      "notes": "独立复现对象所有权问题，第六轮唯一总裁决为 REVISE。"
+    }
+  ],
+  "invalid_attempts": [
+    {
+      "role": "Chief Reviewer",
+      "reason": "首次汇总请求被平台安全过滤，未产生结论；以工程质量口径重派后完成有效裁决。"
+    }
+  ],
+  "reviewed_at": "2026-08-09T01:47:03+08:00"
+}
