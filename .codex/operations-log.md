@@ -1199,3 +1199,52 @@
 - 提交结果：本地提交创建成功，共纳入 88 个文件、9414 行新增和 178 行删除；未执行远端推送。
 - 阶段门禁判断：P4 已归档成果完成版本化，P5 仍未启动。
 - 状态：已结束。
+
+## 2026-08-08 P5 产品落地启动与实施里程碑建立
+
+- 用户指令：在 P4 正式会签并归档、路线锁保持“P5 尚未启动”的基线上，用户明确回复“好的,继续”，承接此前“下一步需单独启动 P5 并建立实施里程碑”的范围。
+- 项目规则检查：项目根无特化 `AGENTS.md`；已读取路线锁、生命周期、留痕、开发工作流、文档体系、Skills 运行时和 RTK 协议，并核对项目路线锁、PLANS、P3/P4/S4 上游及工作区状态。
+- Skills 适用性：当前环境没有直接对应“项目阶段启动与实施里程碑建立”的专用 skill；本轮不编码、不修复缺陷、不执行正式独立审查，因此不触发 TDD、verification-loop 或 judge-harness，采用项目协议、书面计划和专项断言作为替代流程。
+- 生命周期与路线：从已关闭的 P4 规划阶段切换到 `S5 开发落地 / P5 产品落地`；沿用已会签 Skill 主载体、文档/Git 真源和 TypeScript/Node 按需工具路线，不改变产品、技术、版本或验收边界，不触发 Change Request。
+- 里程碑真源：新增 `docs/exec-plans/active/p5-product-implementation-milestones.md`，保留 P3 的 V1..V4、9 个大里程碑、18 个小里程碑、12 项指标和 14 个验收对象。
+- 当前最小闭环：新增不承载 PC 完成声明的 `P5-M0 实施就绪门禁`；先建立工程基线、契约内核、临时 Git fixture harness 和本地验证入口，通过后才允许生成 S1.1 的第一份真实 Execution Packet。
+- 关键约束：P4 的“运行集成验收”在 P5 中只作为集成诊断预检；正式 I/X/P 四态结论必须由独立门禁和最终复验链产生，集成任务不得自我批准。
+- 文件变更：新增 P5 活动计划与 `.codex/context-summary-p5-product-implementation-start-2026-08-08.md`；同步 `PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md`、本日志和 `.codex/verification-report.md`。
+- 工作区保护：开始时 `main` 相对 `origin/main` 领先 10 个提交且工作区干净；本轮不回滚、不提交、不推送，不修改已会签 P3/P4/S4 正文。
+- 本轮明确不做：不创建依赖、源码、测试、Schema、fixture、正式/控制 ref 或真实执行任务包，不修改目标项目，不进入 S1.1。
+- 阶段门禁判断：P5 已启动并进入 P5-M0；编码门禁仍关闭，待后续单独实施并验证 P5-M0。
+- 状态：已结束。
+
+## 2026-08-08 P5-M0 实施启动与 Agent 分派
+
+- 用户授权：用户明确由当前 Agent 全权负责规划和落地，并授权分配 `gpt-5.6-sol`、`gpt-5.6-terra`、`gpt-5.6-luna` 处理子任务。
+- 当前路线与出口：保持 `S5 / P5 / P5-M0`；本轮只实施工程基线、契约内核、临时 Git fixture harness 和本地验证入口，不进入 S1.1，不生成真实 Execution Packet。
+- Skills：已完整读取并启用 ECC `tdd-workflow`、`verification-loop` 和 `coding-standards`。测试侧先于生产实现，覆盖阈值固定为分支/函数/行均不低于 80%；收口执行构建、类型、测试、覆盖率、安全扫描和 diff 审查。
+- Agent 分派：
+  - Sol：只读审查 P5-M0 架构、依赖方向和 fail-closed 风险门禁。
+  - Terra：所有权限定为 `tests/**`，按 Node 内置测试运行器编写 RED 测试和临时 Git fixture harness，不写生产实现。
+  - Luna：只读核对本机 Node/包管理器/TypeScript 组合与最小命令矩阵。
+- 并行边界：三个子任务互不写共享真源；主 Agent 独占工程配置、`src/**` 生产实现、文档与 `.codex` 留痕，并负责集成复核。所有 Agent 均被告知保护并发改动和禁止修改 P3/P4/S4 正文。
+- 本机基线：Node `24.14.0`、npm `11.9.0`、pnpm `10.33.2`、Corepack `0.34.6`、Git `2.45.0`；全局无 TypeScript。
+- 工程配置决策：固定 Node 24.14.0 与 pnpm 10.33.2；使用 TypeScript 7.0.2、Node 24 类型和 Node 内置 test/coverage；仅引入 `json-canonicalize` 作为 RFC 8785 JCS 实现，不引入大型测试框架或常驻运行时。
+- 当前状态：工程配置已建立，等待测试侧 RED 产物后再写生产实现。
+
+## 2026-08-08 P5-M0 候选实施与本地门禁
+
+- TDD 过程：Terra 先在 `tests/**` 写入领域、CLI、Schema、命令策略、架构和 Git fixture 测试；主 Agent 先后复现“仅缺生产模块”的 RED，再以最小实现转为 GREEN。中途出现 Node 类型未显式引入、测试目录参数不被 Node runner 接受、Ajv CJS/ESM 类型互操作和 TypeScript 7 compiler API 变化，均在不降低严格选项或覆盖阈值的前提下修复。
+- Sol 审查修订：补齐原始 canonical bytes、精确 `1.0` 版本注册、Ajv 严格 Schema、回执 code/ok 一致性与深冻结、敏感 data 拒绝、摘要投影、8 个逻辑命令 dry-run 策略、fixture Git 配置隔离和清理重试。
+- 工程产物：`.nvmrc`、`.npmrc`、`package.json`、`pnpm-lock.yaml`、`tsconfig.json`、README、`schemas/v1/`、`src/domain/`、`src/adapters/node/`、`src/cli/`、`tests/` 和 `skills/nextstep/`。
+- Skill Creator：按 skill-creator 初始化 `skills/nextstep`；首次短描述不足 25 字符导致生成中止，只产生模板，随后替换全部 TODO。系统 Python 缺 PyYAML，使用 `/tmp/nextstep-skill-validate.*` 一次性虚拟环境运行官方生成器和 `quick_validate.py`，验证通过，未污染项目或全局 Python。
+- Skill 前向测试：Luna 以普通 `$nextstep` 调用读取路线锁和计划，准确返回 `S5/P5/P5-M0`、门禁尚未关闭、不得进入 S1.1 和允许的下一步；未编辑文件。
+- 本地验证：`pnpm install --frozen-lockfile` 通过；`pnpm check` 通过，35/35 测试；覆盖率行 89.22%、分支 85.19%、函数 97.06%；构建生成 CLI、声明和 `dist/schemas/v1`。
+- 安全与范围：默认 pnpm 镜像无 audit endpoint，改用 npm 官方 registry 后结果为无已知漏洞；秘密、调试输出、TODO、尾随空白、JSON/YAML、Skill 格式、NextStep refs、runtime 和真实任务包扫描均通过。
+- 当前状态：P5-M0 候选已形成并通过本地门禁，待独立 L3 审查；审查通过前不得进入 S1.1。
+## 2026-08-08 P5-M0 首轮 L3 审查与修复
+
+- 按 Judge Harness L3 角色边界并行执行 Verifier、Strict Judge 和 Anti-Slop Judge，并另行启动 Chief Reviewer 汇总；所有审查任务均只读，未进入 S1.1、未生成真实 Execution Packet。
+- Verifier 结论为 `PASS`；Anti-Slop Judge 为 `REVISE / 87`；Strict Judge 为 `REVISE / 78`。首轮候选保持未通过状态。
+- 必修问题：完整输入信封的敏感字段和非法 UTF-8 未完全 fail closed；Git fixture 未清理危险 `GIT_*` 路径重定向变量；路线锁仍保留“未编码/尚未实现”旧状态；候选未形成可从干净检出复验的 Git 身份。
+- 先补失败测试，确认新增的完整信封敏感字段、`apikey`、未知字段、非法 UTF-8 和 Git 路径重定向用例均为 RED。
+- 最小修复：stdin 改为 fatal UTF-8 解码；探针对完整输入信封扫描敏感字段并拒绝未知顶层字段；敏感字段规则补 `apikey`；fixture 清除继承环境中的全部 `GIT_*` 后只写入受控配置；八个 P4 逻辑命令逐项测试；路线锁同步为候选已编码、待 L3 复审。
+- 修复后 `pnpm test` 为 38/38。P5-M0 仍未关闭；下一步是形成稳定 Git 候选身份、从干净临时检出执行完整门禁并进行独立复审。
+- Chief Reviewer 最终合并首轮结论为 `REVISE / 78`，P0 = 0、P1 = 4、P2 = 1；首轮审查包保存于 `.codex/reviews/p5-m0-implementation-2026-08-08/`。

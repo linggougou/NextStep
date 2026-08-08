@@ -1,0 +1,172 @@
+{
+  "review_id": "p5-m0-implementation-2026-08-08",
+  "task_id": "p5-m0-implementation-readiness",
+  "lane": "implementation-gate",
+  "review_level": "L3",
+  "rubric_id": "judge-harness-implementation-gate-v1",
+  "artifact_refs": [
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/PLANS.md",
+    "docs/exec-plans/active/p5-product-implementation-milestones.md",
+    "package.json",
+    "pnpm-lock.yaml",
+    "tsconfig.json",
+    "src/",
+    "tests/",
+    "schemas/v1/machine-receipt.schema.json",
+    "skills/nextstep/",
+    ".codex/context-summary-p5-m0-implementation-2026-08-08.md",
+    ".codex/verification-report.md"
+  ],
+  "reviewed_snapshot": {
+    "kind": "working-tree-before-remediation",
+    "git_commit": null,
+    "selected_digests": {
+      "src/cli/contract-probe.ts": "5bd560f6ad6c661d6f075dd66149c09eb06e8b147c48774da690ba171c9ced21",
+      "src/adapters/node/process-io.ts": "3fc8df23f54564dfa3a50d801840450f964d70e9c274435a4d91d01a63b05d97",
+      "src/domain/sensitive-fields.ts": "0716a354c4e93a6af2e1109e3b0e504b1a54bffc2b32d4ac6def6583b7d5984e",
+      "tests/support/git-fixture.ts": "4861024a94cd5a4dbf71dff0aa2fc46084166978cb5881f14c143bd9bef6bf70"
+    }
+  },
+  "hard_gates": [
+    {
+      "id": "baseline_commands",
+      "status": "pass",
+      "evidence": "依赖安装、类型检查、构建和既有测试通过；35/35，覆盖率行 89.22%、分支 85.19%、函数 97.06%。"
+    },
+    {
+      "id": "contract_fail_closed",
+      "status": "fail",
+      "evidence": "顶层敏感字段和 subject.apikey 被接受，apikey 值进入 stdout；非法 UTF-8 可被替换后继续处理。"
+    },
+    {
+      "id": "fixture_isolation",
+      "status": "fail",
+      "evidence": "继承 GIT_DIR 等危险环境变量时，Git fixture 可在受控临时根外创建内容。"
+    },
+    {
+      "id": "clean_checkout_reproducibility",
+      "status": "fail",
+      "evidence": "送审候选未进入 Git，当前 HEAD 不含 package.json、源码、测试和 P5 活动计划，无法从同一 OID 干净检出复验。"
+    },
+    {
+      "id": "route_truth_consistency",
+      "status": "fail",
+      "evidence": "路线锁同时写有候选待审查和 P5-M0 未编码/尚未实现，状态真源内部冲突。"
+    },
+    {
+      "id": "scope_and_non_claims",
+      "status": "pass",
+      "evidence": "未发现 S1.1、真实 Execution Packet、formal/control ref、.codex/runtime、PC 冒领或宿主支持冒领。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "implementation_correctness",
+      "score": 20,
+      "max_score": 25,
+      "reason": "主路径可运行，但关键输入负例没有 fail closed。",
+      "evidence_refs": [
+        "src/cli/contract-probe.ts:49",
+        "src/adapters/node/process-io.ts:14"
+      ]
+    },
+    {
+      "id": "contract_rigor",
+      "score": 15,
+      "max_score": 20,
+      "reason": "版本、四态、JCS 和摘要规则较完整，但敏感字段别名和完整信封边界不足。",
+      "evidence_refs": [
+        "src/domain/sensitive-fields.ts:3",
+        "skills/nextstep/SKILL.md:41"
+      ]
+    },
+    {
+      "id": "architecture_and_isolation",
+      "score": 14,
+      "max_score": 20,
+      "reason": "领域依赖方向正确，但 fixture 可受继承 Git 环境重定向。",
+      "evidence_refs": [
+        "tests/support/git-fixture.ts:20",
+        "tests/architecture/dependency-direction.test.ts:36"
+      ]
+    },
+    {
+      "id": "maintainability",
+      "score": 9,
+      "max_score": 10,
+      "reason": "代码规模和职责边界清晰，修复路径明确。",
+      "evidence_refs": [
+        "src/domain/",
+        "src/adapters/node/"
+      ]
+    },
+    {
+      "id": "test_sufficiency",
+      "score": 12,
+      "max_score": 15,
+      "reason": "覆盖率达标，但缺少完整信封、非法 UTF-8、危险 GIT_* 和八命令逐项负例。",
+      "evidence_refs": [
+        "tests/cli/contract-probe.test.ts",
+        "tests/support/git-fixture.test.ts",
+        "tests/domain/command-policy.test.ts"
+      ]
+    },
+    {
+      "id": "route_alignment",
+      "score": 8,
+      "max_score": 10,
+      "reason": "未越界进入 S1.1，但路线锁存在未编码/尚未实现的旧口径。",
+      "evidence_refs": [
+        "PROJECT_ROUTE_LOCK.md",
+        ".codex/verification-report.md"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 78,
+    "penalty_total": 0,
+    "final_score": 78
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "完整输入信封执行敏感字段扫描，覆盖 apikey/apiKey/api_key，并严格拒绝非法 UTF-8 和未知顶层字段。",
+    "Git fixture 清除危险继承环境并以负例证明不会写到受控临时根外。",
+    "将完整候选绑定到明确 Git OID，并从该 OID 的干净临时检出执行完整门禁。",
+    "同步路线锁的候选状态，移除未编码/尚未实现旧口径。",
+    "用新候选的测试数、覆盖率、命令和 OID 更新验证证据后，重新执行完整 L3。"
+  ],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Generator",
+      "conclusion": "SUBMITTED",
+      "notes": "提交 P5-M0 工作树候选、上下文摘要和本地验证证据；未自我批准。"
+    },
+    {
+      "role": "Verifier",
+      "conclusion": "PASS",
+      "notes": "原有硬门禁证据通过，但未覆盖后续 Strict Judge 实际复现的负例。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "REVISE",
+      "score": 78,
+      "notes": "发现契约 fail-closed、fixture 外部写和干净检出三个 P1，以及关键负例缺失。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "REVISE",
+      "score": 87,
+      "notes": "发现路线锁状态漂移；未发现空壳、冒领、秘密或生成物污染。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "REVISE",
+      "score": 78,
+      "notes": "首轮唯一结论为 REVISE；修复后的工作树属于新候选，必须绑定 OID 并完整复审。"
+    }
+  ],
+  "reviewed_at": "2026-08-08T00:00:00+08:00"
+}

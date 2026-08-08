@@ -2,13 +2,14 @@
 
 ## 当前阶段
 
-- 生命周期阶段：P4 执行机制设计
-- 当前里程碑：P4 执行机制设计已完成
-- 当前状态：P4 门禁通过；P5 尚未启动
+- 生命周期阶段：S5 开发落地
+- 当前项目里程碑：P5 产品落地
+- 当前活动里程碑：P5-M0 实施就绪门禁
+- 当前状态：P5 已启动，P5-M0 候选已形成并通过本地门禁，待独立 L3 审查；尚未生成真实执行任务包
 
 ## 当前活动计划
 
-- 无。P5 尚未启动。
+- [P5 产品落地实施里程碑](./exec-plans/active/p5-product-implementation-milestones.md)：当前唯一活动计划；按 `P5-M0 -> V1 -> V2 -> V3 -> V4 -> Final Acceptance` 推进
 
 ## 暂停候选计划
 
@@ -16,50 +17,34 @@
 
 ## 已会签上游
 
-- [P2 产品原型](./design-docs/p2-product-prototype.md)：用户会签通过，作为 `Web / UI` 候选分支输入
-- [P2 UI 设计真源输入要求](./design-docs/p2-ui-design-source-requirements.md)：用户会签通过，作为 `Web / UI` 候选分支输入
-- [P2 技术前置清单](./architecture/p2-technical-prep.md)：用户会签通过
-- [P2.1 后续真源文档契约](./product-specs/005-stage-document-contracts.md)：用户会签通过
-- [P2.2 产品载体与交互形态裁决](./product-specs/006-product-carrier-decision.md)：用户会签通过，已确认 `Skill 主载体 + 文档真源承载 + Web 暂不进入主路线`
-- [S3 Skill 交互真源补充契约](./product-specs/007-s3-skill-interaction-contract.md)：已会签
-- [后续交互与产品验收补充契约](./product-specs/008-downstream-interaction-product-acceptance-contract.md)：已会签
-- [S3 Skill 交互真源](./design-docs/s3-skill-interaction-source.md)：已会签，当前详细交互协议唯一真源
-- [S4 技术输入补充契约](./architecture/009-s4-technical-input-supplement.md)：已会签
-- [S4 技术架构](./architecture/s4-technical-architecture.md)：独立技术复审 `PASS / 98`，用户已于 2026-07-14 会签通过
-- [P3 版本与里程碑拆解执行计划](./exec-plans/completed/p3-version-and-milestone-breakdown.md)：有效 L3 独立规划复审 `PASS / 94`，用户已于 2026-07-27 会签通过
-- [P4 执行机制设计](./design-docs/p4-execution-mechanism-design.md)：L3 `PASS / 95`、上游可用性独立审查 `PASS / 94`，用户已于 2026-07-28 会签通过
-- [主对话 Agent 编排与上下文隔离 CR](./change-requests/002-main-conversation-agent-orchestration.md)：已完成；实现留待后续阶段
-- [S3 UI 设计真源](./design-docs/s3-ui-design-source.md)：`Web / UI` 候选分支草稿，当前暂停
+- [P2.2 产品载体裁决](./product-specs/006-product-carrier-decision.md)：`Skill 主载体 + 文档真源承载 + Web 暂不进入主路线`
+- [S3 Skill 交互真源](./design-docs/s3-skill-interaction-source.md)：当前详细交互协议唯一真源
+- [S4 技术架构](./architecture/s4-technical-architecture.md)：独立技术复审 `PASS / 98`，用户已会签
+- [P3 版本与里程碑拆解](./exec-plans/completed/p3-version-and-milestone-breakdown.md)：有效 L3 独立规划复审 `PASS / 94`，用户已会签
+- [P4 执行机制设计](./design-docs/p4-execution-mechanism-design.md)：L3 `PASS / 95`、上游可用性独立审查 `PASS / 94`，用户已会签
+- [P4 完成计划](./exec-plans/completed/p4-execution-mechanism-design.md)：已归档，作为 P5 执行上游
+- [后续交互与产品验收契约](./product-specs/008-downstream-interaction-product-acceptance-contract.md)：I/X/P、Profile 和 Final Acceptance 真源
 
-## 当前阶段交付物
+## 当前实施入口
 
-- [P4 执行机制设计执行计划](./exec-plans/completed/p4-execution-mechanism-design.md)：已归档
-- [P4 执行机制设计](./design-docs/p4-execution-mechanism-design.md)：已会签，作为 P5 正式设计上游
+P5 已于 2026-08-08 单独启动。当前只允许实施 `P5-M0`：固定 Node/TypeScript 工程基线、契约内核、临时 Git fixture harness、本地验证命令和机器输出纪律。P5-M0 不承载任何 `PC-01..PC-20` 完成声明，通过后才允许生成 S1.1 的第一份真实 Execution Packet。
 
-## 下一阶段入口
+实施顺序保持 P3 已会签结构：
 
-P4 已通过两轮有效 L3 审查和用户会签，设计正文与归档计划共同作为 P5 正式上游。P5 是下一阶段入口，但本次未启动 P5、未创建 P5 活动计划，也未编码或生成真实任务包。
+- V1：M1.1、M1.2，S1.1..S1.6，PC-01..08。
+- V2：M2.1、M2.2，S2.1..S2.4，PC-09..13。
+- V3：M3.1..M3.3，S3.1..S3.5，PC-14..18。
+- V4：M4.1、M4.2，S4.1..S4.3，PC-19..20。
+- Final Acceptance：反扫全部版本、PC、TG、S4 风险、交付和关闭条件。
 
-P4 应输出：
+## 不可偏离约束
 
-- 从已会签小里程碑到可拒绝 Execution Packet 的生成与校验机制。
-- 主对话、集成、执行、验证、评估、审查、最终复验和锚验证职责边界。
-- 派发确认、任务台账、代际、幂等、迟到结果和恢复协议。
-- 不可变候选、最终快照、项目外凭证、审计锚、锚验证和正式引用 CAS 闭环。
-- Acceptance Profile、I/X/P、Final Acceptance、宿主归档和 Change Intake 机制。
-- 正例、负例、阻塞、恢复、验收和风险承接矩阵。
+- `Skill / 聊天入口` 是主交互载体；项目文档、路线锁和对应阶段真源承载正式事实。
+- P4 第 12 节“运行集成验收”在 P5 中只能实现为集成诊断预检；正式 I/X/P 四态结论必须由独立门禁和最终复验链产生。
+- 不恢复 Web/UI 候选分支，不引入常驻服务、数据库、通用编排平台或 Project Provenance Store。
+- 不把 P4 文档、fixture、dry-run 或工程可构建误报为产品 PC 已交付。
+- 新需求、漏项和范围变化先进入 Change Intake，不直接插入当前实施。
 
-P4 不编写实现代码、测试代码、脚本或可执行 Schema，不生成或派发真实任务包，不修改目标项目，不进入 P5，不恢复 Web/UI 候选分支，也不引入 Project Provenance Store。
+## 阶段出口
 
-当前正式路线：
-
-- `Skill / 聊天入口` 是主交互载体。
-- `项目文档真源 + 路线锁 + 对应阶段真源文档` 是正式事实承载方式。
-- `Web` 暂不进入主路线。
-
-当前候选路线：
-
-- `S3 UI 设计真源` 保留为 `Web / UI` 候选分支草稿。
-- 未来若恢复，必须重新进入路线确认或变更分流。
-
-P5 启动时必须把 P4 第 12 节“运行集成验收”实现为集成诊断预检；正式 I/X/P 四态结论仍必须走独立门禁和最终复验链，不能让集成任务自我批准。
+V1..V4 和 Final Acceptance 全部通过本地可重复验证、独立 I/X/P、适用 Profile 验收和用户会签后，才允许归档 P5 活动计划并进入交付归档。

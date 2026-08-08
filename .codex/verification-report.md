@@ -1290,3 +1290,50 @@
 - 暂存区补充验证：首次 `git diff --cached --check` 发现 3 处 `new blank line at EOF`；机械修正后需以重新运行的暂存区检查结果作为最终提交依据，先前工作区检查不替代该结论。
 - 最终暂存区验证：`git diff --cached --check` 通过，全部审查 JSON 再度通过 `jq empty`；88 个文件成功写入本地提交。
 - 提交后结论：通过；应以 `git status --short --branch` 显示工作区清洁作为最终收口证据，未执行推送。
+
+## 2026-08-08 P5 产品落地启动与实施里程碑验证
+
+- 验证范围：P5 活动计划、路线锁、PLANS、P4 归档状态、P3/P4/S4/008 上游保护、`.codex` 上下文与操作留痕，以及代码/任务包禁入边界。
+- 生命周期结论：用户已授权单独启动 P5；当前状态已从“P4 门禁通过；P5 尚未启动”切换为 `S5 开发落地 / P5 产品落地 / P5-M0 实施就绪门禁`。
+- 结构断言：通过。
+  - `docs/exec-plans/active/` 只有 `p5-product-implementation-milestones.md` 一份活动计划，P4 计划仍位于 completed。
+  - P5 计划包含 `P5-M0、V1、V2、V3、V4、Final Acceptance` 共 6 个实施关口。
+  - 8 个 P4 逻辑工具入口全部具有首次实施、完整验收和失败约束映射。
+  - P3 的 4 个版本、9 个大里程碑、18 个小里程碑、12 项指标和 14 个验收对象均被保留，不改变 PC 主版本归属。
+- 语义断言：通过。
+  - P5-M0 明确为跨版本实施就绪门禁，不承载任何 `PC-01..PC-20` 完成声明。
+  - P5-M0 通过前不得生成 S1.1 的真实 Execution Packet。
+  - 集成验收只作为诊断预检；正式 I/X/P 四态结论仍由独立门禁和最终复验链产生。
+  - V1..V4 和 Final Acceptance 均有进入条件、退出门禁、证据和回退边界。
+- 状态断言：通过。路线锁、PLANS、活动计划和上下文摘要均为 P5 已启动、P5-M0 活动、尚未编码；当前入口文件中不存在“P5 尚未启动”“不进入 P5”等陈旧口径。
+- 上游保护断言：通过。P3 完成计划、P4 设计、P4 完成计划、S4 技术架构和 008 验收契约相对当前提交零差异。
+- 范围断言：通过。Git 变更范围只有 P5 活动计划、路线锁、PLANS 和本轮 `.codex` 留痕；未创建 `package.json`、`tsconfig.json`、源码、测试、Schema、fixture、正式/控制 ref 或真实执行任务包。
+- 格式断言：`git diff --check` 通过；新增未跟踪文档无尾随空白。
+- 代码验证：本轮仅建立实施真源，不涉及代码、依赖、测试或构建，因此未运行产品测试和构建；对应命令将在 P5-M0 中建立并作为其退出门禁。
+- 质量评分：需求与路线覆盖 20/20，里程碑完整性 20/20，依赖与风险 19/20，验证可重复性 19/20，范围控制与状态一致性 20/20；综合 `98/100`，建议通过。
+- 遗留风险：P5-M0 尚未实施，Node LTS、包管理器、最终物理目录和本地命令仍待通过最小实现冻结；在该门禁通过前不得进入 S1.1。
+- 阶段门禁结论：P5 启动门禁通过，P5-M0 成为当前唯一实施入口；P5-M0 编码与验证尚未开始，不允许声称任何产品 PC 已交付。
+
+## 2026-08-08 P5-M0 候选本地验证
+
+- 候选范围：工程/运行时固定、契约内核、严格 JSON Schema、只读 CLI、Node adapter、Skill M0 入口、临时 Git fixture、测试和文档；不含 S1.1 或任何 PC 完成声明。
+- 安装门禁：`pnpm install --frozen-lockfile` 通过；Node `24.14.0`、pnpm `10.33.2` 和精确依赖版本均进入真源与锁文件，`.npmrc` 启用 `engine-strict`。
+- 类型与构建：`pnpm typecheck`、`pnpm build` 通过；构建产物包含 `dist/src/cli/contract-probe.js` 和 `dist/schemas/v1/machine-receipt.schema.json`。
+- 测试：`pnpm check` 通过，35/35，失败/跳过/取消均为 0。
+- 覆盖率：行 `89.22%`、分支 `85.19%`、函数 `97.06%`，均高于 80% 门禁。
+- 行为门禁：JCS/canonical bytes、SHA-256 与投影、版本 `1.0`、四态、Ajv Schema、回执一致性/深冻结、敏感字段、dry-run 策略、CLI stdout/stderr、fixture/refs 不污染和依赖方向均通过。
+- Skill 门禁：`skills/nextstep` 官方 `quick_validate.py` 通过；Luna 前向测试能准确读取当前阶段、阻塞和下一步，未越界调用未实现能力。
+- 安全门禁：`pnpm audit --registry=https://registry.npmjs.org --audit-level=high` 返回无已知漏洞；高置信秘密、`console.log`、`debugger` 和 TODO 扫描无命中。
+- 格式与结构：`git diff --check`、项目文件尾随空白、JSON 和 Skill YAML 解析通过；domain 未反向依赖 adapter/CLI/Codex。
+- 范围断言：P3/P4/S4 已会签正文未修改；`refs/nextstep/formal`、`refs/nextstep/control`、`.codex/runtime` 和真实 Execution Packet 均不存在。
+- 工具替代：默认 pnpm 镜像缺少 audit endpoint，使用 npm 官方 registry 重跑；系统 Python/Ruby 缺少适用 YAML 能力，使用 `/tmp` 一次性 PyYAML 环境运行官方 Skill 工具。替代验证均通过。
+- 候选门禁结论：本地通过，待独立 L3 审查。L3 通过前不得关闭 P5-M0 或进入 S1.1。
+## 2026-08-08 P5-M0 首轮 L3 修复验证
+
+- 首轮 L3 信号：Verifier `PASS`；Strict Judge `REVISE / 78`，P1 = 3；Anti-Slop Judge `REVISE / 87`，P1 = 1；Chief Reviewer 最终结论 `REVISE / 78`，P0 = 0、P1 = 4、P2 = 1。
+- TDD RED：新增 4 个失败测试组，分别命中完整信封敏感字段、`apikey`、未知字段/非法 UTF-8、危险 `GIT_*` 环境重定向。
+- 修复后 `pnpm test`：38/38 通过，失败、跳过、取消均为 0。
+- 修复后 `pnpm check`：38/38 通过；覆盖率行 `90.20%`、分支 `86.47%`、函数 `97.06%`。
+- 行为复验：顶层敏感字段和 `subject.apikey` 均返回 `SENSITIVE_FIELD_DETECTED` 且不回显值；未知顶层字段拒绝；非法 UTF-8 非零退出；fixture 在注入 `GIT_DIR`、`GIT_WORK_TREE`、`GIT_INDEX_FILE`、`GIT_OBJECT_DIRECTORY` 和 `GIT_CONFIG_PARAMETERS` 时仍只使用自身 `.git`，外部路径不存在。
+- 状态复验：路线锁已移除“P5-M0 未编码/尚未实现”的陈旧口径，明确为候选已编码、本地门禁通过、待独立 L3 复审。
+- 尚未关闭项：必须形成稳定 Git 候选身份，并从该身份的干净临时检出完成安装、检查、构建和范围反扫；随后重新执行独立 L3。当前不得进入 S1.1。

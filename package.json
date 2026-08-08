@@ -1,0 +1,28 @@
+{
+  "name": "nextstep",
+  "version": "0.0.0",
+  "private": true,
+  "description": "AI project delivery loop with document and Git-backed sources of truth.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "engines": {
+    "node": ">=24.14.0 <25"
+  },
+  "packageManager": "pnpm@10.33.2",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "pnpm build && node --test dist/tests/**/*.test.js",
+    "test:coverage": "pnpm build && node --test --experimental-test-coverage --test-coverage-include='dist/src/**/*.js' --test-coverage-lines=80 --test-coverage-functions=80 --test-coverage-branches=80 dist/tests/**/*.test.js",
+    "check": "pnpm typecheck && pnpm test:coverage"
+  },
+  "dependencies": {
+    "ajv": "8.20.0",
+    "json-canonicalize": "2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.3",
+    "es-module-lexer": "2.3.1",
+    "typescript": "7.0.2"
+  }
+}
