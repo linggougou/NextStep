@@ -31,7 +31,7 @@ function createReceipt(
 }
 
 function writeReceipt(io: ProcessIoAdapter, receipt: MachineReceipt): void {
-  io.writeOutput(`${JSON.stringify(receipt)}\n`);
+  io.writeOutput(canonicalizeJson(receipt));
 }
 
 function readArguments(args: readonly string[]): { readonly dryRun: boolean } {

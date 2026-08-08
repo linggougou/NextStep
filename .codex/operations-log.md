@@ -1248,3 +1248,12 @@
 - 最小修复：stdin 改为 fatal UTF-8 解码；探针对完整输入信封扫描敏感字段并拒绝未知顶层字段；敏感字段规则补 `apikey`；fixture 清除继承环境中的全部 `GIT_*` 后只写入受控配置；八个 P4 逻辑命令逐项测试；路线锁同步为候选已编码、待 L3 复审。
 - 修复后 `pnpm test` 为 38/38。P5-M0 仍未关闭；下一步是形成稳定 Git 候选身份、从干净临时检出执行完整门禁并进行独立复审。
 - Chief Reviewer 最终合并首轮结论为 `REVISE / 78`，P0 = 0、P1 = 4、P2 = 1；首轮审查包保存于 `.codex/reviews/p5-m0-implementation-2026-08-08/`。
+
+## 2026-08-08 P5-M0 第二轮 L3 审查与修复
+
+- 将首轮修复绑定到 commit `7e3974b9caa2b76337b2f531ba03d5c85be4c9f7`、tree `72b13a790148711b0a261d9e87584b37911ca611`，并从 `--no-local` 全新临时克隆完成冻结安装、完整检查、官方 registry audit、refs/runtime/工作树反扫。
+- 第二轮独立角色：Verifier `PASS`；Anti-Slop Judge `PASS / 98`；Strict Judge `REVISE / 85`；Chief Reviewer `REVISE / 85`。审查包保存于 `.codex/reviews/p5-m0-implementation-rereview-2026-08-08/`。
+- 第二轮 P1：命令策略接受非布尔真值 `dry_run`；CLI 整个回执使用 `JSON.stringify` 而非 JCS；成功回执 Schema 接受空 `data` 假成功。
+- TDD 修复：命令策略改为对 `unknown` 执行完整对象、命令和布尔类型校验；stdout 改为无尾随字节的 JCS；Schema 按成功/失败分支约束 `data` 必填、类型和额外字段；敏感字段扫描提前覆盖完整回执。
+- 新增负例后 `pnpm check` 为 40/40，覆盖率行 90.84%、分支 87.68%、函数 97.06%；官方 registry audit 无已知漏洞。
+- P5-M0 仍未关闭；必须形成新 OID、完成干净检出和第三轮完整 L3。

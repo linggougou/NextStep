@@ -33,3 +33,21 @@ test("command policy covers all eight P4 logical commands", () => {
     assert.doesNotThrow(() => assertCommandPolicy({ command, dry_run: false }));
   }
 });
+
+test("command policy rejects malformed runtime invocations and non-boolean dry-run values", () => {
+  for (const invocation of [
+    null,
+    {},
+    { command: "formal-promote" },
+    { command: "formal-promote", dry_run: "false" },
+    { command: "formal-promote", dry_run: 1 },
+    { command: "formal-promote", dry_run: {} },
+    { command: "formal-promote", dry_run: [] },
+    { command: "formal-promote", dry_run: true, extra: true },
+  ]) {
+    assert.throws(
+      () => assertCommandPolicy(invocation),
+      /invocation|dry.run|boolean|command|policy/i,
+    );
+  }
+});

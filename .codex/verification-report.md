@@ -1337,3 +1337,12 @@
 - 行为复验：顶层敏感字段和 `subject.apikey` 均返回 `SENSITIVE_FIELD_DETECTED` 且不回显值；未知顶层字段拒绝；非法 UTF-8 非零退出；fixture 在注入 `GIT_DIR`、`GIT_WORK_TREE`、`GIT_INDEX_FILE`、`GIT_OBJECT_DIRECTORY` 和 `GIT_CONFIG_PARAMETERS` 时仍只使用自身 `.git`，外部路径不存在。
 - 状态复验：路线锁已移除“P5-M0 未编码/尚未实现”的陈旧口径，明确为候选已编码、本地门禁通过、待独立 L3 复审。
 - 尚未关闭项：必须形成稳定 Git 候选身份，并从该身份的干净临时检出完成安装、检查、构建和范围反扫；随后重新执行独立 L3。当前不得进入 S1.1。
+
+## 2026-08-08 P5-M0 第二轮 L3 修复验证
+
+- 送审身份：commit `7e3974b9caa2b76337b2f531ba03d5c85be4c9f7`，tree `72b13a790148711b0a261d9e87584b37911ca611`，主管与审查角色均确认送审时工作树清洁。
+- 干净检出：从该 OID 的 `--no-local` 全新临时克隆执行 `pnpm install --frozen-lockfile`、`pnpm check` 和官方 registry audit，38/38、覆盖率 90.20%/86.47%/97.06%，无 NextStep refs、`.codex/runtime` 或工作树污染。
+- 第二轮结论：Verifier `PASS`；Anti-Slop Judge `PASS / 98`；Strict Judge 与 Chief Reviewer `REVISE / 85`，P0 = 0、P1 = 3、P2 = 0。
+- TDD RED/GREEN：非布尔 `dry_run`、整个 stdout 非 JCS、空成功回执和不完整 `data` 负例先失败；运行时结构校验、JCS 输出和分支 Schema 修复后全部通过。
+- 修复后 `pnpm check`：40/40；覆盖率行 `90.84%`、分支 `87.68%`、函数 `97.06%`；官方 registry audit 无已知漏洞，`git diff --check` 通过。
+- 门禁结论：第二轮保持 `REVISE`；当前工作树属于第三轮新候选，绑定新 OID 并完成干净检出与完整 L3 前不得关闭 P5-M0 或进入 S1.1。

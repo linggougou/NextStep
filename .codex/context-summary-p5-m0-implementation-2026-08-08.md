@@ -26,8 +26,8 @@
 ## 验证结果
 
 - `pnpm install --frozen-lockfile`：通过。
-- `pnpm check`：通过，38/38 测试。
-- 覆盖率：行 90.20%，分支 86.47%，函数 97.06%。
+- `pnpm check`：通过，40/40 测试。
+- 覆盖率：行 90.84%，分支 87.68%，函数 97.06%。
 - `pnpm audit --registry=https://registry.npmjs.org --audit-level=high`：无已知漏洞。
 - `git diff --check`、尾随空白、秘密、调试输出和 TODO 扫描：通过。
 - `package.json` 和 Schema JSON：`jq` 解析通过。
@@ -40,6 +40,12 @@
 - 已修复完整输入信封敏感字段、`apikey`、未知字段、非法 UTF-8 和危险 `GIT_*` 环境继承问题，新增负例均通过。
 - 路线锁已同步为候选已编码、本地门禁通过、待独立 L3 复审。
 - 下一步必须将当前候选绑定 Git OID，从该 OID 的干净检出复验，再执行完整 L3 复审。
+
+## 第二轮 L3 修复
+
+- 固定 OID `7e3974b9caa2b76337b2f531ba03d5c85be4c9f7` 的 Verifier 为 `PASS`，Anti-Slop Judge 为 `PASS / 98`，Strict Judge 与 Chief Reviewer 均为 `REVISE / 85`。
+- 第二轮发现并修复：非布尔 `dry_run` 运行时绕过、整个机器回执非 JCS 字节、成功回执 `data={}` 假成功。
+- 修复后 40/40；下一步仍需绑定新 OID、干净检出验证和完整 L3，不得进入 S1.1。
 
 ## 工具替代
 

@@ -4,6 +4,7 @@ import { readdir } from "node:fs/promises";
 import { resolve } from "node:path";
 import test from "node:test";
 
+import { parseCanonicalJsonBytes } from "../../src/domain/canonical-json.ts";
 import { createTemporaryGitFixture } from "../support/git-fixture.ts";
 
 const compiledProbePath = resolve(
@@ -157,6 +158,10 @@ test("contract probe emits one successful machine receipt with canonical JSON an
   assert.equal(result.stderr, "");
 
   const receipt = parseSingleReceipt(result.stdout);
+  assert.deepEqual(
+    parseCanonicalJsonBytes(Buffer.from(result.stdout, "utf8")),
+    receipt,
+  );
   assert.equal(receipt.ok, true);
   assert.equal(receipt.code, "CONTRACT_PROBE_SUCCEEDED");
   assert.equal(

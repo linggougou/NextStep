@@ -17,7 +17,16 @@ export interface CommandInvocation {
   readonly dry_run: boolean;
 }
 
-export function assertCommandPolicy(invocation: CommandInvocation): void {
+export function assertCommandPolicy(invocation: unknown): void {
+  if (
+    !isPlainRecord(invocation) ||
+    Object.keys(invocation).length !== 2 ||
+    typeof invocation.command !== "string" ||
+    typeof invocation.dry_run !== "boolean"
+  ) {
+    throw new TypeError("Invalid command invocation");
+  }
+
   if (READONLY_COMMANDS.has(invocation.command)) {
     return;
   }
@@ -26,7 +35,8 @@ export function assertCommandPolicy(invocation: CommandInvocation): void {
     throw new TypeError(`Unknown command policy: ${invocation.command}`);
   }
 
-  if (!invocation.dry_run) {
+  if (invocation.dry_run !== true) {
     throw new Error(`Mutating command requires dry-run: ${invocation.command}`);
   }
 }
+import { isPlainRecord } from "./value-guards.ts";

@@ -55,12 +55,12 @@ function formatSchemaErrors(validate: ValidateFunction): string {
 export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
   parse(value: unknown): MachineReceipt {
     canonicalizeJson(value);
+    assertNoSensitiveFields(value);
 
     if (!validateMachineReceipt(value)) {
       throw new TypeError(`Invalid machine receipt schema: ${formatSchemaErrors(validateMachineReceipt)}`);
     }
 
-    assertNoSensitiveFields(value.data);
     return deepFreeze(structuredClone(value));
   },
 };

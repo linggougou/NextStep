@@ -48,7 +48,7 @@ test("parseMachineReceipt accepts a complete machine-readable receipt", () => {
     receipt_id: "receipt-001",
     ok: false,
     code: "SENSITIVE_FIELD_DETECTED",
-    data: { field_path: "$.result.access_token" },
+    data: { dry_run: false },
   };
 
   assert.deepEqual(parseMachineReceipt(receipt), receipt);
@@ -60,7 +60,12 @@ test("parseMachineReceipt rejects malformed receipts rather than returning a par
     receipt_id: "receipt-001",
     ok: true,
     code: "CONTRACT_PROBE_SUCCEEDED",
-    data: {},
+    data: {
+      canonical_json: "{}",
+      digest: `sha256:${"a".repeat(64)}`,
+      dry_run: true,
+      schema_version: "1.0",
+    },
   };
 
   for (const receipt of [

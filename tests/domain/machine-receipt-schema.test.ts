@@ -12,14 +12,12 @@ const successfulReceipt = {
   ok: true,
   code: "CONTRACT_PROBE_SUCCEEDED",
   data: {
-    nested: { status: "accepted" },
-    outputs: [{ digest: "sha256:abc" }],
+    canonical_json: '{"status":"accepted"}',
+    digest: `sha256:${"a".repeat(64)}`,
+    dry_run: true,
+    schema_version: "1.0",
   },
 };
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
 
 test("machine receipt is accepted through the executable schema", () => {
   assert.deepEqual(MACHINE_RECEIPT_SCHEMA.parse(successfulReceipt), successfulReceipt);
@@ -50,17 +48,46 @@ test("machine receipt schema fails closed when data contains sensitive fields", 
   );
 });
 
+test("machine receipt schema rejects incomplete or mismatched data shapes", () => {
+  for (const receipt of [
+    { ...successfulReceipt, data: {} },
+    {
+      ...successfulReceipt,
+      data: { ...successfulReceipt.data, digest: "sha256:abc" },
+    },
+    {
+      ...successfulReceipt,
+      data: { ...successfulReceipt.data, dry_run: "true" },
+    },
+    {
+      ...successfulReceipt,
+      data: { ...successfulReceipt.data, unexpected: true },
+    },
+    {
+      schema_version: "1.0",
+      receipt_id: "receipt-failure",
+      ok: false,
+      code: "CONTRACT_PROBE_REJECTED",
+      data: {},
+    },
+    {
+      schema_version: "1.0",
+      receipt_id: "receipt-failure",
+      ok: false,
+      code: "CONTRACT_PROBE_REJECTED",
+      data: { dry_run: false, unexpected: true },
+    },
+  ]) {
+    assert.throws(
+      () => parseMachineReceipt(receipt),
+      /data|digest|dry.run|schema|receipt|invalid/i,
+    );
+  }
+});
+
 test("parseMachineReceipt deeply freezes the validated receipt", () => {
   const receipt = parseMachineReceipt(successfulReceipt);
-  const nested = receipt.data.nested;
-  const outputs = receipt.data.outputs;
 
   assert.ok(Object.isFrozen(receipt));
   assert.ok(Object.isFrozen(receipt.data));
-  assert.ok(isRecord(nested));
-  assert.ok(Array.isArray(outputs));
-  assert.ok(isRecord(outputs[0]));
-  assert.ok(Object.isFrozen(nested));
-  assert.ok(Object.isFrozen(outputs));
-  assert.ok(Object.isFrozen(outputs[0]));
 });
