@@ -1362,3 +1362,17 @@
 - TDD RED/GREEN：非 JCS 信封、六类敏感字段变体、canonical/回执访问器和命令访问器负例先失败；原始字节解析、复数别名、访问器拒绝与单快照修复后全部通过。
 - 修复后 `pnpm check`：46/46；覆盖率行 `91.43%`、分支 `88.24%`、函数 `97.06%`；官方 registry audit 无已知漏洞，`git diff --check` 通过。
 - 门禁结论：第四轮保持 `REVISE`；当前工作树属于第五轮新候选，绑定新 OID 并完成干净检出与完整 L3 前不得关闭 P5-M0 或进入 S1.1。
+
+## 2026-08-09 P5-M0 第五轮 L3 与第六轮候选本地验证
+
+- 第五轮送审身份：commit `8a64af3bbdec89c4d4faa8f8533566d86bf4174e`，tree `c8fb0858115781fe59fb3475e94872669554635d`，送审时工作树清洁。
+- 第五轮结论：Verifier `PASS`；Anti-Slop Judge `PASS / 100`；Strict Judge 与 Chief Reviewer `REVISE / 82`，P0 = 0、P1 = 2、P2 = 1。审查包位于 `.codex/reviews/p5-m0-implementation-rereview-4-2026-08-09/`。
+- TDD RED：`toJSON` 非 JCS、投影属性丢失/getter、Proxy 视图差异共 8 个用例失败；共享对象二次描述符读取补充用例失败为 `2 !== 1`。
+- 修复：基于每对象一次属性描述符读取构造深冻结 JSON 快照，自行按 UTF-16 键顺序和 ECMAScript 数字语义输出 JCS；投影、敏感扫描、命令策略和回执统一消费快照；移除 `json-canonicalize`。
+- `pnpm install --frozen-lockfile`：通过。
+- `pnpm check`：通过，59/59，失败、跳过、取消均为 0。
+- 覆盖率：行 92.99%、分支 90.45%、函数 97.44%，均高于 80% 门禁。
+- `pnpm audit --registry=https://registry.npmjs.org --audit-level=high`：无已知漏洞。
+- 结构验证：Skill 官方校验、`git diff --check`、JSON、尾随空白、秘密、调试残留和 TODO 扫描通过。
+- 范围验证：无 NextStep formal/control refs、`.codex/runtime`、真实 Execution Packet 或 PC/宿主冒领；P3/P4/S4 已会签正文未修改。
+- 阶段门禁结论：当前是第六轮本地候选，尚未绑定固定 OID。创建提交并从 `--no-local` 全新检出复验后，才能执行第六轮 L3；当前不得关闭 P5-M0 或进入 S1.1。

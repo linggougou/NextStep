@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   canonicalizeJson,
   parseCanonicalJsonBytes,
+  snapshotJsonValue,
 } from "../../src/domain/canonical-json.ts";
 
 test("canonicalizeJson sorts object keys recursively", () => {
@@ -22,6 +23,71 @@ test("canonicalizeJson preserves array order", () => {
   assert.equal(
     canonicalizeJson({ items: [{ id: "second" }, { id: "first" }] }),
     '{"items":[{"id":"second"},{"id":"first"}]}',
+  );
+});
+
+test("canonicalizeJson treats root and nested toJSON names as ordinary data fields", () => {
+  assert.equal(
+    canonicalizeJson({ z: 1, toJSON: "metadata", a: 2 }),
+    '{"a":2,"toJSON":"metadata","z":1}',
+  );
+  assert.equal(
+    canonicalizeJson({ subject: { z: 1, toJSON: "metadata", a: 2 } }),
+    '{"subject":{"a":2,"toJSON":"metadata","z":1}}',
+  );
+});
+
+test("canonicalizeJson serializes one descriptor snapshot instead of rereading a Proxy", () => {
+  const value = new Proxy(
+    { stable: "target-value" },
+    {
+      get: (_target, property, receiver) =>
+        property === "stable" ? "consumer-value" : Reflect.get(_target, property, receiver),
+      getOwnPropertyDescriptor: (_target, property) =>
+        property === "stable"
+          ? {
+              configurable: true,
+              enumerable: true,
+              value: "descriptor-value",
+              writable: true,
+            }
+          : Reflect.getOwnPropertyDescriptor(_target, property),
+    },
+  );
+
+  assert.equal(canonicalizeJson(value), '{"stable":"descriptor-value"}');
+});
+
+test("snapshotJsonValue reads a shared input object only once and deeply freezes it", () => {
+  let descriptorReads = 0;
+  const shared = new Proxy(
+    { stable: true },
+    {
+      getOwnPropertyDescriptor: (target, property) => {
+        descriptorReads += 1;
+        return Reflect.getOwnPropertyDescriptor(target, property);
+      },
+    },
+  );
+
+  const snapshot = snapshotJsonValue({ left: shared, right: shared });
+
+  assert.equal(descriptorReads, 1);
+  assert.ok(Object.isFrozen(snapshot));
+  assert.ok(Object.isFrozen((snapshot as { left: unknown }).left));
+  assert.equal(
+    canonicalizeJson(snapshot),
+    '{"left":{"stable":true},"right":{"stable":true}}',
+  );
+});
+
+test("canonicalizeJson preserves __proto__ as data and follows ECMAScript number serialization", () => {
+  const value = JSON.parse('{"__proto__":{"safe":true}}') as unknown;
+
+  assert.equal(canonicalizeJson(value), '{"__proto__":{"safe":true}}');
+  assert.equal(
+    canonicalizeJson([333333333.33333329, 1e30, 4.5, 2e-3, 1e-27, -0]),
+    "[333333333.3333333,1e+30,4.5,0.002,1e-27,0]",
   );
 });
 
@@ -64,7 +130,9 @@ test("canonicalizeJson rejects accessor properties", () => {
 test("parseCanonicalJsonBytes accepts only original JCS UTF-8 bytes", () => {
   const bytes = Buffer.from('{"alpha":1,"zebra":3}', "utf8");
 
-  assert.deepEqual(parseCanonicalJsonBytes(bytes), { alpha: 1, zebra: 3 });
+  const parsed = parseCanonicalJsonBytes(bytes);
+  assert.deepEqual(parsed, { alpha: 1, zebra: 3 });
+  assert.ok(Object.isFrozen(parsed));
 });
 
 test("parseCanonicalJsonBytes rejects non-canonical encodings and invalid UTF-8", () => {

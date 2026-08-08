@@ -1,7 +1,7 @@
 import { Ajv, type ValidateFunction } from "ajv";
 
 import machineReceiptSchema from "../../schemas/v1/machine-receipt.schema.json" with { type: "json" };
-import { canonicalizeJson, parseCanonicalJsonBytes } from "./canonical-json.ts";
+import { parseCanonicalJsonBytes } from "./canonical-json.ts";
 import { assertDigestMatches } from "./content-digest.ts";
 import { assertNoSensitiveFields } from "./sensitive-fields.ts";
 import { type UnknownRecord } from "./value-guards.ts";
@@ -36,27 +36,13 @@ const ajv = new Ajv({
 const validateMachineReceipt: ValidateFunction<MachineReceipt> =
   ajv.compile<MachineReceipt>(machineReceiptSchema);
 
-function deepFreeze<T>(value: T, visited: Set<object> = new Set<object>()): T {
-  if (value === null || typeof value !== "object" || visited.has(value)) {
-    return value;
-  }
-
-  visited.add(value);
-  for (const child of Object.values(value)) {
-    deepFreeze(child, visited);
-  }
-
-  return Object.freeze(value);
-}
-
 function formatSchemaErrors(validate: ValidateFunction): string {
   return ajv.errorsText(validate.errors, { separator: "; " });
 }
 
 export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
   parse(value: unknown): MachineReceipt {
-    const snapshot = JSON.parse(canonicalizeJson(value)) as unknown;
-    assertNoSensitiveFields(snapshot);
+    const snapshot = assertNoSensitiveFields(value);
 
     if (!validateMachineReceipt(snapshot)) {
       throw new TypeError(`Invalid machine receipt schema: ${formatSchemaErrors(validateMachineReceipt)}`);
@@ -74,7 +60,7 @@ export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
       assertDigestMatches(subject, digest);
     }
 
-    return deepFreeze(snapshot);
+    return snapshot;
   },
 };
 

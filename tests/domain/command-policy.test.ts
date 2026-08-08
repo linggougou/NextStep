@@ -34,6 +34,21 @@ test("command policy covers all eight P4 logical commands", () => {
   }
 });
 
+test("command policy returns the frozen descriptor snapshot it validated", () => {
+  const invocation = new Proxy(
+    { command: "formal-promote", dry_run: true },
+    {
+      get: (target, property, receiver) =>
+        property === "dry_run" ? false : Reflect.get(target, property, receiver),
+    },
+  );
+
+  const validated = assertCommandPolicy(invocation);
+
+  assert.deepEqual(validated, { command: "formal-promote", dry_run: true });
+  assert.ok(Object.isFrozen(validated));
+});
+
 test("command policy rejects malformed runtime invocations and non-boolean dry-run values", () => {
   const accessorInvocation = Object.create(Object.prototype, {
     command: { enumerable: true, get: () => "formal-promote" },
@@ -55,5 +70,16 @@ test("command policy rejects malformed runtime invocations and non-boolean dry-r
       () => assertCommandPolicy(invocation),
       /invocation|dry.run|boolean|command|policy/i,
     );
+  }
+});
+
+test("command policy rejects hidden and Symbol command data", () => {
+  const hidden = { command: "formal-promote", dry_run: true };
+  Object.defineProperty(hidden, "audit", { enumerable: false, value: true });
+  const symbolKeyed = { command: "formal-promote", dry_run: true };
+  Object.defineProperty(symbolKeyed, Symbol("audit"), { enumerable: true, value: true });
+
+  for (const invocation of [hidden, symbolKeyed]) {
+    assert.throws(() => assertCommandPolicy(invocation), /enumerable|symbol|json|invocation/i);
   }
 });

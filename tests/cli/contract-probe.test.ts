@@ -186,6 +186,30 @@ test("contract probe returns a structured failure receipt for malformed JSON and
   assert.equal(receipt.code, "INVALID_JSON");
 });
 
+test("contract probe rejects a non-JCS subject containing an ordinary toJSON field", async () => {
+  const result = await runProbe(
+    '{"schema_version":"1.0","subject":{"z":1,"toJSON":"metadata","a":2}}',
+  );
+
+  assert.notEqual(result.exitCode, 0);
+  assert.match(result.stderr, /canonical|input|rejected/i);
+  assert.equal(parseSingleReceipt(result.stdout).ok, false);
+});
+
+test("contract probe accepts an ordinary toJSON field when the complete input is JCS", async () => {
+  const result = await runProbe(
+    '{"schema_version":"1.0","subject":{"a":2,"toJSON":"metadata","z":1}}',
+  );
+
+  assert.equal(result.exitCode, 0, result.stderr);
+  const receipt = parseSingleReceipt(result.stdout);
+  assert.equal(receipt.ok, true);
+  assert.equal(
+    receipt.data.canonical_json,
+    '{"a":2,"toJSON":"metadata","z":1}',
+  );
+});
+
 test("contract probe fails closed for sensitive input without leaking the sensitive value", async () => {
   const sensitiveValue = "p5-m0-sensitive-value-must-not-escape";
   const result = await runProbe(

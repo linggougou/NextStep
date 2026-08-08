@@ -91,6 +91,7 @@ test("machine receipt schema rejects incomplete or mismatched data shapes", () =
 
 test("successful machine receipts verify canonical payload semantics", () => {
   const sensitiveSubject = { access_token: "must-not-pass" };
+  const toJsonSubject = { z: 1, toJSON: "metadata", a: 2 };
 
   for (const data of [
     {
@@ -110,6 +111,11 @@ test("successful machine receipts verify canonical payload semantics", () => {
       ...successfulReceipt.data,
       canonical_json: canonicalizeJson(sensitiveSubject),
       digest: digestJson(sensitiveSubject),
+    },
+    {
+      ...successfulReceipt.data,
+      canonical_json: '{"z":1,"toJSON":"metadata","a":2}',
+      digest: digestJson(toJsonSubject),
     },
   ]) {
     assert.throws(
@@ -142,4 +148,28 @@ test("parseMachineReceipt rejects accessor-backed receipts", () => {
     () => parseMachineReceipt(receipt),
     /accessor|data propert|plain json/i,
   );
+});
+
+test("parseMachineReceipt validates and returns one frozen Proxy descriptor snapshot", () => {
+  const receipt = new Proxy(successfulReceipt, {
+    get: (target, property, receiver) =>
+      property === "receipt_id"
+        ? "receipt-consumer-view"
+        : Reflect.get(target, property, receiver),
+    getOwnPropertyDescriptor: (target, property) =>
+      property === "receipt_id"
+        ? {
+            configurable: true,
+            enumerable: true,
+            value: "receipt-descriptor-view",
+            writable: true,
+          }
+        : Reflect.getOwnPropertyDescriptor(target, property),
+  });
+
+  const parsed = parseMachineReceipt(receipt);
+
+  assert.equal(parsed.receipt_id, "receipt-descriptor-view");
+  assert.ok(Object.isFrozen(parsed));
+  assert.ok(Object.isFrozen(parsed.data));
 });

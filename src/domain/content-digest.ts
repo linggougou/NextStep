@@ -1,6 +1,10 @@
 import { createHash } from "node:crypto";
 
-import { canonicalizeJson } from "./canonical-json.ts";
+import {
+  canonicalizeJson,
+  snapshotJsonValue,
+  type JsonValue,
+} from "./canonical-json.ts";
 import { isPlainRecord, type UnknownRecord } from "./value-guards.ts";
 
 const SHA256_DIGEST_PATTERN = /^sha256:[a-f0-9]{64}$/;
@@ -28,7 +32,8 @@ export function projectForDigest(
   value: unknown,
   excludedFields: readonly string[],
 ): UnknownRecord {
-  if (!isPlainRecord(value)) {
+  const snapshot = snapshotJsonValue(value);
+  if (!isPlainRecord(snapshot)) {
     throw new TypeError("Digest projection requires a plain object");
   }
 
@@ -38,12 +43,21 @@ export function projectForDigest(
 
   const excluded = new Set(excludedFields);
   for (const field of excluded) {
-    if (field.length === 0 || !Object.hasOwn(value, field)) {
+    if (field.length === 0 || !Object.hasOwn(snapshot, field)) {
       throw new TypeError(`Digest projection field is missing: ${field}`);
     }
   }
 
-  return Object.fromEntries(
-    Object.entries(value).filter(([field]) => !excluded.has(field)),
-  );
+  const projection: Record<string, JsonValue> = {};
+  for (const [field, fieldValue] of Object.entries(snapshot)) {
+    if (!excluded.has(field)) {
+      Object.defineProperty(projection, field, {
+        configurable: false,
+        enumerable: true,
+        value: fieldValue,
+        writable: false,
+      });
+    }
+  }
+  return Object.freeze(projection);
 }

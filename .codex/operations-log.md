@@ -1276,3 +1276,25 @@
 - TDD 修复：adapter 保留 stdin 原始字节，CLI 使用 `parseCanonicalJsonBytes`；敏感规则加入复数边界；canonical/sensitive/command 边界拒绝访问器；回执只从一次 canonical 快照验证并冻结；Skill 示例同步为单行 JCS。
 - 修复后 `pnpm check` 为 46/46，覆盖率行 91.43%、分支 88.24%、函数 97.06%；audit 和 diff 检查通过。
 - P5-M0 仍未关闭；必须形成新 OID 并进行干净检出与第五轮完整 L3。
+
+## 2026-08-09 P5-M0 第五轮 L3 审查与第六轮修复启动
+
+- 路线检查：继续 `S5 / P5 / P5-M0`，里程碑真源为 `docs/exec-plans/active/p5-product-implementation-milestones.md`；本轮只修复实施就绪契约，不涉及新需求、阶段切换或高危路线变更。
+- 最小闭环：归档第五轮 L3，按 TDD 修复 `toJSON`、摘要投影和动态 Proxy 视图差异，完成本地门禁、新 OID 干净克隆和第六轮完整 L3。
+- 修改范围：允许 `src/domain/`、相关 `tests/`、`.codex/reviews/` 和留痕；禁止修改 P3/P4/S4 已会签正文，禁止生成真实 Execution Packet、正式/control ref 或 `.codex/runtime`。
+- 第五轮角色：Verifier `PASS`；Anti-Slop Judge `PASS / 100`；Strict Judge `REVISE / 82`；Chief Reviewer `REVISE / 82`。审查包保存于 `.codex/reviews/p5-m0-implementation-rereview-4-2026-08-09/`。
+- 必修问题：`toJSON` 普通字段绕过 JCS；摘要投影通过 `Object.entries` 丢失非枚举/Symbol 并执行 getter；动态 Proxy 可造成描述符校验与后续读取不一致。
+- Skills：继续启用 TDD、verification-loop 和 judge-harness；主 Agent 负责生产实现和集成，Luna 只读复核攻击测试矩阵，Terra 只读复核单快照 API 设计，写范围互斥。
+- 当前门禁：第五轮 `REVISE`，P5-M0 未关闭；L3 `PASS >= 90` 且 P0/P1 = 0 前不得进入 S1.1。
+
+## 2026-08-09 P5-M0 第五轮问题 TDD 修复与本地门禁
+
+- TDD RED：新增根级/嵌套 `toJSON`、CLI 非 JCS、回执嵌入载荷、非枚举/Symbol/getter 投影和三类 Proxy 动态视图测试；目标测试 44 项中 8 项按预期失败。代理复核补充共享引用二次描述符读取后，该单项再次稳定 RED 为 `2 !== 1`。
+- 实现：新增单次描述符 `snapshotJsonValue` 和直接 JCS 序列化；每个对象通过 `WeakMap` 复用深冻结快照，活动祖先集合拒绝循环；`toJSON` 与 `__proto__` 作为普通字段处理。
+- 边界收敛：`projectForDigest`、`assertNoSensitiveFields`、`assertCommandPolicy` 和 `parseMachineReceipt` 均消费并返回冻结快照；CLI 使用敏感扫描返回的快照，不再继续读取原对象。
+- 依赖：移除已无调用点且会触发 `toJSON` 特殊分支的 `json-canonicalize@2.0.0`；`pnpm install --frozen-lockfile` 通过。
+- 完整验证：`pnpm check` 通过，59/59；覆盖率行 92.99%、分支 90.45%、函数 97.44%，均高于 80%。
+- 安全与结构：官方 registry `pnpm audit --audit-level=high` 无已知漏洞；Skill 官方 `quick_validate.py` 通过；`git diff --check`、JSON、尾随空白、秘密、调试残留和 TODO 扫描通过。
+- 范围：无 `refs/nextstep/formal`、`refs/nextstep/control`、`.codex/runtime`、真实 Execution Packet 或 PC 完成声明；P3/P4/S4 已会签正文零差异。
+- Agent 复核：Luna 给出攻击测试矩阵，Terra 给出单快照 API 和共享引用建议；均为只读，没有覆盖主线改动。主 Agent 完成集成与验证。
+- 当前门禁：本地候选通过，待新 OID、干净克隆和第六轮完整 L3；不得进入 S1.1。

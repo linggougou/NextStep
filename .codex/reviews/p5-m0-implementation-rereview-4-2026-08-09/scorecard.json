@@ -1,0 +1,162 @@
+{
+  "review_id": "p5-m0-implementation-rereview-4-2026-08-09",
+  "task_id": "p5-m0-implementation-readiness",
+  "lane": "implementation-gate",
+  "review_level": "L3",
+  "rubric_id": "judge-harness-implementation-gate-v1",
+  "artifact_refs": [
+    "git:8a64af3bbdec89c4d4faa8f8533566d86bf4174e",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/exec-plans/active/p5-product-implementation-milestones.md",
+    "src/",
+    "tests/",
+    "schemas/v1/machine-receipt.schema.json",
+    "skills/nextstep/"
+  ],
+  "reviewed_snapshot": {
+    "git_commit": "8a64af3bbdec89c4d4faa8f8533566d86bf4174e",
+    "git_tree": "c8fb0858115781fe59fb3475e94872669554635d",
+    "worktree_clean": true
+  },
+  "hard_gates": [
+    {
+      "id": "baseline_and_clean_checkout",
+      "status": "pass",
+      "evidence": "固定 OID 工作树清洁；全新检出冻结安装、46/46、覆盖率 91.43/88.24/97.06、官方 audit 和零污染反扫通过。"
+    },
+    {
+      "id": "prior_review_remediation",
+      "status": "pass",
+      "evidence": "前四轮 required_fixes 均已关闭。"
+    },
+    {
+      "id": "jcs_tojson_data_semantics",
+      "status": "fail",
+      "evidence": "json-canonicalize 将非空 toJSON 普通字段当作钩子，非 JCS 嵌套载荷可被 parser、CLI 和回执接受。"
+    },
+    {
+      "id": "digest_projection_completeness",
+      "status": "fail",
+      "evidence": "Object.entries 静默排除非枚举和 Symbol 属性并执行 getter，投影不再只排除显式字段。"
+    },
+    {
+      "id": "validated_snapshot_integrity",
+      "status": "fail",
+      "evidence": "动态 Proxy 可制造描述符验证视图与后续属性读取视图不一致。"
+    },
+    {
+      "id": "scope_and_non_claims",
+      "status": "pass",
+      "evidence": "无 S1.1、真实任务包、正式 refs、runtime 或 PC/宿主冒领。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "implementation_correctness",
+      "score": 19,
+      "max_score": 25,
+      "reason": "toJSON 和摘要投影存在可执行的身份边界缺口。",
+      "evidence_refs": [
+        "src/domain/canonical-json.ts:99",
+        "src/domain/content-digest.ts:46"
+      ]
+    },
+    {
+      "id": "contract_rigor",
+      "score": 12,
+      "max_score": 20,
+      "reason": "对象描述符验证与消费尚未统一到同一冻结快照。",
+      "evidence_refs": [
+        "src/domain/canonical-json.ts",
+        "src/domain/content-digest.ts",
+        "src/domain/command-policy.ts"
+      ]
+    },
+    {
+      "id": "architecture_and_isolation",
+      "score": 20,
+      "max_score": 20,
+      "reason": "依赖方向、fixture、固定 OID 和干净检出通过。",
+      "evidence_refs": [
+        "tests/architecture/dependency-direction.test.ts",
+        "tests/support/git-fixture.test.ts"
+      ]
+    },
+    {
+      "id": "maintainability",
+      "score": 9,
+      "max_score": 10,
+      "reason": "模块边界清晰，修复可集中在对象快照契约。",
+      "evidence_refs": [
+        "src/domain/"
+      ]
+    },
+    {
+      "id": "test_sufficiency",
+      "score": 12,
+      "max_score": 15,
+      "reason": "缺少 toJSON、非枚举、Symbol、getter 和动态 Proxy 负例。",
+      "evidence_refs": [
+        "tests/domain/canonical-json.test.ts",
+        "tests/domain/digest-projection.test.ts",
+        "tests/domain/command-policy.test.ts",
+        "tests/cli/contract-probe.test.ts"
+      ]
+    },
+    {
+      "id": "route_alignment",
+      "score": 10,
+      "max_score": 10,
+      "reason": "路线状态一致且无越界。",
+      "evidence_refs": [
+        "PROJECT_ROUTE_LOCK.md",
+        "docs/PLANS.md"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 82,
+    "penalty_total": 0,
+    "final_score": 82
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "让 toJSON 始终作为普通 JSON 数据字段处理，并补根级、嵌套、CLI 和回执负例。",
+    "摘要投影拒绝访问器、非枚举属性和 Symbol，并基于同一次描述符快照构造投影。",
+    "规范化、敏感扫描和命令策略验证并消费同一份冻结纯数据快照。",
+    "修订绑定新 commit/tree OID，从 --no-local 全新检出重跑验证和完整四角色 L3。"
+  ],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Generator",
+      "conclusion": "SUBMITTED",
+      "notes": "提交固定 OID 与干净检出证据，不自我批准。"
+    },
+    {
+      "role": "Verifier",
+      "conclusion": "PASS",
+      "notes": "既有硬门禁通过，但未覆盖 toJSON、投影描述符和动态 Proxy 复现。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "REVISE",
+      "score": 82,
+      "notes": "发现两个 P1 和一个 P2 对象语义边界问题。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "PASS",
+      "score": 100,
+      "notes": "无状态、空壳、冒领、秘密或污染问题。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "REVISE",
+      "score": 82,
+      "notes": "Strict Judge 的三个问题可复现，第五轮唯一总裁决为 REVISE。"
+    }
+  ],
+  "reviewed_at": "2026-08-09T01:11:43+08:00"
+}

@@ -1,3 +1,6 @@
+import { snapshotJsonValue } from "./canonical-json.ts";
+import { isPlainRecord } from "./value-guards.ts";
+
 const READONLY_COMMANDS = new Set([
   "gate-evaluate",
   "project-resolve",
@@ -17,43 +20,29 @@ export interface CommandInvocation {
   readonly dry_run: boolean;
 }
 
-export function assertCommandPolicy(invocation: unknown): void {
+export function assertCommandPolicy(invocation: unknown): Readonly<CommandInvocation> {
+  const snapshot = snapshotJsonValue(invocation);
   if (
-    !isPlainRecord(invocation) ||
-    Object.getOwnPropertyNames(invocation).length !== 2 ||
-    Object.getOwnPropertySymbols(invocation).length !== 0
+    !isPlainRecord(snapshot) ||
+    Object.keys(snapshot).length !== 2 ||
+    typeof snapshot.command !== "string" ||
+    typeof snapshot.dry_run !== "boolean"
   ) {
     throw new TypeError("Invalid command invocation");
   }
 
-  const commandDescriptor = Object.getOwnPropertyDescriptor(invocation, "command");
-  const dryRunDescriptor = Object.getOwnPropertyDescriptor(invocation, "dry_run");
-  if (
-    !commandDescriptor ||
-    !("value" in commandDescriptor) ||
-    !commandDescriptor.enumerable ||
-    typeof commandDescriptor.value !== "string" ||
-    !dryRunDescriptor ||
-    !("value" in dryRunDescriptor) ||
-    !dryRunDescriptor.enumerable ||
-    typeof dryRunDescriptor.value !== "boolean"
-  ) {
-    throw new TypeError("Invalid command invocation");
+  const command = snapshot.command;
+  const dryRun = snapshot.dry_run;
+
+  if (!READONLY_COMMANDS.has(command)) {
+    if (!MUTATING_COMMANDS.has(command)) {
+      throw new TypeError(`Unknown command policy: ${command}`);
+    }
+
+    if (dryRun !== true) {
+      throw new Error(`Mutating command requires dry-run: ${command}`);
+    }
   }
 
-  const command = commandDescriptor.value;
-  const dryRun = dryRunDescriptor.value;
-
-  if (READONLY_COMMANDS.has(command)) {
-    return;
-  }
-
-  if (!MUTATING_COMMANDS.has(command)) {
-    throw new TypeError(`Unknown command policy: ${command}`);
-  }
-
-  if (dryRun !== true) {
-    throw new Error(`Mutating command requires dry-run: ${command}`);
-  }
+  return snapshot as unknown as Readonly<CommandInvocation>;
 }
-import { isPlainRecord } from "./value-guards.ts";

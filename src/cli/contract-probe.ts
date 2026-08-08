@@ -60,7 +60,7 @@ function parseProbeInput(rawInput: Uint8Array): ProbeInput {
     throw error;
   }
 
-  assertNoSensitiveFields(value);
+  value = assertNoSensitiveFields(value);
 
   if (
     !isPlainRecord(value) ||

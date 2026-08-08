@@ -59,6 +59,22 @@
 - 已将 CLI 输入边界改为完整信封原始 JCS 字节校验，补齐敏感字段复数/组合变体，并让回执从单一 canonical 快照完成验证和冻结；访问器对象被拒绝。
 - 空白、乱序、换行、重复键、敏感字段变体、访问器及命令访问器负例均通过；当前 46/46，仍待新 OID 干净检出和完整 L3。
 
+## 第五轮 L3 修复入口
+
+- 固定 OID `8a64af3bbdec89c4d4faa8f8533566d86bf4174e` 的 Verifier 为 `PASS`，Anti-Slop Judge 为 `PASS / 100`，Strict Judge 与 Chief Reviewer 均为 `REVISE / 82`，P0 = 0、P1 = 2、P2 = 1。
+- 第五轮发现：普通 `toJSON` 数据字段可绕过依赖库 JCS 排序；摘要投影静默丢失非枚举和 Symbol 属性并执行 getter；动态 Proxy 可制造描述符验证视图与后续消费视图不一致。
+- 当前修复边界是建立单次描述符快照、冻结纯 JSON 数据、直接 JCS 序列化和稳定投影/命令策略；修复后必须绑定新 OID、干净检出并执行第六轮完整 L3。
+- P5-M0 仍未关闭，不得进入 S1.1，不得生成真实 Execution Packet。
+
+## 第五轮 L3 修复结果
+
+- 建立 `snapshotJsonValue`：每个输入对象只读取一次属性描述符，拒绝访问器、非枚举、Symbol、稀疏/扩展数组、非 JSON 值和循环；共享引用复用同一深冻结快照。
+- JCS 改为只序列化冻结快照，`toJSON`、`__proto__` 均作为普通数据字段；移除会触发 `toJSON` 钩子的 `json-canonicalize` 依赖。
+- 摘要投影、敏感字段扫描、命令策略和机器回执均验证并返回其消费的冻结快照；CLI 后续读取使用敏感扫描返回值。
+- TDD RED 稳定复现 8 个第五轮问题；补充共享对象二次读取 RED 后，最终完整门禁为 59/59，覆盖率行 92.99%、分支 90.45%、函数 97.44%。
+- 官方 registry audit、Skill 校验、格式、JSON、秘密、调试残留、refs/runtime/真实任务包和 P3/P4/S4 上游保护扫描均通过。
+- 下一步是绑定新 commit/tree OID，从 `--no-local` 全新克隆复验并执行第六轮完整 L3；当前仍不得进入 S1.1。
+
 ## 工具替代
 
 - 默认 pnpm registry 的 audit endpoint 不存在，改用 npm 官方 registry 重跑并通过。

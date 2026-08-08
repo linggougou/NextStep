@@ -119,3 +119,43 @@ test("assertNoSensitiveFields rejects accessor-backed data", () => {
     /data propert|plain data/i,
   );
 });
+
+test("assertNoSensitiveFields returns the frozen descriptor snapshot it scanned", () => {
+  const value = new Proxy(
+    { status: "target-value" },
+    {
+      get: (_target, property, receiver) =>
+        property === "status"
+          ? { access_token: "consumer-only-secret" }
+          : Reflect.get(_target, property, receiver),
+      getOwnPropertyDescriptor: (_target, property) =>
+        property === "status"
+          ? {
+              configurable: true,
+              enumerable: true,
+              value: "descriptor-value",
+              writable: true,
+            }
+          : Reflect.getOwnPropertyDescriptor(_target, property),
+    },
+  );
+
+  const snapshot = assertNoSensitiveFields(value);
+
+  assert.deepEqual(snapshot, { status: "descriptor-value" });
+  assert.ok(Object.isFrozen(snapshot));
+});
+
+test("assertNoSensitiveFields rejects hidden and Symbol data without executing accessors", () => {
+  const hidden = { status: "ok" };
+  Object.defineProperty(hidden, "password", { enumerable: false, value: "hidden" });
+  const symbolKeyed = { status: "ok" };
+  Object.defineProperty(symbolKeyed, Symbol("secret"), { enumerable: true, value: "hidden" });
+
+  for (const value of [hidden, symbolKeyed]) {
+    assert.throws(
+      () => assertNoSensitiveFields(value),
+      /enumerable|symbol|json|sensitive/i,
+    );
+  }
+});
