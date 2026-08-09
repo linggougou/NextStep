@@ -1384,3 +1384,13 @@
 - 安全拦截说明：一次控制提交脚本因包含清理 `/tmp` 临时 index 的 `rm -f` 被策略整段拒绝，脚本未启动、无文件删除、ref 未变化。后续改用唯一临时 index 路径并保留文件，所有 CAS 均成功且父链连续。
 - 工具替代：系统 Python 缺 PyYAML；候选验证复用既有隔离验证环境运行官方 `quick_validate.py` 并通过。该替代结果由独立候选验证和 L3 共同核对。
 - 当前状态：双前置门禁和 L3 已持久化，正在物化 Final Content Snapshot；formal ref 仍为 `976feac8be464cb150204d804130829c7583da18`。
+
+## 2026-08-09 P5 / V1 / M1.1 / S1.1 Final Content Snapshot 与最终复验
+
+- Final Content Snapshot：commit `1edb60e612876aecd4c5fd59cc43b301d53aa25f`，tree `e56598cfca517e298d28583699d433795b25ffce`，snapshot digest `sha256:eb6b69ec4e0ae6977a1b131df82918e0eafc4ea10445e18a7e60179bc58db048`。
+- Write Transaction：`sha256:c8deb3c30919e8eb0eb76b19607b0d683d4dd33d54301487742db733a36e0a60`；父正式基线保持 `976feac8be464cb150204d804130829c7583da18`。
+- 独立最终复验：Terra 宿主任务 `019fe49c-b65b-7fa0-99b7-f092bbddc6a1` 在 `--no-local` 隔离副本完成冻结安装、76/76、覆盖率 94.52%/91.91%/98.21%、Skill、audit、Git/JSON/范围和行为复验，最终结论“通过”。
+- 摘要口径修正：复验任务首次误用只排除 `packet_digest` 的投影并返回退回；该未接收结论未写入 control、未产生凭证。按项目冻结的 `projectForDigest(packet, ["packet_digest", "dedup_key"])` 双字段投影复算 8 份 packet 全部匹配后，复验任务明确撤销退回并给出唯一有效“通过”结论。
+- Verification Credential：`evidence:verification-credential-2962e061ec055158880f657f64b185461898f3b8b7e416036c90ff2aaf45491e.json`，摘要 `sha256:2962e061ec055158880f657f64b185461898f3b8b7e416036c90ff2aaf45491e`，1873 字节；以 hard-link no-replace 和 fsync 安装，目录 0700、文件 0600。
+- 主管复核：credential 原始 SHA-256、JCS 字节、字段绑定、权限、snapshot/formal/control 身份和主工作树 clean 均通过。
+- 当前状态：准备 Audit Anchor；只允许追加本日志、验证报告和专属 review 路径，不得修改 Final Content Snapshot 的业务/真源子树。

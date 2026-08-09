@@ -1447,3 +1447,14 @@
 - 控制链：gate packet、dispatch-ready、outbox、fence 2/3 claim、dispatch-ack 和三份独立结果均由 expected-old CAS 写入 `refs/nextstep/control`；旧 attempt 1 结果保留且未进入新门禁。
 - 身份边界：执行、候选验证、I/X/P 和 L3 使用独立宿主任务；formal ref 未变化，未进入 S1.2，未声明 PC-01、M1.1、V1 或 P5 完成。
 - 下一门禁：生成包含路线、计划和审查留痕的 Final Content Snapshot，再由独立任务对精确快照执行最终复验并 create-once 写入 Verification Credential。
+
+## 2026-08-09 P5 / V1 / M1.1 / S1.1 Final Content Snapshot 最终复验
+
+- 快照身份：commit `1edb60e612876aecd4c5fd59cc43b301d53aa25f`，tree `e56598cfca517e298d28583699d433795b25ffce`，snapshot digest `sha256:eb6b69ec4e0ae6977a1b131df82918e0eafc4ea10445e18a7e60179bc58db048`。
+- 隔离复验：从精确快照的 `--no-local` 克隆执行 `pnpm install --frozen-lockfile` 与 `pnpm check`，76/76 通过；覆盖率行 94.52%、分支 91.91%、函数 98.21%。
+- 附加门禁：官方 Skill 校验、官方 registry 高危 audit、`git fsck --strict`、`git diff --check`、JSON、已会签上游保护、秘密/调试扫描、S1.1 正负例和 Skill 回放通过。
+- 摘要链：8 份 Execution/Gate Packet 按双字段冻结投影复算匹配；7 份 result、Final Content Snapshot、Write Transaction 和最终派发/确认链一致。
+- Credential：项目外 create-once 凭证摘要 `sha256:2962e061ec055158880f657f64b185461898f3b8b7e416036c90ff2aaf45491e`，JCS 1873 字节，目录/文件权限 0700/0600，hard-link no-replace 与 fsync 证据通过。
+- 复验结论：`通过`。首次单字段投影产生的“退回”在结果接收前被验证者明确撤销，未写 control、未产生失败凭证；唯一有效结果摘要为 `sha256:41024c5877f6380f6ecfc21f629c129b6accf296f4f853a109d34a2b31a0e668`。
+- 不变性：隔离副本 snapshot tree 未变；主项目 HEAD/tree/index/worktree、formal ref 和 control mirror 在复验期间未被任务修改。
+- 下一门禁：从该快照生成白名单 Audit Anchor，派发独立 Anchor Proof 验证；证明通过后才允许 formal ref CAS。
