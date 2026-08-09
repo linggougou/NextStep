@@ -1436,3 +1436,14 @@
 - 控制与不变性：a2 任务包 RFC 8785 摘要复算匹配；working parent 为 `0e53ef59725f4c6077a6ac6acb75c095ebda209d`，formal baseline 为其祖先。`.codex/runtime` 相对 working parent 零差异，runtime ref 集合未改变；本任务未写 formal/control refs。
 - 残余风险：`derived` 意图的语义支持依赖宿主 AI；确定性内核只能验证引用片段真实存在、来源标记明确和普通事实不被补造。
 - 结论边界：以上是候选执行验证证据，不给出 I/X/P、M1.1、V1 或其他门禁结论，也不授权进入 S1.2。
+
+## 2026-08-09 P5 / V1 / M1.1 / S1.1 Attempt 2 独立门禁与 L3 验证
+
+- 固定候选：commit `5d6fd5b82bab8f2cbcc883cd6f8f7432d8614d8b`，tree `bd94b55b2666a24b710410bc61b0306f4c3375ac`，subject digest `sha256:0ddb7025dd65aa981013754a8ae06c0e1c0b76b69cdc1a8031a2070ada10b73b`。
+- 候选验证：`通过`；任务包、执行结果和候选摘要复算匹配，21 个路径均在 allowed paths，76/76 与覆盖率 94.52%/91.91%/98.21% 通过，Skill 官方校验和零污染反扫通过。
+- I/X/P：I `通过`、X `通过`、P `通过`；一句话输入可产生用户可理解候选、显式缺口和澄清问题，普通 `identified` 事实无精确原文依据时 fail closed。
+- L3：`PASS / 97`；10/10 硬门禁通过，P0 = 0、P1 = 0、P2 = 2，`required_fixes = []`。审查包位于 `.codex/reviews/p5-v1-m1.1-s1.1-implementation-2026-08-09/`。
+- 非阻塞 P2：真实宿主语义抽取与原话绑定留待后续宿主交互切片补证；全空白字符串和派生来源展示可补永久回归测试。
+- 控制链：gate packet、dispatch-ready、outbox、fence 2/3 claim、dispatch-ack 和三份独立结果均由 expected-old CAS 写入 `refs/nextstep/control`；旧 attempt 1 结果保留且未进入新门禁。
+- 身份边界：执行、候选验证、I/X/P 和 L3 使用独立宿主任务；formal ref 未变化，未进入 S1.2，未声明 PC-01、M1.1、V1 或 P5 完成。
+- 下一门禁：生成包含路线、计划和审查留痕的 Final Content Snapshot，再由独立任务对精确快照执行最终复验并 create-once 写入 Verification Credential。

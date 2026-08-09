@@ -1,0 +1,51 @@
+{
+  "review_id": "p5-v1-m1.1-s1.1-independent-l3-a2-2026-08-09",
+  "task_id": "S1.1-L3",
+  "lane": "independent-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-s1.1-implementation-l3-v1",
+  "artifact_refs": [
+    "git:5d6fd5b82bab8f2cbcc883cd6f8f7432d8614d8b",
+    "tree:bd94b55b2666a24b710410bc61b0306f4c3375ac",
+    ".codex/runtime/gate-requests/gate-independent-review-s1.1-g1-a2.json",
+    ".codex/runtime/results/result-candidate-verification-s1.1-g1-a2.json",
+    ".codex/runtime/results/result-product-interaction-s1.1-g1-a2.json"
+  ],
+  "hard_gates": [
+    {"id": "review_binding", "status": "pass", "evidence": "L3 request、attempt、baseline、subject 和四个上游摘要绑定一致。"},
+    {"id": "immutable_candidate", "status": "pass", "evidence": "候选 commit/tree、单父 working parent 和 formal ancestor 关系匹配。"},
+    {"id": "upstream_integrity", "status": "pass", "evidence": "originating packet、execution result、candidate verification 和 I/X/P 摘要全部复算匹配。"},
+    {"id": "signed_sources", "status": "pass", "evidence": "007/008、S3、S4、P3、P4、P5 正式上游完整且未被候选改写。"},
+    {"id": "scope_control", "status": "pass", "evidence": "attempt 2 的 21 个变更路径全部属于 allowed_paths，forbidden_paths 命中为 0。"},
+    {"id": "s1_1_dod", "status": "pass", "evidence": "原始表达、证据化事实、missing、澄清输出和不生成开发任务均有实现、Schema 与回放证据。"},
+    {"id": "fail_closed", "status": "pass", "evidence": "版本、字段、JCS、敏感字段、证据、回执一致性和开发任务边界均 fail closed。"},
+    {"id": "candidate_verification", "status": "pass", "evidence": "独立固定 OID 复验 76/76，覆盖率 94.52%/91.91%/98.21%，官方 Skill 校验通过。"},
+    {"id": "product_interaction", "status": "pass", "evidence": "I/X/P 分别通过，attempt 1 的 Skill 回放与事实补造退回项已关闭。"},
+    {"id": "role_and_stage_boundary", "status": "pass", "evidence": "执行、候选验证、I/X/P 和 L3 使用不同任务身份，未冒领后续阶段。"}
+  ],
+  "dimensions": [
+    {"id": "implementation_correctness", "score": 25, "max_score": 25, "reason": "证据跨度、逐字事实、派生意图、缺口和回执一致性实现正确。", "evidence_refs": ["src/domain/requirement-intake.ts", "src/domain/machine-receipt.ts"]},
+    {"id": "contract_rigor", "score": 20, "max_score": 20, "reason": "Schema、JCS、摘要、无原型深冻结和错误语义一致。", "evidence_refs": ["schemas/v1/requirement-intake.schema.json", "schemas/v1/machine-receipt.schema.json"]},
+    {"id": "architecture_and_scope", "score": 20, "max_score": 20, "reason": "符合 P3 S1.1 与 P5 当前切片，未提前实现 S1.2。", "evidence_refs": ["PROJECT_ROUTE_LOCK.md", "docs/exec-plans/active/p5-product-implementation-milestones.md"]},
+    {"id": "maintainability", "score": 9, "max_score": 10, "reason": "边界清晰；真实宿主原话绑定仍依赖后续宿主切片。", "evidence_refs": ["skills/nextstep/SKILL.md", "tests/skill/requirement-intake-skill.test.ts"]},
+    {"id": "test_sufficiency", "score": 13, "max_score": 15, "reason": "主要风险已覆盖；全空白字符串和派生来源展示可继续固化。", "evidence_refs": ["tests/domain/requirement-intake.test.ts", "tests/skill/requirement-intake-skill.test.ts"]},
+    {"id": "traceability", "score": 10, "max_score": 10, "reason": "任务包、结果、候选、前置结论和正式上游可完整追溯。", "evidence_refs": [".codex/runtime/packets/ep-p5-v1-m1.1-s1.1-g1-a2-20260809.json", ".codex/runtime/results/"]}
+  ],
+  "penalties": [],
+  "totals": {"raw_score": 97, "penalty_total": 0, "final_score": 97, "max_score": 100},
+  "severity_summary": {"P0": 0, "P1": 0, "P2": 2},
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "在后续宿主交互切片增加真实用户原话与 raw_expression 的绑定及语义评估证据。",
+    "增加全空白输入和用户输出派生来源展示的永久回归测试。"
+  ],
+  "reviewers": [
+    {"role": "Verifier", "signal": "PASS", "conclusion": "10/10 硬门禁通过。"},
+    {"role": "Strict Judge", "signal": "PASS", "score": 97, "conclusion": "P0/P1 为零，仅有两项非阻塞 P2。"},
+    {"role": "Anti-Slop Judge", "signal": "PASS", "score": 100, "conclusion": "无占位、模板衰减、虚假能力或陈旧完成声明。"},
+    {"role": "Chief Reviewer", "signal": "PASS", "score": 97, "conclusion": "候选可以进入 Final Content Snapshot。"}
+  ],
+  "verdict_scope": "PASS 仅允许候选进入 Final Content Snapshot，不表示 PC-01、M1.1、V1、P5 或 formal promotion 完成。",
+  "reviewed_at": "2026-08-09T11:28:31+08:00"
+}

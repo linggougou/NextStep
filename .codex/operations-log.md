@@ -1372,3 +1372,15 @@
 - 结构验证：官方 `quick_validate.py` 输出 `Skill is valid!`；10 个变更 JSON 可解析；`git diff --check`、新增行调试残留、高置信秘密和 allowed-path 反扫通过。
 - 身份与状态：任务包摘要复算匹配 `sha256:1a590107293f34092e2698c42ad34fcd14e1b56e371e49ef948da98d77d83298`；formal ref 保持 `976feac8be464cb150204d804130829c7583da18`。control ref 由宿主推进到 `06b9ebaad628a4343ec13b9d17224d1f4474ffc5`，本任务未写入 control；`.codex/runtime` 与 runtime refs 未改变。
 - 边界：未进入 S1.2，未调用外部模型 API，未生成开发任务，未写入、冻结或会签需求。本执行记录不构成 I/X/P、M1.1、V1 或其他门禁结论。
+
+## 2026-08-09 P5 / V1 / M1.1 / S1.1 Attempt 2 独立门禁与 L3
+
+- 路线与出口：保持 `S5 / P5 / V1 / M1.1 / S1.1`；本轮只完成候选验证、I/X/P、独立 L3 和 Final Content Snapshot 前集成准备，不进入 S1.2。
+- 控制恢复：从 control ref `91f73369dfa352cb85418db49565538c5292fc2a` 恢复；旧 fence 1 于 `2026-08-09T11:01:10+08:00` 到期。两份 gate packet 与 `dispatch-ready` 先持久化，再写 outbox，并以 fence 2 派发 Luna/Terra；L3 以 fence 3 派发 Sol。全部宿主任务均在创建后持久化 `dispatch-ack` 并关闭 outbox。
+- 候选验证：Luna 对 commit `5d6fd5b82bab8f2cbcc883cd6f8f7432d8614d8b` 给出“通过”；身份、任务包、路径、76/76、覆盖率 94.52%/91.91%/98.21%、证据模型、Skill 回放与零污染门禁均通过。
+- I/X/P：Terra 分别给出 I“通过”、X“通过”、P“通过”；确认 attempt 1 的一句话用户输出和普通事实原文依据两项退回已关闭。
+- L3：Sol 按 `judge-harness` 给出 `PASS / 97`，Verifier PASS、Strict PASS / 97、Anti-Slop PASS / 100、Chief PASS / 97；P0 = 0、P1 = 0、P2 = 2，`required_fixes = []`。
+- 审查边界：L3 只允许候选进入 Final Content Snapshot，不代表 PC-01、M1.1、V1、P5 或 formal promotion 完成。
+- 安全拦截说明：一次控制提交脚本因包含清理 `/tmp` 临时 index 的 `rm -f` 被策略整段拒绝，脚本未启动、无文件删除、ref 未变化。后续改用唯一临时 index 路径并保留文件，所有 CAS 均成功且父链连续。
+- 工具替代：系统 Python 缺 PyYAML；候选验证复用既有隔离验证环境运行官方 `quick_validate.py` 并通过。该替代结果由独立候选验证和 L3 共同核对。
+- 当前状态：双前置门禁和 L3 已持久化，正在物化 Final Content Snapshot；formal ref 仍为 `976feac8be464cb150204d804130829c7583da18`。
