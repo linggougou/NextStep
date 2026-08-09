@@ -4,8 +4,8 @@
 
 - 生命周期：`S5 开发落地`。
 - 项目阶段：`P5 产品落地`。
-- 当前里程碑：`P5-M0 实施就绪门禁`。
-- 状态：候选已形成并通过本地门禁，待独立 L3 审查；不得进入 S1.1。
+- 当前里程碑：`P5-M0 实施就绪门禁`已关闭。
+- 状态：固定候选通过第七轮 L3；当前入口切换为 `V1 / M1.1 / S1.1`，尚未生成任务包或派发。
 
 ## 实施范围
 
@@ -89,6 +89,14 @@
 - 补数组洞、额外/非枚举/Symbol/访问器/异常 length、RFC 8785 序列化与 UTF-16 排序、孤立 Unicode 代理项永久测试。
 - 完整门禁为 65/65；覆盖率行 95.37%、分支 94.80%、函数 97.56%；audit、Skill、格式和范围扫描通过。
 - 下一步是绑定新 OID、clean clone 和第七轮完整 L3；当前仍不得进入 S1.1。
+
+## 第七轮 L3 与门禁关闭
+
+- 固定送审身份：commit `8cc0f3d552aa800f28702b59cdade51dc327cd95`，tree `3114ee92beeb3ceaf6604d1f0510ba04019d09bd`，工作树清洁。
+- clean clone 冻结安装、`pnpm check` 65/65、覆盖率行 95.37%/分支 94.80%/函数 97.56%、官方 registry audit、Skill 校验和零污染反扫通过。
+- 四角色结论：Verifier `PASS`；Strict Judge `PASS / 97`；Anti-Slop Judge `PASS / 100`；Chief Reviewer `PASS / 97`。P0/P1 = 0，P2 = 2，`required_fixes = []`。
+- 两项 P2 仅为非阻塞增强：RFC 8785 Appendix B 全量数值向量；源对象快照后改写和失败回执继承 `dry_run` 的显式永久测试。
+- P5-M0 门禁通过。下一步必须先以门禁关闭提交为基线生成并持久化 S1.1 Execution Packet 和 `dispatch-ready`，再派发独立执行任务。
 
 ## 工具替代
 

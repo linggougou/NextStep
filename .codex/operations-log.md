@@ -1317,3 +1317,17 @@
 - 完整验证：`pnpm check` 65/65；覆盖率行 95.37%、分支 94.80%、函数 97.56%，均高于 80%。
 - 安全与范围：官方 audit 无已知漏洞；Skill 官方校验、`git diff --check`、JSON、调试残留、NextStep refs 和 `.codex/runtime` 扫描通过；无真实 Execution Packet 或 PC 冒领。
 - 当前门禁：本地候选通过，待新 OID、clean clone 和第七轮完整 L3；不得进入 S1.1。
+## 2026-08-09 P5-M0 第七轮 L3 收口与阶段切换
+
+- 路线：`S5 开发落地 / P5 产品落地`，依据 `PROJECT_ROUTE_LOCK.md`、P5 活动计划、P3 小里程碑表和 P4 执行机制。
+- 当前阶段出口：关闭 P5-M0 实施就绪门禁，并把唯一实施入口切换为 `V1 / M1.1 / S1.1`。
+- 最小可验收闭环：固定 OID 的四角色 L3 达到 `PASS >= 90` 且 P0/P1 = 0；审查包、路线锁、活动计划和验证留痕一致。
+- 允许范围：`.codex/reviews/`、P5 上下文摘要、操作/验证留痕、`PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md` 和 P5 活动计划。
+- 禁止范围：产品代码、测试、P3/P4/S4 已会签正文、真实 Execution Packet、正式/control ref、runtime 和 S1.1 实施。
+- 变更判断：这是既定 P5 门禁切换，不含新需求、漏项、二期需求或路线变更；不涉及高危动作。
+- 项目特化规则：项目根无 `AGENTS.md`，按全局活跃协议、路线锁和项目真源执行。
+- Skills：使用 `judge-harness` 的 L3 角色与 scorecard 契约归档既有独立审查；未重新自审替代四角色结论。
+- 审查结果：固定 commit `8cc0f3d552aa800f28702b59cdade51dc327cd95`、tree `3114ee92beeb3ceaf6604d1f0510ba04019d09bd`；Verifier `PASS`、Strict `PASS / 97`、Anti-Slop `PASS / 100`、Chief `PASS / 97`，P0/P1 = 0。
+- 决策：P5-M0 门禁通过；形成门禁关闭提交后才允许生成 S1.1 任务包，任务包和 `dispatch-ready` 持久化前不得派发。
+- 收口验证：`pnpm check` 65/65，覆盖率行 95.37%、分支 94.80%、函数 97.56%；scorecard JSON、评分算术、`git diff --check`、高置信秘密和 NextStep refs/runtime/任务包反扫通过。
+- 状态：P5-M0 收口材料已就绪，待形成独立门禁关闭提交。

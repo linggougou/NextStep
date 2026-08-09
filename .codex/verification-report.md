@@ -1397,3 +1397,14 @@
 - `pnpm audit --registry=https://registry.npmjs.org --audit-level=high`：无已知漏洞。
 - Skill、格式、JSON、调试残留、refs/runtime/任务包与上游范围扫描：通过。
 - 门禁结论：第七轮本地候选通过，但尚未绑定固定 OID；完成提交、clean clone 和第七轮完整 L3 前不得关闭 P5-M0 或进入 S1.1。
+## 2026-08-09 P5-M0 第七轮 L3 与门禁关闭验证
+
+- 固定送审身份：commit `8cc0f3d552aa800f28702b59cdade51dc327cd95`，tree `3114ee92beeb3ceaf6604d1f0510ba04019d09bd`；送审工作树清洁。
+- clean clone：从固定 OID 的 `--no-local` 全新克隆执行冻结安装和 `pnpm check`，65/65 通过；覆盖率行 95.37%、分支 94.80%、函数 97.56%。
+- 安全与结构：官方 registry audit 无已知漏洞；Skill 官方校验、`git fsck --strict`、refs/runtime/真实任务包/范围冒领反扫通过。
+- 对象所有权：无原型描述符快照、命令自有字段、Ajv `ownProperties`、回执根与 data 自有字段和深冻结稳定性均通过独立运行时复核。
+- 四角色 L3：Verifier `PASS`；Strict Judge `PASS / 97`；Anti-Slop Judge `PASS / 100`；Chief Reviewer `PASS / 97`。P0 = 0，P1 = 0，P2 = 2，`required_fixes = []`。
+- 非阻塞 P2：补 RFC 8785 Appendix B 全量数值向量；补源对象快照后改写和失败回执继承 `dry_run` 的显式永久测试。
+- 审查包：`.codex/reviews/p5-m0-implementation-rereview-6-2026-08-09/`。
+- 阶段门禁结论：`通过 / 97`。P5-M0 满足关闭条件；允许切换到 `V1 / M1.1 / S1.1` 的任务包生成，不允许在任务包和 `dispatch-ready` 持久化前派发。
+- 门禁关闭候选复验：当前工作树执行 `pnpm check` 再次通过 65/65，覆盖率保持 95.37%/94.80%/97.56%；scorecard 评分算术、JSON、格式、秘密与控制状态反扫通过。
