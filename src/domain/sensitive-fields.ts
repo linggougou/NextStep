@@ -60,8 +60,38 @@ function scanSnapshot(value: JsonValue, path: string, ancestors: Set<object>): v
   }
 }
 
+const SENSITIVE_CONTENT_PATTERNS = [
+  /\b(?:gh[pousr]_[A-Za-z0-9_-]{20,}|sk-[A-Za-z0-9_-]{16,}|AKIA[0-9A-Z]{16})\b/,
+  /\b(?:access[_-]?token|token)\s*[:=]\s*[A-Za-z0-9._-]{8,}\b/i,
+  /\bauthorization\s*:\s*(?:bearer|basic)\s+\S+/i,
+  /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/,
+] as const;
+
+function scanStringContent(value: JsonValue): void {
+  if (typeof value === "string") {
+    if (SENSITIVE_CONTENT_PATTERNS.some((pattern) => pattern.test(value))) {
+      throw new Error("Sensitive content detected");
+    }
+    return;
+  }
+  if (value === null || typeof value !== "object") {
+    return;
+  }
+  if (Array.isArray(value)) {
+    value.forEach(scanStringContent);
+    return;
+  }
+  Object.values(value).forEach(scanStringContent);
+}
+
 export function assertNoSensitiveFields(value: unknown): JsonValue {
   const snapshot = snapshotJsonValue(value);
   scanSnapshot(snapshot, "$", new Set<object>());
+  return snapshot;
+}
+
+export function assertNoSensitiveContent(value: unknown): JsonValue {
+  const snapshot = snapshotJsonValue(value);
+  scanStringContent(snapshot);
   return snapshot;
 }

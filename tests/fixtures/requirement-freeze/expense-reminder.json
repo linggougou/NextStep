@@ -1,0 +1,16 @@
+{
+  "intake_fixture": "expense-reminder.json",
+  "project": {
+    "repository_id": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
+  },
+  "requirement_set_id": "req-expense-reminder",
+  "version": 1,
+  "confirmation_id": "confirm-expense-reminder",
+  "confirmed_at": "2026-08-10T01:02:00.000Z",
+  "user_resolutions": [
+    { "field": "constraints", "status": "identified", "values": ["仅保存本地数据"] },
+    { "field": "non_goal_gaps", "status": "none", "values": [] },
+    { "field": "clarification_gaps", "status": "identified", "values": ["工作日早上提醒"] }
+  ]
+}

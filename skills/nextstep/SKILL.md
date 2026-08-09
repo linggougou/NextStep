@@ -1,17 +1,17 @@
 ---
 name: nextstep
-description: Validate a NextStep S1.1 evidence-backed requirement-intake candidate and present its candidate facts and clarification questions. Use when a user explicitly invokes NextStep with one fuzzy project idea; do not use it for freezing, writing sources, task dispatch, or stage approval.
+description: Validate a NextStep requirement candidate and, only at S1.2, create an explicitly confirmed immutable freeze record that can be recovered without chat history. Use when a user explicitly invokes NextStep for requirement intake or requirement freeze; do not use it for source writing, task dispatch, or stage approval.
 ---
 
 # NextStep
 
-Operate only within the current `V1 / M1.1 / S1.1` requirement-intake boundary.
+Operate only within the current `V1 / M1.1 / S1.1` or `V1 / M1.1 / S1.2` boundary shown by project truth.
 
 ## Inspect The Stage
 
 1. Resolve the project root explicitly.
 2. Read `PROJECT_ROUTE_LOCK.md` and `docs/PLANS.md`.
-3. Confirm the active milestone is `V1 / M1.1 / S1.1` before running requirement intake.
+3. Confirm the active milestone is `V1 / M1.1 / S1.1` before running requirement intake, or `V1 / M1.1 / S1.2` before preparing a freeze record.
 4. Report the current stage, active gate, blocking reason, and permitted next action from those sources.
 
 Do not infer stage state from chat history or task titles.
@@ -51,6 +51,32 @@ Treat stdout as one JCS machine receipt and stderr as diagnostics only. Reject m
 
 On success, present `data.user_output` to the user. It contains the candidate summary, evidence-backed facts, every missing field, and the next clarification questions. Ask the clarification questions, but do not freeze or write the candidate.
 
+## Freeze A Completed Requirement Set
+
+Only at S1.2, combine the validated S1.1 candidate with the user's supplemental resolutions into a Requirement Set. Preserve every field as exactly one of `identified`, explicit `none`, `unresolved`, `rejected`, or `deferred`. Do not invent a resolution for an unsupported fact.
+
+An unresolved field blocks freezing. State the missing fields and return to requirement completion. A rejected or deferred item remains explicit in the immutable Requirement Set; changing any frozen content enters `PC-17` Change Intake rather than modifying it in place.
+
+Before asking for confirmation, create a confirmation challenge that binds all of the following to the exact user-visible confirmation view:
+
+- `freeze-requirement-set` action.
+- Repository identity and formal baseline.
+- Requirement Set ID, version, content digest, and confirmation-view digest.
+- Confirmation ID and challenge creation time.
+
+Accept only a structured confirmation envelope with `confirmation_kind: explicit-user-confirmation` and a confirmation time. A bare boolean, a normal text response such as "确认", or an envelope with any mismatched binding is not a confirmation and must be rejected.
+
+Build the local tool and send one RFC 8785 canonical JSON freeze command through standard input:
+
+```bash
+pnpm build
+node dist/src/cli/requirement-freeze.js
+```
+
+The CLI writes exactly one JCS machine receipt to stdout. Diagnostics go only to stderr. It scans the content that would be persisted and blocks common token, Authorization, and private-key samples without echoing values.
+
+On success, retain the complete `data.frozen_requirement` record as the persistent recovery input. It has a stable frozen ID, the Requirement Set content identity, confirmation binding, `frozen` status, and only the next entry `S1.3.product-definition`. Recovery consumes that record alone; it does not depend on chat history. Reuse of the same confirmation ID returns the same frozen identity only when content and confirmation binding are identical; otherwise it is an identity conflict.
+
 ## Replay The Contract Handoff
 
 `tests/fixtures/requirement-intake/skill-replay.json` records one user sentence and one host-AI candidate. The replay proves that the evidence-bearing candidate, deterministic validation, and user output connect correctly. It does not prove model quality and must not be described as a rule-based natural-language parser.
@@ -59,9 +85,9 @@ Run `pnpm test` to replay it. The fixture is contract evidence, not a substitute
 
 ## Enforce The Boundary
 
-- Do not freeze a requirement, write project truth sources, create an Execution Packet, or generate development tasks.
+- Do not freeze a requirement at S1.1, write project truth sources, create an Execution Packet, or generate development tasks.
 - Do not initialize or move `refs/nextstep/formal` or `refs/nextstep/control`.
 - Do not modify project sources through requirement intake.
 - Do not claim any `PC-01..PC-20` capability, gate, version, or project is complete.
 - Do not claim host mode is `full`, `manual-isolated`, or supported.
-- Do not enter S1.2 or later until the required independent gates and user confirmation are complete.
+- Do not enter S1.2 until the required independent gates are complete, and do not enter S1.3 until a valid frozen record exists.

@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nextstep.local/schemas/v1/frozen-requirement.schema.json",
+  "title": "NextStep Frozen Requirement 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "frozen_requirement_id", "status", "project", "requirement_set_version", "requirement_set", "requirement_content_digest", "confirmation", "confirmation_binding_digest", "confirmation_view_digest", "next_step"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "frozen_requirement_id": { "type": "string", "minLength": 1 },
+    "status": { "const": "frozen" },
+    "project": { "type": "object" },
+    "requirement_set_version": { "type": "integer", "minimum": 1 },
+    "requirement_set": { "type": "object" },
+    "requirement_content_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "confirmation": { "type": "object" },
+    "confirmation_binding_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "confirmation_view_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "next_step": { "const": "S1.3.product-definition" }
+  }
+}

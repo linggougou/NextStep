@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nextstep.local/schemas/v1/requirement-set.schema.json",
+  "title": "NextStep Requirement Set 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "requirement_set_id", "project", "version", "status", "source_candidate_digest", "items", "summary", "content_digest"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "requirement_set_id": { "type": "string", "minLength": 1 },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository_id", "formal_baseline"],
+      "properties": {
+        "repository_id": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "formal_baseline": { "type": "string", "pattern": "^[a-f0-9]{40}$" }
+      }
+    },
+    "version": { "type": "integer", "minimum": 1 },
+    "status": { "enum": ["incomplete", "ready-for-confirmation"] },
+    "source_candidate_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "items": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["field", "status", "values", "source"],
+        "properties": {
+          "field": { "enum": ["intent_summary", "goals", "scenarios", "constraints", "expected_outputs", "non_goal_gaps", "clarification_gaps"] },
+          "status": { "enum": ["identified", "none", "unresolved", "rejected", "deferred"] },
+          "values": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "source": { "enum": ["candidate", "user", "unresolved"] }
+        }
+      }
+    },
+    "summary": { "type": "string", "minLength": 1 },
+    "content_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+  }
+}

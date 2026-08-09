@@ -30,7 +30,12 @@
         "SENSITIVE_FIELD_DETECTED",
         "REQUIREMENT_INTAKE_ACCEPTED",
         "REQUIREMENT_INTAKE_REJECTED",
-        "DEVELOPMENT_TASK_EMBEDDED"
+        "DEVELOPMENT_TASK_EMBEDDED",
+        "REQUIREMENT_FREEZE_ACCEPTED",
+        "REQUIREMENT_FREEZE_REJECTED",
+        "REQUIREMENT_NOT_FROZEN",
+        "CONFIRMATION_MISMATCH",
+        "IDENTITY_CONFLICT"
       ]
     },
     "data": {
@@ -119,6 +124,43 @@
               }
             }
           }
+          ,
+          {
+            "properties": {
+              "code": {
+                "const": "REQUIREMENT_FREEZE_ACCEPTED"
+              },
+              "data": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "canonical_json",
+                  "digest",
+                  "frozen_requirement",
+                  "requirement_set",
+                  "schema_version"
+                ],
+                "properties": {
+                  "canonical_json": {
+                    "type": "string"
+                  },
+                  "digest": {
+                    "type": "string",
+                    "pattern": "^sha256:[a-f0-9]{64}$"
+                  },
+                  "frozen_requirement": {
+                    "type": "object"
+                  },
+                  "requirement_set": {
+                    "type": "object"
+                  },
+                  "schema_version": {
+                    "const": "1.0"
+                  }
+                }
+              }
+            }
+          }
         ]
       },
       "else": {
@@ -129,7 +171,11 @@
               "INVALID_JSON",
               "SENSITIVE_FIELD_DETECTED",
               "REQUIREMENT_INTAKE_REJECTED",
-              "DEVELOPMENT_TASK_EMBEDDED"
+              "DEVELOPMENT_TASK_EMBEDDED",
+              "REQUIREMENT_FREEZE_REJECTED",
+              "REQUIREMENT_NOT_FROZEN",
+              "CONFIRMATION_MISMATCH",
+              "IDENTITY_CONFLICT"
             ]
           },
           "data": {

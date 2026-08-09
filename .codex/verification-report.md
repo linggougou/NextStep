@@ -1458,3 +1458,16 @@
 - 复验结论：`通过`。首次单字段投影产生的“退回”在结果接收前被验证者明确撤销，未写 control、未产生失败凭证；唯一有效结果摘要为 `sha256:41024c5877f6380f6ecfc21f629c129b6accf296f4f853a109d34a2b31a0e668`。
 - 不变性：隔离副本 snapshot tree 未变；主项目 HEAD/tree/index/worktree、formal ref 和 control mirror 在复验期间未被任务修改。
 - 下一门禁：从该快照生成白名单 Audit Anchor，派发独立 Anchor Proof 验证；证明通过后才允许 formal ref CAS。
+
+## 2026-08-10 P5 / V1 / M1.1 / S1.2 Attempt 1 候选执行验证
+
+- 验证范围：Requirement Set 补全状态、确认挑战/信封绑定、不可变冻结记录、未冻结阻断、无聊天恢复、敏感内容阻断、按 code 语义验证的机器回执、headless CLI、三类目标项目 fixture 与 Skill 边界。
+- RED/GREEN：新增测试后先运行 `pnpm test`，因 S1.2 领域模块与敏感内容扫描导出不存在而构建失败，形成 RED。最小实现后 `pnpm test` 通过 `88/88`，失败、跳过和取消均为 `0`。
+- 主要行为：三类 fixture 分别验证补全、显式 `none`、`rejected`/`deferred` 保留、显式确认、冻结和由序列化冻结记录恢复同一稳定身份。未冻结 Requirement Set、裸布尔值、普通文本确认、确认动作/项目/基线/内容/展示摘要不匹配、同确认 ID 冲突、篡改及敏感内容全部 fail closed。
+- CLI/回执：`requirement-freeze` 成功和敏感负例均验证 stdout 恰为一条 JCS、stderr 仅含通用诊断；`REQUIREMENT_FREEZE_ACCEPTED` 回执独立校验冻结记录 JCS/摘要及内嵌 Requirement Set，不与既有 intake 回执共用松散语义。
+- 类型与覆盖率：`pnpm check` 通过。覆盖率为行 `90.63%`、分支 `83.95%`、函数 `97.25%`，均高于 80% 门槛。
+- 格式与安全：`jq empty` 通过全部新增/更新 Schema 和 S1.2 fixture；`git diff --check` 通过；生产 `src/`、`schemas/`、`skills/` 的调试/TODO 和高置信秘密模式扫描无命中。系统 Python 缺 PyYAML 时，官方 Skill 脚本在一次性临时虚拟环境中验证通过。
+- 范围与身份：工作 parent 与 formal baseline 均为 `8ffaf658e112a5ba26a9f83882f5f71f1ae79454`；formal ref 未变，control ref 未由本任务写入，`.codex/runtime` 相对基线无差异。实际变更是任务包 `allowed_paths` 的子集；P3/P4/S4 已会签正文、产品和设计正文不变。
+- 执行审查评分：`92/100`（契约/内容身份 20/20，失败闭合与敏感拦截 20/20，测试与覆盖率 20/20，范围/不变性 20/20，独立后续门禁 12/20）。建议：候选可交由独立验证。
+- 残余风险与不完整项：冻结记录在本切片中作为持久化 JSON 输入/输出验证，实际项目真源写入留给后续写入一致性切片；宿主必须在真实用户确认后再提交结构化确认信封。独立候选验证、I/X/P、L3、最终复验和正式提升尚未执行。
+- 执行结论：`candidate-ready`，不构成 PC-02、M1.1、V1、P5 或阶段门禁完成结论。

@@ -1394,3 +1394,24 @@
 - Verification Credential：`evidence:verification-credential-2962e061ec055158880f657f64b185461898f3b8b7e416036c90ff2aaf45491e.json`，摘要 `sha256:2962e061ec055158880f657f64b185461898f3b8b7e416036c90ff2aaf45491e`，1873 字节；以 hard-link no-replace 和 fsync 安装，目录 0700、文件 0600。
 - 主管复核：credential 原始 SHA-256、JCS 字节、字段绑定、权限、snapshot/formal/control 身份和主工作树 clean 均通过。
 - 当前状态：准备 Audit Anchor；只允许追加本日志、验证报告和专属 review 路径，不得修改 Final Content Snapshot 的业务/真源子树。
+
+## 2026-08-10 P5 / V1 / M1.1 / S1.2 Attempt 1 开始与 RED
+
+- 控制身份：任务包 `ep-p5-v1-m1.1-s1.2-g1-a1-20260809`，摘要 `sha256:72b56e6c3864d1c8698a25e4402aacabe75e186e023efedfe0b653e45fe51288`，effect/dedup `sha256:710e3319c81a5acc9829bcc9b31df670a651d12a61d17cf86308a32591c54fb9`，claim `claim-s1.2-g1-a1-f6-20260810`，fence `6`。
+- 路线与阶段：`S5 / P5 / V1 / M1.1 / S1.2`；当前阶段出口仍是 P5 的完整版本与 Final Acceptance，本轮只实现 S1.2 最小运行闭环，不进入 S1.3，不作 PC-02、M1.1、V1、P5 或 I/X/P 结论。
+- 最低真源与边界：已读取路线锁、P5 活动计划、P3 S1.2、S3、S4、P4、全局路线/生命周期/留痕/工作流/Skills 协议和 control 任务包。项目根无特化 `AGENTS.md`。只修改任务包 `allowed_paths`；不修改已会签 P3/P4/S4、产品/设计正文，不写 `.codex/runtime`/`.codex/reviews`，不移动 formal/control refs。
+- 工具与研究：采用 `tdd-workflow`、`verification-loop` 和 `security-review`；复用 S1.1 的 JCS、摘要、冻结快照、Ajv、Node CLI 和测试惯例。CodeGraph 未初始化且路线锁要求询问，使用 `rg` 与既有代码/测试完成替代影响分析。冻结身份、确认与机器回执共享契约，采用单 Agent 串行避免并发写冲突。
+- RED：先新增 S1.2 领域/CLI/Skill 测试和三类目标项目 fixture，运行 `pnpm test`。构建如预期失败：`requirement-set`、`requirement-confirmation`、`requirement-freeze` 及 `assertNoSensitiveContent` 尚未实现；没有生产实现被提前写入。
+- 状态：进行中；下一步仅补最小领域实现、Schema、CLI 与回执语义，再运行 GREEN 验证。
+
+## 2026-08-10 P5 / V1 / M1.1 / S1.2 Attempt 1 GREEN 与候选收口
+
+- 最小实现：新增 Requirement Set，保留 S1.1 候选内容摘要并明确区分 `identified`、用户显式 `none`、`unresolved`、`rejected` 和 `deferred`；未解析字段不允许生成确认挑战或冻结。
+- 确认与冻结：确认挑战/信封绑定 `freeze-requirement-set`、仓库身份、formal baseline、Requirement Set ID/版本/内容摘要、用户实际看到的 confirmation view 摘要、确认 ID 和时间。裸布尔值、普通文本及任一绑定不一致均 fail closed。冻结记录包含稳定冻结 ID、内容身份、确认绑定和 `frozen` 状态；恢复只消费该记录，不读取聊天。
+- 阻断与安全：未冻结对象进入 `S1.3.product-definition` 统一返回 `REQUIREMENT_NOT_FROZEN`；同确认 ID 的同内容重试返回同一冻结身份，不同内容返回 `IDENTITY_CONFLICT`；篡改内容、摘要、状态、项目/基线、确认或展示摘要均拒绝。冻结前扫描 Token、Authorization 与私钥样例，错误路径不回显值。
+- 回执与 CLI：机器回执按 `code` 独立验证 `REQUIREMENT_FREEZE_ACCEPTED` 的冻结记录、JCS、摘要和内嵌 Requirement Set 同一性。`requirement-freeze` CLI 只输出一条 JCS 回执到 stdout，诊断只写 stderr。
+- GREEN：`pnpm test` 通过 `88/88`；三类目标项目 fixture 均覆盖补全、显式 none、冻结和从序列化记录恢复；另覆盖未冻结阻断、重复确认、同 ID 冲突、动作/项目/基线/内容/展示摘要不匹配、篡改、敏感内容和开发任务既有阻断。
+- 完整验证：`pnpm check` 通过；覆盖率行 `90.63%`、分支 `83.95%`、函数 `97.25%`。JSON Schema/fixture 由 `jq empty` 解析；`git diff --check` 通过；生产路径调试/TODO 与高置信秘密扫描无命中。
+- Skill：系统 Python 缺少 `yaml`，其官方 `quick_validate.py` 首次失败；在一次性 `/tmp/nextstep-s1-2-skill-validate` 虚拟环境安装 PyYAML 后重跑同一脚本，输出 `Skill is valid!`，未改项目依赖。
+- 范围与不变性：所有已跟踪和未跟踪路径均在任务包 `allowed_paths`；正式 ref 保持 `8ffaf658e112a5ba26a9f83882f5f71f1ae79454`，control ref 读取为 `00d0ea1043f84ed41637571b48a8d0a3365ee571`，本任务未移动二者；`.codex/runtime` 相对 formal baseline 零差异；未修改已会签 P3/P4/S4、产品或设计正文。
+- 状态：`candidate-ready`；候选尚未经过独立候选验证、I/X/P、L3、最终复验或正式提升，不作 PC-02、M1.1、V1 或 P5 完成结论。

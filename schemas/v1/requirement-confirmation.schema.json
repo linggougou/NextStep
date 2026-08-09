@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nextstep.local/schemas/v1/requirement-confirmation.schema.json",
+  "title": "NextStep Requirement Confirmation 1.0",
+  "type": "object",
+  "oneOf": [
+    { "$ref": "#/definitions/challenge" },
+    { "$ref": "#/definitions/envelope" }
+  ],
+  "definitions": {
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository_id"],
+      "properties": { "repository_id": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" } }
+    },
+    "challenge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "record_type", "action", "project", "formal_baseline", "requirement_set_id", "requirement_set_version", "requirement_set_digest", "confirmation_view", "confirmation_view_digest", "confirmation_id", "created_at"],
+      "properties": {
+        "schema_version": { "const": "1.0" },
+        "record_type": { "const": "confirmation-challenge" },
+        "action": { "const": "freeze-requirement-set" },
+        "project": { "$ref": "#/definitions/project" },
+        "formal_baseline": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+        "requirement_set_id": { "type": "string", "minLength": 1 },
+        "requirement_set_version": { "type": "integer", "minimum": 1 },
+        "requirement_set_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "confirmation_view": { "type": "object" },
+        "confirmation_view_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "confirmation_id": { "type": "string", "minLength": 1 },
+        "created_at": { "type": "string", "minLength": 1 }
+      }
+    },
+    "envelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "record_type", "action", "project", "formal_baseline", "requirement_set_id", "requirement_set_version", "requirement_set_digest", "confirmation_view_digest", "confirmation_id", "challenge", "challenge_digest", "confirmation_kind", "confirmed_at"],
+      "properties": {
+        "schema_version": { "const": "1.0" },
+        "record_type": { "const": "confirmation-envelope" },
+        "action": { "const": "freeze-requirement-set" },
+        "project": { "$ref": "#/definitions/project" },
+        "formal_baseline": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+        "requirement_set_id": { "type": "string", "minLength": 1 },
+        "requirement_set_version": { "type": "integer", "minimum": 1 },
+        "requirement_set_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "confirmation_view_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "confirmation_id": { "type": "string", "minLength": 1 },
+        "challenge": { "$ref": "#/definitions/challenge" },
+        "challenge_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "confirmation_kind": { "const": "explicit-user-confirmation" },
+        "confirmed_at": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

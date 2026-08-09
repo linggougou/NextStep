@@ -1,0 +1,16 @@
+{
+  "intake_fixture": "community-workshop.json",
+  "project": {
+    "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
+  },
+  "requirement_set_id": "req-community-workshop",
+  "version": 2,
+  "confirmation_id": "confirm-community-workshop",
+  "confirmed_at": "2026-08-10T01:01:00.000Z",
+  "user_resolutions": [
+    { "field": "expected_outputs", "status": "identified", "values": ["活动报名清单"] },
+    { "field": "non_goal_gaps", "status": "rejected", "values": [] },
+    { "field": "clarification_gaps", "status": "deferred", "values": [] }
+  ]
+}

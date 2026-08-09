@@ -1,0 +1,18 @@
+{
+  "intake_fixture": "project-delivery-tool.json",
+  "project": {
+    "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
+  },
+  "requirement_set_id": "req-project-delivery-tool",
+  "version": 1,
+  "confirmation_id": "confirm-project-delivery-tool",
+  "confirmed_at": "2026-08-10T01:00:00.000Z",
+  "user_resolutions": [
+    { "field": "scenarios", "status": "identified", "values": ["企业团队规划项目时"] },
+    { "field": "constraints", "status": "identified", "values": ["不连接外部服务"] },
+    { "field": "expected_outputs", "status": "identified", "values": ["可确认的项目计划"] },
+    { "field": "non_goal_gaps", "status": "none", "values": [] },
+    { "field": "clarification_gaps", "status": "none", "values": [] }
+  ]
+}

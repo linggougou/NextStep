@@ -11,6 +11,9 @@ import {
   buildRequirementIntakeUserOutput,
   parseRequirementIntake,
 } from "../../src/domain/requirement-intake.ts";
+import { createConfirmationChallenge, createConfirmationEnvelope } from "../../src/domain/requirement-confirmation.ts";
+import { freezeRequirementSet } from "../../src/domain/requirement-freeze.ts";
+import { buildRequirementSet } from "../../src/domain/requirement-set.ts";
 
 const successfulSubject = { status: "accepted" };
 
@@ -329,5 +332,63 @@ test("machine receipt rejects user output that hides missing information", () =>
       },
     }),
     /user output|match|receipt|invalid/i,
+  );
+});
+
+test("machine receipt validates frozen requirement semantics independently for its success code", () => {
+  const requirementSet = buildRequirementSet({
+    schema_version: "1.0",
+    requirement_set_id: "req-receipt-freeze",
+    project: { repository_id: `sha256:${"c".repeat(64)}`, formal_baseline: "8ffaf658e112a5ba26a9f83882f5f71f1ae79454" },
+    version: 1,
+    candidate: {
+      schema_version: "1.0",
+      candidate: {
+        raw_expression: "我想做一个离线提醒工具。",
+        intent_summary: { status: "identified", source: "derived", value: "创建离线提醒工具", evidence: [{ start: 2, end: 11, quote: "做一个离线提醒工具" }] },
+        goals: { status: "identified", items: [{ value: "做一个离线提醒工具", evidence: [{ start: 2, end: 11, quote: "做一个离线提醒工具" }] }] },
+        scenarios: { status: "missing", items: [], clarification_question: "场景？" },
+        constraints: { status: "missing", items: [], clarification_question: "限制？" },
+        expected_outputs: { status: "missing", items: [], clarification_question: "输出？" },
+        non_goal_gaps: { status: "missing", items: [], clarification_question: "非目标？" },
+        clarification_gaps: { status: "missing", items: [], clarification_question: "澄清？" },
+      },
+    },
+    user_resolutions: [
+      { field: "scenarios", status: "identified", values: ["个人日程"] },
+      { field: "constraints", status: "none", values: [] },
+      { field: "expected_outputs", status: "identified", values: ["提醒"] },
+      { field: "non_goal_gaps", status: "none", values: [] },
+      { field: "clarification_gaps", status: "none", values: [] },
+    ],
+  });
+  const challenge = createConfirmationChallenge(requirementSet, { confirmation_id: "confirm-receipt-freeze", created_at: "2026-08-10T01:09:00.000Z" });
+  const frozen = freezeRequirementSet({
+    schema_version: "1.0",
+    action: "freeze-requirement-set",
+    requirement_set: requirementSet,
+    confirmation: createConfirmationEnvelope(challenge, { confirmation_kind: "explicit-user-confirmation", confirmed_at: "2026-08-10T01:10:00.000Z" }),
+  });
+  const receipt = {
+    schema_version: "1.0",
+    receipt_id: "receipt-freeze-001",
+    ok: true,
+    code: "REQUIREMENT_FREEZE_ACCEPTED",
+    data: {
+      canonical_json: canonicalizeJson(frozen),
+      digest: digestJson(frozen),
+      frozen_requirement: frozen,
+      requirement_set: frozen.requirement_set,
+      schema_version: "1.0",
+    },
+  };
+
+  assert.equal(parseMachineReceipt(receipt).code, "REQUIREMENT_FREEZE_ACCEPTED");
+  assert.throws(
+    () => parseMachineReceipt({
+      ...receipt,
+      data: { ...receipt.data, requirement_set: { ...frozen.requirement_set, summary: "unbound" } },
+    }),
+    /frozen|requirement set|identity|receipt/i,
   );
 });
