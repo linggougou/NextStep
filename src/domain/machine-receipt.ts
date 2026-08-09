@@ -1,16 +1,20 @@
 import { Ajv, type ValidateFunction } from "ajv";
 
 import machineReceiptSchema from "../../schemas/v1/machine-receipt.schema.json" with { type: "json" };
-import { parseCanonicalJsonBytes } from "./canonical-json.ts";
+import { canonicalizeJson, parseCanonicalJsonBytes } from "./canonical-json.ts";
 import { assertDigestMatches } from "./content-digest.ts";
 import { assertNoSensitiveFields } from "./sensitive-fields.ts";
+import { parseRequirementIntake } from "./requirement-intake.ts";
 import { isPlainRecord, type UnknownRecord } from "./value-guards.ts";
 
 export type MachineReceiptCode =
   | "CONTRACT_PROBE_SUCCEEDED"
   | "CONTRACT_PROBE_REJECTED"
   | "INVALID_JSON"
-  | "SENSITIVE_FIELD_DETECTED";
+  | "SENSITIVE_FIELD_DETECTED"
+  | "REQUIREMENT_INTAKE_ACCEPTED"
+  | "REQUIREMENT_INTAKE_REJECTED"
+  | "DEVELOPMENT_TASK_EMBEDDED";
 
 export interface MachineReceipt {
   readonly schema_version: "1.0";
@@ -64,13 +68,10 @@ export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
       throw new TypeError(`Invalid machine receipt schema: ${formatSchemaErrors(validateMachineReceipt)}`);
     }
 
-    assertOwnFields(
-      snapshot.data,
-      snapshot.ok
-        ? ["canonical_json", "digest", "dry_run", "schema_version"]
-        : ["dry_run"],
-      "data field",
-    );
+    const successfulFields = snapshot.code === "CONTRACT_PROBE_SUCCEEDED"
+      ? ["canonical_json", "digest", "dry_run", "schema_version"]
+      : ["canonical_json", "digest", "requirement_intake", "schema_version"];
+    assertOwnFields(snapshot.data, snapshot.ok ? successfulFields : ["dry_run"], "data field");
 
     if (snapshot.ok) {
       const canonicalJson = snapshot.data.canonical_json;
@@ -82,6 +83,13 @@ export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
       const subject = parseCanonicalJsonBytes(Buffer.from(canonicalJson, "utf8"));
       assertNoSensitiveFields(subject);
       assertDigestMatches(subject, digest);
+
+      if (snapshot.code === "REQUIREMENT_INTAKE_ACCEPTED") {
+        const intake = parseRequirementIntake(snapshot.data.requirement_intake);
+        if (canonicalJson !== canonicalizeJson(intake)) {
+          throw new TypeError("Requirement intake receipt payload does not match canonical JSON");
+        }
+      }
     }
 
     return snapshot;

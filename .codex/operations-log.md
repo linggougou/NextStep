@@ -1,5 +1,17 @@
 # Operations Log
 
+## 2026-08-09 P5 / V1 / M1.1 / S1.1 需求入口实现开始
+
+- 任务身份：`S1.1`，任务包 `ep-p5-v1-m1.1-s1.1-g1-a1-20260809`，摘要 `sha256:586e0db08151c8378b7943885c7dba6367448a4c8d72ce49769cb6a75becba81`。
+- 控制身份：观测 `HEAD` 和任务起点均为 `976feac8be464cb150204d804130829c7583da18`；派发时 control ref 为 `6c948268857418aa4fad53839d403942d5c51110`；开始时工作树清洁。
+- 路线锁判断：当前为 `S5 开发落地 / P5 / V1 / M1.1 / S1.1`；本轮只推进需求入口运行闭环，不进入 S1.2 冻结、S1.3 产品定义或开发任务生成。
+- 阶段出口与最小闭环：对一句想法的结构化候选执行严格、无原型深冻结验证；headless CLI 仅输出唯一 JCS 机器回执，正负 fixture 可重复回放且无开发任务副作用。
+- 文件边界：仅使用任务包 `allowed_paths`；不修改路线锁、P3/P4/S4、包管理配置、`.codex/runtime`、正式/control refs。
+- 研究：已读取 formal source refs、项目路线锁、P5-M0 现有领域/CLI/测试模式和 Skill M0 入口；复用 canonical JSON、敏感字段、机器回执和 Node process adapter。
+- Skills：已触发并读取 `tdd-workflow`、`verification-loop`；执行测试先 RED 后 GREEN 和固定质量门禁。
+- CodeGraph：当前未初始化，路线锁标为“需询问”，本轮不初始化；以现有文件、测试和 `rg` 作替代结构检索，风险为跨文件关系依赖人工交叉阅读，已通过领域边界测试补偿。
+- 并行：研究阶段的独立文档、源码、测试和协议读取已并行；实现与 TDD 因共享文件和严格 RED/GREEN 顺序串行执行。
+
 ## 2026-07-07 项目真源建立
 
 - 任务目标：记录 NextStep 已确认的原始需求，并建立最小路线锁与项目留痕。
@@ -1331,3 +1343,13 @@
 - 决策：P5-M0 门禁通过；形成门禁关闭提交后才允许生成 S1.1 任务包，任务包和 `dispatch-ready` 持久化前不得派发。
 - 收口验证：`pnpm check` 65/65，覆盖率行 95.37%、分支 94.80%、函数 97.56%；scorecard JSON、评分算术、`git diff --check`、高置信秘密和 NextStep refs/runtime/任务包反扫通过。
 - 状态：P5-M0 收口材料已就绪，待形成独立门禁关闭提交。
+
+## 2026-08-09 P5 / V1 / M1.1 / S1.1 需求入口实现结束
+
+- TDD RED：新增需求入口测试后先执行 `pnpm test`，因 `src/domain/requirement-intake.ts` 尚不存在而构建失败；随后只补足领域契约、CLI、Schema 和回执分支。
+- TDD GREEN：`pnpm test` 通过 `72/72`；三类目标项目 fixture 均生成唯一 JCS 回执，空输入、缺字段、未知字段、非 JCS、敏感字段与开发任务偷渡 fixture 均以非零退出 fail closed，且敏感值不出现在 stdout/stderr。
+- 完整质量验证：`pnpm check` 通过 `72/72`，覆盖率为行 `95.27%`、分支 `93.46%`、函数 `98.08%`，高于项目 80% 阈值。
+- Skill 验证：系统 Python 缺少官方 `quick_validate.py` 所需的 `yaml` 模块；在 `/tmp/nextstep-s1-1-skill-validate` 一次性虚拟环境安装 PyYAML 后运行同一官方脚本，输出 `Skill is valid!`。未修改项目依赖或包管理文件。
+- 控制与输入复核：任务包 RFC 8785 摘要重算为预期 `sha256:586e0db08151c8378b7943885c7dba6367448a4c8d72ce49769cb6a75becba81`；所有 formal 输入摘要匹配。control ref 当前为 `16024b8009cd142257d6fd514778bb1350897f65`，与派发 OID `6c948268857418aa4fad53839d403942d5c51110` 间的本任务包无差异；formal ref 保持 baseline `976feac8be464cb150204d804130829c7583da18`。
+- 范围与状态：逐一反扫已修改和未跟踪路径，均在任务包 allowed_paths；`git diff --check`、JSON 解析、调试残留扫描通过。formal/control refs 未写入；`.codex/runtime` 现存 6 个文件摘要未因本任务改变。
+- 状态：本地实施与验证已结束，准备形成候选提交。执行任务不声明 I/X/P、M1.1、V1 或任何阶段门禁结论；候选仍需独立验证和后续流程。

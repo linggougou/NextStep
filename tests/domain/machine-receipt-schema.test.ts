@@ -7,6 +7,7 @@ import {
   MACHINE_RECEIPT_SCHEMA,
   parseMachineReceipt,
 } from "../../src/domain/machine-receipt.ts";
+import { parseRequirementIntake } from "../../src/domain/requirement-intake.ts";
 
 const successfulSubject = { status: "accepted" };
 
@@ -240,4 +241,35 @@ test("parseMachineReceipt requires every successful data field to be an own prop
       Reflect.deleteProperty(Object.prototype, field);
     }
   }
+});
+
+test("machine receipt accepts a canonical requirement-intake result without a development task", () => {
+  const intake = parseRequirementIntake({
+    schema_version: "1.0",
+    candidate: {
+      raw_expression: "我想做一个本地读书提醒工具。",
+      intent_summary: { status: "identified", value: "提醒读者完成阅读计划" },
+      goals: { status: "identified", items: ["减少遗忘阅读计划"] },
+      scenarios: { status: "identified", items: ["读者查看今日阅读提醒"] },
+      constraints: { status: "identified", items: ["仅保存本地数据"] },
+      expected_outputs: { status: "identified", items: ["每日阅读提醒"] },
+      non_goal_gaps: { status: "identified", items: ["不提供书店交易"] },
+      clarification_gaps: { status: "identified", items: ["提醒时间"] },
+    },
+  });
+  const receipt = parseMachineReceipt({
+    schema_version: "1.0",
+    receipt_id: "receipt-intake-001",
+    ok: true,
+    code: "REQUIREMENT_INTAKE_ACCEPTED",
+    data: {
+      canonical_json: canonicalizeJson(intake),
+      digest: digestJson(intake),
+      requirement_intake: intake,
+      schema_version: "1.0",
+    },
+  });
+
+  assert.equal(receipt.code, "REQUIREMENT_INTAKE_ACCEPTED");
+  assert.equal(Object.hasOwn(receipt.data, "requirement_intake"), true);
 });

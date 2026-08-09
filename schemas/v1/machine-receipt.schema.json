@@ -27,7 +27,10 @@
         "CONTRACT_PROBE_SUCCEEDED",
         "CONTRACT_PROBE_REJECTED",
         "INVALID_JSON",
-        "SENSITIVE_FIELD_DETECTED"
+        "SENSITIVE_FIELD_DETECTED",
+        "REQUIREMENT_INTAKE_ACCEPTED",
+        "REQUIREMENT_INTAKE_REJECTED",
+        "DEVELOPMENT_TASK_EMBEDDED"
       ]
     },
     "data": {
@@ -47,36 +50,72 @@
         ]
       },
       "then": {
-        "properties": {
-          "code": {
-            "const": "CONTRACT_PROBE_SUCCEEDED"
-          },
-          "data": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "canonical_json",
-              "digest",
-              "dry_run",
-              "schema_version"
-            ],
+        "oneOf": [
+          {
             "properties": {
-              "canonical_json": {
-                "type": "string"
+              "code": {
+                "const": "CONTRACT_PROBE_SUCCEEDED"
               },
-              "digest": {
-                "type": "string",
-                "pattern": "^sha256:[a-f0-9]{64}$"
+              "data": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "canonical_json",
+                  "digest",
+                  "dry_run",
+                  "schema_version"
+                ],
+                "properties": {
+                  "canonical_json": {
+                    "type": "string"
+                  },
+                  "digest": {
+                    "type": "string",
+                    "pattern": "^sha256:[a-f0-9]{64}$"
+                  },
+                  "dry_run": {
+                    "type": "boolean"
+                  },
+                  "schema_version": {
+                    "const": "1.0"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "properties": {
+              "code": {
+                "const": "REQUIREMENT_INTAKE_ACCEPTED"
               },
-              "dry_run": {
-                "type": "boolean"
-              },
-              "schema_version": {
-                "const": "1.0"
+              "data": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "canonical_json",
+                  "digest",
+                  "requirement_intake",
+                  "schema_version"
+                ],
+                "properties": {
+                  "canonical_json": {
+                    "type": "string"
+                  },
+                  "digest": {
+                    "type": "string",
+                    "pattern": "^sha256:[a-f0-9]{64}$"
+                  },
+                  "requirement_intake": {
+                    "type": "object"
+                  },
+                  "schema_version": {
+                    "const": "1.0"
+                  }
+                }
               }
             }
           }
-        }
+        ]
       },
       "else": {
         "properties": {
@@ -84,7 +123,9 @@
             "enum": [
               "CONTRACT_PROBE_REJECTED",
               "INVALID_JSON",
-              "SENSITIVE_FIELD_DETECTED"
+              "SENSITIVE_FIELD_DETECTED",
+              "REQUIREMENT_INTAKE_REJECTED",
+              "DEVELOPMENT_TASK_EMBEDDED"
             ]
           },
           "data": {
