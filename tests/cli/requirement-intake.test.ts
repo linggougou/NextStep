@@ -61,8 +61,14 @@ test("requirement intake CLI emits one JCS receipt for each target-project fixtu
     assert.equal(receipt.code, "REQUIREMENT_INTAKE_ACCEPTED");
     const data = receipt.data as Record<string, unknown>;
     const intake = data.requirement_intake as Record<string, unknown>;
+    const userOutput = data.user_output as Record<string, unknown>;
     assert.equal((intake.candidate as Record<string, unknown>).raw_expression === "", false);
     assert.equal(Object.hasOwn(intake, "development_tasks"), false);
+    assert.equal(userOutput.status, "candidate-only");
+    assert.ok(Array.isArray(userOutput.identified_facts));
+    assert.ok(Array.isArray(userOutput.missing_information));
+    assert.ok(Array.isArray(userOutput.clarification_questions));
+    assert.match(String(userOutput.next_step), /不会冻结|不会写入|不会生成开发任务/);
   }
 });
 

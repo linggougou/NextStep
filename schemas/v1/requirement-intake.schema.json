@@ -55,6 +55,51 @@
     }
   },
   "definitions": {
+    "evidenceSpan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "start",
+        "end",
+        "quote"
+      ],
+      "properties": {
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "quotedFact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "evidence"
+      ],
+      "properties": {
+        "value": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "$ref": "#/definitions/evidenceSpan"
+          }
+        }
+      }
+    },
     "intentSummary": {
       "oneOf": [
         {
@@ -62,15 +107,30 @@
           "additionalProperties": false,
           "required": [
             "status",
-            "value"
+            "source",
+            "value",
+            "evidence"
           ],
           "properties": {
             "status": {
               "const": "identified"
             },
+            "source": {
+              "enum": [
+                "quoted",
+                "derived"
+              ]
+            },
             "value": {
               "type": "string",
               "minLength": 1
+            },
+            "evidence": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/evidenceSpan"
+              }
             }
           }
         },
@@ -79,13 +139,18 @@
           "additionalProperties": false,
           "required": [
             "status",
-            "reason"
+            "reason",
+            "clarification_question"
           ],
           "properties": {
             "status": {
               "const": "missing"
             },
             "reason": {
+              "type": "string",
+              "minLength": 1
+            },
+            "clarification_question": {
               "type": "string",
               "minLength": 1
             }
@@ -110,8 +175,7 @@
               "type": "array",
               "minItems": 1,
               "items": {
-                "type": "string",
-                "minLength": 1
+                "$ref": "#/definitions/quotedFact"
               }
             }
           }
@@ -121,7 +185,8 @@
           "additionalProperties": false,
           "required": [
             "status",
-            "items"
+            "items",
+            "clarification_question"
           ],
           "properties": {
             "status": {
@@ -130,6 +195,10 @@
             "items": {
               "type": "array",
               "maxItems": 0
+            },
+            "clarification_question": {
+              "type": "string",
+              "minLength": 1
             }
           }
         }

@@ -1353,3 +1353,22 @@
 - 控制与输入复核：任务包 RFC 8785 摘要重算为预期 `sha256:586e0db08151c8378b7943885c7dba6367448a4c8d72ce49769cb6a75becba81`；所有 formal 输入摘要匹配。control ref 当前为 `16024b8009cd142257d6fd514778bb1350897f65`，与派发 OID `6c948268857418aa4fad53839d403942d5c51110` 间的本任务包无差异；formal ref 保持 baseline `976feac8be464cb150204d804130829c7583da18`。
 - 范围与状态：逐一反扫已修改和未跟踪路径，均在任务包 allowed_paths；`git diff --check`、JSON 解析、调试残留扫描通过。formal/control refs 未写入；`.codex/runtime` 现存 6 个文件摘要未因本任务改变。
 - 状态：本地实施与验证已结束，准备形成候选提交。执行任务不声明 I/X/P、M1.1、V1 或任何阶段门禁结论；候选仍需独立验证和后续流程。
+
+## 2026-08-09 P5 / V1 / M1.1 / S1.1 Attempt 2 修复开始
+
+- 控制身份：任务 `S1.1`、`task_attempt=2`；开始时 `HEAD=0e53ef59725f4c6077a6ac6acb75c095ebda209d`，formal baseline=`976feac8be464cb150204d804130829c7583da18`，control claim=`1c44afb6b67ecb09524bd6190d100422e619ebcd`，工作树清洁。
+- 任务包：`ep-p5-v1-m1.1-s1.1-g1-a2-20260809`，RFC 8785 摘要重算匹配 `sha256:1a590107293f34092e2698c42ad34fcd14e1b56e371e49ef948da98d77d83298`。
+- 修复入口：attempt 1 候选验证已有独立通过证据，但 X/P 退回；本轮只关闭原文证据、反补造、Skill 回放和诚实用户输出缺口，不自行给出新门禁结论。
+- 生命周期与边界：仍为 `S5 / P5 / V1 / M1.1 / S1.1`；不进入 S1.2，不改变路线、产品语义、技术栈或验收门禁。
+- Skills：重新读取并采用 `tdd-workflow` 和 `verification-loop`；先新增失败测试，再做最小修复，最后执行类型、构建、覆盖率、Skill、范围与状态验证。
+- TDD RED：更新证据化 fixture，新增无依据预填、错误位置/片段、派生意图、诚实用户输出和 Skill 回放测试后，`pnpm test` 因实现缺少对应导出与字段失败。
+
+## 2026-08-09 P5 / V1 / M1.1 / S1.1 Attempt 2 修复结束
+
+- 最小实现：普通 `identified` 事实必须逐字等于唯一 UTF-16 `[start,end)` 原文证据；越界、片段不匹配、空证据和无依据预填均 fail closed。意图摘要区分 `quoted` 与 `derived`，后者必须绑定原文证据但仍由宿主 AI 承担语义判断。
+- 用户输出：新增确定性候选回放，完整列出已识别事实、所有 `missing` 字段和澄清问题，并明确候选不会冻结、不会写入、不会生成开发任务；机器回执重新计算该输出并拒绝掩盖缺口的结果。
+- Skill 回放：加入一句用户输入、宿主 AI 候选、确定性内核和用户输出的契约回放；文档明确该回放不证明模型质量，也不构成规则型自然语言解析器。
+- GREEN：`pnpm test` 与 `pnpm check` 均通过 `76/76`；覆盖率为行 `94.52%`、分支 `91.91%`、函数 `98.21%`。
+- 结构验证：官方 `quick_validate.py` 输出 `Skill is valid!`；10 个变更 JSON 可解析；`git diff --check`、新增行调试残留、高置信秘密和 allowed-path 反扫通过。
+- 身份与状态：任务包摘要复算匹配 `sha256:1a590107293f34092e2698c42ad34fcd14e1b56e371e49ef948da98d77d83298`；formal ref 保持 `976feac8be464cb150204d804130829c7583da18`。control ref 由宿主推进到 `06b9ebaad628a4343ec13b9d17224d1f4474ffc5`，本任务未写入 control；`.codex/runtime` 与 runtime refs 未改变。
+- 边界：未进入 S1.2，未调用外部模型 API，未生成开发任务，未写入、冻结或会签需求。本执行记录不构成 I/X/P、M1.1、V1 或其他门禁结论。

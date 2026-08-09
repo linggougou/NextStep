@@ -11,6 +11,7 @@ import {
 import { digestJson } from "../domain/content-digest.ts";
 import { parseMachineReceipt, type MachineReceipt } from "../domain/machine-receipt.ts";
 import {
+  buildRequirementIntakeUserOutput,
   parseRequirementIntake,
   RequirementIntakeError,
 } from "../domain/requirement-intake.ts";
@@ -83,6 +84,7 @@ async function main(io: ProcessIoAdapter): Promise<void> {
       );
     }
     const intake = parseInput(await io.readInput());
+    const userOutput = buildRequirementIntakeUserOutput(intake);
     writeReceipt(
       io,
       createReceipt(true, "REQUIREMENT_INTAKE_ACCEPTED", {
@@ -90,6 +92,7 @@ async function main(io: ProcessIoAdapter): Promise<void> {
         digest: digestJson(intake),
         requirement_intake: intake,
         schema_version: "1.0",
+        user_output: userOutput,
       }),
     );
   } catch (error) {

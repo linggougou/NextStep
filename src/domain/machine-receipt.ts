@@ -4,7 +4,10 @@ import machineReceiptSchema from "../../schemas/v1/machine-receipt.schema.json" 
 import { canonicalizeJson, parseCanonicalJsonBytes } from "./canonical-json.ts";
 import { assertDigestMatches } from "./content-digest.ts";
 import { assertNoSensitiveFields } from "./sensitive-fields.ts";
-import { parseRequirementIntake } from "./requirement-intake.ts";
+import {
+  buildRequirementIntakeUserOutput,
+  parseRequirementIntake,
+} from "./requirement-intake.ts";
 import { isPlainRecord, type UnknownRecord } from "./value-guards.ts";
 
 export type MachineReceiptCode =
@@ -70,7 +73,7 @@ export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
 
     const successfulFields = snapshot.code === "CONTRACT_PROBE_SUCCEEDED"
       ? ["canonical_json", "digest", "dry_run", "schema_version"]
-      : ["canonical_json", "digest", "requirement_intake", "schema_version"];
+      : ["canonical_json", "digest", "requirement_intake", "schema_version", "user_output"];
     assertOwnFields(snapshot.data, snapshot.ok ? successfulFields : ["dry_run"], "data field");
 
     if (snapshot.ok) {
@@ -88,6 +91,10 @@ export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
         const intake = parseRequirementIntake(snapshot.data.requirement_intake);
         if (canonicalJson !== canonicalizeJson(intake)) {
           throw new TypeError("Requirement intake receipt payload does not match canonical JSON");
+        }
+        const expectedUserOutput = buildRequirementIntakeUserOutput(intake);
+        if (canonicalizeJson(snapshot.data.user_output) !== canonicalizeJson(expectedUserOutput)) {
+          throw new TypeError("Requirement intake receipt user output does not match candidate");
         }
       }
     }

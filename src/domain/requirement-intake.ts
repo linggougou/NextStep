@@ -21,24 +21,39 @@ export class RequirementIntakeError extends Error {
   }
 }
 
+export interface EvidenceSpan {
+  readonly start: number;
+  readonly end: number;
+  readonly quote: string;
+}
+
 interface IdentifiedIntentSummary {
   readonly status: "identified";
+  readonly source: "quoted" | "derived";
   readonly value: string;
+  readonly evidence: readonly EvidenceSpan[];
 }
 
 interface MissingIntentSummary {
   readonly status: "missing";
   readonly reason: string;
+  readonly clarification_question: string;
+}
+
+interface IdentifiedFact {
+  readonly value: string;
+  readonly evidence: readonly EvidenceSpan[];
 }
 
 interface IdentifiedDimension {
   readonly status: "identified";
-  readonly items: readonly string[];
+  readonly items: readonly IdentifiedFact[];
 }
 
 interface MissingDimension {
   readonly status: "missing";
   readonly items: readonly [];
+  readonly clarification_question: string;
 }
 
 type RequirementDimension = IdentifiedDimension | MissingDimension;
@@ -55,6 +70,37 @@ export interface RequirementIntake {
     readonly non_goal_gaps: RequirementDimension;
     readonly clarification_gaps: RequirementDimension;
   };
+}
+
+const DIMENSIONS = [
+  ["goals", "目标"],
+  ["scenarios", "场景"],
+  ["constraints", "约束"],
+  ["expected_outputs", "期望输出"],
+  ["non_goal_gaps", "非目标缺口"],
+  ["clarification_gaps", "待澄清缺口"],
+] as const;
+
+type DimensionField = (typeof DIMENSIONS)[number][0];
+
+export interface RequirementIntakeUserOutput {
+  readonly status: "candidate-only";
+  readonly raw_expression: string;
+  readonly candidate_summary: string;
+  readonly identified_facts: readonly {
+    readonly field: "intent_summary" | DimensionField;
+    readonly label: string;
+    readonly value: string;
+    readonly source: "quoted" | "derived";
+    readonly evidence: readonly EvidenceSpan[];
+  }[];
+  readonly missing_information: readonly {
+    readonly field: "intent_summary" | DimensionField;
+    readonly label: string;
+    readonly clarification_question: string;
+  }[];
+  readonly clarification_questions: readonly string[];
+  readonly next_step: string;
 }
 
 const DEVELOPMENT_TASK_FIELDS = new Set([
@@ -129,6 +175,63 @@ function assertRequirementRoot(value: unknown): asserts value is UnknownRecord {
   }
 }
 
+function assertEvidenceSpan(rawExpression: string, evidence: EvidenceSpan): void {
+  if (
+    !Number.isSafeInteger(evidence.start) ||
+    !Number.isSafeInteger(evidence.end) ||
+    evidence.start < 0 ||
+    evidence.end <= evidence.start ||
+    evidence.end > rawExpression.length ||
+    rawExpression.slice(evidence.start, evidence.end) !== evidence.quote
+  ) {
+    throw new RequirementIntakeError(
+      "INVALID_REQUIREMENT_INTAKE",
+      "Requirement evidence position and quote must match raw_expression",
+    );
+  }
+}
+
+function assertEvidenceSemantics(intake: RequirementIntake): void {
+  const { candidate } = intake;
+  const intent = candidate.intent_summary;
+  if (intent.status === "identified") {
+    for (const evidence of intent.evidence) {
+      assertEvidenceSpan(candidate.raw_expression, evidence);
+    }
+    if (
+      intent.source === "quoted" &&
+      (intent.evidence.length !== 1 || intent.value !== intent.evidence[0]?.quote)
+    ) {
+      throw new RequirementIntakeError(
+        "INVALID_REQUIREMENT_INTAKE",
+        "Quoted intent must exactly match its source evidence",
+      );
+    }
+  }
+
+  for (const [field] of DIMENSIONS) {
+    const dimension = candidate[field];
+    if (dimension.status === "identified") {
+      for (const item of dimension.items) {
+        const evidence = item.evidence[0];
+        if (item.evidence.length !== 1 || evidence === undefined) {
+          throw new RequirementIntakeError(
+            "INVALID_REQUIREMENT_INTAKE",
+            "Identified facts require exactly one source evidence span",
+          );
+        }
+        assertEvidenceSpan(candidate.raw_expression, evidence);
+        if (item.value !== evidence.quote) {
+          throw new RequirementIntakeError(
+            "INVALID_REQUIREMENT_INTAKE",
+            "Identified facts must exactly match source evidence",
+          );
+        }
+      }
+    }
+  }
+}
+
 export function parseRequirementIntake(value: unknown): RequirementIntake {
   let snapshot: ReturnType<typeof snapshotJsonValue>;
   try {
@@ -171,5 +274,62 @@ export function parseRequirementIntake(value: unknown): RequirementIntake {
     );
   }
 
+  assertEvidenceSemantics(snapshot);
   return snapshot;
+}
+
+export function buildRequirementIntakeUserOutput(value: unknown): RequirementIntakeUserOutput {
+  const intake = parseRequirementIntake(value);
+  const { candidate } = intake;
+  const identifiedFacts: RequirementIntakeUserOutput["identified_facts"][number][] = [];
+  const missingInformation: RequirementIntakeUserOutput["missing_information"][number][] = [];
+
+  if (candidate.intent_summary.status === "identified") {
+    identifiedFacts.push({
+      field: "intent_summary",
+      label: "意图摘要",
+      value: candidate.intent_summary.value,
+      source: candidate.intent_summary.source,
+      evidence: candidate.intent_summary.evidence,
+    });
+  } else {
+    missingInformation.push({
+      field: "intent_summary",
+      label: "意图摘要",
+      clarification_question: candidate.intent_summary.clarification_question,
+    });
+  }
+
+  for (const [field, label] of DIMENSIONS) {
+    const dimension = candidate[field];
+    if (dimension.status === "identified") {
+      for (const item of dimension.items) {
+        identifiedFacts.push({
+          field,
+          label,
+          value: item.value,
+          source: "quoted",
+          evidence: item.evidence,
+        });
+      }
+    } else {
+      missingInformation.push({
+        field,
+        label,
+        clarification_question: dimension.clarification_question,
+      });
+    }
+  }
+
+  return snapshotJsonValue({
+    status: "candidate-only",
+    raw_expression: candidate.raw_expression,
+    candidate_summary: candidate.intent_summary.status === "identified"
+      ? candidate.intent_summary.value
+      : `原始表达：${candidate.raw_expression}`,
+    identified_facts: identifiedFacts,
+    missing_information: missingInformation,
+    clarification_questions: missingInformation.map((item) => item.clarification_question),
+    next_step: "请回答待澄清问题；当前候选不会冻结、不会写入，也不会生成开发任务。",
+  }) as unknown as RequirementIntakeUserOutput;
 }

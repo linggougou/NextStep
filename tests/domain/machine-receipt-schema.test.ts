@@ -7,7 +7,10 @@ import {
   MACHINE_RECEIPT_SCHEMA,
   parseMachineReceipt,
 } from "../../src/domain/machine-receipt.ts";
-import { parseRequirementIntake } from "../../src/domain/requirement-intake.ts";
+import {
+  buildRequirementIntakeUserOutput,
+  parseRequirementIntake,
+} from "../../src/domain/requirement-intake.ts";
 
 const successfulSubject = { status: "accepted" };
 
@@ -248,15 +251,27 @@ test("machine receipt accepts a canonical requirement-intake result without a de
     schema_version: "1.0",
     candidate: {
       raw_expression: "我想做一个本地读书提醒工具。",
-      intent_summary: { status: "identified", value: "提醒读者完成阅读计划" },
-      goals: { status: "identified", items: ["减少遗忘阅读计划"] },
-      scenarios: { status: "identified", items: ["读者查看今日阅读提醒"] },
-      constraints: { status: "identified", items: ["仅保存本地数据"] },
-      expected_outputs: { status: "identified", items: ["每日阅读提醒"] },
-      non_goal_gaps: { status: "identified", items: ["不提供书店交易"] },
-      clarification_gaps: { status: "identified", items: ["提醒时间"] },
+      intent_summary: {
+        status: "identified",
+        source: "derived",
+        value: "建立一个本地读书提醒工具",
+        evidence: [{ start: 2, end: 13, quote: "做一个本地读书提醒工具" }],
+      },
+      goals: {
+        status: "identified",
+        items: [{
+          value: "做一个本地读书提醒工具",
+          evidence: [{ start: 2, end: 13, quote: "做一个本地读书提醒工具" }],
+        }],
+      },
+      scenarios: { status: "missing", items: [], clarification_question: "谁会使用？" },
+      constraints: { status: "missing", items: [], clarification_question: "有哪些限制？" },
+      expected_outputs: { status: "missing", items: [], clarification_question: "输出什么？" },
+      non_goal_gaps: { status: "missing", items: [], clarification_question: "不做什么？" },
+      clarification_gaps: { status: "missing", items: [], clarification_question: "还要澄清什么？" },
     },
   });
+  const userOutput = buildRequirementIntakeUserOutput(intake);
   const receipt = parseMachineReceipt({
     schema_version: "1.0",
     receipt_id: "receipt-intake-001",
@@ -267,9 +282,52 @@ test("machine receipt accepts a canonical requirement-intake result without a de
       digest: digestJson(intake),
       requirement_intake: intake,
       schema_version: "1.0",
+      user_output: userOutput,
     },
   });
 
   assert.equal(receipt.code, "REQUIREMENT_INTAKE_ACCEPTED");
   assert.equal(Object.hasOwn(receipt.data, "requirement_intake"), true);
+});
+
+test("machine receipt rejects user output that hides missing information", () => {
+  const intake = parseRequirementIntake({
+    schema_version: "1.0",
+    candidate: {
+      raw_expression: "我想做提醒工具。",
+      intent_summary: {
+        status: "identified",
+        source: "derived",
+        value: "建立提醒工具",
+        evidence: [{ start: 3, end: 7, quote: "提醒工具" }],
+      },
+      goals: {
+        status: "identified",
+        items: [{ value: "提醒工具", evidence: [{ start: 3, end: 7, quote: "提醒工具" }] }],
+      },
+      scenarios: { status: "missing", items: [], clarification_question: "谁会使用？" },
+      constraints: { status: "missing", items: [], clarification_question: "有哪些限制？" },
+      expected_outputs: { status: "missing", items: [], clarification_question: "输出什么？" },
+      non_goal_gaps: { status: "missing", items: [], clarification_question: "不做什么？" },
+      clarification_gaps: { status: "missing", items: [], clarification_question: "还要澄清什么？" },
+    },
+  });
+  const userOutput = buildRequirementIntakeUserOutput(intake);
+
+  assert.throws(
+    () => parseMachineReceipt({
+      schema_version: "1.0",
+      receipt_id: "receipt-dishonest-output",
+      ok: true,
+      code: "REQUIREMENT_INTAKE_ACCEPTED",
+      data: {
+        canonical_json: canonicalizeJson(intake),
+        digest: digestJson(intake),
+        requirement_intake: intake,
+        schema_version: "1.0",
+        user_output: { ...userOutput, missing_information: [], clarification_questions: [] },
+      },
+    }),
+    /user output|match|receipt|invalid/i,
+  );
 });

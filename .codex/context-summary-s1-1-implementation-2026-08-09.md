@@ -1,5 +1,17 @@
 # S1.1 需求入口实现上下文摘要
 
+## Attempt 2 修复上下文
+
+- 任务包：`ep-p5-v1-m1.1-s1.1-g1-a2-20260809`。
+- 任务包摘要：`sha256:1a590107293f34092e2698c42ad34fcd14e1b56e371e49ef948da98d77d83298`。
+- working parent：`0e53ef59725f4c6077a6ac6acb75c095ebda209d`；开始时 `HEAD` 精确匹配。
+- formal baseline：`976feac8be464cb150204d804130829c7583da18`；仍为 working parent 的父提交。
+- dispatch claim OID：开始核验时 control ref 精确为 `1c44afb6b67ecb09524bd6190d100422e619ebcd`。
+- 独立评估退回项：缺少原文证据模型；无依据 `identified` 可被预填；缺少一句话 Skill 回放和用户可理解的候选、缺口、澄清输出。
+- 修复策略：普通事实必须逐字等于唯一原文证据片段；派生意图必须显式 `source: derived` 并绑定原文证据；所有 `missing` 必须携带澄清问题；确定性用户输出完整呈现已识别事实和缺失项。
+- 非目标：不实现自然语言解析器，不调用模型 API，不进入 S1.2，不写入/冻结/会签，不生成开发任务，不改 refs/runtime 或已会签真源。
+- TDD RED：新增 attempt 2 测试后运行 `pnpm test`，TypeScript 因缺少证据模型与 `buildRequirementIntakeUserOutput` 失败，符合先测试后实现要求。
+
 ## 控制身份
 
 - 任务包：`ep-p5-v1-m1.1-s1.1-g1-a1-20260809`

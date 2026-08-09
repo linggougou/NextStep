@@ -95,7 +95,8 @@
                   "canonical_json",
                   "digest",
                   "requirement_intake",
-                  "schema_version"
+                  "schema_version",
+                  "user_output"
                 ],
                 "properties": {
                   "canonical_json": {
@@ -110,6 +111,9 @@
                   },
                   "schema_version": {
                     "const": "1.0"
+                  },
+                  "user_output": {
+                    "type": "object"
                   }
                 }
               }
