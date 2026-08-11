@@ -22,6 +22,7 @@ import { buildRequirementSet } from "../../src/domain/requirement-set.ts";
 function createCommand(
   confirmationId = "confirm-freeze-001",
   expectedOutput = "本地清单",
+  confirmSession = true,
 ) {
   const requirementSet = buildRequirementSet({
     schema_version: "1.0",
@@ -69,10 +70,12 @@ function createCommand(
   };
   const verified = verifyConfirmationInteraction({ display, user_action: userAction }, verifier);
   const interactionSession = createConfirmationInteractionSession(verified);
-  reduceConfirmationInteractionState(
-    interactionSession,
-    { type: "user-action", user_action: userAction, evaluated_at: userAction.occurred_at },
-  );
+  if (confirmSession) {
+    reduceConfirmationInteractionState(
+      interactionSession,
+      { type: "user-action", user_action: userAction, evaluated_at: userAction.occurred_at },
+    );
+  }
   const context: ConfirmationExecutionContext = {
     verifier,
     verified_interaction: verified,
@@ -240,14 +243,49 @@ test("freeze never accepts a saved confirmed snapshot after its session reaches 
       "view-change": "superseded",
     } as const;
     assert.equal(terminalState.status, expectedStatus[terminalKind]);
+    let replayVerifierCalls = 0;
+    const replayVerifier = {
+      verifier_kind: "manual-isolated-fixture" as const,
+      verify: () => {
+        replayVerifierCalls += 1;
+        return true;
+      },
+    };
     const replayedVerified = verifyConfirmationInteraction({
       display: context.verified_interaction.display,
       user_action: confirmAction,
-    }, context.verifier);
+    }, replayVerifier);
+    assert.equal(replayVerifierCalls, 1);
+    assert.equal(replayedVerified, context.verified_interaction);
     assert.equal(createConfirmationInteractionSession(replayedVerified), context.interaction_session);
     assert.throws(
-      () => freezeRequirementSet(command, [], context),
+      () => freezeRequirementSet(command, [], {
+        ...context,
+        verifier: replayVerifier,
+        verified_interaction: replayedVerified,
+      }),
       (error: unknown) => error instanceof RequirementFreezeError && error.code === "CONFIRMATION_MISMATCH",
     );
   }
+});
+
+test("an unverified confirm action cannot advance a pending session or freeze its envelope", () => {
+  const { command, context } = createCommand("confirm-unverified-injection", "本地清单", false);
+  const injectedAction = createUnverifiedUserConfirmationAction(command.confirmation.display, {
+    user_action_id: "unverified-confirm-action",
+    action: "confirm",
+    occurred_at: "2026-08-10T01:07:01.000Z",
+  });
+
+  const state = reduceConfirmationInteractionState(context.interaction_session, {
+    type: "user-action",
+    user_action: injectedAction,
+    evaluated_at: injectedAction.occurred_at,
+  });
+
+  assert.notEqual(state.status, "confirmed");
+  assert.throws(
+    () => freezeRequirementSet(command, [], context),
+    (error: unknown) => error instanceof RequirementFreezeError && error.code === "CONFIRMATION_MISMATCH",
+  );
 });

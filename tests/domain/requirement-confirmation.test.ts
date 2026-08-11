@@ -50,18 +50,18 @@ function completeRequirementSet() {
   });
 }
 
-function confirmedReplay(requirementSet = completeRequirementSet()) {
+function confirmedReplay(requirementSet = completeRequirementSet(), confirmationId = "confirm-001") {
   const challenge = createConfirmationChallenge(requirementSet, {
-    confirmation_id: "confirm-001",
+    confirmation_id: confirmationId,
     created_at: "2026-08-10T01:03:00.000Z",
     expires_at: "2026-08-10T01:10:00.000Z",
   });
   const display = createUnverifiedConfirmationViewDisplay(challenge, {
-    display_id: "display-001",
+    display_id: `display-${confirmationId}`,
     displayed_at: "2026-08-10T01:04:00.000Z",
   });
   const action = createUnverifiedUserConfirmationAction(display, {
-    user_action_id: "user-action-001",
+    user_action_id: `user-action-${confirmationId}`,
     action: "confirm",
     occurred_at: "2026-08-10T01:05:00.000Z",
   });
@@ -159,7 +159,7 @@ test("confirmation replay rejects self-description, machine receipts, incomplete
 test("only a fresh independent confirm action can form an envelope", () => {
   const { challenge, display } = confirmedReplay();
   for (const input of [
-    { user_action_id: "display-001", action: "confirm", occurred_at: "2026-08-10T01:05:00.000Z" },
+    { user_action_id: display.display_id, action: "confirm", occurred_at: "2026-08-10T01:05:00.000Z" },
     { user_action_id: "user-action-reverse", action: "confirm", occurred_at: "2026-08-10T01:03:59.000Z" },
     { user_action_id: "user-action-expired", action: "confirm", occurred_at: challenge.expires_at },
   ] as const) {
@@ -226,6 +226,46 @@ test("only an injected verifier can turn an unverified replay into a confirmed c
     (error: unknown) => error instanceof RequirementConfirmationError,
   );
 
+  const firstVerifier = {
+    verifier_kind: "manual-isolated-fixture" as const,
+    verify: () => true,
+  };
+  const firstVerified = verifyConfirmationInteraction({ display, user_action: action }, firstVerifier);
+  const firstSession = createConfirmationInteractionSession(firstVerified);
+  let secondVerifierCalls = 0;
+  const secondVerifier = {
+    verifier_kind: "manual-isolated-fixture" as const,
+    verify: () => {
+      secondVerifierCalls += 1;
+      return true;
+    },
+  };
+  const secondVerified = verifyConfirmationInteraction({ display, user_action: action }, secondVerifier);
+  assert.equal(secondVerifierCalls, 1);
+  assert.equal(secondVerified, firstVerified);
+  assert.equal(createConfirmationInteractionSession(secondVerified), firstSession);
+
+  for (const verifierResult of [false, undefined, null, {}, 1, Promise.resolve(false)]) {
+    const untrustedVerifier = {
+      verifier_kind: "manual-isolated-fixture" as const,
+      verify: () => verifierResult as boolean,
+    } as ConfirmationInteractionVerifier;
+    assert.throws(
+      () => verifyConfirmationInteraction({ display, user_action: action }, untrustedVerifier),
+      (error: unknown) => error instanceof RequirementConfirmationError,
+    );
+  }
+  const throwingVerifier = {
+    verifier_kind: "manual-isolated-fixture" as const,
+    verify: () => {
+      throw new Error("verifier failure");
+    },
+  };
+  assert.throws(
+    () => verifyConfirmationInteraction({ display, user_action: action }, throwingVerifier),
+    (error: unknown) => error instanceof RequirementConfirmationError,
+  );
+
   for (const verifierResult of [false, undefined, null, {}, 1, Promise.resolve(false)]) {
     const nonBooleanVerifier = {
       verifier_kind: "manual-isolated-fixture" as const,
@@ -248,7 +288,7 @@ test("only an injected verifier can turn an unverified replay into a confirmed c
   assert.equal(confirmed.status, "confirmed");
 
   for (const userAction of ["reject", "cancel"] as const) {
-    const replay = confirmedReplay();
+    const replay = confirmedReplay(completeRequirementSet(), `confirm-terminal-${userAction}`);
     const terminalSession = createConfirmationInteractionSession(replay.verified);
     const terminal = reduceConfirmationInteractionState(terminalSession, {
       type: "user-action",
@@ -258,16 +298,16 @@ test("only an injected verifier can turn an unverified replay into a confirmed c
     assert.equal(terminal.status, userAction === "reject" ? "rejected" : "cancelled");
   }
 
-  const expiryReplay = confirmedReplay();
+  const expiryReplay = confirmedReplay(completeRequirementSet(), "confirm-terminal-expiry");
   const expirySession = createConfirmationInteractionSession(expiryReplay.verified);
   assert.equal(
     reduceConfirmationInteractionState(expirySession, {
       type: "evaluate",
-      evaluated_at: display.challenge.expires_at,
+      evaluated_at: expiryReplay.display.challenge.expires_at,
     }).status,
     "expired",
   );
-  const changedReplay = confirmedReplay();
+  const changedReplay = confirmedReplay(completeRequirementSet(), "confirm-terminal-view-change");
   const changedSession = createConfirmationInteractionSession(changedReplay.verified);
   assert.equal(
     reduceConfirmationInteractionState(changedSession, {
@@ -278,7 +318,7 @@ test("only an injected verifier can turn an unverified replay into a confirmed c
     "superseded",
   );
 
-  const futureReplay = confirmedReplay();
+  const futureReplay = confirmedReplay(completeRequirementSet(), "confirm-terminal-future");
   const futureSession = createConfirmationInteractionSession(futureReplay.verified);
   assert.throws(
     () => reduceConfirmationInteractionState(futureSession, {

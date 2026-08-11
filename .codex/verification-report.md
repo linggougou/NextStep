@@ -1,5 +1,24 @@
 # Verification Report
 
+## 2026-08-11 P5 / V1 / M1.1 / S1.2 Attempt 4 双前置门禁
+
+- 固定候选：commit `6b9301c9a05709e5f21fc41b7f12015985812f6f`、tree `5119f62ed843d0765d6ca973fed9786c8480c753`、subject digest `sha256:07819e5281c492bc519f16c67cd77dc78bf095389087ee07a2bf2d74e42b1090`。
+- 候选验证：`退回`，P0 = 0、P1 = 1。身份、20/20 allowlist、96/96、覆盖率 89.79%/82.83%/97.66%、Skill、audit、CLI 和污染检查通过；跨 verifier 可重建 canonical replay session 并复活终态。
+- I/X/P：`I 通过 / X 退回 / P 通过`，总门禁 `退回`，P0 = 0、P1 = 1。pending session 可注入未经 session verifier 的不同 confirm action，再用原始 envelope 冻结。
+- 结果摘要：候选验证 `sha256:cbcdcc072f4de7b925b96b01548a144a89887c159266f4e54879719a0f8410bd`；I/X/P `sha256:46d77ed734072776a44cebc7eee0c78205dc37a3805bd5e67a2be6f9e7cf927b`；均已复算匹配并通过 expected-old CAS 写入 control。
+- 阶段门禁：未通过。L3 未启动；attempt 5 重新形成固定候选并通过双前置门禁前，不得进入 L3、S1.3 或作 PC-02、M1.1、V1、P5 完成结论。
+
+## 2026-08-11 P5 / V1 / M1.1 / S1.2 Attempt 5 启动验证
+
+- packet `ep-p5-v1-m1.1-s1.2-g1-a5-20260811` 的 RFC 8785 双字段投影摘要复算为 `sha256:d929bc94bcb2a48b498d4b2d20e6d906cba5da44c0746001c2450841de8d6fe0`，与持久化字段匹配。
+- tombstone、dispatch-ready、outbox intent、fence 12 claim 和 Terra dispatch-ack 均按 expected-old CAS 分步持久化；当前 control ref `74923ee28d287c07d5724250bbe6284a8079956a`。
+- HEAD 保持 `6b9301c9a05709e5f21fc41b7f12015985812f6f`，formal ref 保持 `8ffaf658e112a5ba26a9f83882f5f71f1ae79454`；未 push、未启动 L3、未生成新的候选结果。
+- TDD RED/GREEN：新增跨 verifier 四类终态、失败 verifier 不得借用 canonical replay、pending session 未验证 confirm 注入后，首次 `pnpm test` 为 `94/97`；最小修复后 `pnpm test` 与 `pnpm check` 均为 `97/97`。
+- 主管复验覆盖率：行 `89.87%`、分支 `82.87%`、函数 `97.66%`，均高于 80%；audit 无已知漏洞，Skill `quick_validate.py` 输出 `Skill is valid!`，实际 9 份 Schema/fixture JSON、格式、秘密/调试和受保护路径检查通过。
+- 辅助验证纠错：首次 JSON 命令引用三个已不存在的旧 fixture 文件名并因 `ENOENT` 失败；按 `rg --files` 发现的三个实际 fixture 重跑后 `JSON OK 9`。该命令未修改文件，产品测试、构建和 Schema 本身未失败。
+- 当前执行结论：`candidate-ready`，待只读攻击反扫、固定 Git 身份和重新执行独立候选验证与 I/X/P；不构成 L3、PC-02、M1.1、V1、P5 或阶段完成结论。
+- 提交前攻击反扫：`candidate-ready`，P0 = 0、P1 = 0、P2 = 3。完全同内容 action 克隆与 canonical digest 等价；同 verifier 的首次授权缓存不可撤销；canonical replay Map 的长生命周期增长作为后续风险保留。正式双前置门禁仍须对固定候选重新执行。
+
 ## 2026-08-11 P5 / V1 / M1.1 / S1.2 Attempt 4 候选本地验证
 
 - 任务身份：packet `ep-p5-v1-m1.1-s1.2-g1-a4-20260811`，digest `sha256:e37cb7b63d6eb7ad37160c5893147bac8788318e48c9381502e68ab9806b02bd`，dedup `sha256:302dfa992c0e9d28e5c455f69e823e9eb149fe8a978ef20237759eef455040aa`，fence `10`；working parent `091e3b50ef561b89f30f73d5ee026e5b1e7e95c3`，formal baseline `8ffaf658e112a5ba26a9f83882f5f71f1ae79454`。

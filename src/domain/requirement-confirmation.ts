@@ -147,8 +147,9 @@ const bindingFields = [
   "confirmation_view_digest",
   "confirmation_id",
 ] as const;
-const verifiedInteractions = new WeakMap<object, ConfirmationInteractionVerifier>();
+const verifiedInteractions = new WeakMap<object, WeakSet<object>>();
 const verifiedReplays = new WeakMap<object, Map<Sha256Digest, VerifiedConfirmationInteraction>>();
+const canonicalVerifiedReplays = new Map<Sha256Digest, VerifiedConfirmationInteraction>();
 const interactionSessionsByVerifiedReplay = new WeakMap<object, ConfirmationInteractionSession>();
 const interactionSessionRecords = new WeakMap<object, {
   readonly verified_interaction: VerifiedConfirmationInteraction;
@@ -458,15 +459,24 @@ export function verifyConfirmationInteraction(
   if (knownReplay !== undefined) {
     return knownReplay;
   }
-  if (verifier.verify({ display, user_action: action }) !== true) {
+  let accepted = false;
+  try {
+    accepted = verifier.verify({ display, user_action: action }) === true;
+  } catch {
     fail("CONFIRMATION_MISMATCH", "Confirmation interaction verifier rejected the replay");
   }
-  const verified = Object.freeze({
+  if (!accepted) {
+    fail("CONFIRMATION_MISMATCH", "Confirmation interaction verifier rejected the replay");
+  }
+  const verified = canonicalVerifiedReplays.get(replayDigest) ?? Object.freeze({
     verification_boundary: "confirmation-interaction-verifier" as const,
     display,
     user_action: action,
   });
-  verifiedInteractions.set(verified, verifier);
+  canonicalVerifiedReplays.set(replayDigest, verified);
+  const authorizedVerifiers = verifiedInteractions.get(verified) ?? new WeakSet<object>();
+  authorizedVerifiers.add(verifier);
+  verifiedInteractions.set(verified, authorizedVerifiers);
   const verifierReplays = verifiedReplays.get(verifier) ?? new Map<Sha256Digest, VerifiedConfirmationInteraction>();
   verifierReplays.set(replayDigest, verified);
   verifiedReplays.set(verifier, verifierReplays);
@@ -600,6 +610,9 @@ export function reduceConfirmationInteractionState(
   ) {
     return transition("superseded");
   }
+  if (action.user_action === "confirm" && !sameJson(action, record.verified_interaction.user_action)) {
+    return transition("superseded");
+  }
   const status: ConfirmationInteractionStatus = action.user_action === "confirm"
     ? "confirmed"
     : action.user_action === "reject"
@@ -622,7 +635,7 @@ export function assertConfirmationExecutionContext(
     context.verifier === undefined ||
     context.verified_interaction === undefined ||
     context.interaction_session === undefined ||
-    verifiedInteractions.get(context.verified_interaction) !== context.verifier
+    verifiedInteractions.get(context.verified_interaction)?.has(context.verifier) !== true
   ) {
     fail("CONFIRMATION_MISMATCH", "A trusted confirmation execution context is required");
   }

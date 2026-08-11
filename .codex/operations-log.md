@@ -1,5 +1,16 @@
 # Operations Log
 
+## 2026-08-11 P5 / V1 / M1.1 / S1.2 Attempt 4 双门禁退回与 Attempt 5 启动
+
+- attempt 4 固定候选 `6b9301c9a05709e5f21fc41b7f12015985812f6f` 已按 packet -> dispatch-ready -> outbox -> fence 11 -> 双 ack 顺序派发给 Hilbert 候选验证和 Popper headless I/X/P；全部控制写入使用唯一临时 index 与 expected-old CAS，formal ref 未移动。
+- 候选验证 `退回`：P0 = 0、P1 = 1。更换 verifier 实例可为同一 canonical replay 创建新的 verified identity/session，并在原 session 进入终态后复活旧 envelope。结果摘要 `sha256:cbcdcc072f4de7b925b96b01548a144a89887c159266f4e54879719a0f8410bd`。
+- I/X/P 为 `I 通过 / X 退回 / P 通过`：P0 = 0、P1 = 1。reducer 未绑定 session 已验证 action，可由另一条未验证 confirm 推进 pending session 并促成冻结。结果摘要 `sha256:46d77ed734072776a44cebc7eee0c78205dc37a3805bd5e67a2be6f9e7cf927b`。
+- L3 门禁未满足且未启动。attempt 4 已由 `msg-cancel-tombstone-s1.2-g1-a4` 失效；attempt 5 packet digest `sha256:d929bc94bcb2a48b498d4b2d20e6d906cba5da44c0746001c2450841de8d6fe0`，dedup `sha256:5ea2eea048315aa2d5d60215eef4037515c0c6208cc478eefaf3aaa32026d6ad`，fence `12`。
+- attempt 5 已派发给 Terra/Confucius，写入范围限定为 packet allowlist，主 Agent 独占 runtime、refs 与后续候选固定。当前 control ref `74923ee28d287c07d5724250bbe6284a8079956a`，HEAD 仍为 attempt 4 候选，formal ref 仍为 `8ffaf658e112a5ba26a9f83882f5f71f1ae79454`。
+- attempt 5 TDD：新增三个风险组后 `pnpm test` 得到 `94/97` RED；实现 canonical replay digest 的跨 verifier verified identity、每 verifier 独立严格 true 授权、共享 session/current state 和 reducer canonical verified confirm 约束后转为 `97/97` GREEN。
+- 主管复验：`pnpm check` 通过 `97/97`，覆盖率行 `89.87%`、分支 `82.87%`、函数 `97.66%`；官方 registry audit 无漏洞，Skill 校验、9 份 Schema/fixture JSON、`git diff --check`、秘密/调试、受保护路径和 refs 检查通过。首次 JSON 辅助命令使用了三个已不存在的旧 fixture 文件名而失败，改用实际文件名重跑后 `JSON OK 9`；该失败未修改文件，不是产品门禁失败。
+- Hilbert 提交前攻击反扫：`candidate-ready`，P0 = 0、P1 = 0、P2 = 3。完全同内容 action 克隆属于同 canonical digest；同 verifier 缓存视为首次授权不可撤销；全局 canonical replay Map 的长生命周期增长保留为 P2。不得为解决 Map 生命周期退回 verifier 分区，否则会重新引入 attempt 4 P1。
+
 ## 2026-08-11 P5 / V1 / M1.1 / S1.2 Attempt 4 状态能力修复
 
 - attempt 3 收口：Terra 范围复验为 `candidate-ready`，但主管反审与 Sol 只读审查复现两个 P1：freeze now 可早于 user action；终态后调用方可传入保存的旧 `confirmed` 快照。attempt 3 未创建候选，并在继续前已过期；失败结果经 CAS 写入 control commit `b0cac08df50806c715fc13502396404f882e4479`。

@@ -1,5 +1,15 @@
 # S1.2 实现上下文摘要
 
+## 2026-08-11 S1.2 Attempt 5 身份与动作修复上下文
+
+- attempt 4 固定候选为 commit `6b9301c9a05709e5f21fc41b7f12015985812f6f`、tree `5119f62ed843d0765d6ca973fed9786c8480c753`、subject digest `sha256:07819e5281c492bc519f16c67cd77dc78bf095389087ee07a2bf2d74e42b1090`。
+- 独立候选验证 `退回`：verified replay 缓存按 verifier 对象分区，更换一个返回 true 的 verifier 可为同一 replay 建立新 session，使原 session 的 reject/cancel/expiry/view-change 终态失去约束。结果摘要 `sha256:cbcdcc072f4de7b925b96b01548a144a89887c159266f4e54879719a0f8410bd`。
+- 独立 I/X/P 为 `I 通过 / X 退回 / P 通过`：reducer 可消费未经 session verifier 的另一条结构合法 confirm，并将 pending current state 推进为 confirmed。结果摘要 `sha256:46d77ed734072776a44cebc7eee0c78205dc37a3805bd5e67a2be6f9e7cf927b`。
+- attempt 5 packet `ep-p5-v1-m1.1-s1.2-g1-a5-20260811`，digest `sha256:d929bc94bcb2a48b498d4b2d20e6d906cba5da44c0746001c2450841de8d6fe0`，dedup `sha256:5ea2eea048315aa2d5d60215eef4037515c0c6208cc478eefaf3aaa32026d6ad`，fence `12`。只修复跨 verifier canonical identity/session 与 reducer verified action 约束，不扩展宿主能力。
+- TDD RED 为 `94/97`，三个失败分别覆盖跨 verifier canonical identity/session、失败 verifier 借权和未验证 confirm 注入；最小实现后 `pnpm check` 通过 `97/97`，主管复验覆盖率行 `89.87%`、分支 `82.87%`、函数 `97.66%`。
+- 提交前只读攻击反扫为 `candidate-ready`，P0/P1 = 0；保留三个 P2：完全同内容 action 克隆按 canonical 内容身份处理、同 verifier 首次授权缓存不可撤销、长生命周期进程的 canonical replay Map 可能增长。前两项符合本 packet 内容身份和未绑定 verifier 规则，第三项不得通过恢复 verifier 分区来处理。
+- L3 未启动。attempt 5 形成固定候选并重新通过独立候选验证与 I/X/P 前，不得进入 L3、S1.3 或作 PC-02、M1.1、V1、P5 完成结论。
+
 ## 2026-08-11 S1.2 Attempt 4 状态能力修复上下文
 
 - attempt 3 的 allowlist 和本地范围复验通过，但主审发现两个 P1：可信 freeze now 可早于 confirm action；调用方可保存旧 `confirmed` 状态，并在 reject/cancel/expiry/view-change 后重新传入。attempt 3 未创建候选，结果摘要为 `sha256:7f3d61fe867585d9c28820a2c40a8a0a6029801c1649442b4bc62a07c76aaa37`。
