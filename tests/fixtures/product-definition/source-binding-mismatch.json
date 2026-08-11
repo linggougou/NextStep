@@ -1,0 +1,5 @@
+{
+  "fixture_type": "source-binding-mismatch",
+  "field": "goals",
+  "expected": "reject"
+}

@@ -35,7 +35,9 @@
         "REQUIREMENT_FREEZE_REJECTED",
         "REQUIREMENT_NOT_FROZEN",
         "CONFIRMATION_MISMATCH",
-        "IDENTITY_CONFLICT"
+        "IDENTITY_CONFLICT",
+        "PRODUCT_DEFINITION_ACCEPTED",
+        "PRODUCT_DEFINITION_REJECTED"
       ]
     },
     "data": {
@@ -123,6 +125,29 @@
                 }
               }
             }
+          },
+          {
+            "properties": {
+              "code": {
+                "const": "PRODUCT_DEFINITION_ACCEPTED"
+              },
+              "data": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "canonical_json",
+                  "digest",
+                  "product_definition",
+                  "schema_version"
+                ],
+                "properties": {
+                  "canonical_json": { "type": "string" },
+                  "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+                  "product_definition": { "type": "object" },
+                  "schema_version": { "const": "1.0" }
+                }
+              }
+            }
           }
           ,
           {
@@ -175,7 +200,8 @@
               "REQUIREMENT_FREEZE_REJECTED",
               "REQUIREMENT_NOT_FROZEN",
               "CONFIRMATION_MISMATCH",
-              "IDENTITY_CONFLICT"
+              "IDENTITY_CONFLICT",
+              "PRODUCT_DEFINITION_REJECTED"
             ]
           },
           "data": {

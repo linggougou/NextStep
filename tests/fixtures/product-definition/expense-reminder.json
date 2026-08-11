@@ -1,0 +1,5 @@
+{
+  "fixture_type": "complete-product-definition",
+  "target_project": "expense-reminder",
+  "evidence_scope": "manual-isolated consumer contract"
+}

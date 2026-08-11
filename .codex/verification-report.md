@@ -1589,3 +1589,13 @@
 - CLI 行为：进程内 fake `ProcessIoAdapter` 携带同一 `manual-isolated-fixture` verifier capability、verified replay、current confirmed state 与注入 clock 时，runner 仅输出一条 JCS `REQUIREMENT_FREEZE_ACCEPTED`。spawned standalone CLI 仍不传 context，返回 `CONFIRMATION_MISMATCH`；敏感输入拒绝与不回显行为保留。
 - 安全边界：runner 仅接收进程内参数，不从 stdin、命令参数或环境变量反序列化 verifier/state/clock；直接入口以无 context 调用 runner。该窄注入点不实现或声明真实 host adapter、真实用户动作探针或 `full` 支持。
 - 执行结论：`candidate-ready`，不构成独立候选验证、I/X/P、L3、PC-02、M1.1、V1、P5 或阶段门禁完成结论。
+
+## 2026-08-11 P5 / V1 / M1.1 / S1.3 Generation 2 Attempt 3 候选本地验证
+
+- 验证范围：Frozen Requirement 身份和逐事实来源绑定、PRD/旅程/能力映射完整性与交叉 ID、严格 Schema、不可伪造的进程内会签 capability、签署恢复、CLI/机器回执、三类 fixture、Skill 和受保护边界。
+- RED/GREEN：永久测试先使 `pnpm test` 以缺失 `product-definition` 模块的 `TS2307` 失败。最小实现后 `pnpm test` 通过 `107/107`；`pnpm check` 通过，行 `90.67%`、分支 `82.63%`、函数 `98.03%`，均高于 80%。
+- 失败闭合：缺少目标用户、范围、非目标、成功指标、旅程或能力映射，来源越界/摘要篡改、未知字段、未冻结输入、伪造或跨定义 capability、过期/拒绝动作、自述签署字段和回执摘要不一致均拒绝。成功回执精确绑定候选的完整 JCS 与摘要。
+- 外围验证：packet 摘要和两份 corrected source ref 摘要复算匹配；JSON、`git diff --check`、allowlist、管理面/runtime/refs 不变性、秘密/调试扫描通过。官方 registry audit 无已知漏洞；官方 Skill 校验脚本在隔离 PyYAML 环境通过。
+- 执行自检评分：`93/100`，建议 `candidate-ready`；未发现 P0/P1 本地阻塞项。扣分仅反映尚未执行独立候选验证、I/X/P、L3、最终复验和正式提升。
+- 残余风险：fixture 仅证明 `manual-isolated consumer contract`，不证明真实用户动作、可信宿主适配器/探针或 `full` 支持；不包含 S1.4 载体/Profile 或 S1.5 正式真源写入。
+- 执行结论：`candidate-ready`，不构成 PC-03、M1.1、V1、P5 或任何阶段门禁结论。

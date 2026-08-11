@@ -1,0 +1,5 @@
+{
+  "fixture_type": "missing-required-field",
+  "field": "scope",
+  "expected": "reject"
+}

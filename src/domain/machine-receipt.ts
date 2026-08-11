@@ -9,6 +9,7 @@ import {
   parseRequirementIntake,
 } from "./requirement-intake.ts";
 import { recoverFrozenRequirement } from "./requirement-freeze.ts";
+import { parseProductDefinitionCandidate } from "./product-definition.ts";
 import { isPlainRecord, type UnknownRecord } from "./value-guards.ts";
 
 export type MachineReceiptCode =
@@ -23,7 +24,9 @@ export type MachineReceiptCode =
   | "REQUIREMENT_FREEZE_REJECTED"
   | "REQUIREMENT_NOT_FROZEN"
   | "CONFIRMATION_MISMATCH"
-  | "IDENTITY_CONFLICT";
+  | "IDENTITY_CONFLICT"
+  | "PRODUCT_DEFINITION_ACCEPTED"
+  | "PRODUCT_DEFINITION_REJECTED";
 
 export interface MachineReceipt {
   readonly schema_version: "1.0";
@@ -81,6 +84,7 @@ export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
       CONTRACT_PROBE_SUCCEEDED: ["canonical_json", "digest", "dry_run", "schema_version"],
       REQUIREMENT_INTAKE_ACCEPTED: ["canonical_json", "digest", "requirement_intake", "schema_version", "user_output"],
       REQUIREMENT_FREEZE_ACCEPTED: ["canonical_json", "digest", "frozen_requirement", "requirement_set", "schema_version"],
+      PRODUCT_DEFINITION_ACCEPTED: ["canonical_json", "digest", "product_definition", "schema_version"],
     };
     if (snapshot.ok) {
       const fields = successfulFields[snapshot.code as keyof typeof successfulFields];
@@ -120,6 +124,13 @@ export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
         }
         if (canonicalizeJson(snapshot.data.requirement_set) !== canonicalizeJson(frozen.requirement_set)) {
           throw new TypeError("Frozen requirement receipt Requirement Set does not match frozen record");
+        }
+      }
+      if (snapshot.code === "PRODUCT_DEFINITION_ACCEPTED") {
+        const productDefinition = parseProductDefinitionCandidate(snapshot.data.product_definition);
+        const { status: _status, ...record } = productDefinition;
+        if (canonicalJson !== canonicalizeJson(record)) {
+          throw new TypeError("Product definition receipt payload does not match canonical JSON");
         }
       }
     }

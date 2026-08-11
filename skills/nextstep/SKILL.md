@@ -95,3 +95,13 @@ Run `pnpm test` to replay it. Requirement-freeze fixtures use only the `manual-i
 - Do not claim any `PC-01..PC-20` capability, gate, version, or project is complete.
 - Do not claim host mode is `full`, `manual-isolated`, or supported.
 - Do not enter S1.2 until the required independent gates are complete, and do not enter S1.3 until a valid frozen record exists.
+
+## S1.3 Product Definition Signoff
+
+At S1.3, the host AI may propose a PRD, 用户旅程, and 能力映射 candidate. The deterministic kernel requires every product fact to use a Frozen Requirement JSON Pointer and matching value digest; do not copy product facts from example documents or chat.
+
+The PRD requires product name, problem, target users, goals, scenarios, scope, non-goals, and success metrics. The journey and capability map both reference the same product definition ID. Missing fields, unknown fields, broken source binding, stdin-injected signoff claims, or a bare boolean must fail closed.
+
+The signoff challenge binds repository identity, formal baseline, Frozen Requirement identity, product definition digest, and full display digest. Only a trusted product-definition interaction verifier can issue an in-process session capability for an independent user action. Expiry, reject, cancel, changed display, or a cross-definition capability cannot sign.
+
+S1.3 fixtures establish only the `manual-isolated consumer contract`; they do not prove a real host adapter, real user action probe, or `full` support.

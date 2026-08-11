@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nextstep.local/schemas/v1/product-definition.schema.json",
+  "title": "NextStep Product Definition Candidate 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_type", "product_definition_id", "frozen_requirement", "frozen_requirement_digest", "prd", "user_journey", "capability_map"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "record_type": { "const": "product-definition-candidate" },
+    "product_definition_id": { "type": "string", "minLength": 1 },
+    "frozen_requirement": { "type": "object" },
+    "frozen_requirement_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "prd": { "$ref": "#/definitions/prd" },
+    "user_journey": { "$ref": "#/definitions/journey" },
+    "capability_map": { "$ref": "#/definitions/capabilityMap" }
+  },
+  "definitions": {
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pointer", "value_digest"],
+      "properties": {
+        "pointer": { "type": "string", "pattern": "^/requirement_set/items/[0-9]+/values/[0-9]+$" },
+        "value_digest": { "$ref": "#/definitions/digest" }
+      }
+    },
+    "fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "source"],
+      "properties": {
+        "value": { "type": "string", "minLength": 1 },
+        "source": { "$ref": "#/definitions/source" }
+      }
+    },
+    "facts": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/fact" }
+    },
+    "prd": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["product_name", "problem", "target_users", "goals", "scenarios", "scope", "non_goals", "success_metrics"],
+      "properties": {
+        "product_name": { "$ref": "#/definitions/fact" },
+        "problem": { "$ref": "#/definitions/fact" },
+        "target_users": { "$ref": "#/definitions/facts" },
+        "goals": { "$ref": "#/definitions/facts" },
+        "scenarios": { "$ref": "#/definitions/facts" },
+        "scope": { "$ref": "#/definitions/facts" },
+        "non_goals": { "$ref": "#/definitions/facts" },
+        "success_metrics": { "$ref": "#/definitions/facts" }
+      }
+    },
+    "journey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["product_definition_id", "steps"],
+      "properties": {
+        "product_definition_id": { "type": "string", "minLength": 1 },
+        "steps": { "$ref": "#/definitions/facts" }
+      }
+    },
+    "capabilityMap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["product_definition_id", "capabilities"],
+      "properties": {
+        "product_definition_id": { "type": "string", "minLength": 1 },
+        "capabilities": { "$ref": "#/definitions/facts" }
+      }
+    }
+  }
+}

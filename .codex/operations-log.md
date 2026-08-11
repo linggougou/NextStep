@@ -1544,3 +1544,22 @@
 - Anchor Verification Result：结论“通过”，摘要 `sha256:9d206a0ad74f6c01eeca38c689332f5be152d15856f5c08dbe7585a57f30a48b`，已写入 control。
 - formal promotion：`refs/nextstep/formal` 以 expected-old CAS 从 `8ffaf658e112a5ba26a9f83882f5f71f1ae79454` 快进到 `a854fd4938b34ab24d88e72430be52b397c91096`；promotion digest 为 `sha256:20d52cf0af4434e9621166dd4f49a3c91804c927723ccb4cfdee84f545bd049a`，最终 control OID 为 `169cda7d907f714ade6357ca28f24af530bb163d`。
 - 阶段判断：S1.2 正式提升完成；对应 PC-02 已取得正式运行证据，但 M1.1、V1 和 P5 仍未完成。S1.3 尚未生成真实任务包、未编码。
+
+## 2026-08-11 P5 / V1 / M1.1 / S1.3 Generation 2 Attempt 3 开始与 RED
+
+- 控制身份：唯一有效任务包为 `ep-p5-v1-m1.1-s1.3-g2-a3-20260811`，摘要 `sha256:5d42a7e22d4347ec55a815a385e139ea5c454c35bd18580d0cc3faba4a89345b`，fence `25`；working parent `e2630439720344175a9e690afea37747545c03b2`，formal baseline `a854fd4938b34ab24d88e72430be52b397c91096`。
+- 撤销边界：attempt 1 因路线锁与 P5 活动计划 source ref 身份错误 tombstone；attempt 2 因 allowlist 含管理面写权限 tombstone。本轮只读取两份撤销证据，不使用其任务包。
+- 路线与范围：保持 `S5 / P5 / V1 / M1.1 / S1.3`。只实现产品定义会签运行候选，不进入 S1.4/S1.5，不修改路线锁、PLANS、P5 活动计划、runtime、reviews 或 refs。
+- 研究与工具：已读取路线锁、P5/P3 真源、S1.1/S1.2 相邻领域/CLI/回执/测试/Skill，采用 `tdd-workflow`、`verification-loop`、`security-review`。CodeGraph 未初始化，按项目规则以 `rg`、现有领域与测试模式完成替代影响分析。
+- RED：先新增永久领域测试，覆盖 Frozen Requirement 来源绑定、产品定义必填项、双向引用、摘要篡改/未知字段/未冻结输入拒绝，以及进程内可信 verifier capability、跨定义拒绝和签署恢复。运行 `pnpm test` 如预期在编译阶段失败：`TS2307 Cannot find module '../../src/domain/product-definition.ts'`；此时没有生产实现。
+- 状态：进行中；下一步仅实现任务包 allowlist 中的最小领域验证、严格 Schema、CLI、回执、fixture 与 Skill 入口，再运行 GREEN 验证。
+
+## 2026-08-11 P5 / V1 / M1.1 / S1.3 Generation 2 Attempt 3 GREEN 与候选本地验证
+
+- 最小实现：新增版本化 `product-definition` Schema、纯领域验证器和 stdin CLI；PRD、用户旅程与能力映射中的每一事实都必须解析到 Frozen Requirement 的 `requirement_set/items/*/values/*` JSON Pointer，且值与 SHA-256 摘要精确匹配。未知字段、越界、摘要篡改、未冻结输入和缺少必填项均 fail closed。
+- 会签与恢复：挑战绑定仓库、formal baseline、Frozen Requirement 身份/摘要、产品定义摘要和完整展示摘要。只有可信 verifier 生成的模块私有 verified interaction 与匹配 session capability 能签署；自述字段、裸布尔、普通文本、机器回执、stdin/参数注入、过期、拒绝、取消、跨定义 capability 与恢复记录的附加字段均被拒绝。恢复验证完整绑定但不构成真实宿主动作证明。
+- CLI/回执与 fixture：`PRODUCT_DEFINITION_ACCEPTED` 回执独立验证完整产品定义 JCS 与摘要；失败 stdout 仅含一条通用 JCS 回执，stderr 不回显敏感值。三类目标项目 fixture 仅验证 `manual-isolated consumer contract`；缺字段、来源篡改和未可信会签 fixture 均被测试覆盖。
+- GREEN：`pnpm test` 通过 `107/107`，失败、跳过、取消均为 `0`；`pnpm check` 通过，覆盖率为行 `90.67%`、分支 `82.63%`、函数 `98.03%`。
+- 结构与安全：任务包摘要按 RFC8785 双字段投影复算为 `sha256:5d42a7e22d4347ec55a815a385e139ea5c454c35bd18580d0cc3faba4a89345b`；两份 working parent source ref 原始 SHA-256 均匹配。Schema/fixture JSON、`git diff --check`、生产路径调试/TODO/高置信秘密扫描通过；官方 npm registry 高危 audit 无已知漏洞。系统 Python 缺 PyYAML，隔离 `/tmp/nextstep-s1-3-skill-validate` 环境中的官方 `quick_validate.py` 输出 `Skill is valid!`。
+- 范围与不变性：实际路径为 attempt 3 allowlist 子集；路线锁、PLANS、P5 活动计划、`.codex/runtime/**`、`.codex/reviews/**`、包管理与 TypeScript 配置未修改。formal `a854fd4938b34ab24d88e72430be52b397c91096` 与 control `3876fd7faaa6079d996120184c96305921435999` 仅读取未移动。
+- 状态：本地候选准备就绪；后续独立候选验证和 I/X/P 未执行，未进入 L3、最终复验或正式提升。
