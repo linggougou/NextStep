@@ -104,4 +104,6 @@ The PRD requires product name, problem, target users, goals, scenarios, scope, n
 
 The signoff challenge binds repository identity, formal baseline, Frozen Requirement identity, product definition digest, and full display digest. Only a trusted product-definition interaction verifier can issue an in-process session capability for an independent user action. Expiry, reject, cancel, changed display, or a cross-definition capability cannot sign.
 
-S1.3 fixtures establish only the `manual-isolated consumer contract`; they do not prove a real host adapter, real user action probe, or `full` support.
+`product_definition_id` is deterministically derived from the Frozen Requirement identity; callers cannot select or reuse it. Facts declare `kind: direct` or `kind: derived`: direct facts exactly equal one source value, while derived facts require a derivation summary and one or more legitimate source refs. Target users use scenarios; journey steps use scenarios or goals; capabilities use goals or expected outputs; non-goals use non-goals or constraints.
+
+Success metrics are structured `metric`, `target`, `evidence_method`, and `source_refs` records. Their sources are goals or expected outputs, never constraints. Each target-project fixture must carry and replay its own complete Frozen Requirement and candidate. S1.3 fixtures establish only the `manual-isolated consumer contract`; they do not prove a real host adapter, real user action probe, or `full` support.

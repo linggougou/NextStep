@@ -1599,3 +1599,13 @@
 - 执行自检评分：`93/100`，建议 `candidate-ready`；未发现 P0/P1 本地阻塞项。扣分仅反映尚未执行独立候选验证、I/X/P、L3、最终复验和正式提升。
 - 残余风险：fixture 仅证明 `manual-isolated consumer contract`，不证明真实用户动作、可信宿主适配器/探针或 `full` 支持；不包含 S1.4 载体/Profile 或 S1.5 正式真源写入。
 - 执行结论：`candidate-ready`，不构成 PC-03、M1.1、V1、P5 或任何阶段门禁结论。
+
+## 2026-08-11 P5 / V1 / M1.1 / S1.3 Generation 2 Attempt 4 候选本地验证
+
+- 验证范围：确定性产品定义 ID、direct/derived 事实、字段来源角色、结构化指标、独立完整 fixture、会签/恢复/CLI 回归与受保护边界。
+- RED/GREEN：先以缺失 `deriveProductDefinitionId` 的 `TS2724` 建立 RED；最小实现后 `pnpm test` 通过 `111/111`，`pnpm check` 通过，行 `90.98%`、分支 `82.65%`、函数 `98.06%`。
+- 行为证据：同一 Frozen Requirement 改 ID 拒绝；约束来源不能充当指标，场景不能充当能力；derived 必须含推导摘要和合法来源；指标必须具有 metric/target/evidence method/source refs。三份 fixture 从磁盘加载，分别回放独立 repository、Frozen Requirement 和候选，负例 fixture 也被实际读取。
+- 外围验证：packet digest 复算匹配；JSON、Skill、官方 registry audit、差异、秘密/调试、allowlist、formal ancestor 和管理面/runtime/refs 不变性通过。机器回执模块及 Schema 未修改。
+- 执行自检评分：`94/100`，建议 `candidate-ready`；未发现 P0/P1 本地阻塞项。尚未进行的独立 CV/I/X/P、L3、最终复验和正式提升构成剩余扣分。
+- 残余风险：仍只证明 `manual-isolated consumer contract`，不证明真实宿主适配、真实用户动作探针或 `full` 支持；不包含 S1.4 或 S1.5。
+- 执行结论：`candidate-ready`，不构成 PC-03、M1.1、V1、P5 或任何阶段门禁结论。

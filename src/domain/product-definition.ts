@@ -7,9 +7,31 @@ import { recoverFrozenRequirement, type FrozenRequirement } from "./requirement-
 import { assertNoSensitiveContent, assertNoSensitiveFields } from "./sensitive-fields.ts";
 import { isPlainRecord } from "./value-guards.ts";
 
-export interface ProductFact {
+export interface ProductSourceRef {
+  readonly pointer: string;
+  readonly value_digest: Sha256Digest;
+}
+
+export interface DirectProductFact {
+  readonly kind: "direct";
   readonly value: string;
-  readonly source: { readonly pointer: string; readonly value_digest: Sha256Digest };
+  readonly source: ProductSourceRef;
+}
+
+export interface DerivedProductFact {
+  readonly kind: "derived";
+  readonly value: string;
+  readonly derivation_summary: string;
+  readonly source_refs: readonly ProductSourceRef[];
+}
+
+export type ProductFact = DirectProductFact | DerivedProductFact;
+
+export interface ProductMetric {
+  readonly metric: string;
+  readonly target: string;
+  readonly evidence_method: string;
+  readonly source_refs: readonly ProductSourceRef[];
 }
 
 export interface ProductDefinitionCandidate {
@@ -26,7 +48,7 @@ export interface ProductDefinitionCandidate {
     readonly scenarios: readonly ProductFact[];
     readonly scope: readonly ProductFact[];
     readonly non_goals: readonly ProductFact[];
-    readonly success_metrics: readonly ProductFact[];
+    readonly success_metrics: readonly ProductMetric[];
   };
   readonly user_journey: { readonly product_definition_id: string; readonly steps: readonly ProductFact[] };
   readonly capability_map: { readonly product_definition_id: string; readonly capabilities: readonly ProductFact[] };
@@ -136,7 +158,18 @@ function candidateRecord(candidate: ProductDefinitionCandidate): Omit<ProductDef
   return record;
 }
 
-function resolveRequirementValue(frozen: FrozenRequirement, pointer: string): unknown {
+export function deriveProductDefinitionId(value: FrozenRequirement): string {
+  const frozen = recoverFrozenRequirement(value);
+  const identity = digestJson({
+    repository_id: frozen.project.repository_id,
+    formal_baseline: frozen.project.formal_baseline,
+    frozen_requirement_id: frozen.frozen_requirement_id,
+    requirement_content_digest: frozen.requirement_content_digest,
+  });
+  return `pd-${identity.slice("sha256:".length)}`;
+}
+
+function resolveRequirementSource(frozen: FrozenRequirement, pointer: string): { readonly field: string; readonly value: string } {
   if (!/^\/requirement_set\/items\/\d+\/values\/\d+$/.test(pointer)) {
     fail("SOURCE_BINDING_MISMATCH", "Product facts must bind a Frozen Requirement value");
   }
@@ -147,22 +180,50 @@ function resolveRequirementValue(frozen: FrozenRequirement, pointer: string): un
     if (!Object.hasOwn(current, token)) fail("SOURCE_BINDING_MISMATCH", "Frozen Requirement source pointer is missing");
     current = (current as Record<string, unknown>)[token];
   }
-  return current;
+  const itemIndex = Number(pointer.split("/")[3]);
+  const item = frozen.requirement_set.items[itemIndex];
+  if (typeof current !== "string" || item === undefined) fail("SOURCE_BINDING_MISMATCH", "Frozen Requirement source pointer is invalid");
+  return { field: item.field, value: current };
 }
 
-function assertFact(frozen: FrozenRequirement, value: unknown): asserts value is ProductFact {
-  if (!isPlainRecord(value) || typeof value.value !== "string" || value.value.length === 0 || !isPlainRecord(value.source) || typeof value.source.pointer !== "string" || typeof value.source.value_digest !== "string") {
+function assertSourceRef(frozen: FrozenRequirement, value: unknown, allowedFields: readonly string[]): void {
+  if (!isPlainRecord(value) || typeof value.pointer !== "string" || typeof value.value_digest !== "string") {
+    fail("INVALID_PRODUCT_DEFINITION", "Invalid product fact source");
+  }
+  const source = resolveRequirementSource(frozen, value.pointer);
+  if (!allowedFields.includes(source.field) || digestJson(source.value) !== value.value_digest) {
+    fail("SOURCE_BINDING_MISMATCH", "Product fact source does not satisfy its field role");
+  }
+}
+
+function assertFact(frozen: FrozenRequirement, value: unknown, allowedFields: readonly string[]): asserts value is ProductFact {
+  if (!isPlainRecord(value) || typeof value.kind !== "string" || typeof value.value !== "string" || value.value.length === 0) {
     fail("INVALID_PRODUCT_DEFINITION", "Invalid product fact");
   }
-  const sourceValue = resolveRequirementValue(frozen, value.source.pointer);
-  if (typeof sourceValue !== "string" || sourceValue !== value.value || digestJson(sourceValue) !== value.source.value_digest) {
-    fail("SOURCE_BINDING_MISMATCH", "Product fact does not match its Frozen Requirement source");
+  if (value.kind === "direct") {
+    if (!isPlainRecord(value.source) || Object.keys(value).length !== 3) fail("INVALID_PRODUCT_DEFINITION", "Invalid direct product fact");
+    const source = resolveRequirementSource(frozen, value.source.pointer as string);
+    assertSourceRef(frozen, value.source, allowedFields);
+    if (value.value !== source.value) fail("SOURCE_BINDING_MISMATCH", "Direct product fact must equal its source value");
+    return;
   }
+  if (value.kind !== "derived" || typeof value.derivation_summary !== "string" || value.derivation_summary.length === 0 || !Array.isArray(value.source_refs) || value.source_refs.length === 0 || Object.keys(value).length !== 4) fail("INVALID_PRODUCT_DEFINITION", "Invalid derived product fact");
+  for (const sourceRef of value.source_refs) assertSourceRef(frozen, sourceRef, allowedFields);
 }
 
-function assertFacts(frozen: FrozenRequirement, value: unknown, label: string): void {
+function assertFacts(frozen: FrozenRequirement, value: unknown, label: string, allowedFields: readonly string[]): void {
   if (!Array.isArray(value) || value.length === 0) fail("INVALID_PRODUCT_DEFINITION", `${label} is required`);
-  for (const fact of value) assertFact(frozen, fact);
+  for (const fact of value) assertFact(frozen, fact, allowedFields);
+}
+
+function assertMetrics(frozen: FrozenRequirement, value: unknown): void {
+  if (!Array.isArray(value) || value.length === 0) fail("INVALID_PRODUCT_DEFINITION", "success_metrics is required");
+  for (const metric of value) {
+    if (!isPlainRecord(metric) || typeof metric.metric !== "string" || metric.metric.length === 0 || typeof metric.target !== "string" || metric.target.length === 0 || typeof metric.evidence_method !== "string" || metric.evidence_method.length === 0 || !Array.isArray(metric.source_refs) || metric.source_refs.length === 0) {
+      fail("INVALID_PRODUCT_DEFINITION", "Success metric must include metric, target, evidence method, and sources");
+    }
+    for (const sourceRef of metric.source_refs) assertSourceRef(frozen, sourceRef, ["goals", "expected_outputs"]);
+  }
 }
 
 function assertExactOwnFields(value: unknown, fields: readonly string[], label: string): asserts value is Record<string, unknown> {
@@ -196,14 +257,20 @@ export function parseProductDefinitionCandidate(value: unknown): ProductDefiniti
   }
   if (candidateInput.frozen_requirement_digest !== digestJson(frozen)) fail("REQUIREMENT_NOT_FROZEN", "Frozen Requirement identity does not match");
   const prd = candidateInput.prd as Record<string, unknown>;
-  assertFact(frozen, prd.product_name);
-  assertFact(frozen, prd.problem);
-  for (const field of ["target_users", "goals", "scenarios", "scope", "non_goals", "success_metrics"]) assertFacts(frozen, prd[field], field);
+  if (candidateInput.product_definition_id !== deriveProductDefinitionId(frozen)) fail("INVALID_PRODUCT_DEFINITION", "Product definition ID does not match Frozen Requirement identity");
+  assertFact(frozen, prd.product_name, ["intent_summary", "expected_outputs"]);
+  assertFact(frozen, prd.problem, ["scenarios", "goals"]);
+  assertFacts(frozen, prd.target_users, "target_users", ["scenarios"]);
+  assertFacts(frozen, prd.goals, "goals", ["goals"]);
+  assertFacts(frozen, prd.scenarios, "scenarios", ["scenarios"]);
+  assertFacts(frozen, prd.scope, "scope", ["goals", "expected_outputs", "constraints"]);
+  assertFacts(frozen, prd.non_goals, "non_goals", ["non_goal_gaps", "constraints"]);
+  assertMetrics(frozen, prd.success_metrics);
   const journey = candidateInput.user_journey as Record<string, unknown>;
   const capabilityMap = candidateInput.capability_map as Record<string, unknown>;
   if (journey.product_definition_id !== candidateInput.product_definition_id || capabilityMap.product_definition_id !== candidateInput.product_definition_id) fail("INVALID_PRODUCT_DEFINITION", "Journey and capability map must reference the product definition");
-  assertFacts(frozen, journey.steps, "journey steps");
-  assertFacts(frozen, capabilityMap.capabilities, "capabilities");
+  assertFacts(frozen, journey.steps, "journey steps", ["scenarios", "goals"]);
+  assertFacts(frozen, capabilityMap.capabilities, "capabilities", ["goals", "expected_outputs"]);
   return Object.freeze({ ...(candidateInput as unknown as Omit<ProductDefinitionCandidate, "status">), frozen_requirement: frozen, status: "ready-for-signoff" as const });
 }
 

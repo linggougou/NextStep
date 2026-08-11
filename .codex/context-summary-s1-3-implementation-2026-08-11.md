@@ -1,11 +1,11 @@
 # S1.3 产品定义会签运行候选实施上下文
 
 - 日期：2026-08-11
-- 任务身份：`P5 / V1 / M1.1 / S1.3 generation 2 attempt 3`
-- 执行任务包：`.codex/runtime/packets/ep-p5-v1-m1.1-s1.3-g2-a3-20260811.json`（只读）
-- 任务包摘要：`sha256:5d42a7e22d4347ec55a815a385e139ea5c454c35bd18580d0cc3faba4a89345b`
-- Fence：`25`
-- 工作父提交：`e2630439720344175a9e690afea37747545c03b2`
+- 任务身份：`P5 / V1 / M1.1 / S1.3 generation 2 attempt 4`
+- 执行任务包：`.codex/runtime/packets/ep-p5-v1-m1.1-s1.3-g2-a4-20260811.json`（只读）
+- 任务包摘要：`sha256:1a62be1e4c02d3d2500e0667922e9669ffa331f919ca8eb6d061bf804a567c87`
+- Fence：`27`
+- 工作父提交：`0e33ba38c7b8b382fef8bfc053923d6e91a37bfe`
 - 正式基线：`a854fd4938b34ab24d88e72430be52b397c91096`
 
 ## 路线与阶段
@@ -18,8 +18,8 @@
 
 ## 实施边界
 
-- 允许范围以 attempt 3 任务包 `allowed_paths` 为准；本轮只修改其中的必要子集。
-- `PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md` 和 P5 活动计划不在 attempt 3 allowlist 内，管理面更新由主管负责。
+- 允许范围以 attempt 4 任务包 `allowed_paths` 为准；本轮只修改其中的必要子集。
+- `PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md` 和 P5 活动计划不在 attempt 4 allowlist 内，管理面更新由主管负责。
 - `.codex/runtime/**`、`.codex/reviews/**`、Git refs、registry、checkpoint 仅主 Agent 写入，本轮只读。
 - 不实现 S1.4 载体裁决、Acceptance Profile、原型流程或 Web/UI 分支。
 - 不实现 S1.5 正式真源写入、一致性提升、真实宿主适配器、真实用户动作探针或 full 支持。
@@ -35,8 +35,8 @@
 
 ## 执行顺序
 
-1. 先新增永久 RED 测试，覆盖缺失模块、必填完整性、来源篡改和伪造会签。
-2. 记录实际 RED 结果后，最小实现领域验证、CLI、Schema、fixture 和 Skill 入口。
+1. 先新增永久 RED 测试，覆盖跨定义 ID 复用、约束冒充指标、错误来源角色和三 fixture 同质化。
+2. 记录实际 RED 结果后，最小实现类型化事实、来源角色、结构化指标、派生 ID 和独立 fixture 回放。
 3. 执行完整测试、覆盖率、Skill/JSON、allowlist、上游、refs/runtime 不变性、安全与差异检查。
 4. 仅在所有本地验证通过后创建单个非 merge 候选提交，并返回 `candidate-ready` 或任务包允许的失败状态。
 
@@ -44,12 +44,19 @@
 
 - attempt 1 已 tombstone：其 `PROJECT_ROUTE_LOCK.md` 与 P5 活动计划 source ref 错误标记为 formal OID；本轮不得使用。
 - attempt 2 已 tombstone：其 allowlist 包含过宽的管理面写权限；本轮不得使用。
-- attempt 3 的上述两份 source ref 绑定 working parent `e2630439720344175a9e690afea37747545c03b2`，执行权限收窄到实现、测试、Skill 与任务留痕。
+- attempt 3 已 tombstone：I/X/P 的 X/P 发现通用 exact-copy 事实可占用错误语义字段，且三份 fixture 复用同一候选。
+- attempt 4 的 working parent 为 `0e33ba38c7b8b382fef8bfc053923d6e91a37bfe`；CV a1 的平台消息阻塞不构成候选质量结论。
 
-## 本地验证结果
+## Attempt 4 验证目标
 
-- RED：在新增永久领域测试后运行 `pnpm test`，如预期因缺少 `src/domain/product-definition.ts` 报 `TS2307`；该失败已记录于操作日志。
-- GREEN：最小实现完成后，`pnpm test` 通过 `107/107`；`pnpm check` 通过，覆盖率为行 `90.67%`、分支 `82.63%`、函数 `98.03%`。
-- 任务包摘要按 RFC8785 双字段投影复算匹配；working parent 的路线锁与 P5 活动计划原始 SHA-256 均匹配 attempt 3 source refs。
-- 新增/修改路径是 attempt 3 allowlist 子集；工作树的 runtime、管理面文件、formal/control refs 均未由本轮修改。
-- 官方 npm registry 高危审计无已知漏洞。系统 Python 缺少 PyYAML，已使用隔离临时环境运行官方 Skill `quick_validate.py`，结果为 `Skill is valid!`。
+- `product_definition_id` 由 Frozen Requirement 稳定身份唯一派生，不能被调用方替换。
+- direct/derived 产品事实分别验证合法来源和来源角色；成功指标必须是带 target 与 evidence_method 的结构化对象。
+- 三份磁盘 fixture 必须各自携带并回放独立完整 Frozen Requirement 和产品定义候选。
+- 保留 a3 的会签、恢复、CLI/回执、敏感内容和 `manual-isolated consumer contract` 边界。
+
+## Attempt 4 本地结果
+
+- RED：新增派生 ID 测试后，`pnpm test` 以缺少 `deriveProductDefinitionId` 的 `TS2724` 失败；该失败已记录于操作日志。
+- GREEN：`pnpm test` 通过 `111/111`，`pnpm check` 通过，覆盖率为行 `90.98%`、分支 `82.65%`、函数 `98.06%`。
+- 三份磁盘 fixture 分别包含并回放独立的 repository、Frozen Requirement、摘要和确定性产品定义 ID；负例 fixture 也由测试实际加载。
+- a4 packet digest 复算匹配；官方 audit、Skill、JSON、allowlist、上游和受保护管理面/runtime/refs 不变性检查通过。

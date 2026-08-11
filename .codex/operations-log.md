@@ -1563,3 +1563,19 @@
 - 结构与安全：任务包摘要按 RFC8785 双字段投影复算为 `sha256:5d42a7e22d4347ec55a815a385e139ea5c454c35bd18580d0cc3faba4a89345b`；两份 working parent source ref 原始 SHA-256 均匹配。Schema/fixture JSON、`git diff --check`、生产路径调试/TODO/高置信秘密扫描通过；官方 npm registry 高危 audit 无已知漏洞。系统 Python 缺 PyYAML，隔离 `/tmp/nextstep-s1-3-skill-validate` 环境中的官方 `quick_validate.py` 输出 `Skill is valid!`。
 - 范围与不变性：实际路径为 attempt 3 allowlist 子集；路线锁、PLANS、P5 活动计划、`.codex/runtime/**`、`.codex/reviews/**`、包管理与 TypeScript 配置未修改。formal `a854fd4938b34ab24d88e72430be52b397c91096` 与 control `3876fd7faaa6079d996120184c96305921435999` 仅读取未移动。
 - 状态：本地候选准备就绪；后续独立候选验证和 I/X/P 未执行，未进入 L3、最终复验或正式提升。
+
+## 2026-08-11 P5 / V1 / M1.1 / S1.3 Generation 2 Attempt 4 开始与 RED
+
+- 控制身份：唯一有效 packet 为 `ep-p5-v1-m1.1-s1.3-g2-a4-20260811`，摘要 `sha256:1a62be1e4c02d3d2500e0667922e9669ffa331f919ca8eb6d061bf804a567c87`，fence `27`，working parent `0e33ba38c7b8b382fef8bfc053923d6e91a37bfe`。
+- 撤销判定：attempt 3 因 I/X/P 的 X/P 退回而 tombstone，原因是通用 exact-copy 事实允许语义角色替换且三份 fixture 复用同一候选；CV a1 的平台消息阻塞不作为质量结论。
+- 范围：只修改 attempt 4 allowlist 内的产品定义领域、CLI、Schema、测试、fixture、Skill 与 `.codex` 留痕；机器回执、管理面、runtime/reviews/refs 仅读。
+- RED：先新增确定性派生 ID、约束冒充指标、错误来源角色及磁盘 fixture 完整回放测试。`pnpm test` 如预期编译失败：`TS2724`，`product-definition` 尚未导出 `deriveProductDefinitionId`；此时没有生产实现变更。
+
+## 2026-08-11 P5 / V1 / M1.1 / S1.3 Generation 2 Attempt 4 GREEN 与候选本地验证
+
+- 语义修订：`product_definition_id` 由 repository、formal baseline、Frozen Requirement ID 和冻结内容摘要确定性派生。事实区分 `direct` 与 `derived`：direct 精确等于唯一来源值，derived 必须有推导摘要和至少一条合法来源。来源角色固定为目标用户←场景、旅程←场景/目标、能力←目标/期望输出、非目标←非目标/约束。
+- 指标与 fixture：成功指标改为 `metric`、`target`、`evidence_method`、`source_refs`，且只接受目标或期望输出来源。三份磁盘 fixture 由各自的原始冻结需求机械生成，均含独立完整 Frozen Requirement 和候选；repository、冻结 ID、内容摘要及产品定义 ID 均不同。未从 `002/003/004` 写入任何目标项目事实。
+- 回归：保留会签 capability、签署恢复、JCS/机器回执、敏感内容和 CLI 边界；新增 CLI 从磁盘 fixture 回放正例。错误来源角色、约束指标、空 metric target/evidence、无来源 derived、ID 替换、缺字段、摘要篡改和未可信会签均 fail closed。
+- GREEN：`pnpm test` 通过 `111/111`；`pnpm check` 通过，覆盖率行 `90.98%`、分支 `82.65%`、函数 `98.06%`。
+- 验证：a4 packet RFC8785 投影摘要复算为 `sha256:1a62be1e4c02d3d2500e0667922e9669ffa331f919ca8eb6d061bf804a567c87`；JSON、`git diff --check`、官方 Skill 校验、官方 npm registry 高危 audit、生产秘密/调试扫描和 allowlist 通过。路线/计划、machine receipt、runtime/reviews/refs、包管理与 TypeScript 配置保持不变。
+- 状态：本地候选准备就绪；新的独立 CV 与 I/X/P 尚未执行，L3、最终复验和正式提升均未启动。
