@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "verification_run_id": "verification-run-s1.2-g2-a2-20260811",
+  "result_id": "result-final-verification-s1.2-g2-a1",
+  "result_digest": "sha256:f9b8656e10b9b7f1b1408e2e35c6f97b2acec63c6a6f7c6ab04e887b1295afe2",
+  "gate_conclusion": "通过",
+  "snapshot_ref": "git:8e5b3d7009736a759761af1a9633d2e9d2f1b2ba",
+  "snapshot_tree": "04afd7f020f3f930a3fd13cc7b1f0f038ab875b4",
+  "snapshot_digest": "sha256:e22e259af99fb214e831141261fb56b359d1aaf209e45a885f95a385d62555ba",
+  "expected_formal_oid": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+  "credential_ref": "evidence:verification-credential-6732394010b1c5a2c8f5a8d6086f9bdca5892b2c03b7da3a7390fb32f0fe1646.json",
+  "credential_digest": "sha256:6732394010b1c5a2c8f5a8d6086f9bdca5892b2c03b7da3a7390fb32f0fe1646",
+  "credential_size": 3247,
+  "host_task_id": "019fefa5-ab9e-7dd1-8b67-0ca62712b053",
+  "tests": {"passed": 99, "failed": 0, "skipped": 0},
+  "coverage": {"lines": 90.02, "branches": 83.67, "functions": 97.66},
+  "credential_install": "exclusive-create + file fsync + hard-link no-replace + parent fsync",
+  "completed_at": "2026-08-11T07:14:34.489Z"
+}

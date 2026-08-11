@@ -1524,3 +1524,13 @@
 - 控制链：packet、`dispatch-ready`、outbox intent、fence claim、宿主创建和 `dispatch-ack` 均以唯一临时 index 和 expected-old CAS 持久化；临时 index 保留，未执行清理或破坏性命令。
 - 安全警报说明：本轮没有执行破坏性命令。此前 Hilbert 的三次拦截发生在消息投递层；本轮改用工程质量验收措辞和新身份后正常完成。Luna 首次命令误在源目录生成 ignored `dist`，tracked 工作树仍干净，正式验证均在临时副本完成。
 - 当前状态：双前置门禁与 L3 已通过，开始物化 Final Content Snapshot；formal 未移动，不进入 S1.3，不声明 S1.2、PC-02、M1.1、V1 或 P5 完成。
+
+## 2026-08-11 P5 / V1 / M1.1 / S1.2 Final Content Snapshot 与最终复验
+
+- Final Content Snapshot：commit `8e5b3d7009736a759761af1a9633d2e9d2f1b2ba`，tree `04afd7f020f3f930a3fd13cc7b1f0f038ab875b4`，snapshot digest `sha256:e22e259af99fb214e831141261fb56b359d1aaf209e45a885f95a385d62555ba`。
+- Write Transaction：`sha256:305d38377c33c4f4f908e5be1e28839371e21a9636d150816165ce25d987bca1`；父正式基线保持 `8ffaf658e112a5ba26a9f83882f5f71f1ae79454`。
+- 独立最终复验：Terra 宿主任务 `019fefa5-ab9e-7dd1-8b67-0ca62712b053` 在唯一 `--no-local` 隔离副本完成冻结安装、99/99、覆盖率 90.02%/83.67%/97.66%、Skill、官方 registry audit、Git/JSON/范围和行为复验，结论“通过”。
+- Verification Credential：`evidence:verification-credential-6732394010b1c5a2c8f5a8d6086f9bdca5892b2c03b7da3a7390fb32f0fe1646.json`，摘要 `sha256:6732394010b1c5a2c8f5a8d6086f9bdca5892b2c03b7da3a7390fb32f0fe1646`，3247 字节；以 hard-link no-replace 和 fsync 安装，目录 0700、文件 0600。
+- 主管复核：credential 原始 SHA-256、JCS 字节、文件名、字段绑定、权限、snapshot/formal/control 身份和主工作树 clean 通过。首次字段脚本误查 `baseline_oid`，按既有 credential 契约改为 `expected_formal_oid` 后通过；未修改凭证。
+- 凭证边界：credential 的 `host_task_id` 显式为 null，宿主绑定由 result envelope、claim、fence 和 dispatch-ack 提供；其余冻结字段完整。保留该差异为透明证据，不影响本次最终复验结论。
+- 当前状态：准备 Audit Anchor；只允许追加本日志、验证报告和专属 review 路径，不得修改 Final Content Snapshot 的业务/真源子树。

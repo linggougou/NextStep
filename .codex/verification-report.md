@@ -1561,6 +1561,17 @@
 - 状态与污染：源 tracked 工作树在验证后保持干净；formal ref 未移动。control 仅由主管按 expected-old CAS 推进，父链连续；宿主未写 runtime/reviews/refs。
 - 门禁结论：通过。固定候选可进入 Final Content Snapshot；该结论不等于最终复验、Verification Credential、Audit Anchor、Anchor Proof 或 formal promotion 完成，也不授权进入 S1.3。
 
+## 2026-08-11 P5 / V1 / M1.1 / S1.2 Final Content Snapshot 最终复验
+
+- 快照身份：commit `8e5b3d7009736a759761af1a9633d2e9d2f1b2ba`，tree `04afd7f020f3f930a3fd13cc7b1f0f038ab875b4`，snapshot digest `sha256:e22e259af99fb214e831141261fb56b359d1aaf209e45a885f95a385d62555ba`。
+- 隔离复验：从精确快照的唯一 `--no-local` 克隆执行冻结安装与 `pnpm check`，99/99 通过；覆盖率行 90.02%、分支 83.67%、函数 97.66%。
+- 附加门禁：官方 Skill validator、官方 registry audit、`git fsck`、`git diff --check`、JSON、已会签上游保护、秘密/调试扫描、8 候选路径、7 集成路径和 S1.2 行为契约通过。
+- 摘要链：packet 按双字段冻结投影复算；execution、CV、I/X/P、L3、snapshot、write transaction 和最终派发/确认链一致。
+- Credential：项目外 create-once 凭证摘要 `sha256:6732394010b1c5a2c8f5a8d6086f9bdca5892b2c03b7da3a7390fb32f0fe1646`，JCS 3247 字节，目录/文件权限 0700/0600，hard-link no-replace 与 fsync 证据通过。
+- 复验结论：`通过`；唯一有效结果摘要为 `sha256:f9b8656e10b9b7f1b1408e2e35c6f97b2acec63c6a6f7c6ab04e887b1295afe2`。
+- 不变性：隔离副本 snapshot tree 未变；主项目在复验期间保持 clean，formal ref 未移动，control 仅由主管 expected-old CAS 推进。
+- 下一门禁：从快照后白名单追加提交生成 Audit Anchor，派发独立 Anchor Proof 验证；证明通过后才允许 formal ref CAS。
+
 ## 2026-08-10 P5 / V1 / M1.1 / S1.2 Attempt 2 CLI 回归候选本地验证
 
 - RED/GREEN：先加入导出的、可注入 `ConfirmationExecutionContext` 的 runner 正例；在生产实现前 `pnpm test` 因缺少 `runRequirementFreeze` 导出而 RED。最小修复后 `pnpm check` 通过 `96/96`，覆盖率行 `90.09%`、分支 `83.43%`、函数 `97.58%`。
