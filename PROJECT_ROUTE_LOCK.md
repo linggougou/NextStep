@@ -31,7 +31,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - Change Intake、恢复、Final Acceptance、交付和宿主归档边界通过故障注入和反扫验证。
   - V1..V4 与 Final Acceptance 分别完成本地验证、适用验收和用户会签。
 - 阶段出口：V1..V4 和 Final Acceptance 全部通过；正式 OID、交付清单、风险、回滚和 PC-20.AR 状态可追溯，并由用户明确确认 P5 产品落地完成。
-- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；`V1 / M1.1 / S1.1` 已完成正式提升。当前唯一实施入口为 `V1 / M1.1 / S1.2 attempt 5`：在 attempt 4 的完整确认视图、session current state 与单调可信时钟基础上，关闭双前置门禁发现的跨 verifier session 复活和未验证 confirm 注入两个 P1；本执行切片不生成开发任务，不作 I/X/P、PC-02、M1.1、V1 或 P5 完成结论。
+- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；`V1 / M1.1 / S1.1` 已完成正式提升。`V1 / M1.1 / S1.2` attempt 5 固定候选的候选验证通过，但 I/X/P 发现未验证 reject/cancel 可终结 pending session；attempt 6 又因两条既有消费者测试不在 allowlist 而阻塞。当前唯一实施入口为 CR-003：墓碑失效 generation 1，并在 generation 2 重生成只扩展必要测试路径的 S1.2 任务包；本执行切片不作 I/X/P、PC-02、M1.1、V1 或 P5 完成结论。
 - 明确非目标：
   - 不恢复 NextStep Web/UI 候选分支。
   - 不引入常驻服务、数据库、远程控制面或通用多 Agent 编排平台。
@@ -43,7 +43,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - 不改变已会签产品、交互、S4/P3/P4 或验收边界；需要改变时先进入 Change Request。
 - 禁止提前进入的阶段：S7 最终发布判断和 S8 交付归档；V1..V4 也不得跳过前序门禁并行宣告完成。
 - 允许进入下一阶段的条件：P5 Final Acceptance 通过本地可重复验证、独立验收和用户会签；若实现要求改变已会签产品、交互、技术、版本范围、正式提升或验收边界，必须先完成 Change Request。
-- 当前状态：进行中；P5-M0 门禁通过，S1.1 已正式提升，S1.2 attempt 4 双前置门禁退回，attempt 5 本地候选就绪，待固定身份与重新执行双前置门禁
+- 当前状态：进行中；P5-M0 门禁通过，S1.1 已正式提升；S1.2 attempt 5 双门禁未同时通过，attempt 6 因任务包测试 allowlist 漏项阻塞，待按 CR-003 推进 generation 2
 
 ## 2.1 里程碑路线图
 
@@ -59,7 +59,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
 | S4 技术架构 | 基于已会签的 Skill 交互真源和 S4 技术输入补充契约明确怎么实现 | 架构、技术栈、Interaction Source 模型、数据模型、风险与回滚 | 技术路线、高风险点和真源写入一致性可验证 | 独立技术审查与用户确认 | 门禁通过 |
 | P3 版本与里程碑拆解 | 把完整项目拆成版本路线、大里程碑和小里程碑 | 版本路线图、大里程碑计划、小里程碑清单、验收矩阵 | 每个小里程碑有输入、输出、DoD、测试方式、非目标和验收方式 | 用户确认 | 门禁通过 |
 | P4 执行机制设计 | 定义执行任务包、测试验收、合入、交互验收、产品验收和变更管理机制 | 设计文档、流程图、状态机、数据模型 | 执行、测试、交互验收、合入、变更可闭环 | 独立规划审查与用户确认 | 门禁通过 |
-| P5 产品落地 | 按已确认小里程碑逐步实现并合入大里程碑 | 可运行产品、测试报告、交互验收报告、产品验收报告、交付清单 | 本地验证、交互验收和产品验收通过；含 UI 分支额外通过 UI 还原验收 | 版本与阶段会签 | 进行中（S1.1 已正式提升；S1.2 attempt 5 本地候选就绪，待双前置门禁） |
+| P5 产品落地 | 按已确认小里程碑逐步实现并合入大里程碑 | 可运行产品、测试报告、交互验收报告、产品验收报告、交付清单 | 本地验证、交互验收和产品验收通过；含 UI 分支额外通过 UI 还原验收 | 版本与阶段会签 | 进行中（S1.1 已正式提升；S1.2 待按 CR-003 推进 generation 2） |
 
 ## 3. 产品真源
 
@@ -109,7 +109,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
 
 - Backlog：待建立。
 - Change Request：`docs/change-requests/index.md`
-- 当前阶段缺口：S1.1 已完成 Final Content Snapshot、独立最终复验凭证、Audit Anchor、Anchor Proof 和 formal ref CAS，并已正式提升。S1.2 attempt 4 候选通过 96/96 本地验证，但独立候选验证发现更换 verifier 可重建 session 并复活终态，I/X/P 发现 reducer 可注入未经 session verifier 的另一条 confirm；双门禁均退回。当前缺口为 attempt 5 的跨 verifier canonical identity/session 与 verified action 约束修复；重新通过双前置门禁前不得启动 L3 或进入 S1.3。
+- 当前阶段缺口：S1.1 已完成 Final Content Snapshot、独立最终复验凭证、Audit Anchor、Anchor Proof 和 formal ref CAS，并已正式提升。S1.2 attempt 5 候选通过候选验证，但 I/X/P 发现未验证 reject/cancel 仍可永久终结 pending session；attempt 6 的 capability 修复因两条既有消费者测试不在 allowlist 而阻塞。当前按 CR-003 推进 generation 2，只扩展必要测试路径并重做完整验证；双前置门禁通过前不得启动 L3 或进入 S1.3。
 - 后续阶段需求：V1..V4 和 Final Acceptance 按活动计划顺序推进；P4 第 12 节“运行集成验收”只允许落实为集成诊断预检，正式 I/X/P 四态结论仍由独立门禁和最终复验链产生。若未来恢复 `Web / UI` 分支，需重新确认其与当前 Skill 主路线的关系。
 - 已拒绝需求：无。
 

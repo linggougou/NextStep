@@ -5,7 +5,7 @@
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
 - 当前活动里程碑：V1 / M1.1 / S1.2 需求补全冻结与恢复运行
-- 当前状态：P5-M0 已关闭；S1.1 已正式提升；S1.2 attempt 4 双前置门禁退回，attempt 5 本地候选就绪，待固定身份与双前置门禁
+- 当前状态：P5-M0 已关闭；S1.1 已正式提升；S1.2 attempt 5 双门禁未同时通过，attempt 6 因测试 allowlist 漏项阻塞，待按 CR-003 推进 generation 2
 
 ## 当前活动计划
 
@@ -27,7 +27,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。P5-M0 固定候选 `8cc0f3d` 已通过第七轮 L3 `PASS / 97`。S1.1 attempt 2 候选 `5d6fd5b` 已完成独立候选验证、I/X/P、L3、Final Content Snapshot、独立最终复验、项目外凭证、审计锚、Anchor Proof 和 formal ref CAS，并已正式提升。S1.2 attempt 4 候选 `6b9301c` 的独立候选验证与 I/X/P 分别发现跨 verifier session 复活和未验证 confirm 注入两个 P1，双门禁退回且未启动 L3。当前入口为 `V1 / M1.1 / S1.2 attempt 5`，只关闭这两个身份/动作缺口，不作 PC-02、M1.1、V1 或 P5 完成结论。
+P5 已于 2026-08-08 单独启动。P5-M0 固定候选 `8cc0f3d` 已通过第七轮 L3 `PASS / 97`。S1.1 attempt 2 候选 `5d6fd5b` 已完成独立候选验证、I/X/P、L3、Final Content Snapshot、独立最终复验、项目外凭证、审计锚、Anchor Proof 和 formal ref CAS，并已正式提升。S1.2 attempt 5 候选 `c8be6bb` 的候选验证通过，但 I/X/P 发现未验证 reject/cancel 终态注入 P1；attempt 6 随后因两条必要消费者测试不在任务包 allowlist 而阻塞。当前入口为 CR-003 的 generation 2 重生成与执行，不作 PC-02、M1.1、V1 或 P5 完成结论。
 
 实施顺序保持 P3 已会签结构：
 

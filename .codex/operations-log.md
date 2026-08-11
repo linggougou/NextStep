@@ -1,5 +1,13 @@
 # Operations Log
 
+## 2026-08-11 P5 / V1 / M1.1 / S1.2 Attempt 6 阻塞与代际分流
+
+- attempt 5 固定候选 `c8be6bb5f4f5195e268d0762740101d39acf23c2` 的候选验证为通过；I/X/P 为 `I 通过 / X 退回 / P 通过`，新 P1 是未验证 reject/cancel 可永久终结 pending session。双门禁未同时通过，L3 未启动。
+- attempt 6 packet digest `sha256:3e78923d629ee3ddd329d73b2720b04b263c1406ec3060adc51542793a0fad36`，dedup `sha256:7feaefbe33ac419918f9cb34c118b0713fe0386c3adec9e9c6dfbfdb4e715567`，fence `14`；dispatch-ack 已通过 expected-old CAS 落到 control commit `1b9ee482a059e8e213bd805b90dadaac1a35982e`。
+- Terra/Confucius 执行前检查发现 `tests/domain/machine-receipt-schema.test.ts` 与 `tests/domain/requirement-set.test.ts` 仍以裸 `UserConfirmationAction` 驱动 reducer，但不在 attempt 6 allowlist。新规则必须让裸动作 fail closed，故不能保留这两条成功路径，也不能越界修改；任务按 `blocked` 返回，未修改文件、未形成 RED 或候选。
+- 分流：新增 CR-003，结论为当前阶段缺口。该范围修正不改变产品语义、正式基线、技术栈、DoD 或验收门禁，但改变任务包范围；按 P4 必须墓碑失效 generation 1，并在 generation 2 重生成任务包，不得原地改写 attempt 6。
+- 不变性：HEAD 仍为 attempt 5 候选，formal ref 保持 `8ffaf658e112a5ba26a9f83882f5f71f1ae79454`，未 push、未启动 L3。
+
 ## 2026-08-11 P5 / V1 / M1.1 / S1.2 Attempt 4 双门禁退回与 Attempt 5 启动
 
 - attempt 4 固定候选 `6b9301c9a05709e5f21fc41b7f12015985812f6f` 已按 packet -> dispatch-ready -> outbox -> fence 11 -> 双 ack 顺序派发给 Hilbert 候选验证和 Popper headless I/X/P；全部控制写入使用唯一临时 index 与 expected-old CAS，formal ref 未移动。

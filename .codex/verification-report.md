@@ -1,5 +1,12 @@
 # Verification Report
 
+## 2026-08-11 P5 / V1 / M1.1 / S1.2 Attempt 6 范围门禁
+
+- 控制链：attempt 6 dispatch-ack 已以 expected-old CAS 写入 control commit `1b9ee482a059e8e213bd805b90dadaac1a35982e`；formal ref 未移动。
+- 执行前范围验证：`tests/domain/machine-receipt-schema.test.ts` 与 `tests/domain/requirement-set.test.ts` 存在裸 `UserConfirmationAction` reducer 成功路径，但 attempt 6 `allowed_paths` 不包含二者。
+- 结论：`blocked`。若生产实现收紧为 capability 而不迁移两条测试，完整回归无法通过；若执行任务修改两条测试则违反 immutable packet allowlist。执行任务未写文件、未形成候选。
+- 分流验证：CR-003 字段覆盖来源、描述、受影响真源/PC/里程碑、正式基线、风险、验证成本、建议分流、用户授权和代际影响；按 P4 将推进 `plan_generation=2`。generation 2 双前置门禁通过前不得启动 L3。
+
 ## 2026-08-11 P5 / V1 / M1.1 / S1.2 Attempt 4 双前置门禁
 
 - 固定候选：commit `6b9301c9a05709e5f21fc41b7f12015985812f6f`、tree `5119f62ed843d0765d6ca973fed9786c8480c753`、subject digest `sha256:07819e5281c492bc519f16c67cd77dc78bf095389087ee07a2bf2d74e42b1090`。

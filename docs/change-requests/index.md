@@ -5,6 +5,10 @@
 - [S3 独立复审 P1 修复](./001-s3-review-p1-remediation.md)：修复、独立复审与四份材料会签均已完成。
 - [主对话 Agent 编排与上下文隔离](./002-main-conversation-agent-orchestration.md)：设计、迁移、独立复审与四份材料会签均已完成；实现留待后续阶段。
 
+## 活动变更
+
+- [S1.2 attempt 6 测试 allowlist 漏项](./003-s1-2-attempt-6-test-allowlist-gap.md)：已分流为当前阶段缺口；generation 1 待墓碑失效，generation 2 任务包待生成和执行。
+
 ## 分流规则
 
 新增需求、漏项、二期需求不得直接进入当前版本或当前小里程碑，必须先判断：
