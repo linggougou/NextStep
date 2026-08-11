@@ -1628,6 +1628,16 @@
 - 残余风险：fixture 仅证明 `manual-isolated consumer contract`，不证明真实用户动作、可信宿主适配器/探针或 `full` 支持；不包含 S1.4 载体/Profile 或 S1.5 正式真源写入。
 - 执行结论：`candidate-ready`，不构成 PC-03、M1.1、V1、P5 或任何阶段门禁结论。
 
+## 2026-08-12 P5 / V1 / M1.1 / S1.3 Final Verification
+
+- 结论：`通过`；独立最终复验任务 `019ff1e8-ed89-7900-b497-3177c45589bc` 以精确 Final Content Snapshot 执行唯一 `--no-local` 隔离验证。
+- Snapshot：`git:cf74f0d0b56675b6c13f4e4e5eb08ce2db29c5a0`，tree `7459134519159ad53ca511553b27e56477445432`，digest `sha256:7b24bb1cc67faf39f7eefad847927d6273fc04d4b398ea88f0967217bd5d7a06`。
+- 本地验证：冻结安装、`pnpm check` 通过 `122/122`；失败、跳过、取消均为 `0`；覆盖率为行 `90.78%`、分支 `82.02%`、函数 `98.26%`。Skill validator、官方 registry 高危审计、61 份适用 JSON、`git fsck --strict`、`git diff --check`、秘密/调试扫描与受保护上游检查通过。
+- 证据完整性：Execution、CV、I/X/P、L3、Snapshot、Write Transaction、packet 和 dispatch 的身份及 RFC8785/JCS 摘要绑定通过。Verification Credential `evidence:verification-credential-407a362609dd16c0c4b1cdc29f4fef6894e1d33865ff9c22a14367f65f8c6596.json` 的 digest 为 `sha256:407a362609dd16c0c4b1cdc29f4fef6894e1d33865ff9c22a14367f65f8c6596`，大小 3783 字节；安装权限与 no-replace/fsync 证据通过。
+- 结果摘要：`sha256:7ba7aca4e555fd8af176dcd73be11b530425fc4ea0321a07900224c98d2af658`。Write Transaction digest 为 `sha256:7f9839cc08ee8087e227dae9a77d53f4a1bd58219bf3baf332ef5a84762a51d1`。
+- 非阻塞风险：长驻 trusted-host 的 replay/session registry 生命周期未设上界；本轮不证明真实 trusted-host、真实用户动作、开放自然语言语义或 `full` 支持。
+- 阶段门禁：允许进入 Audit Anchor 与 Anchor Proof；在独立 Anchor Proof 通过及 expected-old CAS 完成前，formal ref 保持 `a854fd4938b34ab24d88e72430be52b397c91096`，不宣称 S1.3、PC-03、M1.1、V1 或 P5 完成。
+
 ## 2026-08-11 S1.3 Generation 2 Attempt 7 嵌套 Display 重入 TDD 复核
 
 - 第二轮独立审查：外层 event Proxy 的陈旧状态路径已关闭；`view-change.display` 仍是未深快照引用，可在 reducer 捕获旧 `confirmed` 后通过嵌套 Proxy trap 重入 reject/cancel，再由外层写回非终态并签署。判定 `REVISE`，P0=0、P1=1。

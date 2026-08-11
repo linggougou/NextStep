@@ -1680,3 +1680,12 @@
 
 - 当前只允许把路线锁、三份项目留痕和专属 L3 review 产物纳入 Snapshot；候选业务代码保持固定，不再接受候选内容修改。
 - 下一门禁：生成 Final Content Snapshot 与 Write Transaction，从精确 Snapshot 派发独立最终复验；最终复验、项目外 Credential、Audit Anchor、Anchor Proof 和最终 control/formal CAS 全部通过前，formal ref 保持不变。
+
+## 2026-08-12 P5 / V1 / M1.1 / S1.3 Final Verification 收口
+
+- 主工作树在 `cf74f0d0b56675b6c13f4e4e5eb08ce2db29c5a0` 上保持 clean；相对 Final Content Snapshot 本次仅新增专属 `final-verification.json`、`.codex/operations-log.md` 和 `.codex/verification-report.md` 三类留痕路径，候选业务代码未改动。
+- 独立最终复验：Noether 任务 `019ff1e8-ed89-7900-b497-3177c45589bc` 在唯一 `--no-local` 隔离副本完成冻结安装与 `pnpm check`，122/122 通过，覆盖率为行 `90.78%`、分支 `82.02%`、函数 `98.26%`；Skill validator、官方 registry 高危审计、61 份适用 JSON、Git fsck/diff、秘密/调试扫描与上游保护均通过。
+- Snapshot 身份：commit `cf74f0d0b56675b6c13f4e4e5eb08ce2db29c5a0`，tree `7459134519159ad53ca511553b27e56477445432`，digest `sha256:7b24bb1cc67faf39f7eefad847927d6273fc04d4b398ea88f0967217bd5d7a06`；Write Transaction digest 为 `sha256:7f9839cc08ee8087e227dae9a77d53f4a1bd58219bf3baf332ef5a84762a51d1`。
+- Credential：`evidence:verification-credential-407a362609dd16c0c4b1cdc29f4fef6894e1d33865ff9c22a14367f65f8c6596.json`，digest `sha256:407a362609dd16c0c4b1cdc29f4fef6894e1d33865ff9c22a14367f65f8c6596`，3783 字节；claim/fence/host、JCS、SHA-256、0600/0700、create-once/no-replace 与 fsync 复核通过。旧 `d088...` 凭证因缺少 `claim_id` 被拒收，未引用、未覆盖、未删除。
+- 最终复验结果：`通过`，result digest `sha256:7ba7aca4e555fd8af176dcd73be11b530425fc4ea0321a07900224c98d2af658`。保留 P2 为长驻 trusted-host 的 replay/session registry 生命周期、真实 trusted-host/用户动作、开放自然语言语义和 `full` 支持未由本轮证明。
+- 阶段判断：S1.3 已通过 Final Verification，当前仅允许进入 Audit Anchor 与独立 Anchor Proof；formal `a854fd4938b34ab24d88e72430be52b397c91096`、control ref 和候选内容在 Anchor Proof 通过前均不移动。S1.3、PC-03、M1.1、V1、P5 仍不得宣称完成。
