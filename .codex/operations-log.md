@@ -1512,3 +1512,15 @@
 - Skill：系统 Python 缺少 `yaml`，其官方 `quick_validate.py` 首次失败；在一次性 `/tmp/nextstep-s1-2-skill-validate` 虚拟环境安装 PyYAML 后重跑同一脚本，输出 `Skill is valid!`，未改项目依赖。
 - 范围与不变性：所有已跟踪和未跟踪路径均在任务包 `allowed_paths`；正式 ref 保持 `8ffaf658e112a5ba26a9f83882f5f71f1ae79454`，control ref 读取为 `00d0ea1043f84ed41637571b48a8d0a3365ee571`，本任务未移动二者；`.codex/runtime` 相对 formal baseline 零差异；未修改已会签 P3/P4/S4、产品或设计正文。
 - 状态：`candidate-ready`；候选尚未经过独立候选验证、I/X/P、L3、最终复验或正式提升，不作 PC-02、M1.1、V1 或 P5 完成结论。
+
+## 2026-08-11 P5 / V1 / M1.1 / S1.2 Generation 2 Attempt 2 双前置门禁与 L3
+
+- 控制身份：候选 `470ecc2c0cd7c5742e49c0b52dc314c4eed3ef64`，tree `0dc7dd3c1010082d3581e7e65632a5971edf0da3`，parent `8e4626d73ab8acf7b33b35feb420ebabcef35463`，subject digest `sha256:8354e5ff8d7569a49967af84810cb38a89a71c8954229275e5f62ca46b803fdb`；formal baseline 保持 `8ffaf658e112a5ba26a9f83882f5f71f1ae79454`。
+- 候选验证恢复：attempt 2 宿主连续三次在消息层被平台分类拦截，未执行仓库命令、未修改任何状态；已固化“阻塞”结果并以新的 Luna 身份建立 attempt 3，不把平台阻塞当作候选质量结论。
+- 候选验证：attempt 3 绑定 fence 19，在唯一临时副本完成 8 路径、99/99、覆盖率 90.02%/83.67%/97.66%、Skill、JSON、依赖审计、上游保护和运行时行为复验，结论“通过”，P0/P1 = 0。
+- I/X/P：attempt 2 绑定 fence 18，I、X、P 均“通过”，P0/P1 = 0；P 仅证明 `manual-isolated consumer contract`，不证明真实 adapter、用户探针或 `full`。
+- L3：按 `judge-harness` 绑定 fence 20；Verifier `PASS`、Strict Judge `PASS / 97`、Anti-Slop Judge `PASS / 100`、Chief Reviewer `PASS / 97`，11/11 hard gates 通过，P0 = 0、P1 = 0、P2 = 2，`required_fixes = []`。
+- 非阻塞风险：进程级 `canonicalVerifiedReplays` 强引用 Map 可能长期增长；吸收终态对已知事件不再解析后续 `evaluated_at`。二者不影响本轮 event type 穷尽、未知类型拒绝或终态不可复活结论。
+- 控制链：packet、`dispatch-ready`、outbox intent、fence claim、宿主创建和 `dispatch-ack` 均以唯一临时 index 和 expected-old CAS 持久化；临时 index 保留，未执行清理或破坏性命令。
+- 安全警报说明：本轮没有执行破坏性命令。此前 Hilbert 的三次拦截发生在消息投递层；本轮改用工程质量验收措辞和新身份后正常完成。Luna 首次命令误在源目录生成 ignored `dist`，tracked 工作树仍干净，正式验证均在临时副本完成。
+- 当前状态：双前置门禁与 L3 已通过，开始物化 Final Content Snapshot；formal 未移动，不进入 S1.3，不声明 S1.2、PC-02、M1.1、V1 或 P5 完成。

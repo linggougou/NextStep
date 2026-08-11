@@ -1550,6 +1550,17 @@
 - 风险与边界：测试仅注入 `manual-isolated-fixture` verifier。fixture 只证明消费者契约，不证明真实用户动作、可信宿主适配器/探针或 `full` 支持；当前 stdin CLI 因无可信 in-process context 而 fail closed。未引入通用 host adapter、S1.5 真源写入或 CAS。
 - 执行结论：`candidate-ready`，不构成独立候选验证、I/X/P、L3、PC-02、M1.1、V1、P5 或阶段门禁完成结论。
 
+## 2026-08-11 P5 / V1 / M1.1 / S1.2 Generation 2 Attempt 2 双前置门禁与 L3 验证
+
+- 固定身份：commit/tree/parent、subject digest、formal ancestry、execution packet 和 execution result 摘要均复算匹配。
+- 候选验证：Luna attempt 3 结论“通过”；相对 parent 恰好 8 个允许路径，`pnpm check` 通过 99/99，覆盖率行 90.02%、分支 83.67%、函数 97.66%，官方 Skill validator、48 个候选 JSON、`git diff --check`、上游保护和依赖审计通过。
+- 行为验证：`event.type` 单次读取并在 capability、终态、expiry 和转换前穷尽 `user-action`、`evaluate`、`view-change`；未知类型、可变 getter、裸/伪造/跨 display/跨 verifier capability 均 fail closed；四类终态不可复活，可信时钟、冻结 JSON 恢复和无可信 CLI 上下文拒绝通过。
+- I/X/P：I、X、P 均“通过”，P0/P1 = 0；fixture 结论严格限定为 `manual-isolated consumer contract`。
+- L3：`PASS / 97`；Verifier 11/11 hard gates，Strict `PASS / 97`，Anti-Slop `PASS / 100`，Chief `PASS / 97`；P0 = 0、P1 = 0、P2 = 2，`required_fixes = []`。
+- 评分算术：维度和 97，penalty 0，final 97；reviewers 四角色齐全，scorecard JSON 与四节 verdict 结构通过。
+- 状态与污染：源 tracked 工作树在验证后保持干净；formal ref 未移动。control 仅由主管按 expected-old CAS 推进，父链连续；宿主未写 runtime/reviews/refs。
+- 门禁结论：通过。固定候选可进入 Final Content Snapshot；该结论不等于最终复验、Verification Credential、Audit Anchor、Anchor Proof 或 formal promotion 完成，也不授权进入 S1.3。
+
 ## 2026-08-10 P5 / V1 / M1.1 / S1.2 Attempt 2 CLI 回归候选本地验证
 
 - RED/GREEN：先加入导出的、可注入 `ConfirmationExecutionContext` 的 runner 正例；在生产实现前 `pnpm test` 因缺少 `runRequirementFreeze` 导出而 RED。最小修复后 `pnpm check` 通过 `96/96`，覆盖率行 `90.09%`、分支 `83.43%`、函数 `97.58%`。

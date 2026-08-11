@@ -1,0 +1,54 @@
+{
+  "review_id": "p5-v1-m1.1-s1.2-independent-l3-g2-a1-2026-08-11",
+  "task_id": "S1.2-L3",
+  "lane": "independent-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-s1.2-implementation-l3-v1",
+  "artifact_refs": [
+    "git:470ecc2c0cd7c5742e49c0b52dc314c4eed3ef64",
+    "tree:0dc7dd3c1010082d3581e7e65632a5971edf0da3",
+    "git:c7e163bd91505a158243a5801cb8b227019911f5:gate-requests/gate-independent-review-s1.2-g2-a1.json",
+    "git:c7e163bd91505a158243a5801cb8b227019911f5:results/result-execution-s1.2-g2-a2-20260811.json",
+    "git:c7e163bd91505a158243a5801cb8b227019911f5:results/result-candidate-verification-s1.2-g2-a3.json",
+    "git:c7e163bd91505a158243a5801cb8b227019911f5:results/result-product-interaction-s1.2-g2-a2.json"
+  ],
+  "hard_gates": [
+    {"id": "review_control_binding", "status": "pass", "evidence": "claim、fence、packet 路径及 RFC8785 packet digest 与本次 L3 输入一致。"},
+    {"id": "immutable_candidate", "status": "pass", "evidence": "commit、tree、单一 parent、subject digest 均匹配，formal baseline 是候选祖先。"},
+    {"id": "upstream_evidence_integrity", "status": "pass", "evidence": "execution、candidate verification、I/X/P 三份固定结果摘要复算匹配。"},
+    {"id": "scope_control", "status": "pass", "evidence": "候选相对 parent 恰好修改 8 个允许路径，forbidden_paths 命中为 0，git diff --check 通过。"},
+    {"id": "source_truth_alignment", "status": "pass", "evidence": "路线锁、P3、P4、S4、Skill 与 S1.2 切片一致，已会签上游未被改写。"},
+    {"id": "event_discriminant_fail_closed", "status": "pass", "evidence": "event.type 单次读取并在 capability、终态、expiry 和转换前穷尽允许三类；未知类型和可变 getter 均拒绝。"},
+    {"id": "capability_terminal_clock", "status": "pass", "evidence": "裸、伪造、跨 display、跨 verifier capability 被拒绝；四类终态不可复活；时钟边界受约束。"},
+    {"id": "recovery_cli_contract", "status": "pass", "evidence": "冻结 JSON 可独立恢复；stdin CLI 无进程内可信上下文时 fail closed。"},
+    {"id": "candidate_verification", "status": "pass", "evidence": "固定结果通过，99/99；覆盖率 90.02%/83.67%/97.66%，P0/P1 为 0。"},
+    {"id": "product_interaction", "status": "pass", "evidence": "固定 I/X/P 三项均通过，P 限定为 manual-isolated consumer contract。"},
+    {"id": "role_and_stage_boundary", "status": "pass", "evidence": "执行、候选验证、I/X/P 与 L3 职责分离，未冒领真实 adapter、用户探针、full 或阶段完成。"}
+  ],
+  "dimensions": [
+    {"id": "implementation_correctness", "score": 25, "max_score": 25, "reason": "discriminant 快照、允许类型穷尽及 fail-closed 顺序正确，合法事件行为保持不变。", "evidence_refs": ["src/domain/requirement-confirmation.ts", "tests/domain/requirement-confirmation.test.ts"]},
+    {"id": "contract_rigor", "score": 19, "max_score": 20, "reason": "capability、终态、可信时钟、恢复和 CLI 契约一致；吸收终态时间戳为非阻塞 P2。", "evidence_refs": ["src/domain/requirement-confirmation.ts", "src/domain/requirement-freeze.ts", "src/cli/requirement-freeze.ts"]},
+    {"id": "architecture_and_scope", "score": 20, "max_score": 20, "reason": "实现保持纯领域与窄进程内 runner 边界，严格服务 S1.2。", "evidence_refs": ["PROJECT_ROUTE_LOCK.md", "docs/exec-plans/active/p5-product-implementation-milestones.md", "skills/nextstep/SKILL.md"]},
+    {"id": "maintainability", "score": 9, "max_score": 10, "reason": "状态和 capability 边界集中；进程级 canonicalVerifiedReplays 强引用 Map 尚无生命周期上限。", "evidence_refs": ["src/domain/requirement-confirmation.ts"]},
+    {"id": "test_sufficiency", "score": 14, "max_score": 15, "reason": "99 项测试覆盖主要正负路径；终态时间戳硬化仍为后续非阻塞增强。", "evidence_refs": ["tests/domain/requirement-confirmation.test.ts", "tests/domain/requirement-freeze.test.ts", "tests/cli/requirement-freeze.test.ts"]},
+    {"id": "traceability", "score": 10, "max_score": 10, "reason": "任务包、8 路径、候选身份、双前置结果、路线真源和阶段边界可完整追溯。", "evidence_refs": ["gate-requests/gate-independent-review-s1.2-g2-a1.json", "packets/ep-p5-v1-m1.1-s1.2-g2-a2-20260811.json"]}
+  ],
+  "penalties": [],
+  "totals": {"raw_score": 97, "penalty_total": 0, "final_score": 97, "max_score": 100},
+  "severity_summary": {"P0": 0, "P1": 0, "P2": 2},
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "为 canonicalVerifiedReplays 建立不破坏 canonical session 身份的有界生命周期策略。",
+    "在后续硬化切片中让吸收终态对已知事件继续验证或快照 evaluated_at。",
+    "补充双方向 Proxy/getter discriminant 回归用例。"
+  ],
+  "reviewers": [
+    {"role": "Verifier", "signal": "PASS", "conclusion": "11/11 硬门禁通过。"},
+    {"role": "Strict Judge", "signal": "PASS", "score": 97, "conclusion": "P0/P1 为零，保留两项非阻塞 P2。"},
+    {"role": "Anti-Slop Judge", "signal": "PASS", "score": 100, "conclusion": "无占位、测试跳过、模板衰减、虚假能力或完成冒领。"},
+    {"role": "Chief Reviewer", "signal": "PASS", "score": 97, "conclusion": "仅授权固定候选进入 Final Content Snapshot。"}
+  ],
+  "verdict_scope": "PASS 仅允许候选进入 Final Content Snapshot，不表示 S1.2、PC-02、M1.1、V1、P5、最终复验或 formal promotion 完成。",
+  "reviewed_at": "2026-08-11T14:48:59+08:00"
+}
