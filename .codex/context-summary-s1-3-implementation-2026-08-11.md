@@ -1,64 +1,50 @@
-# S1.3 产品定义会签运行候选实施上下文
+# S1.3 产品定义会签第 7 次尝试上下文
 
 - 日期：2026-08-11
-- 任务身份：`P5 / V1 / M1.1 / S1.3 generation 2 attempt 6`
-- 执行任务包：`.codex/runtime/packets/ep-p5-v1-m1.1-s1.3-g2-a6-20260811.json`（只读）
-- 任务包摘要：`sha256:397afc29e726c96d1b133b26116cd9adefb0ebbe0d6324a4780b402bc1503d9b`
-- 去重键：`sha256:94eeeed96244891ac36e67d03d44263b1118357f6955fc47ec37d4b0e73ed9f6`
-- Dispatch：`msg-dispatch-ready-s1.3-g2-a6-20260811`
-- Claim：`claim-s1.3-g2-a6-f32-20260811`
-- Fence：`32`
-- 工作父提交：`c728816881aa403e6a980ba15b1bdbad75774006`
-- 正式基线：`a854fd4938b34ab24d88e72430be52b397c91096`
+- 任务身份：`P5 / V1 / M1.1 / S1.3 generation 2 attempt 7`
+- 执行任务包：`.codex/runtime/packets/ep-p5-v1-m1.1-s1.3-g2-a7-20260811.json`（只读）
+- 任务包摘要：`sha256:ff216e6340036a02e00a4b70676b2237cb39bfe5dfc42b70c82f5df0df0c9e88`
+- 工作父提交：`b0189d06c9a5597ec794a279b33570b00b64d4b9`
+- 工作父的唯一父提交：`c9071e7af70de7365b15f65c0f73e4f13106c176`
+- 正式基线与 `refs/nextstep/formal`：`a854fd4938b34ab24d88e72430be52b397c91096`
+- 启动时 `refs/nextstep/control`：`563144c01aacdebdb6a5bc4b6b8a9102cc8faf4a`
 
 ## 路线与阶段
 
-- 当前路线：`PROJECT_ROUTE_LOCK.md` 定义的 NextStep Skill 主载体路线。
 - 生命周期阶段：S5 开发落地。
 - 当前里程碑：P5 / V1 / M1.1 / S1.3。
-- 当前阶段出口：实现产品定义会签运行切片的候选提交，供后续独立候选验证与 I/X/P 使用。
-- 最小可验收闭环：验证宿主 AI 的 PRD、用户旅程和能力映射候选只引用不可变 Frozen Requirement，并仅由可信独立用户动作形成可恢复会签记录。
+- 当前阶段出口：修复 L3 的四项 P1，形成单父候选提交，供后续独立 CV、I/X/P 和 L3 重新执行。
+- 最小可验收闭环：产品定义候选以 Frozen Requirement 为唯一事实来源，旅程按 semantic source 独立完成，会签只能消费当前 confirmed 的模块私有 session。
+- 明确非目标：不修改路线锁、计划、P3/P4/S4/产品/设计/架构真源、runtime/reviews、依赖、TypeScript 配置或 Git refs；不进入 S1.4/S1.5，不宣称 PC-03、M1.1、V1 或 P5 完成。
 
-## 实施边界
+## 前置核验
 
-- 允许范围以 attempt 6 任务包 `allowed_paths` 为准；本轮只修改其中的必要子集。
-- `PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md` 和 P5 活动计划不在 attempt 4 allowlist 内，管理面更新由主管负责。
-- `.codex/runtime/**`、`.codex/reviews/**`、Git refs、registry、checkpoint 仅主 Agent 写入，本轮只读。
-- 不实现 S1.4 载体裁决、Acceptance Profile、原型流程或 Web/UI 分支。
-- 不实现 S1.5 正式真源写入、一致性提升、真实宿主适配器、真实用户动作探针或 full 支持。
-- 不得从 `002/003/004` 复制或补造目标项目事实；这些文档仅提供结构期望。
-- 不作 PC-03、M1.1、V1 或 P5 的门禁结论。
+- `HEAD` 精确为 working parent `b0189d06c9a5597ec794a279b33570b00b64d4b9`，启动时 tracked 工作树干净。
+- `a854fd4938b34ab24d88e72430be52b397c91096` 存在、为 `HEAD` 祖先，formal ref 指向该 OID。
+- packet 按 RFC8785 排除 `packet_digest` 和 `dedup_key` 后以 SHA-256 重算，结果精确匹配任务包摘要。
+- 项目没有特化 `AGENTS.md`；已读取路线锁、活动计划、operations log、verification report、L3 scorecard、TDD/verification/security skills 和相邻实现。
+- CodeGraph 命令可用但项目未初始化，且路线锁要求询问后才能初始化；本轮不写 `.codegraph/`，以 `rg`、领域模块和 Node 测试作替代影响分析。
 
-## 已核验上下文
+## 相邻模式与最小设计
 
-- 相邻模式：`requirement-freeze.ts` 提供冻结需求的恢复和完整性验证；`requirement-confirmation.ts` 提供可信确认挑战与进程内 capability 模式；`machine-receipt.ts` 提供严格回执与 JCS 摘要模式。
-- 测试模式：Node 原生 `node:test`、AJV 严格 Schema、fixture 驱动 CLI/Skill 验证，`pnpm check` 强制 TypeScript、全量测试和 80% 覆盖率。
-- 安全风险：调用方可构造的 JSON、stdin、环境变量、普通文本、裸布尔值和机器回执均不能成为会签信号；所有内容和错误输出必须经过敏感字段控制。
-- 工具适配：已读取 `tdd-workflow`、`verification-loop`、`security-review`。本任务按 TDD 执行；项目无需额外 Web/E2E 工具。
+- `src/domain/requirement-confirmation.ts` 已验证 `current_state`、模块私有 `WeakMap` session record、单调 `evaluated_at` 和 `user-action/evaluate/view-change` reducer 模式；产品定义只复用该模式的必要边界。
+- `src/domain/product-definition.ts` 当前按全局序列连接旅程状态，并将会签 session 直接绑定到单次 verified replay，无法阻断跨来源完成和旧确认复活。
+- Schema、领域测试、Skill 测试和三份 fixture 是本轮可修改的消费者契约；fixture 仍仅证明 `manual-isolated consumer contract`，不证明真实宿主、真实用户动作或 `full` 支持。
 
-## 执行顺序
+## TDD 与验证计划
 
-1. 先新增永久 RED 测试和磁盘负例，覆盖 direct goal 三重复用、带目标词的无关 evidence、no-op action、任意状态和无用 outcome。
-2. 记录实际 RED 结果后，以受控 measurement/target/evidence、受控动作和状态机、完成转换摘要交叉引用取代开放文本判断，并回放三份正例及两份负例。
-3. 执行完整测试、覆盖率、Skill/JSON、allowlist、上游、refs/runtime 不变性、安全与差异检查。
-4. 仅在所有本地验证通过后创建单个非 merge 候选提交，并返回 `candidate-ready` 或任务包允许的失败状态。
+1. 先在领域/Skill 测试和 `l3-regressions.json` 中写入四项可执行反证，并运行 `pnpm test` 记录 RED。
+2. 最小实现 semantic-source 分区状态机、完整 metric 链、产品定义 current-state reducer、direct role ledger、activity/result 摘要绑定和 S1.3 Skill guard。
+3. 更新三份独立正例 fixture，运行 GREEN、`pnpm check`、官方 Skill validator、官方 registry audit、JSON、安全和范围反扫。
+4. 所有门禁通过后才创建一个非 merge 中文候选提交；formal/control 不移动，也不 push。
 
-## 任务包有效性
+## 本地结果
 
-- attempt 1 已 tombstone：其 `PROJECT_ROUTE_LOCK.md` 与 P5 活动计划 source ref 错误标记为 formal OID；本轮不得使用。
-- attempt 2 已 tombstone：其 allowlist 包含过宽的管理面写权限；本轮不得使用。
-- attempt 3 已 tombstone：I/X/P 的 X/P 发现通用 exact-copy 事实可占用错误语义字段，且三份 fixture 复用同一候选。
-- attempt 4 已因产品验收发现“指标证明无关计划记录”和“旅程仅复述参与者/场景”而退回；其 CV 通过不构成 attempt 5 的质量结论。
-
-## Attempt 6 验证目标
-
-- 成功指标必须使用受控 measurement/target/evidence，其中 target 锚定合法目标或期望输出，evidence 以序号和摘要绑定同一产品定义内的 completed 旅程转换。
-- 旅程必须使用受控动作与状态机，只允许 `not-started -> in-progress -> completed` 的连续推进，且 outcome 与 `to` 状态相等。
-- 三份磁盘正例分别体现 community workshop、expense reminder 和 project delivery 的独立身份、两步合法状态推进和目标一致完成证据；两份磁盘负例实际覆盖 CV 绕过。
-- 保留 a5 的稳定 ID、字段角色、direct/derived、会签、恢复、CLI/回执、敏感内容和 `manual-isolated consumer contract` 边界。
-
-## Attempt 6 启动核验
-
-- 启动前 HEAD 与指定 working parent 均为 `c728816881aa403e6a980ba15b1bdbad75774006`，tracked 工作树干净，正式基线为其祖先。
-- a6 packet digest 以排除 `packet_digest` 与 `dedup_key` 的 RFC 8785 投影复算匹配；任务包与 dispatch-ready 的 dedup key 均为上述固定值。
-- RED、GREEN 和完整验证结果将在本轮操作与验证留痕中追加。
+- RED：116 项中 112 项通过、4 项按预期失败，分别证明跨来源伪完成、direct 角色坍缩、缺少 current-state reducer 和 Skill 阶段入口冲突。
+- 初始 GREEN：117/117 通过；`pnpm check` 覆盖率为行 90.91%、分支 82.04%、函数 98.20%。主管随后以动态反证发现事件 getter TOCTOU、可变 replay 和同一旧 display 新 confirm session 三条会签复活路径，先后形成 117/118 与 118/120 RED。
+- 加固 GREEN：事件采用精确字段单次快照，verifier 深快照 replay，session 按 display 摘要唯一化；`pnpm check` 最终 120/120，覆盖率为行 90.84%、分支 82.21%、函数 98.25%。Skill 明确 replacement display 必须经 reducer。
+- Plato 复核进一步发现 Proxy 快照重入 P1：旧状态读取早于事件快照，可由 trap 重入 reject/cancel 后被外层 confirm 覆盖。新增双路径永久回归先得到 120/121 RED；将 reducer 的当前状态读取移到事件快照之后，`pnpm test` GREEN 为 121/121。
+- 第二轮复核确认外层 event Proxy 已关闭，但发现 `view-change.display` 嵌套 Proxy 可在状态读取后重入并复活终态。新增 confirmed session 的 reject/cancel 双路径回归先得到 121/122 RED；view-change display 改为状态读取前的严格 JSON 深快照后，`pnpm check` 以 122/122 GREEN，覆盖率为行 90.78%、分支 82.02%、函数 98.26%。
+- 辅助门禁：官方 Skill validator 在 `/tmp` 临时 PyYAML 环境返回 `Skill is valid!`；官方 npm registry audit 无已知漏洞；60 份适用 JSON 可解析，既有故意空 JSON 负例由拒绝测试覆盖。
+- 不变性：12 个改动路径均在 packet allowlist；路线/计划、上游真源、runtime/reviews、依赖配置和 formal/control ref 保持不变。
+- 状态：外层 event 与嵌套 display 两类 Proxy 重入修复均已通过本地 TDD，Godel/Sol 独立复核 `PASS / P0=0 / P1=0`。尚未 amend 单父候选、生成 Execution Result、执行独立 CV/I/X/P/L3 或正式提升；不构成 PC-03、M1.1、V1、P5 或正式提升结论。

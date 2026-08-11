@@ -1,5 +1,28 @@
 # Operations Log
 
+## 2026-08-11 P5 / V1 / M1.1 / S1.3 Generation 2 Attempt 7 启动
+
+- 执行身份：只读 packet `ep-p5-v1-m1.1-s1.3-g2-a7-20260811`，RFC8785 双字段投影摘要重算为 `sha256:ff216e6340036a02e00a4b70676b2237cb39bfe5dfc42b70c82f5df0df0c9e88`；working parent 为 `b0189d06c9a5597ec794a279b33570b00b64d4b9`，formal 为 `a854fd4938b34ab24d88e72430be52b397c91096`，启动时 `refs/nextstep/control` 为 `563144c01aacdebdb6a5bc4b6b8a9102cc8faf4a`。
+- 生命周期与分流：属于 S5/P5/V1/M1.1/S1.3 的当前阶段缺口，仅关闭 L3 的跨来源旅程、旧会签复活、角色坍缩和 Skill 阶段入口四项 P1；不改变已会签路线、产品、设计、架构、DoD 或门禁，也不进入 S1.4/S1.5。
+- 范围：只修改 attempt 7 `allowed_paths` 的必要子集；`.codex/runtime/**`、`.codex/reviews/**`、路线锁、计划、上游真源、依赖配置和 refs 均只读。项目根无特化 `AGENTS.md`。
+- 研究：已读取 L3 scorecard、`product-definition` 领域/Schema/CLI/fixture/Skill 测试，以及 S1.2 `requirement-confirmation` 的 current-state/session/reducer 模式；已启用 `tdd-workflow`、`verification-loop` 和 `security-review`。
+- 工具替代：本机存在 CodeGraph CLI，但项目没有 `.codegraph/` 且路线锁要求先询问才可初始化。用途是结构影响分析；本轮改用 `rg`、现有模块和 Node 测试，未写 `.codegraph/`，将在最终测试中复核受影响路径。
+- TDD：下一步先写入 L3 四项可执行 RED 和实际加载的 replay fixture，运行 `pnpm test` 记录旧实现失败，再做最小 GREEN。
+- RED：新增 `l3-regressions.json` 后运行 `pnpm test`，构建通过且 116 项中 112 通过、4 失败。旧实现接受目标 A start + 目标 B complete 的 B metric 链，接受同一 scenarios direct fact 填充 problem/target_users/scenarios/actor；产品定义模块未导出 current-state reducer；Skill frontmatter 未允许 `V1 / M1.1 / S1.3`。首次 RED 因测试自身 `typeof` 非空断言语法错误停在 TypeScript 解析阶段，已只修正测试类型写法后重跑；生产实现未在 RED 前修改。
+- GREEN：旅程状态改为按 `semantic_source` 分区，metric evidence 重走同来源 start/complete 链；transition digest 覆盖 actor/activity/result。会签采用 canonical verified replay、模块私有 session record 与 pending/confirmed/rejected/cancelled/expired/superseded reducer，terminal、旧和 clone session 均不能签署。direct source 以角色 ledger fail closed，derived summary 必须以 `role:<role>;` 绑定角色；三份 fixture 改为各自的产品活动和结果。
+- 本地验证：最终 `pnpm test` 为 117/117；`pnpm check` 通过，行/分支/函数覆盖率为 90.91%/82.04%/98.20%。官方 Skill `quick_validate.py` 先因系统缺 PyYAML 不能启动，随后仅在 `/tmp/nextstep-s1-3-skill-validate` 安装 PyYAML 6.0.2 并返回 `Skill is valid!`；项目依赖未变。`npm_config_registry=https://registry.npmjs.org pnpm audit --audit-level=high` 返回无已知漏洞。
+- 辅助门禁：60 份适用 JSON 全部可解析；唯一排除的是既有故意空输入负例 `tests/fixtures/requirement-intake/empty-input.json`，现有拒绝测试覆盖其失败语义。`git diff --check`、生产路径秘密/调试扫描通过；12 条 tracked/untracked changed paths 均在 packet allowlist，受保护上游、runtime/reviews、formal/control 和依赖配置均无差异。
+- 当前结论：本地 `candidate-ready`，自检 96/100，P0=0、P1=0；扣分只反映固定候选后的独立 CV、I/X/P、L3、最终复验和正式提升尚未执行。不得宣称 PC-03、M1.1、V1、P5 或任何正式提升完成。
+
+## 2026-08-11 S1.3 Attempt 7 主管反证与候选加固
+
+- 主管在固定候选 `5980539d667ee0762810c824a9df0714fb6fc3be` 上先以隔离副本完成 117/117、覆盖率 90.91%/82.04%/98.20%、官方 Skill validator、官方 registry audit、JSON 与范围复核；随后以动态 getter 探针复现 reducer 对 `verified_interaction` 二次读取，可先通过 capability 检查再注入未验证 cancel，判定为 P1，Execution Result 与后续门禁未启动。
+- TDD 补强：第一轮 RED 为 117/118；修复为精确自有数据字段的一次性事件快照，访问器不执行。Pauli 只读复审进一步发现 verifier 保存可变 replay 引用、以及 session 按具体 action replay 分配导致同一旧 display 可用新 confirm 获取新 session；第二轮 RED 为 118/120。
+- 最小修复：verifier 在调用前深快照并严格校验 replay 字段、类型、绑定与时间；session 生命周期改为按完整 display 摘要唯一复用，terminal 后同一旧 display 的新 confirm 只能取得原终态 session；当前 canonical confirm 仍与签署 capability 精确绑定。Skill 明确宿主必须把 user action、expiry 和 replacement display 送入 reducer，构造新 display 本身不静默改状态。
+- GREEN 与验证：`pnpm check` 通过 120/120，覆盖率行 90.84%、分支 82.21%、函数 98.25%；官方 npm registry audit 无漏洞，官方 Skill validator、适用 JSON 与 `git diff --check` 通过。直接执行无 executable bit 的 `quick_validate.py` 曾返回 permission denied，改用隔离 PyYAML 环境的 Python 解释器执行同一官方脚本后通过，未改项目依赖。
+- 审查分流：Pauli 对开放文本低信息包装的担忧保留给 I/X/P 产品语义审查；任务包明确不实现通用自然语言质量裁决器，确定性内核继续只验证来源、角色前缀、状态机和摘要，三份正例承担产品特定 activity/result 证据。
+- 当前边界：仍为 attempt 7 候选修订，不移动 formal/control，不写 runtime/reviews，不进入 S1.4/S1.5，不 push。需重写同一单父候选后再生成 Execution Result，并重新执行 CV、I/X/P 和 L3。
+
 ## 2026-08-11 P5 / V1 / M1.1 / S1.3 L3 退回与 Attempt 7 入口
 
 - 固定候选 `c9071e7af70de7365b15f65c0f73e4f13106c176` 的 CV attempt 5 与 I/X/P attempt 4 均通过；结果摘要分别为 `sha256:569aece8419187b768d9f52f55ca79192ea88cbeb4953da5eeb140e8b70f9701`、`sha256:b28537701e35729e0868524d917090bd765d9b61ce992c0ba57849e851224846`，已分笔 expected-old CAS 写入 control。
@@ -1621,3 +1644,23 @@
 - GREEN：`pnpm test` 通过 `113/113`；`pnpm check` 通过，覆盖率为行 `90.97%`、分支 `82.87%`、函数 `98.11%`。
 - 外围验证：JSON、官方 Skill validator、官方 registry 高危 audit、`git diff --check`、生产路径秘密/调试扫描、formal ancestor、allowlist 和受保护上游/runtime/reviews/refs 反扫均通过；本轮仅观察 formal/control refs，未写入。
 - 状态：本地候选验证材料已收口，待创建单父非 merge 候选提交；未执行独立候选验证、交互/产品评估、独立审查、最终复验或正式提升。
+
+## 2026-08-11 P5 / V1 / M1.1 / S1.3 Generation 2 Attempt 7 主管复核与 Proxy 重入修复
+
+- 独立复核：Plato 对主管未提交补丁执行只读复核，发现 P1：reducer 在不可信事件 Proxy 完整快照前读取 `record.current_state`，快照 trap 可重入一次有效 reject/cancel，外层随后用陈旧 `pending` 覆盖终态并签署。
+- TDD RED：新增永久 reject/cancel 双路径 Proxy 重入回归后，`pnpm test` 为 `120/121`，失败断言实际为 `confirmed`、期望为 `rejected`，证明问题可执行复现。
+- 最小修复：`reduceProductDefinitionInteractionState` 先调用 `snapshotProductDefinitionInteractionEvent(event)` 完成精确事件快照，再读取 `record.current_state`；未改变状态模型、session 唯一化、verifier 深快照或管理面边界。
+- TDD GREEN：修复后 `pnpm test` 通过 `121/121`，失败、跳过、取消均为 `0`；Proxy 重入测试覆盖 reject 和 cancel，终态不可被旧 confirm 复活，签署被拒绝。
+- 范围：本次仅修改产品定义领域测试与实现；未修改 runtime、registry、checkpoint、formal/control refs、路线锁、计划或真实执行任务包。Plato 尚未给出修复后的最终结论，正式候选尚未 amend。
+- 当前状态：等待同一审查者确认无 P0/P1；在此之前不固定新候选、不生成 execution result、不启动 CV/I/X/P/L3。
+
+## 2026-08-11 P5 / V1 / M1.1 / S1.3 Generation 2 Attempt 7 嵌套 Display 重入修复
+
+- 第二轮复核：Plato 确认外层 event Proxy P1 已关闭，同时发现 `view-change.display` 仍仅复制引用；嵌套 display Proxy 可在外层读取旧 `confirmed` 后重入 reject/cancel，再由外层 view-change 写回 `confirmed` 并使用原 capability 签署。判定仍为 `REVISE`，P0=0、P1=1。
+- TDD RED：新增 confirmed session、嵌套 display Proxy、reject/cancel 双路径永久回归；旧实现 `pnpm test` 为 `121/122`，实际状态再次为 `confirmed`、期望为 `rejected`。
+- 最小修复：新增 `snapshotProductDefinitionDisplay`，在 session 状态读取前对 view-change display 做 JSON 深快照，并验证 display、challenge、project 的精确字段及关键类型；后续状态比较、摘要和时间读取只接触冻结快照。
+- TDD GREEN：`pnpm test` 通过 `122/122`，失败、跳过、取消均为 `0`；`pnpm check` 通过，行/分支/函数覆盖率为 `90.78% / 82.02% / 98.26%`。已请求 Plato 继续复验全部不可信 event/nested data trap 时序。
+- 当前状态：候选仍未 amend，Execution Result 与正式门禁均未启动；formal/control refs 未移动。
+- 审查宿主：Feynman/Terra 的修复后复核在平台侧返回 HTTP 503，未执行仓库命令、未形成质量结论；该故障不计为候选失败，也不视为 PASS。已改派 Godel/Sol 执行同一只读复核。
+- 修复后独立复核：Godel/Sol `PASS`，P0=0、P1=0；确认外层 event 与嵌套 display 在 session 状态读取前完成快照，reject/cancel/expiry/superseded 重入不能用陈旧状态覆盖；replay 深快照、display 级 session 唯一化、canonical confirm 和签署 capability 未发现绕过。该结论仅覆盖会签状态机安全边界。
+- 审查门禁：关闭主管补丁审查阻塞，允许在最后范围检查后 amend attempt 7 单父候选；CV、I/X/P、L3 及正式提升仍未执行。

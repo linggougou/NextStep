@@ -1,17 +1,17 @@
 ---
 name: nextstep
-description: Validate a NextStep requirement candidate and, only at S1.2, create an explicitly confirmed immutable freeze record that can be recovered without chat history. Use when a user explicitly invokes NextStep for requirement intake or requirement freeze; do not use it for source writing, task dispatch, or stage approval.
+description: Validate a NextStep requirement candidate, create an explicitly confirmed immutable freeze record at S1.2, or validate an S1.3 product-definition candidate from a Frozen Requirement. This Skill permits product-definition validation within V1 / M1.1 / S1.3 only after stage inspection. Use only for requirement intake, requirement freeze, or product-definition validation; do not use it for source writing, task dispatch, signoff approval, or stage approval.
 ---
 
 # NextStep
 
-Operate only within the current `V1 / M1.1 / S1.1` or `V1 / M1.1 / S1.2` boundary shown by project truth.
+Operate only within the current `V1 / M1.1 / S1.1`, `V1 / M1.1 / S1.2`, or `V1 / M1.1 / S1.3` boundary shown by project truth.
 
 ## Inspect The Stage
 
 1. Resolve the project root explicitly.
 2. Read `PROJECT_ROUTE_LOCK.md` and `docs/PLANS.md`.
-3. Confirm the active milestone is `V1 / M1.1 / S1.1` before running requirement intake, or `V1 / M1.1 / S1.2` before preparing a freeze record.
+3. Confirm the active milestone is `V1 / M1.1 / S1.1` before running requirement intake, `V1 / M1.1 / S1.2` before preparing a freeze record, or `V1 / M1.1 / S1.3` before validating a product-definition candidate.
 4. Report the current stage, active gate, blocking reason, and permitted next action from those sources.
 
 Do not infer stage state from chat history or task titles.
@@ -94,16 +94,25 @@ Run `pnpm test` to replay it. Requirement-freeze fixtures use only the `manual-i
 - Do not modify project sources through requirement intake.
 - Do not claim any `PC-01..PC-20` capability, gate, version, or project is complete.
 - Do not claim host mode is `full`, `manual-isolated`, or supported.
-- Do not enter S1.2 until the required independent gates are complete, and do not enter S1.3 until a valid frozen record exists.
+- Do not enter S1.2 until the required independent gates are complete, do not enter S1.3 until a valid frozen record exists, and do not enter S1.4 from this Skill.
 
 ## S1.3 Product Definition Signoff
 
-At S1.3, the host AI may propose a PRD, 用户旅程, and 能力映射 candidate. The deterministic kernel requires every product fact to use a Frozen Requirement JSON Pointer and matching value digest; do not copy product facts from example documents or chat.
+At S1.3, enter only after Inspect The Stage confirms `V1 / M1.1 / S1.3` and the Frozen Requirement has `next_step: S1.3.product-definition`. The host AI may propose a PRD, 用户旅程, and 能力映射 candidate. The deterministic kernel requires every product fact to use a Frozen Requirement JSON Pointer and matching value digest; do not copy product facts from example documents or chat.
 
 The PRD requires product name, problem, target users, goals, scenarios, scope, non-goals, and success metrics. The journey and capability map both reference the same product definition ID. Missing fields, unknown fields, broken source binding, stdin-injected signoff claims, or a bare boolean must fail closed.
 
-The signoff challenge binds repository identity, formal baseline, Frozen Requirement identity, product definition digest, and full display digest. Only a trusted product-definition interaction verifier can issue an in-process session capability for an independent user action. Expiry, reject, cancel, changed display, or a cross-definition capability cannot sign.
+The signoff challenge binds repository identity, formal baseline, Frozen Requirement identity, product definition digest, and full display digest. Only a trusted product-definition interaction verifier can issue an in-process session capability for an independent user action. The module-private session state is `pending`, `confirmed`, `rejected`, `cancelled`, `expired`, or `superseded`; a monotonic reducer handles verified user actions, expiry evaluation, and view changes. The host must route every accepted user action, expiry evaluation, and replacement display through that reducer before signoff; constructing a display alone does not mutate an outstanding session. Signoff consumes only the current confirmed state for its exact display. Reject, cancel, expiry, changed display, cloned session, old session, or a cross-definition capability fail closed and cannot revive an old confirm.
 
-`product_definition_id` is deterministically derived from the Frozen Requirement identity; callers cannot select or reuse it. Facts declare `kind: direct` or `kind: derived`: direct facts exactly equal one source value, while derived facts require a derivation summary and one or more legitimate source refs. Target users use scenarios; a journey step uses a scenario-bound actor and a goal/expected-output `semantic_source`; capabilities use goals or expected outputs; non-goals use non-goals or constraints.
+`product_definition_id` is deterministically derived from the Frozen Requirement identity; callers cannot select or reuse it. Facts declare `kind: direct` or `kind: derived`: direct facts exactly equal one source value, while derived facts require a role-specific `derivation_summary` beginning `role:<role>;` and one or more legitimate source refs. One direct source cannot fill different core product roles such as problem, target_users, scenarios, actor, activity, result, or capability; a shared source must use a role-specific derived fact. Target users use scenarios; a journey step uses a scenario-bound actor and a goal/expected-output `semantic_source`; capabilities use goals or expected outputs; non-goals use non-goals or constraints.
 
-Success metrics are controlled `measurement`, `target`, and `evidence` records. The only measurement is `completion-transition`; the target binds a goal/expected-output `semantic_source` and requires `completed`; evidence carries a `journey_sequence` plus the exact `transition_digest` of that product definition's completion step. Free-form metric, target, evidence, or display text cannot satisfy this contract. A user journey is an ordered `sequence` of steps with `actor`, `semantic_source`, enumerated `action`, `state_change` (`from` and `to`), and `outcome`. The state machine permits only `not-started -> in-progress -> completed`: `start` makes the first transition, `complete` makes the second, every step is continuous, and `outcome` equals `to`. Each target-project fixture must carry and replay its own complete Frozen Requirement and candidate. S1.3 fixtures establish only the `manual-isolated consumer contract`; they do not prove a real host adapter, real user action probe, or `full` support.
+Success metrics are controlled `measurement`, `target`, and `evidence` records. The only measurement is `completion-transition`; the target binds a goal/expected-output `semantic_source` and requires `completed`; evidence carries a `journey_sequence` plus the exact `transition_digest` of that product definition's completion step. Metric evidence proves the complete start/complete chain in the same semantic_source partition, not an isolated completed step. Free-form metric, target, evidence, or display text cannot satisfy this contract. A user journey is an ordered `sequence` of steps with source-bound `actor`, `activity`, `result`, `semantic_source`, enumerated `action`, `state_change` (`from` and `to`), and `outcome`. The state machine permits only `not-started -> in-progress -> completed`: `start` makes the first transition, `complete` makes the second, each semantic_source partition is continuous, and `outcome` equals `to`. The transition_digest covers actor, activity, result, semantic source, action, state change, and outcome. Each target-project fixture must carry and replay its own complete Frozen Requirement and candidate. S1.3 fixtures establish only the `manual-isolated consumer contract`; they do not prove a real host adapter, real user action probe, or `full` support.
+
+Build the local tool before validating a product-definition candidate:
+
+```bash
+pnpm build
+node dist/src/cli/product-definition.js
+```
+
+The stdin command only validates and receipts the candidate. It cannot receive a verifier, session, state, or clock and therefore cannot sign. A host holding the in-process verifier and current session may use the exported domain boundary for the manual-isolated consumer contract; this does not implement a real host adapter, a real user-action probe, or `full` support.

@@ -44,6 +44,8 @@ export interface ProductJourneyStateChange {
 export interface ProductJourneyStep {
   readonly sequence: number;
   readonly actor: ProductFact;
+  readonly activity: ProductFact;
+  readonly result: ProductFact;
   readonly semantic_source: ProductSourceRef;
   readonly action: ProductJourneyAction;
   readonly state_change: ProductJourneyStateChange;
@@ -122,6 +124,22 @@ export interface ProductDefinitionInteractionSession {
   readonly runtime_boundary: "product-definition-interaction-session";
 }
 
+export type ProductDefinitionInteractionStatus = "pending" | "confirmed" | "rejected" | "cancelled" | "expired" | "superseded";
+
+export interface ProductDefinitionInteractionState {
+  readonly status: ProductDefinitionInteractionStatus;
+  readonly product_definition_id: string;
+  readonly challenge_digest: Sha256Digest;
+  readonly display_digest: Sha256Digest;
+  readonly expires_at: string;
+  readonly evaluated_at: string;
+}
+
+export type ProductDefinitionInteractionStateEvent =
+  | { readonly type: "user-action"; readonly verified_interaction: VerifiedProductDefinitionInteraction; readonly evaluated_at: string }
+  | { readonly type: "evaluate"; readonly evaluated_at: string }
+  | { readonly type: "view-change"; readonly display: ProductDefinitionDisplay; readonly evaluated_at: string };
+
 export interface SignedProductDefinition {
   readonly schema_version: "1.0";
   readonly record_type: "signed-product-definition";
@@ -150,7 +168,14 @@ export class ProductDefinitionError extends Error {
 const ajv = new Ajv({ strict: true, allErrors: true, ownProperties: true });
 const validateCandidate: ValidateFunction = ajv.compile(productDefinitionSchema);
 const verifiedInteractions = new WeakMap<object, WeakSet<object>>();
-const sessions = new WeakMap<object, VerifiedProductDefinitionInteraction>();
+const canonicalVerifiedInteractions = new Map<Sha256Digest, VerifiedProductDefinitionInteraction>();
+const interactionSessionsByDisplay = new Map<Sha256Digest, ProductDefinitionInteractionSession>();
+const interactionSessionRecords = new WeakMap<object, {
+  verified_interaction: VerifiedProductDefinitionInteraction;
+  current_state: ProductDefinitionInteractionState;
+}>();
+
+type ProductFactRole = "product_name" | "problem" | "target_users" | "goals" | "scenarios" | "scope" | "non_goals" | "capability" | "actor" | "activity" | "result";
 
 function fail(code: ProductDefinitionErrorCode, message: string): never {
   throw new ProductDefinitionError(code, message);
@@ -212,7 +237,22 @@ function assertSourceRef(frozen: FrozenRequirement, value: unknown, allowedField
   }
 }
 
-function assertFact(frozen: FrozenRequirement, value: unknown, allowedFields: readonly string[]): asserts value is ProductFact {
+function registerDirectFactRole(source: ProductSourceRef, role: ProductFactRole, directFactRoles: Map<string, ProductFactRole>): void {
+  const sourceIdentity = canonicalizeJson(source);
+  const existingRole = directFactRoles.get(sourceIdentity);
+  if (existingRole !== undefined && existingRole !== role) {
+    fail("SOURCE_BINDING_MISMATCH", "A direct product fact cannot fill multiple product roles");
+  }
+  directFactRoles.set(sourceIdentity, role);
+}
+
+function assertFact(
+  frozen: FrozenRequirement,
+  value: unknown,
+  allowedFields: readonly string[],
+  role: ProductFactRole,
+  directFactRoles: Map<string, ProductFactRole>,
+): asserts value is ProductFact {
   if (!isPlainRecord(value) || typeof value.kind !== "string" || typeof value.value !== "string" || value.value.length === 0) {
     fail("INVALID_PRODUCT_DEFINITION", "Invalid product fact");
   }
@@ -221,30 +261,68 @@ function assertFact(frozen: FrozenRequirement, value: unknown, allowedFields: re
     const source = resolveRequirementSource(frozen, value.source.pointer as string);
     assertSourceRef(frozen, value.source, allowedFields);
     if (value.value !== source.value) fail("SOURCE_BINDING_MISMATCH", "Direct product fact must equal its source value");
+    registerDirectFactRole(value.source as unknown as ProductSourceRef, role, directFactRoles);
     return;
   }
   if (value.kind !== "derived" || typeof value.derivation_summary !== "string" || value.derivation_summary.length === 0 || !Array.isArray(value.source_refs) || value.source_refs.length === 0 || Object.keys(value).length !== 4) fail("INVALID_PRODUCT_DEFINITION", "Invalid derived product fact");
+  if (!value.derivation_summary.startsWith(`role:${role};`)) {
+    fail("SOURCE_BINDING_MISMATCH", "Derived product fact must use a role-specific derivation summary");
+  }
   for (const sourceRef of value.source_refs) assertSourceRef(frozen, sourceRef, allowedFields);
 }
 
-function assertFacts(frozen: FrozenRequirement, value: unknown, label: string, allowedFields: readonly string[]): void {
+function assertFacts(
+  frozen: FrozenRequirement,
+  value: unknown,
+  label: string,
+  allowedFields: readonly string[],
+  role: ProductFactRole,
+  directFactRoles: Map<string, ProductFactRole>,
+): void {
   if (!Array.isArray(value) || value.length === 0) fail("INVALID_PRODUCT_DEFINITION", `${label} is required`);
-  for (const fact of value) assertFact(frozen, fact, allowedFields);
+  for (const fact of value) assertFact(frozen, fact, allowedFields, role, directFactRoles);
 }
 
 function sourceRefsMatch(left: ProductSourceRef, right: ProductSourceRef): boolean {
   return left.pointer === right.pointer && left.value_digest === right.value_digest;
 }
 
+function sameJson(left: unknown, right: unknown): boolean {
+  return canonicalizeJson(left) === canonicalizeJson(right);
+}
+
 export function digestProductJourneyTransition(productDefinitionId: string, step: ProductJourneyStep): Sha256Digest {
   return digestJson({
     product_definition_id: productDefinitionId,
     sequence: step.sequence,
+    actor: step.actor,
+    activity: step.activity,
+    result: step.result,
     semantic_source: step.semantic_source,
     action: step.action,
     state_change: step.state_change,
     outcome: step.outcome,
   });
+}
+
+function hasCompletedJourneyChain(
+  steps: readonly ProductJourneyStep[],
+  semanticSource: ProductSourceRef,
+  completionSequence: number,
+): boolean {
+  let state: ProductJourneyState = "not-started";
+  let sawStart = false;
+  for (const step of steps) {
+    if (!sourceRefsMatch(step.semantic_source, semanticSource)) continue;
+    if (step.sequence > completionSequence) break;
+    if (step.state_change.from !== state) return false;
+    state = step.state_change.to;
+    if (step.action === "start") sawStart = true;
+    if (step.sequence === completionSequence) {
+      return sawStart && step.action === "complete" && state === "completed";
+    }
+  }
+  return false;
 }
 
 function assertMetrics(frozen: FrozenRequirement, value: unknown, productDefinitionId: string, steps: readonly ProductJourneyStep[]): void {
@@ -262,29 +340,49 @@ function assertMetrics(frozen: FrozenRequirement, value: unknown, productDefinit
     const semanticSource = target.semantic_source as unknown as ProductSourceRef;
     assertSourceRef(frozen, semanticSource, ["goals", "expected_outputs"]);
     const step = steps.find((candidate) => candidate.sequence === evidence.journey_sequence);
-    if (step === undefined || step.state_change.to !== "completed" || step.outcome !== "completed" || !sourceRefsMatch(step.semantic_source, semanticSource) || digestProductJourneyTransition(productDefinitionId, step) !== evidence.transition_digest) {
+    if (step === undefined || step.action !== "complete" || step.state_change.to !== "completed" || step.outcome !== "completed" || !sourceRefsMatch(step.semantic_source, semanticSource) || !hasCompletedJourneyChain(steps, semanticSource, step.sequence) || digestProductJourneyTransition(productDefinitionId, step) !== evidence.transition_digest) {
       fail("SOURCE_BINDING_MISMATCH", "Metric evidence must bind the matching completed journey transition");
     }
   }
 }
 
-function assertJourneySteps(frozen: FrozenRequirement, value: unknown): asserts value is readonly ProductJourneyStep[] {
+function assertProductSpecificJourneyFact(fact: ProductFact, label: "activity" | "result"): void {
+  if (["start", "complete", "not-started", "in-progress", "completed"].includes(fact.value)) {
+    fail("INVALID_PRODUCT_DEFINITION", `Journey ${label} must not be a state label`);
+  }
+}
+
+function assertJourneySteps(
+  frozen: FrozenRequirement,
+  value: unknown,
+  directFactRoles: Map<string, ProductFactRole>,
+): asserts value is readonly ProductJourneyStep[] {
   if (!Array.isArray(value) || value.length === 0) fail("INVALID_PRODUCT_DEFINITION", "journey steps is required");
-  let previousState: ProductJourneyState | undefined;
+  const stateBySemanticSource = new Map<string, ProductJourneyState>();
   for (const [index, step] of value.entries()) {
     if (!isPlainRecord(step) || step.sequence !== index + 1 || !isPlainRecord(step.state_change) || !isPlainRecord(step.semantic_source)) {
       fail("INVALID_PRODUCT_DEFINITION", "Journey steps must be ordered and include a state change");
     }
-    assertFact(frozen, step.actor, ["scenarios"]);
+    const actor = step.actor;
+    const activity = step.activity;
+    const result = step.result;
+    assertFact(frozen, actor, ["scenarios"], "actor", directFactRoles);
+    assertFact(frozen, activity, ["goals", "expected_outputs", "scenarios"], "activity", directFactRoles);
+    assertFact(frozen, result, ["goals", "expected_outputs"], "result", directFactRoles);
+    assertProductSpecificJourneyFact(activity, "activity");
+    assertProductSpecificJourneyFact(result, "result");
     const stateChange = step.state_change as Record<string, unknown>;
-    assertSourceRef(frozen, step.semantic_source, ["goals", "expected_outputs"]);
+    const semanticSource = step.semantic_source as unknown as ProductSourceRef;
+    assertSourceRef(frozen, semanticSource, ["goals", "expected_outputs"]);
     if ((step.action !== "start" || stateChange.from !== "not-started" || stateChange.to !== "in-progress") && (step.action !== "complete" || stateChange.from !== "in-progress" || stateChange.to !== "completed")) {
       fail("INVALID_PRODUCT_DEFINITION", "Journey action must make a legal state transition");
     }
-    if ((index === 0 && stateChange.from !== "not-started") || (index > 0 && stateChange.from !== previousState) || step.outcome !== stateChange.to) {
-      fail("INVALID_PRODUCT_DEFINITION", "Journey states must be continuous and outcome must equal the target state");
+    const sourceIdentity = canonicalizeJson(semanticSource);
+    const previousState = stateBySemanticSource.get(sourceIdentity) ?? "not-started";
+    if (stateChange.from !== previousState || step.outcome !== stateChange.to) {
+      fail("INVALID_PRODUCT_DEFINITION", "Journey states must be continuous for each semantic source and outcome must equal the target state");
     }
-    previousState = stateChange.to as ProductJourneyState;
+    stateBySemanticSource.set(sourceIdentity, stateChange.to as ProductJourneyState);
   }
 }
 
@@ -320,19 +418,20 @@ export function parseProductDefinitionCandidate(value: unknown): ProductDefiniti
   if (candidateInput.frozen_requirement_digest !== digestJson(frozen)) fail("REQUIREMENT_NOT_FROZEN", "Frozen Requirement identity does not match");
   const prd = candidateInput.prd as Record<string, unknown>;
   if (candidateInput.product_definition_id !== deriveProductDefinitionId(frozen)) fail("INVALID_PRODUCT_DEFINITION", "Product definition ID does not match Frozen Requirement identity");
-  assertFact(frozen, prd.product_name, ["intent_summary", "expected_outputs"]);
-  assertFact(frozen, prd.problem, ["scenarios", "goals"]);
-  assertFacts(frozen, prd.target_users, "target_users", ["scenarios"]);
-  assertFacts(frozen, prd.goals, "goals", ["goals"]);
-  assertFacts(frozen, prd.scenarios, "scenarios", ["scenarios"]);
-  assertFacts(frozen, prd.scope, "scope", ["goals", "expected_outputs", "constraints"]);
-  assertFacts(frozen, prd.non_goals, "non_goals", ["non_goal_gaps", "constraints"]);
+  const directFactRoles = new Map<string, ProductFactRole>();
+  assertFact(frozen, prd.product_name, ["intent_summary", "expected_outputs"], "product_name", directFactRoles);
+  assertFact(frozen, prd.problem, ["scenarios", "goals"], "problem", directFactRoles);
+  assertFacts(frozen, prd.target_users, "target_users", ["scenarios"], "target_users", directFactRoles);
+  assertFacts(frozen, prd.goals, "goals", ["goals"], "goals", directFactRoles);
+  assertFacts(frozen, prd.scenarios, "scenarios", ["scenarios"], "scenarios", directFactRoles);
+  assertFacts(frozen, prd.scope, "scope", ["goals", "expected_outputs", "constraints"], "scope", directFactRoles);
+  assertFacts(frozen, prd.non_goals, "non_goals", ["non_goal_gaps", "constraints"], "non_goals", directFactRoles);
   const journey = candidateInput.user_journey as Record<string, unknown>;
   const capabilityMap = candidateInput.capability_map as Record<string, unknown>;
   if (journey.product_definition_id !== candidateInput.product_definition_id || capabilityMap.product_definition_id !== candidateInput.product_definition_id) fail("INVALID_PRODUCT_DEFINITION", "Journey and capability map must reference the product definition");
-  assertJourneySteps(frozen, journey.steps);
+  assertJourneySteps(frozen, journey.steps, directFactRoles);
   assertMetrics(frozen, prd.success_metrics, candidateInput.product_definition_id as string, journey.steps);
-  assertFacts(frozen, capabilityMap.capabilities, "capabilities", ["goals", "expected_outputs"]);
+  assertFacts(frozen, capabilityMap.capabilities, "capabilities", ["goals", "expected_outputs"], "capability", directFactRoles);
   return Object.freeze({ ...(candidateInput as unknown as Omit<ProductDefinitionCandidate, "status">), frozen_requirement: frozen, status: "ready-for-signoff" as const });
 }
 
@@ -377,16 +476,61 @@ export function createUnverifiedProductDefinitionUserAction(
   return Object.freeze({ schema_version: "1.0" as const, record_type: "product-definition-user-action" as const, challenge_digest: display.challenge_digest, display_id: display.display_id, display_digest: digestJson(display), user_action_id: input.user_action_id, event_source: "independent-user-action" as const, user_action: input.action, occurred_at: input.occurred_at });
 }
 
+function parseProductDefinitionInteractionReplay(
+  value: { readonly display: ProductDefinitionDisplay; readonly user_action: ProductDefinitionUserAction },
+): { readonly display: ProductDefinitionDisplay; readonly user_action: ProductDefinitionUserAction } {
+  let snapshot: ReturnType<typeof snapshotJsonValue>;
+  try {
+    snapshot = snapshotJsonValue(value);
+  } catch {
+    fail("SIGNOFF_MISMATCH", "Invalid product definition interaction replay");
+  }
+  assertExactOwnFields(snapshot, ["display", "user_action"], "product definition interaction replay");
+  assertExactOwnFields(snapshot.display, ["schema_version", "record_type", "challenge", "challenge_digest", "display_id", "displayed_at"], "product definition display");
+  assertExactOwnFields(snapshot.display.challenge, ["schema_version", "record_type", "project", "formal_baseline", "frozen_requirement_id", "frozen_requirement_digest", "product_definition_id", "product_definition_digest", "full_display_digest", "signoff_id", "created_at", "expires_at"], "product definition challenge");
+  assertExactOwnFields(snapshot.display.challenge.project, ["repository_id", "formal_baseline"], "product definition challenge project");
+  assertExactOwnFields(snapshot.user_action, ["schema_version", "record_type", "challenge_digest", "display_id", "display_digest", "user_action_id", "event_source", "user_action", "occurred_at"], "product definition user action");
+  const display = snapshot.display as unknown as ProductDefinitionDisplay;
+  const action = snapshot.user_action as unknown as ProductDefinitionUserAction;
+  if (
+    display.schema_version !== "1.0" ||
+    display.record_type !== "product-definition-display" ||
+    display.challenge.schema_version !== "1.0" ||
+    display.challenge.record_type !== "product-definition-signoff-challenge" ||
+    typeof display.display_id !== "string" ||
+    display.display_id.length === 0 ||
+    typeof action.user_action_id !== "string" ||
+    action.user_action_id.length === 0 ||
+    action.user_action_id === display.display_id ||
+    action.schema_version !== "1.0" ||
+    action.record_type !== "product-definition-user-action" ||
+    action.event_source !== "independent-user-action" ||
+    (action.user_action !== "confirm" && action.user_action !== "reject" && action.user_action !== "cancel")
+  ) {
+    fail("SIGNOFF_MISMATCH", "Invalid product definition interaction replay");
+  }
+  assertTimeBetween(display.displayed_at, display.challenge.created_at, display.challenge.expires_at, "display time");
+  assertTimeBetween(action.occurred_at, display.displayed_at, display.challenge.expires_at, "user action time");
+  return Object.freeze({ display, user_action: action });
+}
+
 export function verifyProductDefinitionInteraction(
   value: { readonly display: ProductDefinitionDisplay; readonly user_action: ProductDefinitionUserAction },
   verifier?: ProductDefinitionInteractionVerifier,
 ): VerifiedProductDefinitionInteraction {
-  if (verifier === undefined || (verifier.verifier_kind !== "manual-isolated-fixture" && verifier.verifier_kind !== "trusted-host") || value.user_action.challenge_digest !== value.display.challenge_digest || value.user_action.display_id !== value.display.display_id || value.user_action.display_digest !== digestJson(value.display) || value.user_action.event_source !== "independent-user-action") fail("SIGNOFF_MISMATCH", "Trusted product definition verifier is required");
+  const replay = parseProductDefinitionInteractionReplay(value);
+  if (verifier === undefined || (verifier.verifier_kind !== "manual-isolated-fixture" && verifier.verifier_kind !== "trusted-host") || replay.user_action.challenge_digest !== replay.display.challenge_digest || replay.user_action.display_id !== replay.display.display_id || replay.user_action.display_digest !== digestJson(replay.display)) fail("SIGNOFF_MISMATCH", "Trusted product definition verifier is required");
   let accepted = false;
-  try { accepted = verifier.verify(value) === true; } catch { /* fail closed below */ }
+  try { accepted = verifier.verify(replay) === true; } catch { /* fail closed below */ }
   if (!accepted) fail("SIGNOFF_MISMATCH", "Product definition verifier rejected the interaction");
-  const verified = Object.freeze({ verification_boundary: "product-definition-interaction-verifier" as const, display: value.display, user_action: value.user_action });
-  const authorizers = new WeakSet<object>();
+  const replayDigest = digestJson(replay);
+  const verified = canonicalVerifiedInteractions.get(replayDigest) ?? Object.freeze({
+    verification_boundary: "product-definition-interaction-verifier" as const,
+    display: replay.display,
+    user_action: replay.user_action,
+  });
+  canonicalVerifiedInteractions.set(replayDigest, verified);
+  const authorizers = verifiedInteractions.get(verified) ?? new WeakSet<object>();
   authorizers.add(verifier);
   verifiedInteractions.set(verified, authorizers);
   return verified;
@@ -394,9 +538,184 @@ export function verifyProductDefinitionInteraction(
 
 export function createProductDefinitionInteractionSession(value: VerifiedProductDefinitionInteraction): ProductDefinitionInteractionSession {
   if (verifiedInteractions.get(value) === undefined) fail("SIGNOFF_MISMATCH", "Verified product definition interaction is required");
+  const displayIdentity = digestJson(value.display);
+  const existingSession = interactionSessionsByDisplay.get(displayIdentity);
+  if (existingSession !== undefined) return existingSession;
+  const display = value.display;
+  const initialState = Object.freeze({
+    status: "pending" as const,
+    product_definition_id: display.challenge.product_definition_id,
+    challenge_digest: display.challenge_digest,
+    display_digest: digestJson(display),
+    expires_at: display.challenge.expires_at,
+    evaluated_at: display.displayed_at,
+  });
   const session = Object.freeze({ runtime_boundary: "product-definition-interaction-session" as const });
-  sessions.set(session, value);
+  interactionSessionsByDisplay.set(displayIdentity, session);
+  interactionSessionRecords.set(session, {
+    verified_interaction: value,
+    current_state: initialState,
+  });
   return session;
+}
+
+export function getProductDefinitionInteractionState(
+  session: ProductDefinitionInteractionSession,
+): ProductDefinitionInteractionState {
+  const record = interactionSessionRecords.get(session);
+  if (record === undefined) fail("SIGNOFF_MISMATCH", "A trusted product definition interaction session is required");
+  return record.current_state;
+}
+
+function stateMatchesDisplay(state: ProductDefinitionInteractionState, display: ProductDefinitionDisplay): boolean {
+  return (
+    state.product_definition_id === display.challenge.product_definition_id &&
+    state.challenge_digest === display.challenge_digest &&
+    state.display_digest === digestJson(display) &&
+    state.expires_at === display.challenge.expires_at
+  );
+}
+
+function snapshotProductDefinitionDisplay(value: unknown): ProductDefinitionDisplay {
+  let snapshot: ReturnType<typeof snapshotJsonValue>;
+  try {
+    snapshot = snapshotJsonValue(value);
+  } catch {
+    fail("SIGNOFF_MISMATCH", "Invalid product definition display");
+  }
+  assertExactOwnFields(snapshot, ["schema_version", "record_type", "challenge", "challenge_digest", "display_id", "displayed_at"], "product definition display");
+  assertExactOwnFields(snapshot.challenge, ["schema_version", "record_type", "project", "formal_baseline", "frozen_requirement_id", "frozen_requirement_digest", "product_definition_id", "product_definition_digest", "full_display_digest", "signoff_id", "created_at", "expires_at"], "product definition challenge");
+  assertExactOwnFields(snapshot.challenge.project, ["repository_id", "formal_baseline"], "product definition challenge project");
+  const display = snapshot as unknown as ProductDefinitionDisplay;
+  if (
+    display.schema_version !== "1.0" ||
+    display.record_type !== "product-definition-display" ||
+    display.challenge.schema_version !== "1.0" ||
+    display.challenge.record_type !== "product-definition-signoff-challenge" ||
+    typeof display.display_id !== "string" ||
+    display.display_id.length === 0 ||
+    typeof display.displayed_at !== "string" ||
+    typeof display.challenge_digest !== "string" ||
+    typeof display.challenge.product_definition_id !== "string" ||
+    typeof display.challenge.created_at !== "string" ||
+    typeof display.challenge.expires_at !== "string"
+  ) {
+    fail("SIGNOFF_MISMATCH", "Invalid product definition display");
+  }
+  return display;
+}
+
+function snapshotProductDefinitionInteractionEvent(
+  value: ProductDefinitionInteractionStateEvent,
+): ProductDefinitionInteractionStateEvent {
+  if (!isPlainRecord(value)) fail("SIGNOFF_MISMATCH", "Invalid product definition interaction event");
+  const descriptors = Object.getOwnPropertyDescriptors(value);
+  const descriptorKeys = Reflect.ownKeys(descriptors);
+  if (descriptorKeys.some((key) => typeof key === "symbol")) {
+    fail("SIGNOFF_MISMATCH", "Invalid product definition interaction event fields");
+  }
+  const typeDescriptor = descriptors.type;
+  if (typeDescriptor === undefined || !typeDescriptor.enumerable || !("value" in typeDescriptor)) {
+    fail("SIGNOFF_MISMATCH", "Invalid product definition interaction event type");
+  }
+  const eventType: unknown = typeDescriptor.value;
+  if (eventType !== "user-action" && eventType !== "evaluate" && eventType !== "view-change") {
+    fail("SIGNOFF_MISMATCH", "Unknown product definition interaction event type");
+  }
+  const expectedFields = eventType === "user-action"
+    ? ["type", "verified_interaction", "evaluated_at"]
+    : eventType === "view-change"
+      ? ["type", "display", "evaluated_at"]
+      : ["type", "evaluated_at"];
+  if (
+    descriptorKeys.length !== expectedFields.length ||
+    expectedFields.some((field) => {
+      const descriptor = descriptors[field];
+      return descriptor === undefined || !descriptor.enumerable || !("value" in descriptor);
+    })
+  ) {
+    fail("SIGNOFF_MISMATCH", "Invalid product definition interaction event fields");
+  }
+  const evaluatedAt = descriptors.evaluated_at?.value;
+  if (typeof evaluatedAt !== "string") fail("SIGNOFF_MISMATCH", "Invalid product definition interaction evaluation time");
+  if (eventType === "user-action") {
+    return Object.freeze({
+      type: eventType,
+      verified_interaction: descriptors.verified_interaction?.value as VerifiedProductDefinitionInteraction,
+      evaluated_at: evaluatedAt,
+    });
+  }
+  if (eventType === "view-change") {
+    return Object.freeze({
+      type: eventType,
+      display: snapshotProductDefinitionDisplay(descriptors.display?.value),
+      evaluated_at: evaluatedAt,
+    });
+  }
+  return Object.freeze({ type: eventType, evaluated_at: evaluatedAt });
+}
+
+export function reduceProductDefinitionInteractionState(
+  session: ProductDefinitionInteractionSession,
+  event: ProductDefinitionInteractionStateEvent,
+): ProductDefinitionInteractionState {
+  const record = interactionSessionRecords.get(session);
+  if (record === undefined) fail("SIGNOFF_MISMATCH", "A trusted product definition interaction session is required");
+  const eventSnapshot = snapshotProductDefinitionInteractionEvent(event);
+  const state = record.current_state;
+  const eventType = eventSnapshot.type;
+  const userActionEvent = eventSnapshot as Extract<ProductDefinitionInteractionStateEvent, { readonly type: "user-action" }>;
+  const viewChangeEvent = eventSnapshot as Extract<ProductDefinitionInteractionStateEvent, { readonly type: "view-change" }>;
+  const verifiedInteraction = eventType === "user-action" ? userActionEvent.verified_interaction : undefined;
+  if (
+    eventType === "user-action" &&
+    (
+      verifiedInteraction === undefined ||
+      verifiedInteractions.get(verifiedInteraction) === undefined ||
+      !sameJson(verifiedInteraction.display, record.verified_interaction.display) ||
+      !stateMatchesDisplay(state, verifiedInteraction.display)
+    )
+  ) {
+    fail("SIGNOFF_MISMATCH", "User action capability does not match the current product definition session");
+  }
+  if (state.status === "rejected" || state.status === "cancelled" || state.status === "expired" || state.status === "superseded") {
+    return state;
+  }
+  const evaluatedAt = parseTime(eventSnapshot.evaluated_at, "product definition interaction evaluation time");
+  if (evaluatedAt < parseTime(state.evaluated_at, "previous product definition interaction evaluation time")) {
+    fail("SIGNOFF_MISMATCH", "Product definition interaction events must be monotonic");
+  }
+  const transition = (status: ProductDefinitionInteractionStatus): ProductDefinitionInteractionState => {
+    const nextState = Object.freeze({ ...state, status, evaluated_at: eventSnapshot.evaluated_at });
+    record.current_state = nextState;
+    return nextState;
+  };
+  if (evaluatedAt >= parseTime(state.expires_at, "product definition signoff expiry")) {
+    return transition("expired");
+  }
+  if (eventType === "view-change") {
+    const display = viewChangeEvent.display;
+    if (evaluatedAt < parseTime(display.displayed_at, "changed product definition display time")) {
+      fail("SIGNOFF_MISMATCH", "A product definition view change cannot be evaluated before it is displayed");
+    }
+    return transition(stateMatchesDisplay(state, display) ? state.status : "superseded");
+  }
+  if (eventType === "evaluate") return transition(state.status);
+  const action = userActionEvent.verified_interaction.user_action;
+  if (evaluatedAt < parseTime(action.occurred_at, "product definition user action time")) {
+    fail("SIGNOFF_MISMATCH", "A product definition user action cannot be evaluated before it occurs");
+  }
+  if (action.user_action === "confirm") {
+    if (state.status === "confirmed") {
+      if (userActionEvent.verified_interaction !== record.verified_interaction) {
+        fail("SIGNOFF_MISMATCH", "Confirm action capability is not the current canonical replay");
+      }
+      return transition(state.status);
+    }
+    record.verified_interaction = userActionEvent.verified_interaction;
+    return transition("confirmed");
+  }
+  return transition(action.user_action === "reject" ? "rejected" : "cancelled");
 }
 
 export function signProductDefinition(
@@ -406,12 +725,15 @@ export function signProductDefinition(
   now: () => Date,
 ): SignedProductDefinition {
   const candidate = parseProductDefinitionCandidate(value);
-  if (verifiedInteractions.get(verified) === undefined || sessions.get(session) !== verified) fail("SIGNOFF_MISMATCH", "A matching runtime signoff capability is required");
+  const sessionRecord = interactionSessionRecords.get(session);
+  if (verifiedInteractions.get(verified) === undefined || sessionRecord === undefined || sessionRecord.verified_interaction !== verified) fail("SIGNOFF_MISMATCH", "A matching runtime signoff capability is required");
   const challenge = verified.display.challenge;
   const record = candidateRecord(candidate);
   if (verified.user_action.user_action !== "confirm" || challenge.product_definition_id !== candidate.product_definition_id || challenge.product_definition_digest !== digestJson(record) || challenge.full_display_digest !== digestJson(record) || challenge.frozen_requirement_id !== candidate.frozen_requirement.frozen_requirement_id || challenge.frozen_requirement_digest !== candidate.frozen_requirement_digest || challenge.project.repository_id !== candidate.frozen_requirement.project.repository_id || challenge.formal_baseline !== candidate.frozen_requirement.project.formal_baseline) fail("SIGNOFF_MISMATCH", "Signoff capability does not bind this complete product definition");
-  const nowTime = now().getTime();
-  if (Number.isNaN(nowTime) || nowTime >= parseTime(challenge.expires_at, "signoff expiry") || nowTime < parseTime(verified.user_action.occurred_at, "user action time")) fail("SIGNOFF_MISMATCH", "Signoff action is expired or not yet effective");
+  const nowValue = now();
+  const nowTime = nowValue instanceof Date ? nowValue.getTime() : Number.NaN;
+  const currentState = sessionRecord.current_state;
+  if (Number.isNaN(nowTime) || nowTime >= parseTime(challenge.expires_at, "signoff expiry") || nowTime < parseTime(verified.user_action.occurred_at, "user action time") || nowTime < parseTime(currentState.evaluated_at, "product definition interaction evaluation time") || currentState.status !== "confirmed" || !stateMatchesDisplay(currentState, verified.display)) fail("SIGNOFF_MISMATCH", "Product definition signoff is not the current confirmed state");
   return Object.freeze({ schema_version: "1.0" as const, record_type: "signed-product-definition" as const, status: "signed" as const, product_definition: record, product_definition_digest: digestJson(record), challenge, challenge_digest: digestJson(challenge), display: verified.display, display_digest: digestJson(verified.display), user_action: verified.user_action, user_action_digest: digestJson(verified.user_action), signed_at: verified.user_action.occurred_at });
 }
 

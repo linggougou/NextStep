@@ -1,0 +1,89 @@
+{
+  "fixture_type": "l3-regressions",
+  "evidence_scope": "manual-isolated consumer contract",
+  "expected": "reject",
+  "journey_replays": [
+    {
+      "id": "cross-source-start-complete-metric",
+      "expected": "reject",
+      "start_semantic_source": {
+        "pointer": "/requirement_set/items/1/values/0",
+        "value_digest": "sha256:82cf0601ab9846aaf170c08dc9c88da1d5f34bf20a974404736d997dcf6b9270"
+      },
+      "complete_semantic_source": {
+        "pointer": "/requirement_set/items/4/values/0",
+        "value_digest": "sha256:7d1be94c58be5b94702d68f544b42c1b8d259ce38abf2c23aae95d6aed54b438"
+      },
+      "metric_target": {
+        "pointer": "/requirement_set/items/4/values/0",
+        "value_digest": "sha256:7d1be94c58be5b94702d68f544b42c1b8d259ce38abf2c23aae95d6aed54b438"
+      }
+    }
+  ],
+  "role_replays": [
+    {
+      "id": "single-direct-scenario-collapses-core-roles",
+      "expected": "reject",
+      "direct_source": {
+        "pointer": "/requirement_set/items/2/values/0",
+        "value_digest": "sha256:f8266149d50e82803d3a3ecbc2e2b508b65281e6c56513c05ab2000fbfa90719"
+      },
+      "roles": ["problem", "target_users", "scenarios", "actor"]
+    }
+  ],
+  "signoff_replays": [
+    {
+      "id": "verified-reject-invalidates-confirmed-session",
+      "expected": "reject",
+      "expected_state": "rejected",
+      "event": {
+        "type": "user-action",
+        "action": "reject",
+        "user_action_id": "l3-product-reject",
+        "occurred_at": "2026-08-11T11:11:00.000Z",
+        "evaluated_at": "2026-08-11T11:11:01.000Z"
+      },
+      "sign_at": "2026-08-11T11:12:00.000Z"
+    },
+    {
+      "id": "verified-cancel-invalidates-confirmed-session",
+      "expected": "reject",
+      "expected_state": "cancelled",
+      "event": {
+        "type": "user-action",
+        "action": "cancel",
+        "user_action_id": "l3-product-cancel",
+        "occurred_at": "2026-08-11T11:12:00.000Z",
+        "evaluated_at": "2026-08-11T11:12:01.000Z"
+      },
+      "sign_at": "2026-08-11T11:13:00.000Z"
+    },
+    {
+      "id": "expiry-invalidates-confirmed-session",
+      "expected": "reject",
+      "expected_state": "expired",
+      "event": {
+        "type": "evaluate",
+        "evaluated_at": "2026-08-11T12:00:00.000Z"
+      },
+      "sign_at": "2026-08-11T12:00:00.000Z"
+    },
+    {
+      "id": "view-change-supersedes-confirmed-session",
+      "expected": "reject",
+      "expected_state": "superseded",
+      "event": {
+        "type": "view-change",
+        "display_id": "l3-replacement-product-display",
+        "displayed_at": "2026-08-11T11:13:00.000Z",
+        "evaluated_at": "2026-08-11T11:13:01.000Z"
+      },
+      "sign_at": "2026-08-11T11:14:00.000Z"
+    }
+  ],
+  "skill_stage_replay": {
+    "allowed_stage": "V1 / M1.1 / S1.3",
+    "required_command": "node dist/src/cli/product-definition.js",
+    "required_boundary": "manual-isolated consumer contract"
+  }
+}

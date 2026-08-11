@@ -1,5 +1,24 @@
 # Verification Report
 
+## 2026-08-11 P5 / V1 / M1.1 / S1.3 Generation 2 Attempt 7 本地候选验证
+
+- 控制身份：packet `ep-p5-v1-m1.1-s1.3-g2-a7-20260811` 的 RFC8785 双字段投影摘要重算为 `sha256:ff216e6340036a02e00a4b70676b2237cb39bfe5dfc42b70c82f5df0df0c9e88`；working parent 为 `b0189d06c9a5597ec794a279b33570b00b64d4b9`，formal baseline/ref 为 `a854fd4938b34ab24d88e72430be52b397c91096`，control 启动与收口均为 `563144c01aacdebdb6a5bc4b6b8a9102cc8faf4a`。
+- TDD：L3 replay 先产生 116 项中的 4 项 RED，精确复现跨 semantic_source 完成、direct 角色坍缩、旧会签没有 current-state reducer 和 Skill S1.3 入口缺失；最小 GREEN 后最终为 117/117。
+- 覆盖率与测试：`pnpm check` 通过，行 `90.91%`、分支 `82.04%`、函数 `98.20%`，均高于 80%。覆盖永久包含跨来源/重复转换、activity/result 状态标签、role-specific derived summary、pending/confirmed/rejected/cancelled/expired/superseded、单调时间、clone session、旧 session 和 view-change 的 replay。
+- Skill 与安全：官方 `quick_validate.py` 使用仅位于 `/tmp/nextstep-s1-3-skill-validate` 的 PyYAML 6.0.2 返回 `Skill is valid!`；官方 npm registry high audit 无已知漏洞。生产路径秘密/调试扫描无命中，stdin 仍无法携带 verifier/session/state/clock，保持 manual-isolated fail-closed 边界。
+- JSON 与范围：60 份适用 JSON 可解析；唯一排除的 `tests/fixtures/requirement-intake/empty-input.json` 是既有故意无效输入，由拒绝测试覆盖。12 个 tracked/untracked 改动均属于 packet allowlist；`git diff --check` 通过，受保护路线/计划、P3/P4/S4/产品/设计/架构真源、runtime/reviews、包管理与 TypeScript 配置均与 working parent 一致。
+- 不变性：formal/ref 仍为 `a854fd4938b34ab24d88e72430be52b397c91096`，control 仍为 `563144c01aacdebdb6a5bc4b6b8a9102cc8faf4a`，formal 是 HEAD 的祖先；未 push、未写 runtime/reviews 或 refs。
+- 审查评分：本地实现自检 `96/100`，建议 `candidate-ready`，P0=0、P1=0；该评分不是独立 L3 结论。
+- 当前结论：仅允许创建单父非 merge 候选提交并重新执行独立 CV、I/X/P 和 L3。不得宣称 PC-03、M1.1、V1、P5、Final Content Snapshot、最终复验或正式提升完成。
+
+## 2026-08-11 S1.3 Attempt 7 主管加固复验
+
+- 新增反证先后得到 117/118 与 118/120：可变 getter 事件能在 capability 检查后切换 payload；验证后的可变 reject replay 能改成 confirm；同一终态旧 display 可用不同 confirm action 建立新 session。
+- 修复后 120/120 全部通过。reducer 只消费一次性精确字段快照；verifier 消费深冻结 replay 快照；session 以 display 摘要唯一化，同 display 的 reject/cancel/expiry/superseded 终态不能由新 confirm replay 复活。
+- `pnpm check`：通过；覆盖率行 `90.84%`、分支 `82.21%`、函数 `98.25%`。官方 registry audit 无已知漏洞，官方 Skill validator 输出 `Skill is valid!`，适用 JSON 与 `git diff --check` 通过。
+- 工具替代：官方脚本没有 executable bit，直接调用返回 permission denied；使用隔离环境 Python 解释器运行同一 `quick_validate.py` 后通过，项目依赖未变化。
+- 结论：主管本地未发现剩余 P0/P1；开放文本质量继续由 I/X/P 检查，不扩张为确定性 NLP 裁决器。候选仍需固定身份、独立 CV、I/X/P 与 L3，不授权 Final Content Snapshot 或正式提升。
+
 ## 2026-08-11 P5 / V1 / M1.1 / S1.3 L3 审查
 
 - 固定身份：commit `c9071e7af70de7365b15f65c0f73e4f13106c176`、tree `ab32780e92b050c0b789f90f7d01c922bf95939c`、parent `c728816881aa403e6a980ba15b1bdbad75774006`、subject digest `sha256:fa55b62067eac90dc739565dba6f147b047054d3541f1f0fa213c6fa03541804` 均匹配，formal baseline 是候选祖先。
@@ -1608,6 +1627,24 @@
 - 执行自检评分：`93/100`，建议 `candidate-ready`；未发现 P0/P1 本地阻塞项。扣分仅反映尚未执行独立候选验证、I/X/P、L3、最终复验和正式提升。
 - 残余风险：fixture 仅证明 `manual-isolated consumer contract`，不证明真实用户动作、可信宿主适配器/探针或 `full` 支持；不包含 S1.4 载体/Profile 或 S1.5 正式真源写入。
 - 执行结论：`candidate-ready`，不构成 PC-03、M1.1、V1、P5 或任何阶段门禁结论。
+
+## 2026-08-11 S1.3 Generation 2 Attempt 7 嵌套 Display 重入 TDD 复核
+
+- 第二轮独立审查：外层 event Proxy 的陈旧状态路径已关闭；`view-change.display` 仍是未深快照引用，可在 reducer 捕获旧 `confirmed` 后通过嵌套 Proxy trap 重入 reject/cancel，再由外层写回非终态并签署。判定 `REVISE`，P0=0、P1=1。
+- RED：新增 confirmed session、嵌套 display Proxy、reject/cancel 双路径回归，旧实现 `pnpm test` 为 `121/122`，实际 `confirmed`、期望 `rejected`。
+- 修复：view-change display 在读取 `record.current_state` 之前完成 JSON 深快照、精确字段和关键类型验证；所有后续属性、摘要和时间操作只读取冻结普通数据。
+- GREEN：`pnpm test` 通过 `122/122`，失败、跳过、取消均为 `0`；`pnpm check` 通过，行/分支/函数覆盖率为 `90.78% / 82.02% / 98.26%`。修复后独立复核仍在进行，不构成 CV、I/X/P、L3 或阶段完成结论。
+- 不变性：formal `a854fd4938b34ab24d88e72430be52b397c91096` 与 control `563144c01aacdebdb6a5bc4b6b8a9102cc8faf4a` 未移动，候选未 amend。
+- 宿主状态：首次修复后独立复核因平台 HTTP 503 未开始，不构成通过或失败；已以新 Sol 身份重新派发同一只读审查。
+- 修复后独立复核：Godel/Sol `PASS`，P0=0、P1=0；指定安全回归 4/4 通过，确认 Proxy trap 重入终态不可复活、replay/session/canonical capability 无绕过。该结论不代表 CV、I/X/P、L3 或正式提升通过。
+
+## 2026-08-11 S1.3 Generation 2 Attempt 7 主管补丁 TDD 复核
+
+- 独立审查发现：Proxy 事件在 reducer 读取 session 状态后再做完整事件快照，快照 trap 可重入终态事件，外层调用会以陈旧状态覆盖 reject/cancel 并进入 signed capability 路径；判定 `REVISE`，P0=0、P1=1。
+- RED：永久回归覆盖 reject、cancel 两条重入路径；旧实现运行 `pnpm test` 为 `120/121`，实际状态 `confirmed`，期望分别为终态，形成可重复反证。
+- 修复：将 `snapshotProductDefinitionInteractionEvent(event)` 前移至 `record.current_state` 读取之前。事件快照结束后再读取当前状态，终态分支与签署检查因此消费最新 session 状态。
+- GREEN：修复后 `pnpm test` 通过 `121/121`，失败、跳过、取消均为 `0`；`pnpm build` 通过，新增 Proxy 重入回归通过。该结果仅为主管补丁验证，不是独立候选 CV、I/X/P、L3、PC-03、M1.1、V1 或 P5 完成。
+- 边界：修复后的 Plato 最终复核尚未返回；formal `a854fd4938b34ab24d88e72430be52b397c91096` 与 control `563144c01aacdebdb6a5bc4b6b8a9102cc8faf4a` 未移动。
 
 ## 2026-08-11 S1.3 Generation 2 Attempt 6 候选本地验证
 

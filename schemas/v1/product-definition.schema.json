@@ -107,10 +107,12 @@
     "journeyStep": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["sequence", "actor", "semantic_source", "action", "state_change", "outcome"],
+      "required": ["sequence", "actor", "activity", "result", "semantic_source", "action", "state_change", "outcome"],
       "properties": {
         "sequence": { "type": "integer", "minimum": 1 },
         "actor": { "$ref": "#/definitions/fact" },
+        "activity": { "$ref": "#/definitions/fact" },
+        "result": { "$ref": "#/definitions/fact" },
         "semantic_source": { "$ref": "#/definitions/source" },
         "action": { "enum": ["start", "complete"] },
         "state_change": { "$ref": "#/definitions/journeyStateChange" },
