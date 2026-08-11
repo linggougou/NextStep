@@ -1,5 +1,14 @@
 # Operations Log
 
+## 2026-08-11 P5 / V1 / M1.1 / S1.3 L3 退回与 Attempt 7 入口
+
+- 固定候选 `c9071e7af70de7365b15f65c0f73e4f13106c176` 的 CV attempt 5 与 I/X/P attempt 4 均通过；结果摘要分别为 `sha256:569aece8419187b768d9f52f55ca79192ea88cbeb4953da5eeb140e8b70f9701`、`sha256:b28537701e35729e0868524d917090bd765d9b61ce992c0ba57849e851224846`，已分笔 expected-old CAS 写入 control。
+- L3 packet `sha256:609d6df7e4de29af9e49da289f86c21bd1d4fc6a25cf09314599adaa17933047` 经 packet、dispatch-ready、outbox、fence 34 claim 和 ack 顺序派发给全新 Sol 审查者；审查结论 `REVISE / 72`，P0 = 0、P1 = 4、P2 = 1。
+- 四项 P1：旅程状态可跨 `semantic_source` 借用形成伪完成；cancel/view-change 后旧 confirm session 仍可签署；产品角色及动作/结果语义坍缩；Skill 与项目阶段入口未同步。官方 Skill validator 在 L3 中为 skipped，不作为独立通过证据。
+- L3 结果摘要 `sha256:c78b360fc88098d006ac9a2ee0539ed229167d339a156e89ccf8d98559ed06e4` 已以 `gate-returned` 写入 control commit `1d0d33c0d524820210ff6fae2e5241475573d779`。Final Content Snapshot、最终复验、Credential、Audit Anchor、Anchor Proof 和 formal CAS 均未启动。
+- 审查任务首次长时间无返回，主管关闭并恢复同一 Agent ID、同一 packet/claim/fence 后取得结论；未创建第二个 L3 身份。审查者报告一次 cwd 偏差可能刷新 ignored `dist/node_modules`，tracked/index 复核无差异，未移动 ref。
+- 生命周期与分流：属于 S1.3 当前阶段缺口，不改变已会签产品、技术栈、DoD 或验收门禁；同 generation 2 建立 execution attempt 7。下一步先固定可执行负例与 Skill/阶段入口，再修复三条领域绕过并重新走 CV、I/X/P 和 L3。
+
 ## 2026-08-11 P5 / V1 / M1.1 / S1.2 Generation 2 Attempt 2 本地候选
 
 - 双前置结果已以 expected-old CAS 写入 control：候选验证 `退回`，P0 = 0、P1 = 1；I/X/P 为三项通过，P0/P1 = 0。未知或可变 `event.type` 可绕过 capability 校验，因此 L3 未启动。

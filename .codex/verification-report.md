@@ -1,5 +1,14 @@
 # Verification Report
 
+## 2026-08-11 P5 / V1 / M1.1 / S1.3 L3 审查
+
+- 固定身份：commit `c9071e7af70de7365b15f65c0f73e4f13106c176`、tree `ab32780e92b050c0b789f90f7d01c922bf95939c`、parent `c728816881aa403e6a980ba15b1bdbad75774006`、subject digest `sha256:fa55b62067eac90dc739565dba6f147b047054d3541f1f0fa213c6fa03541804` 均匹配，formal baseline 是候选祖先。
+- 前置门禁：CV 与 I/X/P 固定结果均通过且摘要复算匹配；L3 重新运行 `pnpm check` 通过 113/113，覆盖率行 90.97%、分支 82.87%、函数 98.11%，13 条 changed paths 均在 allowlist 内。
+- 反证失败：跨 `semantic_source` 的 start/complete 被错误视为连续完成；confirm 后 cancel 或新 display 未使旧 session 失效；同一 direct fact 可承担 problem、target user、scenario 与 actor 多角色；Skill frontmatter/阶段守卫和项目阶段状态不一致。
+- 独立 Skill validator：L3 未完成，记录为 skipped；不得用 CV 的上游声明替代本轮独立证据。
+- 审查评分：Verifier `REVISE`，Strict Judge `72`，Anti-Slop `64`，Chief Reviewer `72`；综合 `REVISE / 72`，P0 = 0、P1 = 4、P2 = 1。
+- 门禁结论：退回。不得进入 Final Content Snapshot；不得生成最终复验凭证、审计锚、Anchor Proof 或移动 formal ref。新候选必须重新执行 CV、I/X/P、Skill validator 和 L3。
+
 ## 2026-08-11 P5 / V1 / M1.1 / S1.2 Generation 2 Attempt 2 候选前验证
 
 - 控制身份：packet `ep-p5-v1-m1.1-s1.2-g2-a2-20260811`，digest `sha256:284fa8f390d9dd694d6c9b65d0e08120489a9861f8d704203c946eac847490fe`，dedup `sha256:fa28d92bc7d89ca127b1cc11f69c99f4cad75c95222da152ddb7abf7461c01a7`，fence `17`；formal baseline 保持 `8ffaf658e112a5ba26a9f83882f5f71f1ae79454`。
