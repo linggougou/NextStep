@@ -1534,3 +1534,13 @@
 - 主管复核：credential 原始 SHA-256、JCS 字节、文件名、字段绑定、权限、snapshot/formal/control 身份和主工作树 clean 通过。首次字段脚本误查 `baseline_oid`，按既有 credential 契约改为 `expected_formal_oid` 后通过；未修改凭证。
 - 凭证边界：credential 的 `host_task_id` 显式为 null，宿主绑定由 result envelope、claim、fence 和 dispatch-ack 提供；其余冻结字段完整。保留该差异为透明证据，不影响本次最终复验结论。
 - 当前状态：准备 Audit Anchor；只允许追加本日志、验证报告和专属 review 路径，不得修改 Final Content Snapshot 的业务/真源子树。
+
+## 2026-08-11 P5 / V1 / M1.1 / S1.2 Anchor Proof 与正式提升
+
+- Audit Anchor：commit `a854fd4938b34ab24d88e72430be52b397c91096`，tree `0f4a1f475ad3e7eaa372ce5972e9d59fa4ddd0c5`，父提交精确为 Final Content Snapshot；anchor digest 为 `sha256:c8178fab81b0137b3ec61d9462a620a18009cf1e0162466adb7c81a02577b8b5`。
+- 控制链：Anchor Verification packet、dispatch-ready、outbox、fence 22 claim 与 Turing dispatch-ack 分别使用唯一临时 index 和 expected-old CAS 持久化；临时 index 保留，未执行清理或破坏性命令。
+- Anchor Proof：`evidence:anchor-proof-edb6c3fcd59a5c5a32f665ad99d6d5149037c9c0725491d2819ad14a7b9c441c.json`，摘要 `sha256:edb6c3fcd59a5c5a32f665ad99d6d5149037c9c0725491d2819ad14a7b9c441c`，2587 字节；项目外 create-once、hard-link no-replace、fsync、0700/0600 通过。
+- 主管复核：proof 原始 SHA-256、JCS、文件名、packet/dedup、claim/fence/host、anchor/final-result、credential、父链、三条白名单和 181 条受保护清单共 17 项全部通过；tracked 工作树保持 clean。
+- Anchor Verification Result：结论“通过”，摘要 `sha256:9d206a0ad74f6c01eeca38c689332f5be152d15856f5c08dbe7585a57f30a48b`，已写入 control。
+- formal promotion：`refs/nextstep/formal` 以 expected-old CAS 从 `8ffaf658e112a5ba26a9f83882f5f71f1ae79454` 快进到 `a854fd4938b34ab24d88e72430be52b397c91096`；promotion digest 为 `sha256:20d52cf0af4434e9621166dd4f49a3c91804c927723ccb4cfdee84f545bd049a`，最终 control OID 为 `169cda7d907f714ade6357ca28f24af530bb163d`。
+- 阶段判断：S1.2 正式提升完成；对应 PC-02 已取得正式运行证据，但 M1.1、V1 和 P5 仍未完成。S1.3 尚未生成真实任务包、未编码。

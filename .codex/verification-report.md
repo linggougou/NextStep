@@ -1572,6 +1572,17 @@
 - 不变性：隔离副本 snapshot tree 未变；主项目在复验期间保持 clean，formal ref 未移动，control 仅由主管 expected-old CAS 推进。
 - 下一门禁：从快照后白名单追加提交生成 Audit Anchor，派发独立 Anchor Proof 验证；证明通过后才允许 formal ref CAS。
 
+## 2026-08-11 P5 / V1 / M1.1 / S1.2 Anchor Proof 与 Formal Promotion 验证
+
+- Anchor 身份：commit `a854fd4938b34ab24d88e72430be52b397c91096`、tree `0f4a1f475ad3e7eaa372ce5972e9d59fa4ddd0c5`、digest `sha256:c8178fab81b0137b3ec61d9462a620a18009cf1e0162466adb7c81a02577b8b5`；唯一父提交为 `8e5b3d7009736a759761af1a9633d2e9d2f1b2ba`，expected formal 为其祖先。
+- 白名单与清单：anchor 相对 snapshot 恰好修改 `.codex/operations-log.md`、专属 `final-verification.json` 和 `.codex/verification-report.md`；snapshot/anchor 各 181 条受保护 `git ls-tree` 原始清单摘要均为 `sha256:c9f18c307d49382cc99aae2ea1e352cb4c3485a45fd77e35f20805c9813192f2`。
+- Proof：独立 Luna/Turing 结论“通过”；proof 摘要 `sha256:edb6c3fcd59a5c5a32f665ad99d6d5149037c9c0725491d2819ad14a7b9c441c`、2587 字节。主管复算原始 SHA、JCS、文件名、字段绑定、credential 3247 字节和 0700/0600 权限全部通过。
+- Result 与 promotion：Anchor Verification Result 摘要 `sha256:9d206a0ad74f6c01eeca38c689332f5be152d15856f5c08dbe7585a57f30a48b`；formal promotion 摘要 `sha256:20d52cf0af4434e9621166dd4f49a3c91804c927723ccb4cfdee84f545bd049a`。
+- CAS：`refs/nextstep/formal` 从 `8ffaf658e112a5ba26a9f83882f5f71f1ae79454` 快进为 `a854fd4938b34ab24d88e72430be52b397c91096`；promotion control CAS 后 `refs/nextstep/control=169cda7d907f714ade6357ca28f24af530bb163d`。
+- 收口复验：`pnpm check` 再次通过 99/99，覆盖率行 90.02%、分支 83.67%、函数 97.66%；174 份 runtime JSON 可解析，`git diff --check`、摘要一致性与 refs 祖先检查通过。
+- 审查结论：`通过 / 97`。P0 = 0，P1 = 0；S1.2 正式门禁通过。fixture 仍只证明 `manual-isolated consumer contract`，不证明真实 trusted-host adapter、真实用户动作探针或 `full` 支持。
+- 阶段边界：允许单独为 S1.3 建立真实任务包，但尚未进入 S1.3；M1.1、V1 和 P5 不得宣称完成。
+
 ## 2026-08-10 P5 / V1 / M1.1 / S1.2 Attempt 2 CLI 回归候选本地验证
 
 - RED/GREEN：先加入导出的、可注入 `ConfirmationExecutionContext` 的 runner 正例；在生产实现前 `pnpm test` 因缺少 `runRequirementFreeze` 导出而 RED。最小修复后 `pnpm check` 通过 `96/96`，覆盖率行 `90.09%`、分支 `83.43%`、函数 `97.58%`。
