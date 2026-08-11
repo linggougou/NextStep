@@ -52,12 +52,32 @@
     "metric": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["metric", "target", "evidence_method", "semantic_source"],
+      "required": ["measurement", "target", "evidence"],
       "properties": {
-        "metric": { "$ref": "#/definitions/fact" },
-        "target": { "$ref": "#/definitions/fact" },
-        "evidence_method": { "$ref": "#/definitions/fact" },
-        "semantic_source": { "$ref": "#/definitions/source" }
+        "measurement": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": { "kind": { "const": "completion-transition" } }
+        },
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["semantic_source", "required_state"],
+          "properties": {
+            "semantic_source": { "$ref": "#/definitions/source" },
+            "required_state": { "const": "completed" }
+          }
+        },
+        "evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["journey_sequence", "transition_digest"],
+          "properties": {
+            "journey_sequence": { "type": "integer", "minimum": 1 },
+            "transition_digest": { "$ref": "#/definitions/digest" }
+          }
+        }
       }
     },
     "prd": {
@@ -80,20 +100,21 @@
       "additionalProperties": false,
       "required": ["from", "to"],
       "properties": {
-        "from": { "$ref": "#/definitions/fact" },
-        "to": { "$ref": "#/definitions/fact" }
+        "from": { "enum": ["not-started", "in-progress", "completed"] },
+        "to": { "enum": ["not-started", "in-progress", "completed"] }
       }
     },
     "journeyStep": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["sequence", "actor", "action", "state_change", "outcome"],
+      "required": ["sequence", "actor", "semantic_source", "action", "state_change", "outcome"],
       "properties": {
         "sequence": { "type": "integer", "minimum": 1 },
         "actor": { "$ref": "#/definitions/fact" },
-        "action": { "$ref": "#/definitions/fact" },
+        "semantic_source": { "$ref": "#/definitions/source" },
+        "action": { "enum": ["start", "complete"] },
         "state_change": { "$ref": "#/definitions/journeyStateChange" },
-        "outcome": { "$ref": "#/definitions/fact" }
+        "outcome": { "enum": ["not-started", "in-progress", "completed"] }
       }
     },
     "journey": { "type": "object", "additionalProperties": false, "required": ["product_definition_id", "steps"], "properties": { "product_definition_id": { "type": "string", "minLength": 1 }, "steps": { "type": "array", "minItems": 1, "items": { "$ref": "#/definitions/journeyStep" } } } },

@@ -1,19 +1,11 @@
 {
   "fixture_type": "journey-action-missing",
   "expected": "reject",
-  "steps": [
-    {
-      "sequence": 1,
-      "actor": {
-        "kind": "direct",
-        "value": "社区志愿者",
-        "source": {
-          "pointer": "/requirement_set/items/2/values/0",
-          "value_digest": "sha256:f8266149d50e82803d3a3ecbc2e2b508b65281e6c56513c05ab2000fbfa90719"
-        }
-      },
-      "state_change": {
-        "from": {
+  "bypasses": {
+    "no_op_action": [
+      {
+        "sequence": 1,
+        "actor": {
           "kind": "direct",
           "value": "社区志愿者",
           "source": {
@@ -21,23 +13,63 @@
             "value_digest": "sha256:f8266149d50e82803d3a3ecbc2e2b508b65281e6c56513c05ab2000fbfa90719"
           }
         },
-        "to": {
+        "semantic_source": {
+          "pointer": "/requirement_set/items/1/values/0",
+          "value_digest": "sha256:82cf0601ab9846aaf170c08dc9c88da1d5f34bf20a974404736d997dcf6b9270"
+        },
+        "action": "complete",
+        "state_change": {
+          "from": "not-started",
+          "to": "in-progress"
+        },
+        "outcome": "in-progress"
+      }
+    ],
+    "arbitrary_states": [
+      {
+        "sequence": 1,
+        "actor": {
           "kind": "direct",
           "value": "社区志愿者",
           "source": {
             "pointer": "/requirement_set/items/2/values/0",
             "value_digest": "sha256:f8266149d50e82803d3a3ecbc2e2b508b65281e6c56513c05ab2000fbfa90719"
           }
-        }
-      },
-      "outcome": {
-        "kind": "direct",
-        "value": "社区志愿者",
-        "source": {
-          "pointer": "/requirement_set/items/2/values/0",
-          "value_digest": "sha256:f8266149d50e82803d3a3ecbc2e2b508b65281e6c56513c05ab2000fbfa90719"
-        }
+        },
+        "semantic_source": {
+          "pointer": "/requirement_set/items/1/values/0",
+          "value_digest": "sha256:82cf0601ab9846aaf170c08dc9c88da1d5f34bf20a974404736d997dcf6b9270"
+        },
+        "action": "start",
+        "state_change": {
+          "from": "A",
+          "to": "B"
+        },
+        "outcome": "B"
       }
-    }
-  ]
+    ],
+    "useless_outcome": [
+      {
+        "sequence": 1,
+        "actor": {
+          "kind": "direct",
+          "value": "社区志愿者",
+          "source": {
+            "pointer": "/requirement_set/items/2/values/0",
+            "value_digest": "sha256:f8266149d50e82803d3a3ecbc2e2b508b65281e6c56513c05ab2000fbfa90719"
+          }
+        },
+        "semantic_source": {
+          "pointer": "/requirement_set/items/1/values/0",
+          "value_digest": "sha256:82cf0601ab9846aaf170c08dc9c88da1d5f34bf20a974404736d997dcf6b9270"
+        },
+        "action": "start",
+        "state_change": {
+          "from": "not-started",
+          "to": "in-progress"
+        },
+        "outcome": "not-started"
+      }
+    ]
+  }
 }

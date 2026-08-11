@@ -27,24 +27,27 @@ export interface DerivedProductFact {
 
 export type ProductFact = DirectProductFact | DerivedProductFact;
 
+export type ProductJourneyAction = "start" | "complete";
+export type ProductJourneyState = "not-started" | "in-progress" | "completed";
+
 export interface ProductMetric {
-  readonly metric: ProductFact;
-  readonly target: ProductFact;
-  readonly evidence_method: ProductFact;
-  readonly semantic_source: ProductSourceRef;
+  readonly measurement: { readonly kind: "completion-transition" };
+  readonly target: { readonly semantic_source: ProductSourceRef; readonly required_state: "completed" };
+  readonly evidence: { readonly journey_sequence: number; readonly transition_digest: Sha256Digest };
 }
 
 export interface ProductJourneyStateChange {
-  readonly from: ProductFact;
-  readonly to: ProductFact;
+  readonly from: ProductJourneyState;
+  readonly to: ProductJourneyState;
 }
 
 export interface ProductJourneyStep {
   readonly sequence: number;
   readonly actor: ProductFact;
-  readonly action: ProductFact;
+  readonly semantic_source: ProductSourceRef;
+  readonly action: ProductJourneyAction;
   readonly state_change: ProductJourneyStateChange;
-  readonly outcome: ProductFact;
+  readonly outcome: ProductJourneyState;
 }
 
 export interface ProductDefinitionCandidate {
@@ -229,72 +232,59 @@ function assertFacts(frozen: FrozenRequirement, value: unknown, label: string, a
   for (const fact of value) assertFact(frozen, fact, allowedFields);
 }
 
-function sourceRefsForFact(value: ProductFact): readonly ProductSourceRef[] {
-  return value.kind === "direct" ? [value.source] : value.source_refs;
-}
-
 function sourceRefsMatch(left: ProductSourceRef, right: ProductSourceRef): boolean {
   return left.pointer === right.pointer && left.value_digest === right.value_digest;
 }
 
-function assertFactSupportsSemanticSource(
-  frozen: FrozenRequirement,
-  value: unknown,
-  semanticSource: ProductSourceRef,
-  allowedFields: readonly string[],
-  label: string,
-): asserts value is ProductFact {
-  assertFact(frozen, value, allowedFields);
-  assertSourceRef(frozen, semanticSource, allowedFields);
-  if (!sourceRefsForFact(value).some((sourceRef) => sourceRefsMatch(sourceRef, semanticSource))) {
-    fail("SOURCE_BINDING_MISMATCH", `${label} must retain its semantic source`);
-  }
-  if (value.kind === "derived") {
-    const source = resolveRequirementSource(frozen, semanticSource.pointer);
-    if (!value.value.includes(source.value) || !value.derivation_summary.includes(source.value)) {
-      fail("SOURCE_BINDING_MISMATCH", `${label} derivation must identify its semantic source`);
-    }
-  }
+export function digestProductJourneyTransition(productDefinitionId: string, step: ProductJourneyStep): Sha256Digest {
+  return digestJson({
+    product_definition_id: productDefinitionId,
+    sequence: step.sequence,
+    semantic_source: step.semantic_source,
+    action: step.action,
+    state_change: step.state_change,
+    outcome: step.outcome,
+  });
 }
 
-function assertMetrics(frozen: FrozenRequirement, value: unknown): void {
+function assertMetrics(frozen: FrozenRequirement, value: unknown, productDefinitionId: string, steps: readonly ProductJourneyStep[]): void {
   if (!Array.isArray(value) || value.length === 0) fail("INVALID_PRODUCT_DEFINITION", "success_metrics is required");
   for (const metric of value) {
-    if (!isPlainRecord(metric) || !isPlainRecord(metric.semantic_source)) {
-      fail("INVALID_PRODUCT_DEFINITION", "Success metric must include a semantic source");
+    if (!isPlainRecord(metric) || !isPlainRecord(metric.measurement) || !isPlainRecord(metric.target) || !isPlainRecord(metric.evidence)) {
+      fail("INVALID_PRODUCT_DEFINITION", "Success metric must include controlled measurement, target, and evidence");
     }
-    const semanticSource = metric.semantic_source as unknown as ProductSourceRef;
-    assertFactSupportsSemanticSource(frozen, metric.metric, semanticSource, ["goals", "expected_outputs"], "Metric");
-    assertFactSupportsSemanticSource(frozen, metric.target, semanticSource, ["goals", "expected_outputs"], "Metric target");
-    assertFactSupportsSemanticSource(frozen, metric.evidence_method, semanticSource, ["goals", "expected_outputs"], "Metric evidence method");
+    const measurement = metric.measurement as Record<string, unknown>;
+    const target = metric.target as Record<string, unknown>;
+    const evidence = metric.evidence as Record<string, unknown>;
+    if (measurement.kind !== "completion-transition" || target.required_state !== "completed" || !isPlainRecord(target.semantic_source) || !Number.isInteger(evidence.journey_sequence) || typeof evidence.transition_digest !== "string") {
+      fail("INVALID_PRODUCT_DEFINITION", "Invalid controlled success metric");
+    }
+    const semanticSource = target.semantic_source as unknown as ProductSourceRef;
+    assertSourceRef(frozen, semanticSource, ["goals", "expected_outputs"]);
+    const step = steps.find((candidate) => candidate.sequence === evidence.journey_sequence);
+    if (step === undefined || step.state_change.to !== "completed" || step.outcome !== "completed" || !sourceRefsMatch(step.semantic_source, semanticSource) || digestProductJourneyTransition(productDefinitionId, step) !== evidence.transition_digest) {
+      fail("SOURCE_BINDING_MISMATCH", "Metric evidence must bind the matching completed journey transition");
+    }
   }
 }
 
-function assertJourneySteps(frozen: FrozenRequirement, value: unknown): void {
+function assertJourneySteps(frozen: FrozenRequirement, value: unknown): asserts value is readonly ProductJourneyStep[] {
   if (!Array.isArray(value) || value.length === 0) fail("INVALID_PRODUCT_DEFINITION", "journey steps is required");
+  let previousState: ProductJourneyState | undefined;
   for (const [index, step] of value.entries()) {
-    if (!isPlainRecord(step) || step.sequence !== index + 1 || !isPlainRecord(step.state_change)) {
+    if (!isPlainRecord(step) || step.sequence !== index + 1 || !isPlainRecord(step.state_change) || !isPlainRecord(step.semantic_source)) {
       fail("INVALID_PRODUCT_DEFINITION", "Journey steps must be ordered and include a state change");
     }
     assertFact(frozen, step.actor, ["scenarios"]);
-    assertFact(frozen, step.action, ["goals", "expected_outputs"]);
     const stateChange = step.state_change as Record<string, unknown>;
-    assertFact(frozen, stateChange.from, ["goals", "expected_outputs"]);
-    assertFact(frozen, stateChange.to, ["goals", "expected_outputs"]);
-    assertFact(frozen, step.outcome, ["goals", "expected_outputs"]);
-    if ((stateChange.from as ProductFact).value === (stateChange.to as ProductFact).value) {
-      fail("INVALID_PRODUCT_DEFINITION", "Journey state change must change state");
+    assertSourceRef(frozen, step.semantic_source, ["goals", "expected_outputs"]);
+    if ((step.action !== "start" || stateChange.from !== "not-started" || stateChange.to !== "in-progress") && (step.action !== "complete" || stateChange.from !== "in-progress" || stateChange.to !== "completed")) {
+      fail("INVALID_PRODUCT_DEFINITION", "Journey action must make a legal state transition");
     }
-    const commonSource = sourceRefsForFact(step.action as ProductFact).find((sourceRef) => (
-      sourceRefsForFact(stateChange.from as ProductFact).some((candidate) => sourceRefsMatch(candidate, sourceRef))
-      && sourceRefsForFact(stateChange.to as ProductFact).some((candidate) => sourceRefsMatch(candidate, sourceRef))
-      && sourceRefsForFact(step.outcome as ProductFact).some((candidate) => sourceRefsMatch(candidate, sourceRef))
-    ));
-    if (commonSource === undefined) fail("SOURCE_BINDING_MISMATCH", "Journey action, state change, and outcome must share one semantic source");
-    assertFactSupportsSemanticSource(frozen, step.action, commonSource, ["goals", "expected_outputs"], "Journey action");
-    assertFactSupportsSemanticSource(frozen, stateChange.from, commonSource, ["goals", "expected_outputs"], "Journey state before");
-    assertFactSupportsSemanticSource(frozen, stateChange.to, commonSource, ["goals", "expected_outputs"], "Journey state after");
-    assertFactSupportsSemanticSource(frozen, step.outcome, commonSource, ["goals", "expected_outputs"], "Journey outcome");
+    if ((index === 0 && stateChange.from !== "not-started") || (index > 0 && stateChange.from !== previousState) || step.outcome !== stateChange.to) {
+      fail("INVALID_PRODUCT_DEFINITION", "Journey states must be continuous and outcome must equal the target state");
+    }
+    previousState = stateChange.to as ProductJourneyState;
   }
 }
 
@@ -337,11 +327,11 @@ export function parseProductDefinitionCandidate(value: unknown): ProductDefiniti
   assertFacts(frozen, prd.scenarios, "scenarios", ["scenarios"]);
   assertFacts(frozen, prd.scope, "scope", ["goals", "expected_outputs", "constraints"]);
   assertFacts(frozen, prd.non_goals, "non_goals", ["non_goal_gaps", "constraints"]);
-  assertMetrics(frozen, prd.success_metrics);
   const journey = candidateInput.user_journey as Record<string, unknown>;
   const capabilityMap = candidateInput.capability_map as Record<string, unknown>;
   if (journey.product_definition_id !== candidateInput.product_definition_id || capabilityMap.product_definition_id !== candidateInput.product_definition_id) fail("INVALID_PRODUCT_DEFINITION", "Journey and capability map must reference the product definition");
   assertJourneySteps(frozen, journey.steps);
+  assertMetrics(frozen, prd.success_metrics, candidateInput.product_definition_id as string, journey.steps);
   assertFacts(frozen, capabilityMap.capabilities, "capabilities", ["goals", "expected_outputs"]);
   return Object.freeze({ ...(candidateInput as unknown as Omit<ProductDefinitionCandidate, "status">), frozen_requirement: frozen, status: "ready-for-signoff" as const });
 }

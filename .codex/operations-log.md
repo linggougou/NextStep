@@ -1596,3 +1596,19 @@
 - GREEN：`pnpm test` 通过 `113/113`；`pnpm check` 通过，覆盖率为行 `90.90%`、分支 `82.39%`、函数 `98.17%`。
 - 外围验证：JSON、官方 Skill validator、官方 registry 高危 audit、`git diff --check`、正式生产路径秘密/调试扫描、formal ancestor、allowlist 与受保护路线/管理面/runtime/reviews/refs 不变性均通过。`git fsck --strict` 退出成功，报告的悬挂对象为既有仓库对象且未由本轮写入。
 - 状态：本地候选验证材料已收口，待创建单父非 merge 候选提交；未执行独立候选验证、交互/产品评估、独立审查、最终复验或正式提升。
+
+## 2026-08-11 P5 / V1 / M1.1 / S1.3 Generation 2 Attempt 6 启动与 RED
+
+- 控制身份：唯一有效任务包为 `ep-p5-v1-m1.1-s1.3-g2-a6-20260811`，RFC 8785 双字段投影复算摘要为 `sha256:397afc29e726c96d1b133b26116cd9adefb0ebbe0d6324a4780b402bc1503d9b`；任务包与 `msg-dispatch-ready-s1.3-g2-a6-20260811` 的 dedup key 同为 `sha256:94eeeed96244891ac36e67d03d44263b1118357f6955fc47ec37d4b0e73ed9f6`，claim/fence 为 `claim-s1.3-g2-a6-f32-20260811` / `32`。
+- 启动检查：HEAD 精确为工作父 `c728816881aa403e6a980ba15b1bdbad75774006`，tracked 工作树干净，formal baseline `a854fd4938b34ab24d88e72430be52b397c91096` 是祖先；仅使用 a6 allowlist，runtime/reviews/refs、路线/计划和已会签上游只读。
+- RED：先扩展两份磁盘负例并实际回放。`pnpm test` 为 `111/113`，指标用例因 direct goal 同时充当 metric/target/evidence、以及带目标词的无关记录均被接受而失败；旅程用例因 no-op action、任意 A/B 状态和无用 outcome 均被接受而失败。两个失败均为 `Missing expected exception (ProductDefinitionError)`。
+- 状态：仅以受控 measurement/target/evidence、动作/状态枚举和完成转换摘要交叉引用做最小 GREEN；不引入关键词黑名单或自然语言裁决。
+
+## 2026-08-11 P5 / V1 / M1.1 / S1.3 Generation 2 Attempt 6 GREEN 与候选本地验证
+
+- 最小实现：成功指标仅接受 `measurement.kind = completion-transition`、绑定 goals/expected_outputs 来源的 `target.required_state = completed`、以及指向旅程序号和转换摘要的 `evidence`。指标证据必须解析到同一产品定义、同一来源的 completed 转换，开放事实文本不再参与判断。
+- 状态机：旅程步骤只接受 `start` 与 `complete`；分别限定为 `not-started -> in-progress` 与 `in-progress -> completed`，后续步骤连续，`outcome` 精确等于 `to`。actor 仍受场景来源约束，semantic source 仍受目标/期望输出来源约束。
+- Fixture：community workshop、expense reminder、project delivery 的独立完整候选迁移到两步状态机，三者各自的 evidence 绑定第二个 completed 转换摘要。两份磁盘负例回放 direct goal 三重复用、带目标词无关 evidence、no-op action、任意状态和无用 outcome。
+- GREEN：`pnpm test` 通过 `113/113`；`pnpm check` 通过，覆盖率为行 `90.97%`、分支 `82.87%`、函数 `98.11%`。
+- 外围验证：JSON、官方 Skill validator、官方 registry 高危 audit、`git diff --check`、生产路径秘密/调试扫描、formal ancestor、allowlist 和受保护上游/runtime/reviews/refs 反扫均通过；本轮仅观察 formal/control refs，未写入。
+- 状态：本地候选验证材料已收口，待创建单父非 merge 候选提交；未执行独立候选验证、交互/产品评估、独立审查、最终复验或正式提升。

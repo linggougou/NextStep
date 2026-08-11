@@ -1600,6 +1600,15 @@
 - 残余风险：fixture 仅证明 `manual-isolated consumer contract`，不证明真实用户动作、可信宿主适配器/探针或 `full` 支持；不包含 S1.4 载体/Profile 或 S1.5 正式真源写入。
 - 执行结论：`candidate-ready`，不构成 PC-03、M1.1、V1、P5 或任何阶段门禁结论。
 
+## 2026-08-11 S1.3 Generation 2 Attempt 6 候选本地验证
+
+- 范围与身份：工作父为 `c728816881aa403e6a980ba15b1bdbad75774006`，formal baseline 为 `a854fd4938b34ab24d88e72430be52b397c91096`；a6 packet 的 RFC 8785 双字段投影摘要复算为 `sha256:397afc29e726c96d1b133b26116cd9adefb0ebbe0d6324a4780b402bc1503d9b`，packet 与 dispatch-ready 的 dedup key 一致。
+- RED/GREEN：磁盘绕过先使 `pnpm test` 为 `111/113`，证明旧实现接受 direct goal 三重复用、带目标词的无关记录、no-op action、任意 A/B 状态和无用 outcome。受控结构替换后 `pnpm test` 通过 `113/113`，`pnpm check` 通过，行/分支/函数覆盖率为 `90.97% / 82.87% / 98.11%`。
+- 行为复验：指标仅有 completion-transition 测量、completed 目标及完成转换证据；evidence 以序号和摘要绑定同一来源的 completed 步骤。旅程只允许 start/complete 两次连续推进，outcome 必须等于 to。三份独立正例和两份磁盘负例均实际加载回放；ID、来源角色、direct/derived、会签、恢复、CLI/JCS 回执保持回归。
+- 外围验证：JSON、Skill、官方 npm registry 高危 audit、`git diff --check`、生产路径秘密/调试扫描、allowlist、formal ancestor 和受保护上游/runtime/reviews/refs 不变性通过；未修改机器回执模块/Schema、路线/计划、包管理或 TypeScript 配置。
+- 执行自检：`96/100`，建议 `candidate-ready`；扣分仅为独立候选验证、交互/产品评估、独立审查、最终复验和正式提升尚未执行。
+- 残余风险与边界：模型通过受控字段和摘要交叉引用保证结构与身份，不进行开放自然语言语义裁决；fixture 仅证明 `manual-isolated consumer contract`，不证明真实宿主适配、真实用户动作探针或 `full` 支持。未进入 S1.4/S1.5。
+
 ## 2026-08-11 S1.3 Generation 2 Attempt 5 候选本地验证
 
 - 范围与身份：工作父为 `4ddd3aff6c230fd4b99a9890110686caecd02296`，formal baseline 为 `a854fd4938b34ab24d88e72430be52b397c91096`；a5 packet 的 RFC 8785 双字段投影摘要复算为 `sha256:26bc296bd038d4e52ed797348d85a11d551cf955d8b6087ef82374695ef8b5ee`，dedup key 为 `sha256:e057c764fa4a3687574eadbb45e4f4b81acdd675bec637c0bc0e64dfcbad11a1`。

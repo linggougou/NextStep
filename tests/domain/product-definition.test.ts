@@ -11,6 +11,7 @@ import {
   createProductDefinitionSignoffChallenge,
   createUnverifiedProductDefinitionDisplay,
   createUnverifiedProductDefinitionUserAction,
+  digestProductJourneyTransition,
   deriveProductDefinitionId,
   parseProductDefinitionCandidate,
   recoverSignedProductDefinition,
@@ -80,7 +81,7 @@ function fact(frozen: ReturnType<typeof frozenRequirement>, pointer: string) {
   const tokens = pointer.slice(1).split("/").map((token) => token.replaceAll("~1", "/").replaceAll("~0", "~"));
   let value: unknown = frozen;
   for (const token of tokens) value = (value as Record<string, unknown>)[token];
-  return { kind: "direct" as const, value, source: { pointer, value_digest: digestJson(value) } };
+  return { kind: "direct" as const, value: value as string, source: { pointer, value_digest: digestJson(value) } };
 }
 
 function derivedFact(frozen: ReturnType<typeof frozenRequirement>, pointer: string, value: string) {
@@ -100,10 +101,30 @@ function candidate(frozen = frozenRequirement()) {
   const constraints = "/requirement_set/items/3/values/0";
   const outputs = "/requirement_set/items/4/values/0";
   const nonGoals = "/requirement_set/items/5/values/0";
+  const productDefinitionId = deriveProductDefinitionId(frozen);
+  const semanticSource = fact(frozen, goals).source;
+  const steps = [
+    {
+      sequence: 1,
+      actor: fact(frozen, scenarios),
+      semantic_source: semanticSource,
+      action: "start" as const,
+      state_change: { from: "not-started" as const, to: "in-progress" as const },
+      outcome: "in-progress" as const,
+    },
+    {
+      sequence: 2,
+      actor: fact(frozen, scenarios),
+      semantic_source: semanticSource,
+      action: "complete" as const,
+      state_change: { from: "in-progress" as const, to: "completed" as const },
+      outcome: "completed" as const,
+    },
+  ];
   return {
     schema_version: "1.0",
     record_type: "product-definition-candidate",
-    product_definition_id: deriveProductDefinitionId(frozen),
+    product_definition_id: productDefinitionId,
     frozen_requirement: frozen,
     frozen_requirement_digest: digestJson(frozen),
     prd: {
@@ -115,26 +136,16 @@ function candidate(frozen = frozenRequirement()) {
       scope: [fact(frozen, outputs)],
       non_goals: [fact(frozen, nonGoals)],
       success_metrics: [{
-        metric: derivedFact(frozen, goals, "协调每周活动完成率"),
-        target: derivedFact(frozen, goals, "协调每周活动：每周至少完成一次"),
-        evidence_method: derivedFact(frozen, goals, "核对协调每周活动的完成记录"),
-        semantic_source: fact(frozen, goals).source,
+        measurement: { kind: "completion-transition" as const },
+        target: { semantic_source: semanticSource, required_state: "completed" as const },
+        evidence: { journey_sequence: 2, transition_digest: digestProductJourneyTransition(productDefinitionId, steps[1]!) },
       }],
     },
     user_journey: {
-      product_definition_id: deriveProductDefinitionId(frozen),
-      steps: [{
-        sequence: 1,
-        actor: fact(frozen, scenarios),
-        action: derivedFact(frozen, goals, "协调每周活动"),
-        state_change: {
-          from: derivedFact(frozen, goals, "协调每周活动待处理"),
-          to: derivedFact(frozen, goals, "协调每周活动已协调"),
-        },
-        outcome: derivedFact(frozen, goals, "协调每周活动已完成"),
-      }],
+      product_definition_id: productDefinitionId,
+      steps,
     },
-    capability_map: { product_definition_id: deriveProductDefinitionId(frozen), capabilities: [fact(frozen, goals)] },
+    capability_map: { product_definition_id: productDefinitionId, capabilities: [fact(frozen, goals)] },
   };
 }
 
@@ -167,10 +178,9 @@ test("产品字段角色阻断约束冒充指标和场景冒充能力", () => {
     prd: {
       ...value.prd,
       success_metrics: [{
-        metric: derivedFact(value.frozen_requirement, "/requirement_set/items/3/values/0", "不连接外部服务完成率"),
-        target: derivedFact(value.frozen_requirement, "/requirement_set/items/3/values/0", "不连接外部服务已完成"),
-        evidence_method: derivedFact(value.frozen_requirement, "/requirement_set/items/3/values/0", "核对不连接外部服务的完成记录"),
-        semantic_source: fact(value.frozen_requirement, "/requirement_set/items/3/values/0").source,
+        measurement: { kind: "completion-transition" as const },
+        target: { semantic_source: fact(value.frozen_requirement, "/requirement_set/items/3/values/0").source, required_state: "completed" as const },
+        evidence: value.prd.success_metrics[0]!.evidence,
       }],
     },
   };
@@ -179,7 +189,7 @@ test("产品字段角色阻断约束冒充指标和场景冒充能力", () => {
     ...value,
     user_journey: {
       ...value.user_journey,
-      steps: [{ ...value.user_journey.steps[0]!, action: value.prd.scenarios[0]! }],
+      steps: [{ ...value.user_journey.steps[0]!, semantic_source: value.prd.scenarios[0]!.source }],
     },
   };
   assert.throws(() => parseProductDefinitionCandidate(journeyActionFromScenario), ProductDefinitionError);
@@ -225,50 +235,51 @@ test("三类目标项目 fixture 仅以 manual-isolated 消费者契约验证完
     const parsed = parseProductDefinitionCandidate(fixture.product_definition);
     assert.equal(parsed.frozen_requirement.frozen_requirement_id, (fixture.frozen_requirement as Record<string, unknown>).frozen_requirement_id);
     assert.equal(parsed.product_definition_id, deriveProductDefinitionId(parsed.frozen_requirement));
-    const goal = parsed.frozen_requirement.requirement_set.items[1]!.values[0]!;
     const metric = parsed.prd.success_metrics[0]!;
-    assert.equal(metric.metric.kind, "derived");
-    assert.equal(metric.target.kind, "derived");
-    assert.equal(metric.evidence_method.kind, "derived");
-    assert.equal(metric.metric.value.includes(goal), true);
-    assert.equal(metric.target.value.includes(goal), true);
-    assert.equal(metric.evidence_method.value.includes(goal), true);
+    assert.equal(metric.measurement.kind, "completion-transition");
+    assert.equal(metric.target.required_state, "completed");
+    assert.equal(metric.evidence.journey_sequence, 2);
     assert.deepEqual(parsed.user_journey.steps.map((step) => step.sequence), [1, 2]);
     for (const step of parsed.user_journey.steps) {
       assert.equal(step.actor.kind, "direct");
-      assert.notEqual(step.state_change.from.value, step.state_change.to.value);
+      assert.equal(step.outcome, step.state_change.to);
     }
+    assert.equal(metric.evidence.transition_digest, digestProductJourneyTransition(parsed.product_definition_id, parsed.user_journey.steps[1]!));
     identities.add(`${parsed.frozen_requirement.project.repository_id}|${parsed.frozen_requirement.frozen_requirement_id}|${parsed.product_definition_id}`);
   }
   assert.equal(identities.size, 3);
 });
 
-test("磁盘指标负例会拒绝只证明无关计划记录而不证明目标达成的候选", async () => {
+test("磁盘指标负例会拒绝 direct goal 三重复用和带目标词的无关 evidence", async () => {
   const fixture = JSON.parse(await readFile(resolve(process.cwd(), "tests/fixtures/product-definition/metric-evidence-mismatch.json"), "utf8")) as Record<string, unknown>;
   assert.equal(fixture.fixture_type, "metric-evidence-mismatch");
   assert.equal(fixture.expected, "reject");
-  const value = candidate();
-  assert.throws(
-    () => parseProductDefinitionCandidate({
-      ...value,
-      prd: { ...value.prd, success_metrics: fixture.success_metrics },
-    }),
-    ProductDefinitionError,
-  );
+  for (const metrics of Object.values(fixture.bypasses as Record<string, unknown>)) {
+    const value = candidate();
+    assert.throws(
+      () => parseProductDefinitionCandidate({
+        ...value,
+        prd: { ...value.prd, success_metrics: metrics },
+      }),
+      ProductDefinitionError,
+    );
+  }
 });
 
-test("磁盘旅程负例会拒绝只有参与者或场景而无动作、状态变化和结果的步骤", async () => {
+test("磁盘旅程负例会拒绝 no-op action、任意状态和无用 outcome", async () => {
   const fixture = JSON.parse(await readFile(resolve(process.cwd(), "tests/fixtures/product-definition/journey-action-missing.json"), "utf8")) as Record<string, unknown>;
   assert.equal(fixture.fixture_type, "journey-action-missing");
   assert.equal(fixture.expected, "reject");
-  const value = candidate();
-  assert.throws(
-    () => parseProductDefinitionCandidate({
-      ...value,
-      user_journey: { ...value.user_journey, steps: fixture.steps },
-    }),
-    ProductDefinitionError,
-  );
+  for (const steps of Object.values(fixture.bypasses as Record<string, unknown>)) {
+    const value = candidate();
+    assert.throws(
+      () => parseProductDefinitionCandidate({
+        ...value,
+        user_journey: { ...value.user_journey, steps },
+      }),
+      ProductDefinitionError,
+    );
+  }
 });
 
 test("缺少范围、非目标、成功指标、旅程或能力映射会确定性阻断", async () => {
