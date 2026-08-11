@@ -1689,3 +1689,13 @@
 - Credential：`evidence:verification-credential-407a362609dd16c0c4b1cdc29f4fef6894e1d33865ff9c22a14367f65f8c6596.json`，digest `sha256:407a362609dd16c0c4b1cdc29f4fef6894e1d33865ff9c22a14367f65f8c6596`，3783 字节；claim/fence/host、JCS、SHA-256、0600/0700、create-once/no-replace 与 fsync 复核通过。旧 `d088...` 凭证因缺少 `claim_id` 被拒收，未引用、未覆盖、未删除。
 - 最终复验结果：`通过`，result digest `sha256:7ba7aca4e555fd8af176dcd73be11b530425fc4ea0321a07900224c98d2af658`。保留 P2 为长驻 trusted-host 的 replay/session registry 生命周期、真实 trusted-host/用户动作、开放自然语言语义和 `full` 支持未由本轮证明。
 - 阶段判断：S1.3 已通过 Final Verification，当前仅允许进入 Audit Anchor 与独立 Anchor Proof；formal `a854fd4938b34ab24d88e72430be52b397c91096`、control ref 和候选内容在 Anchor Proof 通过前均不移动。S1.3、PC-03、M1.1、V1、P5 仍不得宣称完成。
+
+## 2026-08-12 P5 / V1 / M1.1 / S1.3 Anchor Proof 与正式提升
+
+- Audit Anchor：commit `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`，tree `b0178b038e6dd975e90cdd9d3aa7422d2965cf23`，唯一父提交为 Final Content Snapshot `cf74f0d0b56675b6c13f4e4e5eb08ce2db29c5a0`；anchor digest 为 `sha256:648a42bfe2e4733a87bcd0af4f3f248c42e008c6ce89498d40179f8a272de2d9`。
+- 控制链：Anchor Verification packet `sha256:6661fdc06318c5fbdf4a99ffe41f16e645ed4fc4feeb7c97410753fee974685f`、dedup `sha256:d494444e355d5c60d4d92c13f0658216532bea857ea2757684a17d2879ea6dce`、outbox、fence 40 claim 与 Terra dispatch-ack 均按 expected-old CAS 持久化。首个 Luna 等待宿主因平台 HTTP 503 未执行任何命令且未进入 ack；有效宿主为 `019ff215-6596-7e43-a532-1599d9beca6a`。
+- Anchor Proof：`evidence:anchor-proof-fa60d95b3277e7481c38c77402b108adb96a21b51bd0ecac33821e4fd017d48c.json`，摘要 `sha256:fa60d95b3277e7481c38c77402b108adb96a21b51bd0ecac33821e4fd017d48c`，3207 字节；项目外 create-once、hard-link no-replace、fsync、0700/0600 通过。
+- 主管复核：proof 原始 SHA-256、JCS、文件名、packet/dedup、claim/fence/host、credential、父链、三条白名单和 202 条受保护清单全部通过。Anchor Verification Result 摘要为 `sha256:0a8e285e50e04588511fb3bc6f44b3f6c5cb7a6ac14bc63eb6080005a1ae8c59`。
+- formal promotion：`refs/nextstep/formal` 以 expected-old CAS 从 `a854fd4938b34ab24d88e72430be52b397c91096` 快进到 `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`；promotion digest 为 `sha256:ce95cf78e00cf5fdb736f0569ab802d67ad9c5e5ce798440b5c5e0ed2b174bb1`，最终 control OID 为 `6a7066eb8e8f5f2f3f6c877fdcd01e9246f3bfa3`。
+- 最终回归：`pnpm check` 通过 122/122，覆盖率为行 `90.78%`、分支 `82.02%`、函数 `98.26%`；control JSON、formal/control refs、祖先关系、`git diff --check` 与五条收口路径边界通过。
+- 阶段判断：S1.3 正式提升完成，PC-03 已取得正式运行证据；下一入口校正为 M1.1 累积验收，而不是直接进入 S1.4。M1.1、V1 和 P5 仍未完成，未 push、未生成 S1.4 任务包。

@@ -1638,6 +1638,17 @@
 - 非阻塞风险：长驻 trusted-host 的 replay/session registry 生命周期未设上界；本轮不证明真实 trusted-host、真实用户动作、开放自然语言语义或 `full` 支持。
 - 阶段门禁：允许进入 Audit Anchor 与 Anchor Proof；在独立 Anchor Proof 通过及 expected-old CAS 完成前，formal ref 保持 `a854fd4938b34ab24d88e72430be52b397c91096`，不宣称 S1.3、PC-03、M1.1、V1 或 P5 完成。
 
+## 2026-08-12 P5 / V1 / M1.1 / S1.3 Anchor Proof 与 Formal Promotion 验证
+
+- Anchor 身份：commit `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`、tree `b0178b038e6dd975e90cdd9d3aa7422d2965cf23`、digest `sha256:648a42bfe2e4733a87bcd0af4f3f248c42e008c6ce89498d40179f8a272de2d9`；唯一父提交为 `cf74f0d0b56675b6c13f4e4e5eb08ce2db29c5a0`，expected formal 为其祖先。
+- 白名单与清单：anchor 相对 snapshot 恰好修改 `.codex/operations-log.md`、专属 `final-verification.json` 和 `.codex/verification-report.md`；snapshot/anchor 各 202 条受保护 `git ls-tree` 原始清单摘要均为 `sha256:7961fda4fca336d1440806a15127f5b831596e80f437e4cf280862796e192528`。
+- Proof：独立 Terra/James 结论“通过”；proof 摘要 `sha256:fa60d95b3277e7481c38c77402b108adb96a21b51bd0ecac33821e4fd017d48c`、3207 字节。主管复算原始 SHA、JCS、文件名、字段绑定、credential 3783 字节和 0700/0600 权限全部通过。
+- Result 与 promotion：Anchor Verification Result 摘要 `sha256:0a8e285e50e04588511fb3bc6f44b3f6c5cb7a6ac14bc63eb6080005a1ae8c59`；formal promotion 摘要 `sha256:ce95cf78e00cf5fdb736f0569ab802d67ad9c5e5ce798440b5c5e0ed2b174bb1`。
+- CAS：`refs/nextstep/formal` 从 `a854fd4938b34ab24d88e72430be52b397c91096` 快进为 `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`；最终 `refs/nextstep/control=6a7066eb8e8f5f2f3f6c877fdcd01e9246f3bfa3`。
+- 收口验证：`pnpm check` 通过 122/122，覆盖率为行 `90.78%`、分支 `82.02%`、函数 `98.26%`；formal/control、promotion/anchor/result/proof/credential 摘要、父链、packet/dedup、claim/fence/host、JSON、工作树和路径边界均通过；未使用强制更新、未 push。
+- 审查结论：`通过 / 96`。P0 = 0，P1 = 0；S1.3 正式门禁通过，对应 PC-03 已取得正式运行证据。保留 P2 为长驻 trusted-host registry 生命周期及真实宿主/用户动作/开放自然语言语义/`full` 支持未证明。
+- 阶段边界：下一入口为 M1.1 累积验收与阶段会签；不得直接进入 S1.4，M1.1、V1 和 P5 仍未完成。
+
 ## 2026-08-11 S1.3 Generation 2 Attempt 7 嵌套 Display 重入 TDD 复核
 
 - 第二轮独立审查：外层 event Proxy 的陈旧状态路径已关闭；`view-change.display` 仍是未深快照引用，可在 reducer 捕获旧 `confirmed` 后通过嵌套 Proxy trap 重入 reject/cancel，再由外层写回非终态并签署。判定 `REVISE`，P0=0、P1=1。
