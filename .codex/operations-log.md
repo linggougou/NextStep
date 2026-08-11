@@ -1,5 +1,64 @@
 # Operations Log
 
+## 2026-08-11 P5 / V1 / M1.1 / S1.2 Attempt 4 状态能力修复
+
+- attempt 3 收口：Terra 范围复验为 `candidate-ready`，但主管反审与 Sol 只读审查复现两个 P1：freeze now 可早于 user action；终态后调用方可传入保存的旧 `confirmed` 快照。attempt 3 未创建候选，并在继续前已过期；失败结果经 CAS 写入 control commit `b0cac08df50806c715fc13502396404f882e4479`。
+- attempt 4 控制身份：packet digest `sha256:e37cb7b63d6eb7ad37160c5893147bac8788318e48c9381502e68ab9806b02bd`，dedup key `sha256:302dfa992c0e9d28e5c455f69e823e9eb149fe8a978ef20237759eef455040aa`，fence `10`。dispatch-ready、outbox、claim 与 Terra ack 均通过 expected-old CAS 写入，当前 control OID `4930faa92914adb8327c8c966270276e32d17ca9`。
+- TDD RED/GREEN：测试先切换到尚不存在的 session API并补未来动作、旧状态复活和伪造 session 反证，构建按预期失败。最小实现新增 verifier+replay 复用、verified replay 唯一 session、模块私有 current state、单调 reducer 时间与 freeze now 边界；`pnpm test` 初次 GREEN 为 `96/96`。
+- 边界不变：路径范围、working parent、formal baseline、产品语义和验收门禁不变；不实现真实 host adapter、探针、full 支持或 S1.5 写入，不进入 S1.3、I/X/P、L3 或正式提升。
+- Luna 攻击反扫补充：其时间/旧状态结论基于修复前快照，已由 session 与单调时钟关闭；另发现 verifier 对 truthy 非布尔返回值 fail-open，以及 view 仅固定 7 条未保证七个 field 各一次。新增测试先得到 `94/96` RED，再将 verifier 收紧为严格 `=== true`，并在 Schema/领域层同步约束字段完整唯一、item 语义与确定性 summary，随后恢复 GREEN。
+- 最终验证：`pnpm check` 通过 `96/96`；覆盖率行 `89.79%`、分支 `82.83%`、函数 `97.66%`。官方 registry audit 无已知漏洞；Skill、JSON、`git diff --check`、20 路径 allowlist、受保护上游、秘密/调试和 formal/control ref 检查通过。
+- 独立执行复验：Terra 对 future action、session current state、伪造 session、终态重放、truthy verifier、重复 field/错误 summary、CLI、重复 ID 顺序攻击和全量门禁复验后返回 `candidate-ready`。主管主审 P0/P1 = 0；剩余边界仍是真实 host adapter、真实用户动作探针和 `full` 支持未实现。
+- 当前结论：仅为 attempt 4 本地候选就绪，待固定 Git 身份并重新执行独立候选验证与 I/X/P；不构成 L3、PC-02、M1.1、V1、P5 或阶段门禁结论。
+
+## 2026-08-10 P5 / V1 / M1.1 / S1.2 Attempt 3 范围修复开始
+
+- 阻塞分流：attempt 2 的实现已通过 `96/96` 本地测试，但 packet 漏列实际修改的 `src/cli/requirement-freeze.ts`，故按 `blocked` 结果写入 control，未创建候选、未进入候选验证或 I/X/P。该问题是执行范围错误，不改变产品语义、实现目标或验收门禁。
+- 新任务身份：`ep-p5-v1-m1.1-s1.2-g1-a3-20260810`，packet digest `sha256:0f5fde7bfcd2a0d0ac3f29f832bedcb167235791715b86e40af1457983d1ef45`，dedup key `sha256:232dc9e870fa0ce6a1fac64daee9e1318c4c0943355ad965484c70655be9c709`，fence `9`；只比 attempt 2 allowlist 增加 `src/cli/requirement-freeze.ts`。
+- 控制链：dispatch-ready、outbox intent、fence 9 claim 与 Terra dispatch ack 已分别用唯一临时 index 和 expected-old CAS 写入 `refs/nextstep/control`，当前 control OID 为 `0dce67be729c596d1f4e274cb2499b43dbdb86f7`。HEAD 与 formal ref 未移动，工作树 index 未被控制提交使用。
+- 执行边界：复用 Terra host task `019fe771-fb5e-7380-8f74-e2a3365e2ed7` 只读复验；主 Agent 同步执行本地验证和范围反扫。不得修改 `.codex/runtime`/`.codex/reviews` 或 refs，不作 I/X/P、PC-02、M1.1、V1、P5 或阶段门禁结论。
+
+## 2026-08-10 P5 / V1 / M1.1 / S1.2 Attempt 2 修复开始
+
+- 任务包与路线：`ep-p5-v1-m1.1-s1.2-g1-a2-20260810`，当前为 `S5 / P5 / V1 / M1.1 / S1.2 attempt 2`；仅关闭 attempt 1 的确认 ID 全历史顺序无关冲突检测，以及完整视图展示/独立用户动作回放缺口。阶段出口与 P5 验收门禁不变，不进入 S1.3、I/X/P、L3 或正式提升。
+- 最低真源与研究：已读取路线锁、P5 活动计划、attempt 2 packet、attempt 1 的候选验证与 I/X/P 退回结果、相关领域实现和测试。项目根无特化 `AGENTS.md`；CodeGraph 未初始化且路线锁要求询问，采用 `rg`、既有代码和测试作替代影响分析。
+- 范围与协作：只修改 packet `allowed_paths`；绝不修改 `.codex/runtime`、`.codex/reviews`、已会签产品/设计/架构正文、包管理/TypeScript 配置或 Git refs。Sol/Luna 只读复核，主 Agent 仅维护 runtime 控制链；本实现串行处理共享确认/冻结契约以避免写冲突。
+- TDD 计划：先增加完整 view Schema、展示/动作绑定、拒绝/取消/过期/逆序/视图变化和重复 ID 顺序攻击的永久测试并运行 RED；后续仅实现最小 fail-closed 修复。fixture 明确为消费者契约，不代表真实用户事件、可信宿主适配器或 `full` 支持。
+
+## 2026-08-10 P5 / V1 / M1.1 / S1.2 Attempt 2 修复结束
+
+- TDD RED：新增测试后先运行 `pnpm test`；在修正测试自身括号错误且未改生产实现后，TypeScript 明确报出 `createConfirmationViewDisplay`、`createUserConfirmationAction`、`expires_at` 和 replay envelope 字段缺失，证明 attempt 1 的旧确认模型不能满足新契约。
+- 最小实现：confirmation Schema 将 view 从任意对象收紧为包含完整字段、七项 Requirement Set 展示项、项目/基线、版本/代际、挑战时间和过期时间的严格对象。新增 `challenge -> view display -> independent user action -> envelope` 回放；信封时间只派生自 `confirm` 动作。`reject`、`cancel`、过期、逆序、展示/挑战/项目/基线/内容变化、机器回执、裸值、普通文本和直接自述信封均 fail closed。
+- 冲突修复：冻结前解析并完整扫描同一 `confirmation_id` 的所有历史记录；任意内容或确认绑定不同即 `IDENTITY_CONFLICT`，仅全部精确匹配时幂等返回。`[exact, conflict]`、`[conflict, exact]` 和 `[exact, exact]` 均有永久回归测试。
+- GREEN 与覆盖率：`pnpm test` 通过 `91/91`；`pnpm check` 通过，覆盖率行 `90.32%`、分支 `83.44%`、函数 `97.48%`，均高于 80% 门槛。
+- 结构、安全与范围：Schema/fixture JSON、`git diff --check`、官方 `quick_validate.py`、生产 `src/`/`schemas/`/`skills/` 的调试/TODO/高置信秘密扫描和 allowed-path 反扫均通过。Skill 校验使用 `/tmp/nextstep-s1-2-a2-skill-validate` 一次性 PyYAML 环境，未改项目依赖。formal ref=`8ffaf658e112a5ba26a9f83882f5f71f1ae79454`、control ref=`c56d6dadbb61fefb035dd254e823f026f1edafe9` 只读未移动；`.codex/runtime`、`.codex/reviews`、已会签产品/设计/架构正文和包管理/TypeScript 配置零差异。
+- 状态：`candidate-ready`，仅表示本地候选可重新进入独立前置验证；不执行或替代独立候选验证、I/X/P、L3、最终复验和正式提升，不作 PC-02、M1.1、V1、P5 或阶段门禁结论。残余风险是 fixture 只能证明消费者契约，未证明真实用户动作、可信宿主适配器/探针或 `full` 支持；真实项目真源写入仍属 S1.5。
+
+## 2026-08-10 P5 / V1 / M1.1 / S1.2 Attempt 2 REVISE 修复开始
+
+- 复核入口：主 Agent 对本地候选提出 P1-1..P1-3。当前 builder 仍会自行写入展示/动作证明字段，冻结未从可信执行上下文取得时钟，且无状态机终结旧 generation；本轮只关闭这些问题。
+- 实施边界：沿用 `ep-p5-v1-m1.1-s1.2-g1-a2-20260810` allowed_paths；不改 `.codex/runtime`、`.codex/reviews`、Git refs、已会签正文、包管理或 TypeScript 配置，不进入 S1.5、CAS、真实写入或通用宿主适配。
+- 设计：在既有 confirmation domain 内建立窄 `ConfirmationInteractionVerifier`、运行期已验证 capability、可信执行上下文和 `pending/confirmed/rejected/cancelled/expired/superseded` reducer。缺 verifier、可信时钟、已验证结果或 current confirmed state 一律 fail closed；测试只注入明确 `manual-isolated-fixture` verifier。
+- TDD：先覆盖无 verifier、冻结时过期、reject/cancel/expiry/view-change 终结和旧 envelope 不得复活的 RED，再做最小实现并运行全量回归。
+
+## 2026-08-10 P5 / V1 / M1.1 / S1.2 Attempt 2 REVISE RED 与 GREEN
+
+- RED：在既有 `confirmed` action 的基础上补入冻结执行时钟等于 expiry，以及 `reject/cancel/expiry/view-change` 终结后复用旧 envelope 的永久测试。运行 `pnpm test` 得到预期失败：状态序列为 `[rejected, cancelled, confirmed, confirmed]`，证明已确认 generation 会错误跨越 expiry 和 view-change。
+- 最小修复：`ConfirmationInteractionState` 仅对 `rejected/cancelled/expired/superseded` 保持不可逆；`confirmed` 仍先处理可信 `evaluated_at` 的 expiry 与严格解析的 view-change，随后才保持确认状态。冻结继续要求 WeakMap 持有的 verifier capability、同一 verified replay、当前确认状态和注入的执行时钟。
+- GREEN：修复后 `pnpm test` 通过 `95/95`，失败、跳过和取消均为 `0`。新增用例证明动作虽有效但冻结时恰到期会拒绝，且 reject/cancel/expiry/view-change 的旧 envelope 均不能冻结。
+- 第二轮 RED/GREEN：将 reject/cancel 用例改为 confirm 后的撤销，RED 显示状态仍为 `confirmed`；reducer 随后对同一严格绑定的后续 reject/cancel 转入不可逆终态，重复 confirm 保持 confirmed。最终 `pnpm check` 的 `95/95` 通过该回归。
+- Skill 边界：明确未验证 builder 只构造回放数据，`event_source` 不是证明；当前 stdin CLI 缺可信 in-process context 必须 fail closed。fixture 仅使用 `manual-isolated-fixture` 证明消费者契约，不代表真实用户、可信宿主适配器/探针或 `full` 支持。
+- 完整验证：`pnpm check` 通过，`95/95` 测试通过，覆盖率行 `90.07%`、分支 `83.43%`、函数 `97.58%`。`jq empty`、官方 Skill 校验、`git diff --check`、调试/TODO/高置信秘密扫描、allowed-path 反扫及受保护路径/ref 不变性均通过。官方 Python 校验器缺 PyYAML，使用 `/tmp/nextstep-s1-2-a2-revise-skill-validate` 一次性虚拟环境安装后通过；未修改项目依赖。
+- 状态：`candidate-ready`，仅表示本地候选可再次交由独立前置验证；不执行或替代独立候选验证、I/X/P、L3、最终复验或正式提升，也不作任何 PC、M1.1、V1、P5 或阶段门禁结论。
+
+## 2026-08-10 P5 / V1 / M1.1 / S1.2 Attempt 2 CLI 回归修复
+
+- RED：主 Agent 指出 tests/cli 仅剩 standalone fail-closed，已删除 attempt 1 的成功 JCS 路径。先新增进程内 fake `ProcessIoAdapter`、明确 `manual-isolated-fixture` verifier/state/clock 的 runner 正例；`pnpm test` 按预期因 `runRequirementFreeze` 尚未导出而 TypeScript RED。
+- 最小修复：`src/cli/requirement-freeze.ts` 导出 `runRequirementFreeze(io, executionContext?)`，仅把参数传给领域冻结函数；直接执行保护仍调用无 context 的 runner。可信上下文不经 stdin、参数或环境变量反序列化，直接 shell 入口继续 fail closed。
+- GREEN：`pnpm test` 通过 `96/96`。进程内 runner 正例只输出一条 JCS `REQUIREMENT_FREEZE_ACCEPTED`，无诊断和非零状态；spawned standalone 无 context 与敏感输入两类负例保留。
+- 文档边界：Skill 仅允许未来宿主适配器把其已持有的 verifier/state/clock 进程内注入 runner；该窄接口不是已实现真实宿主适配器、用户动作探针或 `full` 支持。
+- 完整验证：`pnpm check` 通过，覆盖率行 `90.09%`、分支 `83.43%`、函数 `97.58%`；仍高于 80% 阈值。
+
 ## 2026-08-09 P5 / V1 / M1.1 / S1.1 需求入口实现开始
 
 - 任务身份：`S1.1`，任务包 `ep-p5-v1-m1.1-s1.1-g1-a1-20260809`，摘要 `sha256:586e0db08151c8378b7943885c7dba6367448a4c8d72ce49769cb6a75becba81`。

@@ -57,31 +57,35 @@ Only at S1.2, combine the validated S1.1 candidate with the user's supplemental 
 
 An unresolved field blocks freezing. State the missing fields and return to requirement completion. A rejected or deferred item remains explicit in the immutable Requirement Set; changing any frozen content enters `PC-17` Change Intake rather than modifying it in place.
 
-Before asking for confirmation, create a confirmation challenge that binds all of the following to the exact user-visible confirmation view:
+Before asking for confirmation, create a confirmation challenge with an expiry. Its strict confirmation view must contain the complete Requirement Set summary and items, the action, repository identity, formal baseline, Requirement Set ID/version/generation/content digest, confirmation ID, challenge creation time, and expiry.
 
-- `freeze-requirement-set` action.
-- Repository identity and formal baseline.
-- Requirement Set ID, version, content digest, and confirmation-view digest.
-- Confirmation ID and challenge creation time.
+Record the host interaction as four separately bound records:
 
-Accept only a structured confirmation envelope with `confirmation_kind: explicit-user-confirmation` and a confirmation time. A bare boolean, a normal text response such as "确认", or an envelope with any mismatched binding is not a confirmation and must be rejected.
+1. The challenge.
+2. A complete confirmation view display after challenge creation and before expiry.
+3. An independent user action event that binds the display, view, challenge, project, baseline, Requirement Set generation and expiry. Its time must be strictly after display and strictly before expiry.
+4. The confirmation envelope derived only from a valid `confirm` action. Its `confirmed_at` is the user action time, never a caller-provided label or timestamp.
 
-Build the local tool and send one RFC 8785 canonical JSON freeze command through standard input:
+Only a structured independent user action with `user_action: confirm` can form a confirmation envelope. A bare boolean, a normal text response such as "确认", a direct self-described envelope, a machine receipt, or a caller-provided `explicit-user-confirmation` label is not a confirmation and must be rejected. A `reject`, `cancel`, expired action, time-reversed action, changed confirmation view, changed challenge, project/baseline/content change, or mismatched binding must not freeze.
+
+The display and action builders only assemble unverified replay data; their fields, including `event_source`, are not proof. Freezing requires a narrow trusted confirmation interaction verifier, its in-process verified result, the module-private session capability holding the current `confirmed` state bound to the Requirement Set generation/challenge/display digests, and a trusted execution clock. The clock must be no earlier than the action and current-state evaluation times and strictly before expiry. Without that context, including through the stdin-only CLI, fail closed. A confirmed generation is terminally invalidated by reject, cancel, expiry, or a view change and cannot be revived by passing a saved state snapshot, recreating the same session, or reusing its envelope.
+
+Build the local tool. Use the direct stdin entry only as a fail-closed probe; a host that holds the verifier capability must call the exported runner in process with one RFC 8785 canonical JSON freeze command:
 
 ```bash
 pnpm build
 node dist/src/cli/requirement-freeze.js
 ```
 
-The CLI writes exactly one JCS machine receipt to stdout. Diagnostics go only to stderr. It scans the content that would be persisted and blocks common token, Authorization, and private-key samples without echoing values.
+The CLI writes exactly one JCS machine receipt to stdout. Diagnostics go only to stderr. A host adapter may call the exported in-process freeze runner only after it injects the verifier capability, the module-private interaction session capability, and the execution clock it already holds; none of that context may be accepted from stdin, arguments, or environment variables. Direct shell stdin execution has no such context and must fail closed. This runner is a narrow integration boundary, not an implemented real host adapter, real user-action probe, or `full` host support.
 
-On success, retain the complete `data.frozen_requirement` record as the persistent recovery input. It has a stable frozen ID, the Requirement Set content identity, confirmation binding, `frozen` status, and only the next entry `S1.3.product-definition`. Recovery consumes that record alone; it does not depend on chat history. Reuse of the same confirmation ID returns the same frozen identity only when content and confirmation binding are identical; otherwise it is an identity conflict.
+On success, retain the complete `data.frozen_requirement` record as the persistent recovery input. It has a stable frozen ID, the Requirement Set content identity, confirmation binding, `frozen` status, and only the next entry `S1.3.product-definition`. Recovery consumes that record alone; it does not depend on chat history. Scan every historical record with the same confirmation ID before deciding: all exact matches are idempotent, while any different content or confirmation binding is an identity conflict regardless of record order.
 
 ## Replay The Contract Handoff
 
 `tests/fixtures/requirement-intake/skill-replay.json` records one user sentence and one host-AI candidate. The replay proves that the evidence-bearing candidate, deterministic validation, and user output connect correctly. It does not prove model quality and must not be described as a rule-based natural-language parser.
 
-Run `pnpm test` to replay it. The fixture is contract evidence, not a substitute for future host interaction evaluation.
+Run `pnpm test` to replay it. Requirement-freeze fixtures use only the `manual-isolated-fixture` verifier and prove the consumer contract for the challenge, confirmation view display, and independent user action records. They do not prove a real user action occurred, do not provide a trusted host adapter or real host probe, and must never be described as `full` host support.
 
 ## Enforce The Boundary
 

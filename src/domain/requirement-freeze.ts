@@ -6,7 +6,9 @@ import { canonicalizeJson } from "./canonical-json.ts";
 import { digestJson, type Sha256Digest } from "./content-digest.ts";
 import {
   assertConfirmationMatchesRequirementSet,
+  assertConfirmationExecutionContext,
   parseConfirmationEnvelope,
+  type ConfirmationExecutionContext,
   type ConfirmationEnvelope,
 } from "./requirement-confirmation.ts";
 import {
@@ -159,10 +161,16 @@ export function recoverFrozenRequirement(value: unknown): FrozenRequirement {
 export function freezeRequirementSet(
   value: unknown,
   existingRecords?: readonly unknown[],
+  executionContext?: ConfirmationExecutionContext,
 ): FrozenRequirement {
   const command = parseRequirementFreezeCommand(value);
   if (command.requirement_set.status !== "ready-for-confirmation") {
     fail("UNRESOLVED_REQUIREMENTS", `Unresolved requirements: ${listUnresolvedRequirementFields(command.requirement_set).join(",")}`);
+  }
+  try {
+    assertConfirmationExecutionContext(command.confirmation, executionContext);
+  } catch (error) {
+    translateConfirmationError(error);
   }
   const knownRecords = existingRecords ?? command.known_frozen_records ?? [];
   const recoveredRecords = knownRecords.map((record) => recoverFrozenRequirement(record));
@@ -170,14 +178,15 @@ export function freezeRequirementSet(
   const matchingConfirmation = recoveredRecords.filter(
     (record) => record.confirmation.confirmation_id === command.confirmation.confirmation_id,
   );
-  for (const record of matchingConfirmation) {
-    if (
+  if (matchingConfirmation.some(
+    (record) =>
       record.requirement_content_digest !== command.requirement_set.content_digest ||
-      record.confirmation_binding_digest !== bindingDigest
-    ) {
-      fail("IDENTITY_CONFLICT", "Confirmation ID is already bound to different frozen content");
-    }
-    return record;
+      record.confirmation_binding_digest !== bindingDigest,
+  )) {
+    fail("IDENTITY_CONFLICT", "Confirmation ID is already bound to different frozen content");
+  }
+  if (matchingConfirmation.length > 0) {
+    return matchingConfirmation[0]!;
   }
   const contentDigest = command.requirement_set.content_digest;
   return recoverFrozenRequirement({

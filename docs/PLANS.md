@@ -5,7 +5,7 @@
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
 - 当前活动里程碑：V1 / M1.1 / S1.2 需求补全冻结与恢复运行
-- 当前状态：P5-M0 已关闭；S1.1 已正式提升；S1.2 attempt 1 实施中
+- 当前状态：P5-M0 已关闭；S1.1 已正式提升；S1.2 attempt 4 候选就绪，待独立候选验证与 I/X/P
 
 ## 当前活动计划
 
@@ -27,7 +27,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。P5-M0 固定候选 `8cc0f3d` 已通过第七轮 L3 `PASS / 97`。S1.1 attempt 2 候选 `5d6fd5b` 已完成独立候选验证、I/X/P、L3、Final Content Snapshot、独立最终复验、项目外凭证、审计锚、Anchor Proof 和 formal ref CAS，并已正式提升。当前入口为 `V1 / M1.1 / S1.2 attempt 1`；只实现需求补全、显式确认、冻结、未冻结阻断和无聊天恢复，不作 PC-02、M1.1、V1 或 P5 完成结论。
+P5 已于 2026-08-08 单独启动。P5-M0 固定候选 `8cc0f3d` 已通过第七轮 L3 `PASS / 97`。S1.1 attempt 2 候选 `5d6fd5b` 已完成独立候选验证、I/X/P、L3、Final Content Snapshot、独立最终复验、项目外凭证、审计锚、Anchor Proof 和 formal ref CAS，并已正式提升。S1.2 attempt 2 因 packet 漏列 CLI 路径而阻塞；attempt 3 未产候选并因两个 P1 退回。当前入口为 `V1 / M1.1 / S1.2 attempt 4`，只修复 session/current-state 与单调时钟边界，不作 PC-02、M1.1、V1 或 P5 完成结论。
 
 实施顺序保持 P3 已会签结构：
 

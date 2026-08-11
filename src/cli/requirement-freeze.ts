@@ -1,9 +1,13 @@
 import { randomUUID } from "node:crypto";
+import { pathToFileURL } from "node:url";
 
 import { createProcessIoAdapter, type ProcessIoAdapter } from "../adapters/node/process-io.ts";
 import { canonicalizeJson, parseCanonicalJsonBytes } from "../domain/canonical-json.ts";
 import { digestJson } from "../domain/content-digest.ts";
 import { parseMachineReceipt, type MachineReceipt } from "../domain/machine-receipt.ts";
+import {
+  type ConfirmationExecutionContext,
+} from "../domain/requirement-confirmation.ts";
 import {
   freezeRequirementSet,
   RequirementFreezeError,
@@ -57,12 +61,15 @@ function classifyFailure(error: unknown): { readonly code: MachineReceipt["code"
   return { code: "REQUIREMENT_FREEZE_REJECTED", diagnostic: "Requirement freeze input rejected" };
 }
 
-async function main(io: ProcessIoAdapter): Promise<void> {
+export async function runRequirementFreeze(
+  io: ProcessIoAdapter,
+  executionContext?: ConfirmationExecutionContext,
+): Promise<void> {
   try {
     if (io.args.length !== 0) {
       throw new RequirementFreezeError("INVALID_REQUIREMENT_FREEZE", "Requirement freeze does not accept command arguments");
     }
-    const frozen = freezeRequirementSet(parseInput(await io.readInput()));
+    const frozen = freezeRequirementSet(parseInput(await io.readInput()), undefined, executionContext);
     writeReceipt(
       io,
       createReceipt(true, "REQUIREMENT_FREEZE_ACCEPTED", {
@@ -81,4 +88,6 @@ async function main(io: ProcessIoAdapter): Promise<void> {
   }
 }
 
-await main(createProcessIoAdapter());
+if (process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  await runRequirementFreeze(createProcessIoAdapter());
+}

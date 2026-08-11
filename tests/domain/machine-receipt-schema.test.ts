@@ -11,7 +11,15 @@ import {
   buildRequirementIntakeUserOutput,
   parseRequirementIntake,
 } from "../../src/domain/requirement-intake.ts";
-import { createConfirmationChallenge, createConfirmationEnvelope } from "../../src/domain/requirement-confirmation.ts";
+import {
+  createConfirmationChallenge,
+  createConfirmationEnvelope,
+  createConfirmationInteractionSession,
+  createUnverifiedConfirmationViewDisplay,
+  createUnverifiedUserConfirmationAction,
+  reduceConfirmationInteractionState,
+  verifyConfirmationInteraction,
+} from "../../src/domain/requirement-confirmation.ts";
 import { freezeRequirementSet } from "../../src/domain/requirement-freeze.ts";
 import { buildRequirementSet } from "../../src/domain/requirement-set.ts";
 
@@ -362,12 +370,40 @@ test("machine receipt validates frozen requirement semantics independently for i
       { field: "clarification_gaps", status: "none", values: [] },
     ],
   });
-  const challenge = createConfirmationChallenge(requirementSet, { confirmation_id: "confirm-receipt-freeze", created_at: "2026-08-10T01:09:00.000Z" });
+  const challenge = createConfirmationChallenge(requirementSet, {
+    confirmation_id: "confirm-receipt-freeze",
+    created_at: "2026-08-10T01:09:00.000Z",
+    expires_at: "2026-08-10T01:12:00.000Z",
+  });
+  const display = createUnverifiedConfirmationViewDisplay(challenge, {
+    display_id: "display-receipt-freeze",
+    displayed_at: "2026-08-10T01:10:00.000Z",
+  });
+  const userAction = createUnverifiedUserConfirmationAction(display, {
+    user_action_id: "user-action-receipt-freeze",
+    action: "confirm",
+    occurred_at: "2026-08-10T01:11:00.000Z",
+  });
+  const verifier = {
+    verifier_kind: "manual-isolated-fixture" as const,
+    verify: () => true,
+  };
+  const verified = verifyConfirmationInteraction({ display, user_action: userAction }, verifier);
+  const interactionSession = createConfirmationInteractionSession(verified);
+  reduceConfirmationInteractionState(
+    interactionSession,
+    { type: "user-action", user_action: userAction, evaluated_at: "2026-08-10T01:11:01.000Z" },
+  );
   const frozen = freezeRequirementSet({
     schema_version: "1.0",
     action: "freeze-requirement-set",
     requirement_set: requirementSet,
-    confirmation: createConfirmationEnvelope(challenge, { confirmation_kind: "explicit-user-confirmation", confirmed_at: "2026-08-10T01:10:00.000Z" }),
+    confirmation: createConfirmationEnvelope(verified),
+  }, undefined, {
+    verifier,
+    verified_interaction: verified,
+    interaction_session: interactionSession,
+    now: () => new Date("2026-08-10T01:11:02.000Z"),
   });
   const receipt = {
     schema_version: "1.0",

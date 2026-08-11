@@ -5,19 +5,68 @@
   "type": "object",
   "oneOf": [
     { "$ref": "#/definitions/challenge" },
+    { "$ref": "#/definitions/viewDisplay" },
+    { "$ref": "#/definitions/userAction" },
     { "$ref": "#/definitions/envelope" }
   ],
   "definitions": {
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
     "project": {
       "type": "object",
       "additionalProperties": false,
       "required": ["repository_id"],
-      "properties": { "repository_id": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" } }
+      "properties": { "repository_id": { "$ref": "#/definitions/digest" } }
+    },
+    "requirementItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["field", "status", "values", "source"],
+      "properties": {
+        "field": { "enum": ["intent_summary", "goals", "scenarios", "constraints", "expected_outputs", "non_goal_gaps", "clarification_gaps"] },
+        "status": { "enum": ["identified", "none", "unresolved", "rejected", "deferred"] },
+        "values": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "source": { "enum": ["candidate", "user", "unresolved"] }
+      }
+    },
+    "confirmationView": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "record_type", "action", "project", "formal_baseline", "requirement_set_id", "requirement_set_version", "requirement_set_generation", "requirement_set_digest", "summary", "items", "confirmation_id", "challenge_created_at", "expires_at"],
+      "properties": {
+        "schema_version": { "const": "1.0" },
+        "record_type": { "const": "confirmation-view" },
+        "action": { "const": "freeze-requirement-set" },
+        "project": { "$ref": "#/definitions/project" },
+        "formal_baseline": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+        "requirement_set_id": { "type": "string", "minLength": 1 },
+        "requirement_set_version": { "type": "integer", "minimum": 1 },
+        "requirement_set_generation": { "type": "integer", "minimum": 1 },
+        "requirement_set_digest": { "$ref": "#/definitions/digest" },
+        "summary": { "type": "string", "minLength": 1 },
+        "items": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "items": { "$ref": "#/definitions/requirementItem" },
+          "allOf": [
+            { "contains": { "type": "object", "required": ["field"], "properties": { "field": { "const": "intent_summary" } } } },
+            { "contains": { "type": "object", "required": ["field"], "properties": { "field": { "const": "goals" } } } },
+            { "contains": { "type": "object", "required": ["field"], "properties": { "field": { "const": "scenarios" } } } },
+            { "contains": { "type": "object", "required": ["field"], "properties": { "field": { "const": "constraints" } } } },
+            { "contains": { "type": "object", "required": ["field"], "properties": { "field": { "const": "expected_outputs" } } } },
+            { "contains": { "type": "object", "required": ["field"], "properties": { "field": { "const": "non_goal_gaps" } } } },
+            { "contains": { "type": "object", "required": ["field"], "properties": { "field": { "const": "clarification_gaps" } } } }
+          ]
+        },
+        "confirmation_id": { "type": "string", "minLength": 1 },
+        "challenge_created_at": { "type": "string", "minLength": 1 },
+        "expires_at": { "type": "string", "minLength": 1 }
+      }
     },
     "challenge": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["schema_version", "record_type", "action", "project", "formal_baseline", "requirement_set_id", "requirement_set_version", "requirement_set_digest", "confirmation_view", "confirmation_view_digest", "confirmation_id", "created_at"],
+      "required": ["schema_version", "record_type", "action", "project", "formal_baseline", "requirement_set_id", "requirement_set_version", "requirement_set_generation", "requirement_set_digest", "confirmation_view", "confirmation_view_digest", "confirmation_id", "created_at", "expires_at"],
       "properties": {
         "schema_version": { "const": "1.0" },
         "record_type": { "const": "confirmation-challenge" },
@@ -26,17 +75,70 @@
         "formal_baseline": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
         "requirement_set_id": { "type": "string", "minLength": 1 },
         "requirement_set_version": { "type": "integer", "minimum": 1 },
-        "requirement_set_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
-        "confirmation_view": { "type": "object" },
-        "confirmation_view_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "requirement_set_generation": { "type": "integer", "minimum": 1 },
+        "requirement_set_digest": { "$ref": "#/definitions/digest" },
+        "confirmation_view": { "$ref": "#/definitions/confirmationView" },
+        "confirmation_view_digest": { "$ref": "#/definitions/digest" },
         "confirmation_id": { "type": "string", "minLength": 1 },
-        "created_at": { "type": "string", "minLength": 1 }
+        "created_at": { "type": "string", "minLength": 1 },
+        "expires_at": { "type": "string", "minLength": 1 }
+      }
+    },
+    "viewDisplay": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "record_type", "action", "project", "formal_baseline", "requirement_set_id", "requirement_set_version", "requirement_set_generation", "requirement_set_digest", "confirmation_view", "confirmation_view_digest", "confirmation_id", "challenge", "challenge_digest", "display_id", "displayed_at"],
+      "properties": {
+        "schema_version": { "const": "1.0" },
+        "record_type": { "const": "confirmation-view-display" },
+        "action": { "const": "freeze-requirement-set" },
+        "project": { "$ref": "#/definitions/project" },
+        "formal_baseline": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+        "requirement_set_id": { "type": "string", "minLength": 1 },
+        "requirement_set_version": { "type": "integer", "minimum": 1 },
+        "requirement_set_generation": { "type": "integer", "minimum": 1 },
+        "requirement_set_digest": { "$ref": "#/definitions/digest" },
+        "confirmation_view": { "$ref": "#/definitions/confirmationView" },
+        "confirmation_view_digest": { "$ref": "#/definitions/digest" },
+        "confirmation_id": { "type": "string", "minLength": 1 },
+        "challenge": { "$ref": "#/definitions/challenge" },
+        "challenge_digest": { "$ref": "#/definitions/digest" },
+        "display_id": { "type": "string", "minLength": 1 },
+        "displayed_at": { "type": "string", "minLength": 1 }
+      }
+    },
+    "userAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "record_type", "action", "project", "formal_baseline", "requirement_set_id", "requirement_set_version", "requirement_set_generation", "requirement_set_digest", "confirmation_view_digest", "confirmation_id", "challenge_digest", "challenge_created_at", "expires_at", "display_id", "display_digest", "displayed_at", "user_action_id", "event_source", "user_action", "occurred_at"],
+      "properties": {
+        "schema_version": { "const": "1.0" },
+        "record_type": { "const": "user-confirmation-action" },
+        "action": { "const": "freeze-requirement-set" },
+        "project": { "$ref": "#/definitions/project" },
+        "formal_baseline": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+        "requirement_set_id": { "type": "string", "minLength": 1 },
+        "requirement_set_version": { "type": "integer", "minimum": 1 },
+        "requirement_set_generation": { "type": "integer", "minimum": 1 },
+        "requirement_set_digest": { "$ref": "#/definitions/digest" },
+        "confirmation_view_digest": { "$ref": "#/definitions/digest" },
+        "confirmation_id": { "type": "string", "minLength": 1 },
+        "challenge_digest": { "$ref": "#/definitions/digest" },
+        "challenge_created_at": { "type": "string", "minLength": 1 },
+        "expires_at": { "type": "string", "minLength": 1 },
+        "display_id": { "type": "string", "minLength": 1 },
+        "display_digest": { "$ref": "#/definitions/digest" },
+        "displayed_at": { "type": "string", "minLength": 1 },
+        "user_action_id": { "type": "string", "minLength": 1 },
+        "event_source": { "const": "independent-user-action" },
+        "user_action": { "enum": ["confirm", "reject", "cancel"] },
+        "occurred_at": { "type": "string", "minLength": 1 }
       }
     },
     "envelope": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["schema_version", "record_type", "action", "project", "formal_baseline", "requirement_set_id", "requirement_set_version", "requirement_set_digest", "confirmation_view_digest", "confirmation_id", "challenge", "challenge_digest", "confirmation_kind", "confirmed_at"],
+      "required": ["schema_version", "record_type", "action", "project", "formal_baseline", "requirement_set_id", "requirement_set_version", "requirement_set_generation", "requirement_set_digest", "confirmation_view_digest", "confirmation_id", "challenge", "challenge_digest", "display", "display_digest", "user_action", "user_action_digest", "confirmation_kind", "confirmed_at"],
       "properties": {
         "schema_version": { "const": "1.0" },
         "record_type": { "const": "confirmation-envelope" },
@@ -45,11 +147,16 @@
         "formal_baseline": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
         "requirement_set_id": { "type": "string", "minLength": 1 },
         "requirement_set_version": { "type": "integer", "minimum": 1 },
-        "requirement_set_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
-        "confirmation_view_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "requirement_set_generation": { "type": "integer", "minimum": 1 },
+        "requirement_set_digest": { "$ref": "#/definitions/digest" },
+        "confirmation_view_digest": { "$ref": "#/definitions/digest" },
         "confirmation_id": { "type": "string", "minLength": 1 },
         "challenge": { "$ref": "#/definitions/challenge" },
-        "challenge_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "challenge_digest": { "$ref": "#/definitions/digest" },
+        "display": { "$ref": "#/definitions/viewDisplay" },
+        "display_digest": { "$ref": "#/definitions/digest" },
+        "user_action": { "$ref": "#/definitions/userAction" },
+        "user_action_digest": { "$ref": "#/definitions/digest" },
         "confirmation_kind": { "const": "explicit-user-confirmation" },
         "confirmed_at": { "type": "string", "minLength": 1 }
       }

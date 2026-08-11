@@ -3,8 +3,19 @@ import { spawn } from "node:child_process";
 import { resolve } from "node:path";
 import test from "node:test";
 
+import { type ProcessIoAdapter } from "../../src/adapters/node/process-io.ts";
+import { runRequirementFreeze } from "../../src/cli/requirement-freeze.ts";
 import { canonicalizeJson, parseCanonicalJsonBytes } from "../../src/domain/canonical-json.ts";
-import { createConfirmationChallenge, createConfirmationEnvelope } from "../../src/domain/requirement-confirmation.ts";
+import {
+  createConfirmationChallenge,
+  createConfirmationEnvelope,
+  createConfirmationInteractionSession,
+  createUnverifiedConfirmationViewDisplay,
+  createUnverifiedUserConfirmationAction,
+  reduceConfirmationInteractionState,
+  verifyConfirmationInteraction,
+  type ConfirmationExecutionContext,
+} from "../../src/domain/requirement-confirmation.ts";
 import { buildRequirementSet } from "../../src/domain/requirement-set.ts";
 
 const compiledCliPath = resolve(process.cwd(), "dist/src/cli/requirement-freeze.js");
@@ -49,28 +60,104 @@ function command() {
       { field: "clarification_gaps", status: "none", values: [] },
     ],
   });
-  const challenge = createConfirmationChallenge(requirementSet, { confirmation_id: "confirm-cli", created_at: "2026-08-10T01:07:00.000Z" });
+  const challenge = createConfirmationChallenge(requirementSet, {
+    confirmation_id: "confirm-cli",
+    created_at: "2026-08-10T01:07:00.000Z",
+    expires_at: "2026-08-10T01:10:00.000Z",
+  });
+  const display = createUnverifiedConfirmationViewDisplay(challenge, {
+    display_id: "display-cli",
+    displayed_at: "2026-08-10T01:08:00.000Z",
+  });
+  const userAction = createUnverifiedUserConfirmationAction(display, {
+    user_action_id: "user-action-cli",
+    action: "confirm",
+    occurred_at: "2026-08-10T01:09:00.000Z",
+  });
+  const verifier = {
+    verifier_kind: "manual-isolated-fixture",
+    verify: () => true,
+  } as const;
+  const verified = verifyConfirmationInteraction({ display, user_action: userAction }, verifier);
+  const interactionSession = createConfirmationInteractionSession(verified);
+  reduceConfirmationInteractionState(
+    interactionSession,
+    { type: "user-action", user_action: userAction, evaluated_at: "2026-08-10T01:09:01.000Z" },
+  );
   return {
-    schema_version: "1.0",
-    action: "freeze-requirement-set",
-    requirement_set: requirementSet,
-    confirmation: createConfirmationEnvelope(challenge, { confirmation_kind: "explicit-user-confirmation", confirmed_at: "2026-08-10T01:08:00.000Z" }),
-    known_frozen_records: [],
+    command: {
+      schema_version: "1.0",
+      action: "freeze-requirement-set",
+      requirement_set: requirementSet,
+      confirmation: createConfirmationEnvelope(verified),
+      known_frozen_records: [],
+    },
+    context: {
+      verifier,
+      verified_interaction: verified,
+      interaction_session: interactionSession,
+      now: () => new Date("2026-08-10T01:09:30.000Z"),
+    } satisfies ConfirmationExecutionContext,
   };
 }
 
-test("requirement freeze CLI emits exactly one JCS receipt and only stderr diagnostics", async () => {
-  const result = await runCli(canonicalizeJson(command()));
-  assert.equal(result.code, 0, result.stderr);
-  assert.equal(result.stderr, "");
+function createFakeIo(input: string): {
+  readonly io: ProcessIoAdapter;
+  readonly output: string[];
+  readonly diagnostics: string[];
+  readonly exitCodes: number[];
+} {
+  const output: string[] = [];
+  const diagnostics: string[] = [];
+  const exitCodes: number[] = [];
+  return {
+    io: {
+      args: [],
+      async readInput(): Promise<Uint8Array> {
+        return Buffer.from(input, "utf8");
+      },
+      writeOutput(value: string): void {
+        output.push(value);
+      },
+      writeDiagnostic(value: string): void {
+        diagnostics.push(value);
+      },
+      setExitCode(code: number): void {
+        exitCodes.push(code);
+      },
+    },
+    output,
+    diagnostics,
+    exitCodes,
+  };
+}
+
+test("in-process runner emits one accepted JCS receipt only with an injected trusted context", async () => {
+  const { command: input, context } = command();
+  const fake = createFakeIo(canonicalizeJson(input));
+
+  await runRequirementFreeze(fake.io, context);
+
+  assert.deepEqual(fake.diagnostics, []);
+  assert.deepEqual(fake.exitCodes, []);
+  assert.equal(fake.output.length, 1);
+  const receipt = parseCanonicalJsonBytes(Buffer.from(fake.output[0]!, "utf8")) as Record<string, unknown>;
+  assert.equal(receipt.ok, true);
+  assert.equal(receipt.code, "REQUIREMENT_FREEZE_ACCEPTED");
+});
+
+test("requirement freeze CLI fails closed without a trusted in-process execution context", async () => {
+  const { command: input } = command();
+  const result = await runCli(canonicalizeJson(input));
+  assert.notEqual(result.code, 0);
   assert.equal(result.stdout.split("\n").length, 1);
   const receipt = parseCanonicalJsonBytes(Buffer.from(result.stdout, "utf8")) as Record<string, unknown>;
-  assert.equal(receipt.code, "REQUIREMENT_FREEZE_ACCEPTED");
-  assert.equal(receipt.ok, true);
+  assert.equal(receipt.code, "CONFIRMATION_MISMATCH");
+  assert.equal(receipt.ok, false);
 });
 
 test("requirement freeze CLI fails closed without echoing sensitive values", async () => {
-  const input = command();
+  const { command: input } = command();
   const result = await runCli(canonicalizeJson({
     ...input,
     requirement_set: { ...input.requirement_set, summary: "Authorization: Bearer secret-value-not-to-echo" },

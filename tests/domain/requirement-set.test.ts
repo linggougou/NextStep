@@ -9,7 +9,15 @@ import {
   parseRequirementSet,
   RequirementSetError,
 } from "../../src/domain/requirement-set.ts";
-import { createConfirmationChallenge, createConfirmationEnvelope } from "../../src/domain/requirement-confirmation.ts";
+import {
+  createConfirmationChallenge,
+  createConfirmationEnvelope,
+  createConfirmationInteractionSession,
+  createUnverifiedConfirmationViewDisplay,
+  createUnverifiedUserConfirmationAction,
+  reduceConfirmationInteractionState,
+  verifyConfirmationInteraction,
+} from "../../src/domain/requirement-confirmation.ts";
 import { freezeRequirementSet, recoverFrozenRequirement } from "../../src/domain/requirement-freeze.ts";
 
 const freezeFixtureDirectory = resolve(process.cwd(), "tests/fixtures/requirement-freeze");
@@ -21,7 +29,15 @@ interface FreezeFixture {
   readonly requirement_set_id: string;
   readonly version: number;
   readonly confirmation_id: string;
-  readonly confirmed_at: string;
+  readonly host_replay: {
+    readonly evidence_scope: "consumer-contract-only";
+    readonly challenge_created_at: string;
+    readonly expires_at: string;
+    readonly display_id: string;
+    readonly displayed_at: string;
+    readonly user_action_id: string;
+    readonly occurred_at: string;
+  };
   readonly user_resolutions: readonly unknown[];
 }
 
@@ -63,17 +79,40 @@ test("Requirement Set combines three target-project candidates with explicit non
     const fixtureInput = await readFixture(fixture);
     const challenge = createConfirmationChallenge(parsed, {
       confirmation_id: fixtureInput.confirmation_id,
-      created_at: fixtureInput.confirmed_at,
+      created_at: fixtureInput.host_replay.challenge_created_at,
+      expires_at: fixtureInput.host_replay.expires_at,
     });
+    const display = createUnverifiedConfirmationViewDisplay(challenge, {
+      display_id: fixtureInput.host_replay.display_id,
+      displayed_at: fixtureInput.host_replay.displayed_at,
+    });
+    const userAction = createUnverifiedUserConfirmationAction(display, {
+      user_action_id: fixtureInput.host_replay.user_action_id,
+      action: "confirm",
+      occurred_at: fixtureInput.host_replay.occurred_at,
+    });
+    const verifier = {
+      verifier_kind: "manual-isolated-fixture" as const,
+      verify: () => true,
+    };
+    const verified = verifyConfirmationInteraction({ display, user_action: userAction }, verifier);
+    const interactionSession = createConfirmationInteractionSession(verified);
+    reduceConfirmationInteractionState(
+      interactionSession,
+      { type: "user-action", user_action: userAction, evaluated_at: fixtureInput.host_replay.occurred_at },
+    );
     const frozen = freezeRequirementSet({
       schema_version: "1.0",
       action: "freeze-requirement-set",
       requirement_set: parsed,
-      confirmation: createConfirmationEnvelope(challenge, {
-        confirmation_kind: "explicit-user-confirmation",
-        confirmed_at: fixtureInput.confirmed_at,
-      }),
+      confirmation: createConfirmationEnvelope(verified),
+    }, undefined, {
+      verifier,
+      verified_interaction: verified,
+      interaction_session: interactionSession,
+      now: () => new Date(new Date(fixtureInput.host_replay.occurred_at).valueOf() + 1),
     });
+    assert.equal(fixtureInput.host_replay.evidence_scope, "consumer-contract-only");
     assert.equal(recoverFrozenRequirement(JSON.parse(JSON.stringify(frozen))).frozen_requirement_id, frozen.frozen_requirement_id);
   }
 

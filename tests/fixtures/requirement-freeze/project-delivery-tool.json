@@ -7,7 +7,15 @@
   "requirement_set_id": "req-project-delivery-tool",
   "version": 1,
   "confirmation_id": "confirm-project-delivery-tool",
-  "confirmed_at": "2026-08-10T01:00:00.000Z",
+  "host_replay": {
+    "evidence_scope": "consumer-contract-only",
+    "challenge_created_at": "2026-08-10T00:57:00.000Z",
+    "expires_at": "2026-08-10T01:05:00.000Z",
+    "display_id": "display-project-delivery-tool",
+    "displayed_at": "2026-08-10T00:58:00.000Z",
+    "user_action_id": "user-action-project-delivery-tool",
+    "occurred_at": "2026-08-10T01:00:00.000Z"
+  },
   "user_resolutions": [
     { "field": "scenarios", "status": "identified", "values": ["企业团队规划项目时"] },
     { "field": "constraints", "status": "identified", "values": ["不连接外部服务"] },

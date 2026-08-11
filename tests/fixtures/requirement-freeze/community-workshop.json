@@ -7,7 +7,15 @@
   "requirement_set_id": "req-community-workshop",
   "version": 2,
   "confirmation_id": "confirm-community-workshop",
-  "confirmed_at": "2026-08-10T01:01:00.000Z",
+  "host_replay": {
+    "evidence_scope": "consumer-contract-only",
+    "challenge_created_at": "2026-08-10T00:58:00.000Z",
+    "expires_at": "2026-08-10T01:06:00.000Z",
+    "display_id": "display-community-workshop",
+    "displayed_at": "2026-08-10T00:59:00.000Z",
+    "user_action_id": "user-action-community-workshop",
+    "occurred_at": "2026-08-10T01:01:00.000Z"
+  },
   "user_resolutions": [
     { "field": "expected_outputs", "status": "identified", "values": ["活动报名清单"] },
     { "field": "non_goal_gaps", "status": "rejected", "values": [] },
