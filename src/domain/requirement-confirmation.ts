@@ -568,9 +568,15 @@ export function reduceConfirmationInteractionState(
     fail("CONFIRMATION_MISMATCH", "A trusted confirmation interaction session is required");
   }
   const state = record.current_state;
-  const verifiedInteraction = event.type === "user-action" ? event.verified_interaction : undefined;
+  const eventType: unknown = event.type;
+  if (eventType !== "user-action" && eventType !== "evaluate" && eventType !== "view-change") {
+    fail("CONFIRMATION_MISMATCH", "Unknown confirmation interaction event type");
+  }
+  const userActionEvent = event as Extract<ConfirmationInteractionStateEvent, { readonly type: "user-action" }>;
+  const viewChangeEvent = event as Extract<ConfirmationInteractionStateEvent, { readonly type: "view-change" }>;
+  const verifiedInteraction = eventType === "user-action" ? userActionEvent.verified_interaction : undefined;
   if (
-    event.type === "user-action" &&
+    eventType === "user-action" &&
     (
       verifiedInteraction === undefined ||
       verifiedInteractions.get(verifiedInteraction) === undefined ||
@@ -600,21 +606,21 @@ export function reduceConfirmationInteractionState(
   if (evaluatedAt >= parseTime(state.expires_at, "confirmation expiry")) {
     return transition("expired");
   }
-  if (event.type === "view-change") {
-    const display = parseConfirmationViewDisplay(event.display);
+  if (eventType === "view-change") {
+    const display = parseConfirmationViewDisplay(viewChangeEvent.display);
     if (evaluatedAt < parseTime(display.displayed_at, "changed confirmation display time")) {
       fail("CONFIRMATION_MISMATCH", "A view change cannot be evaluated before it is displayed");
     }
     return transition(stateMatchesDisplay(state, display) ? state.status : "superseded");
   }
-  if (event.type === "evaluate") {
+  if (eventType === "evaluate") {
     return transition(state.status);
   }
-  const action = event.verified_interaction.user_action;
+  const action = userActionEvent.verified_interaction.user_action;
   if (evaluatedAt < parseTime(action.occurred_at, "user action time")) {
     fail("CONFIRMATION_MISMATCH", "A user action cannot be evaluated before it occurs");
   }
-  if (action.user_action === "confirm" && event.verified_interaction !== record.verified_interaction) {
+  if (action.user_action === "confirm" && userActionEvent.verified_interaction !== record.verified_interaction) {
     fail("CONFIRMATION_MISMATCH", "Confirm action capability is not the current canonical replay");
   }
   const status: ConfirmationInteractionStatus = action.user_action === "confirm"

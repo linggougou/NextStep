@@ -1,5 +1,15 @@
 # Verification Report
 
+## 2026-08-11 P5 / V1 / M1.1 / S1.2 Generation 2 Attempt 2 候选前验证
+
+- 控制身份：packet `ep-p5-v1-m1.1-s1.2-g2-a2-20260811`，digest `sha256:284fa8f390d9dd694d6c9b65d0e08120489a9861f8d704203c946eac847490fe`，dedup `sha256:fa28d92bc7d89ca127b1cc11f69c99f4cad75c95222da152ddb7abf7461c01a7`，fence `17`；formal baseline 保持 `8ffaf658e112a5ba26a9f83882f5f71f1ae79454`。
+- 上轮门禁：attempt 1 候选验证 `退回`，P0 = 0、P1 = 1；I/X/P 为三项通过。结果摘要已复算并 CAS 到 control，L3 未启动。
+- TDD：RED 为 98/99，未知 discriminant 可无错误改变状态；GREEN 后 `pnpm check` 为 99/99。reducer 单次读取 `event.type`，在终态、expiry 和动作转换前穷尽拒绝未知值，可变 getter 仅读取一次。
+- 覆盖率：行 `90.02%`、分支 `83.67%`、函数 `97.66%`，全部高于 80%。
+- 辅助门禁：官方 npm registry audit 无已知漏洞；Skill validator 返回 `Skill is valid!`；157 份有效 JSON、8/8 attempt 2 allowlist、受保护上游、秘密/调试、格式和 runtime/control tree 精确一致性通过。
+- 工具替代：默认镜像 audit endpoint 缺失，改用官方 registry；秘密扫描改用 `rg -e`；JSON 排除故意无效负例 `tests/fixtures/requirement-intake/empty-input.json`。替代检查均通过且未改变项目依赖。
+- 当前结论：`candidate-ready`，尚未固定 Git 身份。候选验证与 I/X/P 同时通过前不得启动 L3，也不得宣称 PC-02、M1.1、V1、P5 或阶段完成。
+
 ## 2026-08-11 P5 / V1 / M1.1 / S1.2 Generation 2 候选前验证
 
 - 控制身份：packet `ep-p5-v1-m1.1-s1.2-g2-a1-20260811`，digest `sha256:166a66e02d8d71db9bd1aa11941db223e50aa704463dbbe404e3bf87607b70fe`，dedup `sha256:1a951bf23252439298d6daad314bae9de7c99c8505bed20d6d6942ee4ee4ca15`，fence `15`；generation 2 ack、派发确认和 control tree 均存在。

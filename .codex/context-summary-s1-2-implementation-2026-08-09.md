@@ -1,5 +1,13 @@
 # S1.2 实现上下文摘要
 
+## 2026-08-11 S1.2 Generation 2 Attempt 2 事件边界修复上下文
+
+- attempt 1 固定候选 `8e4626d73ab8acf7b33b35feb420ebabcef35463` 的 I/X/P 为三项通过；候选验证 `退回`，P0 = 0、P1 = 1：未知 `event.type` 可跳过 user-action capability 校验并落入默认动作分支。两份结果摘要分别为 `sha256:7aedfb832cc13606e7cc1c88236c94fae9e9af2c51a8d042cfa2946fa0fc5812` 与 `sha256:0fd6d7faa95b39b67652a547965605ddd8e77b91826cebc3659ad29da785f16d`。
+- P4 恢复规则要求同一计划代际内创建新 attempt；attempt 2 packet digest `sha256:284fa8f390d9dd694d6c9b65d0e08120489a9861f8d704203c946eac847490fe`，dedup `sha256:fa28d92bc7d89ca127b1cc11f69c99f4cad75c95222da152ddb7abf7461c01a7`，working parent 为 attempt 1 候选，fence `17`。
+- TDD RED 为 98/99：未知 discriminant 可无错误改变状态。GREEN 对 `event.type` 单次读取，在任何终态、expiry 或转换前穷尽拒绝未知值；回归覆盖已验证/伪造 capability 和可变 getter，getter 仅读取一次。
+- 主管 `pnpm check` 通过 99/99，覆盖率行 `90.02%`、分支 `83.67%`、函数 `97.66%`；官方源 audit、Skill、157 份有效 JSON、allowlist、受保护上游、秘密/调试、格式及 runtime/control tree 一致性通过。
+- 当前结论仅为 attempt 2 本地 `candidate-ready`。固定提交并重新通过独立候选验证与 I/X/P 前，不得启动 L3、进入 S1.3 或作 PC-02、M1.1、V1、P5 完成结论。
+
 ## 2026-08-11 S1.2 Generation 2 Verified Capability 修复上下文
 
 - generation 1 attempt 5 固定候选 `c8be6bb5f4f5195e268d0762740101d39acf23c2` 的候选验证通过，但 I/X/P 发现裸 reject/cancel 仍可永久终结 pending session；attempt 6 又因两条既有消费者契约测试不在 allowlist 而阻塞，未修改文件。

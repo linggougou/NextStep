@@ -1,5 +1,14 @@
 # Operations Log
 
+## 2026-08-11 P5 / V1 / M1.1 / S1.2 Generation 2 Attempt 2 本地候选
+
+- 双前置结果已以 expected-old CAS 写入 control：候选验证 `退回`，P0 = 0、P1 = 1；I/X/P 为三项通过，P0/P1 = 0。未知或可变 `event.type` 可绕过 capability 校验，因此 L3 未启动。
+- 按 P4 同代际重试规则建立 attempt 2；packet digest `sha256:284fa8f390d9dd694d6c9b65d0e08120489a9861f8d704203c946eac847490fe`，dedup `sha256:fa28d92bc7d89ca127b1cc11f69c99f4cad75c95222da152ddb7abf7461c01a7`，fence `17`。packet、dispatch-ready、outbox、claim 和 Terra ack 均已分步 CAS。
+- TDD RED 为 98/99；GREEN 将 discriminant 单次快照并在任何状态转换前穷尽校验。主管 `pnpm check` 通过 99/99，覆盖率行 `90.02%`、分支 `83.67%`、函数 `97.66%`。
+- 辅助门禁：官方源 audit 无已知漏洞，Skill validator 通过，157 份有效 JSON、allowlist、受保护上游、秘密/调试、`git diff --check` 和 runtime/control tree OID 一致性通过。
+- 工具替代与纠错：默认 npmmirror 无 audit endpoint，改用官方 npm registry 后通过；首次秘密扫描被 zsh 括号解析拒绝，改用 `rg -e` 后仅命中既有负例测试数据；首次 JSON 全集包含故意无效的 `empty-input.json`，排除该负例后重跑通过。三次辅助失败均未修改文件。
+- 当前状态仅为 attempt 2 `candidate-ready`；待固定候选并重新执行独立候选验证与 I/X/P，不进入 L3、S1.3 或任何 PC/里程碑完成结论。
+
 ## 2026-08-11 P5 / V1 / M1.1 / S1.2 Generation 2 本地候选
 
 - CR-003 已按当前阶段缺口分流。attempt 6 `blocked` Result Envelope 摘要 `sha256:a39535235dae438359739f67fad787ef68040a839001c30047345c80da709340` 已写入 control；随后依次 CAS 持久化 generation-advance、generation-ack、g2/a1 packet、dispatch-ready、outbox、fence 15 claim 和 Terra dispatch-ack。当前 control ref 为 `d3adb825ce0e6b4a0ca1ff913e2deb1d8887c3ab`。

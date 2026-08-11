@@ -5,7 +5,7 @@
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
 - 当前活动里程碑：V1 / M1.1 / S1.2 需求补全冻结与恢复运行
-- 当前状态：P5-M0 已关闭；S1.1 已正式提升；S1.2 generation 2 attempt 1 本地候选就绪，待固定提交与双前置门禁
+- 当前状态：P5-M0 已关闭；S1.1 已正式提升；S1.2 generation 2 attempt 2 本地候选就绪，待固定提交与双前置门禁
 
 ## 当前活动计划
 
@@ -27,7 +27,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。P5-M0 固定候选 `8cc0f3d` 已通过第七轮 L3 `PASS / 97`。S1.1 attempt 2 候选 `5d6fd5b` 已完成独立候选验证、I/X/P、L3、Final Content Snapshot、独立最终复验、项目外凭证、审计锚、Anchor Proof 和 formal ref CAS，并已正式提升。S1.2 generation 1 已由 CR-003 代际失效；generation 2 attempt 1 已完成 verified capability reducer 修复、两条消费者契约迁移和 98/98 本地验证。当前入口为固定该候选并执行独立候选验证与 I/X/P，不作 PC-02、M1.1、V1 或 P5 完成结论。
+P5 已于 2026-08-08 单独启动。P5-M0 固定候选 `8cc0f3d` 已通过第七轮 L3 `PASS / 97`。S1.1 attempt 2 候选 `5d6fd5b` 已完成独立候选验证、I/X/P、L3、Final Content Snapshot、独立最终复验、项目外凭证、审计锚、Anchor Proof 和 formal ref CAS，并已正式提升。S1.2 generation 2 attempt 1 的 I/X/P 通过，但候选验证发现未知事件类型可绕过 capability 校验；attempt 2 已补单次 discriminant 快照和穷尽运行时校验，99/99 本地通过。当前入口为固定 attempt 2 候选并重新执行独立候选验证与 I/X/P，不作 PC-02、M1.1、V1 或 P5 完成结论。
 
 实施顺序保持 P3 已会签结构：
 

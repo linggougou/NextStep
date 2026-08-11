@@ -478,3 +478,61 @@ test("reducer consumes only a verified interaction capability for every user dec
     "superseded",
   );
 });
+
+test("reducer snapshots and exhaustively validates the interaction event discriminant", () => {
+  const unknownEvent = (
+    type: unknown,
+    verifiedInteraction: unknown,
+    evaluatedAt: string,
+  ) => ({
+    type,
+    verified_interaction: verifiedInteraction,
+    evaluated_at: evaluatedAt,
+  }) as unknown as ConfirmationInteractionStateEvent;
+
+  const verifiedReplay = confirmedReplay(completeRequirementSet(), "confirm-event-unknown-verified");
+  const verifiedSession = createConfirmationInteractionSession(verifiedReplay.verified);
+  assert.throws(
+    () => reduceConfirmationInteractionState(
+      verifiedSession,
+      unknownEvent("unknown-event", verifiedReplay.verified, "2026-08-10T01:05:01.000Z"),
+    ),
+    (error: unknown) => error instanceof RequirementConfirmationError,
+  );
+  assert.equal(getConfirmationInteractionState(verifiedSession).status, "pending");
+
+  const forgedReplay = confirmedReplay(completeRequirementSet(), "confirm-event-unknown-forged");
+  const forgedSession = createConfirmationInteractionSession(forgedReplay.verified);
+  assert.throws(
+    () => reduceConfirmationInteractionState(
+      forgedSession,
+      unknownEvent(
+        "unknown-event",
+        Object.freeze({ ...forgedReplay.verified }),
+        forgedReplay.challenge.expires_at,
+      ),
+    ),
+    (error: unknown) => error instanceof RequirementConfirmationError,
+  );
+  assert.equal(getConfirmationInteractionState(forgedSession).status, "pending");
+
+  const getterReplay = confirmedReplay(completeRequirementSet(), "confirm-event-type-getter");
+  const getterSession = createConfirmationInteractionSession(getterReplay.verified);
+  let typeReads = 0;
+  const mutableTypeEvent = Object.defineProperty({
+    verified_interaction: Object.freeze({ ...getterReplay.verified }),
+    evaluated_at: "2026-08-10T01:05:01.000Z",
+  }, "type", {
+    enumerable: true,
+    get: () => {
+      typeReads += 1;
+      return typeReads === 1 ? "user-action" : "evaluate";
+    },
+  }) as unknown as ConfirmationInteractionStateEvent;
+  assert.throws(
+    () => reduceConfirmationInteractionState(getterSession, mutableTypeEvent),
+    (error: unknown) => error instanceof RequirementConfirmationError,
+  );
+  assert.equal(typeReads, 1);
+  assert.equal(getConfirmationInteractionState(getterSession).status, "pending");
+});
