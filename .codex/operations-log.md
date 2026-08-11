@@ -1664,3 +1664,19 @@
 - 审查宿主：Feynman/Terra 的修复后复核在平台侧返回 HTTP 503，未执行仓库命令、未形成质量结论；该故障不计为候选失败，也不视为 PASS。已改派 Godel/Sol 执行同一只读复核。
 - 修复后独立复核：Godel/Sol `PASS`，P0=0、P1=0；确认外层 event 与嵌套 display 在 session 状态读取前完成快照，reject/cancel/expiry/superseded 重入不能用陈旧状态覆盖；replay 深快照、display 级 session 唯一化、canonical confirm 和签署 capability 未发现绕过。该结论仅覆盖会签状态机安全边界。
 - 审查门禁：关闭主管补丁审查阻塞，允许在最后范围检查后 amend attempt 7 单父候选；CV、I/X/P、L3 及正式提升仍未执行。
+
+## 2026-08-12 P5 / V1 / M1.1 / S1.3 Generation 2 Attempt 7 固定候选与三类前置门禁
+
+- 固定候选：commit `09628302c090523d0c755fa2ce2022b1cb1e4220`，tree `37939827074829fc2e74f51e7cdef0e7033b547d`，parent `b0189d06c9a5597ec794a279b33570b00b64d4b9`；formal baseline 保持 `a854fd4938b34ab24d88e72430be52b397c91096`。
+- Execution Result：`candidate-ready`，摘要 `sha256:39745248c09010d04562cfd68c50855fe453091b5fc18dc28d58af8d6a06569b`。原宿主任务经 fence 36 create-or-return 恢复，没有创建重复执行任务。
+- 候选验证：attempt 6 在 `--no-local` detached 隔离副本完成冻结安装、`pnpm check`、122/122、覆盖率 `90.78% / 82.02% / 98.26%`、9/9 定向反证、Skill、audit、JSON、allowlist 与受保护上游反扫；结论 `PASS / 96`，P0=0、P1=0、P2=1，结果摘要 `sha256:1cdf9e65c5e2ad3056b6aeda5e6d1e57e37854d2e135a65374fae98fd7bdaa90`。
+- I/X/P：attempt 5 的 I、X、P 均 `PASS`，P0=0、P1=0、P2=2；结论严格限于 headless `manual-isolated consumer contract`，结果摘要 `sha256:6a81d4f0bce6a03683884e7a22a5e37cda99674f6b0b70957e34e43aa81d5db1`。
+- L3：attempt 2 按 `judge-harness` 得到 `PASS / 96`，P0=0、P1=0、P2=1，`required_fixes=[]`；14 项硬门禁通过，L3 结果摘要 `sha256:7da52116a8912f0ff6481254e5dfb6444dba6dd8a0db807039222ee3bab02893`。审查产物保存于 `.codex/reviews/p5-v1-m1.1-s1.3-implementation-2026-08-12/`。
+- 保留风险：模块级 replay/session registry 在未来长驻 trusted-host 中缺少有界生命周期；确定性内核不裁决开放自然语言产品质量；fixture 不证明真实 trusted-host adapter、真实用户动作探针或 `full` 支持。
+- 路线判断：未出现新需求、阶段切换或高危动作。已同步路线锁到“允许进入 Final Content Snapshot”；不宣称 PC-03、M1.1、V1、P5 或 formal 完成。
+- 安全边界：本轮核对和留痕未使用破坏性 Git 命令，未移动 formal/control refs，未 push。上轮追加 patch 因上下文行不匹配未生效，本次重新定位文件末尾后使用 `apply_patch` 完成。
+
+## 2026-08-12 P5 / V1 / M1.1 / S1.3 Final Content Snapshot 前置状态
+
+- 当前只允许把路线锁、三份项目留痕和专属 L3 review 产物纳入 Snapshot；候选业务代码保持固定，不再接受候选内容修改。
+- 下一门禁：生成 Final Content Snapshot 与 Write Transaction，从精确 Snapshot 派发独立最终复验；最终复验、项目外 Credential、Audit Anchor、Anchor Proof 和最终 control/formal CAS 全部通过前，formal ref 保持不变。

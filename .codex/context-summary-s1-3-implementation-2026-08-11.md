@@ -48,3 +48,13 @@
 - 辅助门禁：官方 Skill validator 在 `/tmp` 临时 PyYAML 环境返回 `Skill is valid!`；官方 npm registry audit 无已知漏洞；60 份适用 JSON 可解析，既有故意空 JSON 负例由拒绝测试覆盖。
 - 不变性：12 个改动路径均在 packet allowlist；路线/计划、上游真源、runtime/reviews、依赖配置和 formal/control ref 保持不变。
 - 状态：外层 event 与嵌套 display 两类 Proxy 重入修复均已通过本地 TDD，Godel/Sol 独立复核 `PASS / P0=0 / P1=0`。尚未 amend 单父候选、生成 Execution Result、执行独立 CV/I/X/P/L3 或正式提升；不构成 PC-03、M1.1、V1、P5 或正式提升结论。
+
+## 2026-08-12 固定候选与门禁结果
+
+- 固定候选：`09628302c090523d0c755fa2ce2022b1cb1e4220`；tree `37939827074829fc2e74f51e7cdef0e7033b547d`；parent `b0189d06c9a5597ec794a279b33570b00b64d4b9`；formal baseline `a854fd4938b34ab24d88e72430be52b397c91096`。
+- Execution：`candidate-ready`，摘要 `sha256:39745248c09010d04562cfd68c50855fe453091b5fc18dc28d58af8d6a06569b`。
+- CV attempt 6：`PASS / 96`，P0=0、P1=0、P2=1，摘要 `sha256:1cdf9e65c5e2ad3056b6aeda5e6d1e57e37854d2e135a65374fae98fd7bdaa90`。
+- I/X/P attempt 5：三项均 `PASS`，P0=0、P1=0、P2=2，摘要 `sha256:6a81d4f0bce6a03683884e7a22a5e37cda99674f6b0b70957e34e43aa81d5db1`。
+- L3 attempt 2：`PASS / 96`，P0=0、P1=0、P2=1，`required_fixes=[]`，摘要 `sha256:7da52116a8912f0ff6481254e5dfb6444dba6dd8a0db807039222ee3bab02893`。
+- 可重复验证：隔离 `--no-local` detached clone 中 122/122，覆盖率 `90.78% / 82.02% / 98.26%`；Skill、audit、JSON、allowlist、JCS/摘要和重入反证均通过。
+- 当前边界：只允许进入 Final Content Snapshot、独立最终复验、Verification Credential、Audit Anchor、Anchor Proof 与 formal CAS。fixture 仍仅证明 `manual-isolated consumer contract`；长驻 registry 生命周期、真实宿主/用户动作和开放自然语言语义保留为 P2 风险。

@@ -1,0 +1,189 @@
+{
+  "review_id": "p5-v1-m1.1-s1.3-independent-l3-g2-a2-2026-08-12",
+  "task_id": "S1.3-L3",
+  "lane": "independent-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-s1.3-implementation-l3-v1",
+  "artifact_refs": [
+    "git:09628302c090523d0c755fa2ce2022b1cb1e4220",
+    "tree:37939827074829fc2e74f51e7cdef0e7033b547d",
+    "parent:b0189d06c9a5597ec794a279b33570b00b64d4b9",
+    "formal:a854fd4938b34ab24d88e72430be52b397c91096",
+    "subject:sha256:dd79c2fb199ce4d176a9dcfdcf57b5ff1e5f372cbef1daa68823e15cebb3355e",
+    "claim:claim-s1.3-g2-a2-l3-f38-20260812#fence=38",
+    "git:e3bd54e67bef1553d4009a54966f9d6bf03c76e1:gate-requests/gate-independent-review-s1.3-g2-a2.json",
+    "git:e3bd54e67bef1553d4009a54966f9d6bf03c76e1:packets/ep-p5-v1-m1.1-s1.3-g2-a7-20260811.json",
+    "git:e3bd54e67bef1553d4009a54966f9d6bf03c76e1:results/result-execution-s1.3-g2-a7-20260811.json",
+    "git:e3bd54e67bef1553d4009a54966f9d6bf03c76e1:results/result-candidate-verification-s1.3-g2-a6.json",
+    "git:e3bd54e67bef1553d4009a54966f9d6bf03c76e1:results/result-product-interaction-s1.3-g2-a5.json",
+    "git:e3bd54e67bef1553d4009a54966f9d6bf03c76e1:results/result-independent-review-s1.3-g2-a1.json"
+  ],
+  "hard_gates": [
+    {
+      "id": "review_control_binding",
+      "status": "pass",
+      "evidence": "L3 packet RFC8785 摘要为 sha256:80b143341a7ff81ac11b10d6a049992cc33a31ec30f9a33ffb85b69a907d8a15；dispatch ack 的 claim 与 fence 38、task attempt 2、subject/formal 身份一致。"
+    },
+    {
+      "id": "immutable_candidate",
+      "status": "pass",
+      "evidence": "detached HEAD 精确为 candidate 09628302c090523d0c755fa2ce2022b1cb1e4220，tree/parent 与固定值一致；subject JCS 摘要匹配，formal a854fd4938b34ab24d88e72430be52b397c91096 是 parent 的祖先。"
+    },
+    {
+      "id": "upstream_result_integrity",
+      "status": "pass",
+      "evidence": "originating packet、Execution Result、CV Result、I/X/P Result 和 attempt 1 review result 的 RFC8785/JCS 投影摘要分别匹配 ff216e6340036a02e00a4b70676b2237cb39bfe5dfc42b70c82f5df0df0c9e88、39745248c09010d04562cfd68c50855fe453091b5fc18dc28d58af8d6a06569b、1cdf9e65c5e2ad3056b6aeda5e6d1e57e37854d2e135a65374fae98fd7bdaa90、6a81d4f0bce6a03683884e7a22a5e37cda99674f6b0b70957e34e43aa81d5db1、c78b360fc88098d006ac9a2ee0539ed229167d339a156e89ccf8d98559ed06e4。"
+    },
+    {
+      "id": "scope_control",
+      "status": "pass",
+      "evidence": "candidate 相对 parent 的 12 个 changed paths 全部命中 packet allowlist；forbidden/protected 路径命中为 0，git diff --check 通过。"
+    },
+    {
+      "id": "formal_and_upstream_immutability",
+      "status": "pass",
+      "evidence": "路线、PLANS、P5 活动计划、P3/P4/S4、产品/设计/架构真源、包管理、TypeScript 配置和 reviews/runtime 均未被 candidate 修改；主仓库工作树 clean，formal ref 保持固定值。"
+    },
+    {
+      "id": "local_reproducibility",
+      "status": "pass",
+      "evidence": "全新 --no-local detached clone 中 pnpm install --frozen-lockfile 和 pnpm check 通过；122/122 测试通过，失败/跳过/取消为 0，覆盖率为行 90.78%、分支 82.02%、函数 98.26%。"
+    },
+    {
+      "id": "product_contract_completeness",
+      "status": "pass",
+      "evidence": "独立 replay 拒绝跨 semantic_source start/complete/metric 链；独立 replay 拒绝同一 direct source 跨 problem、target_users、scenarios、actor 角色复用；activity/result 的状态词替换均拒绝。"
+    },
+    {
+      "id": "metric_journey_fail_closed",
+      "status": "pass",
+      "evidence": "每个语义来源按 not-started -> in-progress -> completed 分区连续校验，metric 绑定同来源完整链、完成转换和 transition digest；目标 fixture 与 l3-regressions 负例均在 detached clone 中回放。"
+    },
+    {
+      "id": "signoff_current_state",
+      "status": "pass",
+      "evidence": "getter 返回冻结状态快照；旧 confirmed 快照在权威 session 进入 rejected 后不能签署。pending/confirmed/rejected/cancelled/expired/superseded 与当前 display 绑定均由 session reducer 消费。"
+    },
+    {
+      "id": "reentry_hardening",
+      "status": "pass",
+      "evidence": "独立攻击覆盖 mutable replay、同 display 新 confirm、外层 event Proxy ownKeys 重入和嵌套 display Proxy ownKeys 重入；四条路径均保持终态且 sign fail closed。"
+    },
+    {
+      "id": "skill_stage_entry",
+      "status": "pass",
+      "evidence": "Skill frontmatter、Inspect The Stage、S1.3 product-definition 命令、activity/result 约束和 replacement display reducer 边界与当前 S1.3 路线一致；Skill stage replay 通过。"
+    },
+    {
+      "id": "schema_jcs_machine_receipt",
+      "status": "pass",
+      "evidence": "严格 Schema/JCS、来源摘要、产品定义 ID、CLI machine receipt 与完整候选摘要绑定通过；三份独立 fixture CLI 均返回单一 PRODUCT_DEFINITION_ACCEPTED。"
+    },
+    {
+      "id": "manual_scope_nonclaim",
+      "status": "pass",
+      "evidence": "结果和 Skill 均将 fixture 限定为 manual-isolated consumer contract；未宣称真实用户动作、trusted-host adapter、full、PC-03、M1.1、V1、P5 或 formal 完成。"
+    },
+    {
+      "id": "official_skill_validator",
+      "status": "pass",
+      "evidence": "官方 quick_validate.py 在临时 PyYAML 6.0.2 环境中返回 Skill is valid!；项目依赖和主仓库未改变。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "implementation_correctness",
+      "score": 25,
+      "max_score": 25,
+      "reason": "四项 attempt 1 P1 及 getter、replay、同 display、两层 Proxy 重入均有独立可执行反证，结果均符合 fail-closed 预期。",
+      "evidence_refs": ["src/domain/product-definition.ts", "tests/domain/product-definition.test.ts", "tests/fixtures/product-definition/l3-regressions.json"]
+    },
+    {
+      "id": "contract_rigor",
+      "score": 19,
+      "max_score": 20,
+      "reason": "来源指针、摘要、角色、旅程状态、metric transition 和 current-state signoff 均形成受控契约；开放文本语义仍按明确非目标留给 I/X/P。",
+      "evidence_refs": ["schemas/v1/product-definition.schema.json", "src/domain/product-definition.ts", "skills/nextstep/SKILL.md"]
+    },
+    {
+      "id": "architecture_and_scope",
+      "score": 20,
+      "max_score": 20,
+      "reason": "candidate 为单父提交，变更严格受 allowlist 约束，正式基线、路线、计划和上游真源未被偷改。",
+      "evidence_refs": ["packets/ep-p5-v1-m1.1-s1.3-g2-a7-20260811.json", "PROJECT_ROUTE_LOCK.md", "docs/exec-plans/active/p5-product-implementation-milestones.md"]
+    },
+    {
+      "id": "maintainability",
+      "score": 9,
+      "max_score": 10,
+      "reason": "验证、快照和 reducer 边界集中且测试可追踪；进程内 replay/session registries 的生命周期边界尚未有容量或回收策略。",
+      "evidence_refs": ["src/domain/product-definition.ts", "results/result-candidate-verification-s1.3-g2-a6.json"]
+    },
+    {
+      "id": "test_sufficiency",
+      "score": 15,
+      "max_score": 15,
+      "reason": "122 项永久测试、三份正例 CLI 回放、四项 P1 负例和五类重入/TOCTOU 攻击均实际执行；覆盖率超过门槛。",
+      "evidence_refs": ["tests/domain/product-definition.test.ts", "tests/skill/product-definition-skill.test.ts", "tests/fixtures/product-definition/l3-regressions.json"]
+    },
+    {
+      "id": "traceability",
+      "score": 10,
+      "max_score": 10,
+      "reason": "claim/fence、candidate/tree/parent/formal、subject digest 和五类上游摘要均可从 control snapshot 追溯，审查边界和非声明边界清晰。",
+      "evidence_refs": ["gate-requests/gate-independent-review-s1.3-g2-a2.json", "results/result-execution-s1.3-g2-a7-20260811.json", "results/result-candidate-verification-s1.3-g2-a6.json", "results/result-product-interaction-s1.3-g2-a5.json"]
+    }
+  ],
+  "penalties": [
+    {
+      "id": "unbounded_process_local_registries",
+      "severity": "P2",
+      "deduction": 2,
+      "reason": "canonicalVerifiedInteractions 与 interactionSessionsByDisplay 为模块级 Map，当前 manual-isolated 短进程不阻塞，但未来长驻 trusted-host 需要明确容量、生命周期或回收策略。",
+      "evidence_refs": ["src/domain/product-definition.ts:170-176", "results/result-candidate-verification-s1.3-g2-a6.json"]
+    }
+  ],
+  "totals": {
+    "raw_score": 98,
+    "penalty_total": 2,
+    "final_score": 96,
+    "max_score": 100
+  },
+  "severity_summary": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 1
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "为长驻 trusted-host 场景补充 canonical replay/session registry 的有界生命周期或显式回收策略。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "signal": "PASS",
+      "conclusion": "14 项硬门禁全部通过；未发现 P0/P1 硬门阻塞。"
+    },
+    {
+      "role": "Strict Judge",
+      "signal": "PASS",
+      "score": 96,
+      "conclusion": "固定候选完整关闭 attempt 1 四项 P1，并通过新增 getter、可变 replay、同 display 和 Proxy 重入反证；仅保留 P2 生命周期风险。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "signal": "PASS",
+      "score": 95,
+      "conclusion": "三类产品 fixture 的角色、activity、result 和 semantic_source 均有产品差异；没有用状态词伪装产品活动/结果，也没有把 manual fixture 包装成 full。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "signal": "PASS",
+      "score": 96,
+      "conclusion": "所有 L3 硬门和目标行为均通过，授权仅进入 Final Content Snapshot；不改变 PC-03、M1.1、V1、P5、formal 或真实宿主完成状态。"
+    }
+  ],
+  "verdict_scope": "PASS 仅授权进入 Final Content Snapshot；fixture 仅 manual-isolated consumer contract，不宣称 PC-03、M1.1、V1、P5、真实 trusted-host/full 支持、Final Acceptance 或 formal 完成。",
+  "reviewed_at": "2026-08-12T01:12:55+08:00"
+}

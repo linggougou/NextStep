@@ -1646,6 +1646,18 @@
 - GREEN：修复后 `pnpm test` 通过 `121/121`，失败、跳过、取消均为 `0`；`pnpm build` 通过，新增 Proxy 重入回归通过。该结果仅为主管补丁验证，不是独立候选 CV、I/X/P、L3、PC-03、M1.1、V1 或 P5 完成。
 - 边界：修复后的 Plato 最终复核尚未返回；formal `a854fd4938b34ab24d88e72430be52b397c91096` 与 control `563144c01aacdebdb6a5bc4b6b8a9102cc8faf4a` 未移动。
 
+## 2026-08-12 P5 / V1 / M1.1 / S1.3 Attempt 7 双前置门禁与 L3 验证
+
+- 固定身份：candidate `09628302c090523d0c755fa2ce2022b1cb1e4220`、tree `37939827074829fc2e74f51e7cdef0e7033b547d`、parent `b0189d06c9a5597ec794a279b33570b00b64d4b9`、formal `a854fd4938b34ab24d88e72430be52b397c91096`；单父、formal ancestor 和 12 路径 allowlist 均通过。
+- 执行结果：`candidate-ready`；结果摘要 `sha256:39745248c09010d04562cfd68c50855fe453091b5fc18dc28d58af8d6a06569b`。
+- CV：`PASS / 96`，P0=0、P1=0、P2=1；独立 `--no-local` detached 副本中 122/122，覆盖率行/分支/函数 `90.78% / 82.02% / 98.26%`，Skill validator、官方高危 audit、60/60 适用 JSON、`git diff --check`、`git fsck --strict`、秘密/调试与受保护路径反扫通过。结果摘要 `sha256:1cdf9e65c5e2ad3056b6aeda5e6d1e57e37854d2e135a65374fae98fd7bdaa90`。
+- I/X/P：I、X、P 均 `PASS`，P0=0、P1=0、P2=2；三份独立 fixture 经 JCS stdin CLI 回放，semantic source、completion transition、角色独立、产品活动/结果、能力映射和终态不可复活通过。结果摘要 `sha256:6a81d4f0bce6a03683884e7a22a5e37cda99674f6b0b70957e34e43aa81d5db1`。
+- L3：`PASS / 96`，P0=0、P1=0、P2=1，`required_fixes=[]`；Verifier、Strict Judge、Anti-Slop Judge 与 Chief Reviewer 均 PASS，14 项硬门禁通过。结果摘要 `sha256:7da52116a8912f0ff6481254e5dfb6444dba6dd8a0db807039222ee3bab02893`。
+- 审查评分：96/100，建议通过。证据为 `.codex/reviews/p5-v1-m1.1-s1.3-implementation-2026-08-12/scorecard.json` 与 `verdict.md`。
+- 残余 P2：长驻 trusted-host 的 replay/session registry 生命周期未定义上界；开放自然语言语义和真实宿主、真实用户动作、`full` 支持未由本轮证明。
+- 门禁结论：通过。仅授权固定候选进入 Final Content Snapshot，不等于 PC-03、M1.1、V1、P5、最终复验、Credential、Anchor Proof 或 formal promotion 完成。
+- 下一门禁：生成 Final Content Snapshot 和 Write Transaction，对精确 Snapshot 执行独立最终复验并 create-once 写入项目外 Verification Credential。
+
 ## 2026-08-11 S1.3 Generation 2 Attempt 6 候选本地验证
 
 - 范围与身份：工作父为 `c728816881aa403e6a980ba15b1bdbad75774006`，formal baseline 为 `a854fd4938b34ab24d88e72430be52b397c91096`；a6 packet 的 RFC 8785 双字段投影摘要复算为 `sha256:397afc29e726c96d1b133b26116cd9adefb0ebbe0d6324a4780b402bc1503d9b`，packet 与 dispatch-ready 的 dedup key 一致。
