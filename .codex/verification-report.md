@@ -1,5 +1,15 @@
 # Verification Report
 
+## 2026-08-12 P5 / V1 / M1.1 独立累积验收
+
+- 身份验证：formal `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`、tree `b0178b038e6dd975e90cdd9d3aa7422d2965cf23`、内容摘要 `sha256:648a42bfe2e4733a87bcd0af4f3f248c42e008c6ce89498d40179f8a272de2d9`；packet、dedup、dispatch-ack、claim/fence 41 与 source refs 摘要一致。
+- 隔离验证：唯一 `clone --no-local` 冻结安装通过；`pnpm check` 为 122/122，Lines/Branches/Functions 为 90.78%/82.02%/98.26%；验证后 tracked 状态为空且 tree 不变。
+- 证据链：S1.1、S1.2、S1.3 的 Snapshot、Final Verification、Credential、Audit Anchor、Anchor Verification、Anchor Proof、promotion 和 formal CAS 均复算一致。
+- 累积反证：community-workshop、expense-reminder、project-delivery-tool 的 S1.3 输入摘要均不等于同名 S1.2 实际冻结摘要，身份连续率 `0/3`。三阶段单独可运行，不能据此推导 M1.1 累积闭环。
+- 结论：`退回 / 73`；`I=REVISE`、`X=PASS`、`P=REVISE`；P0/P1/P2 为 `1/1/2`。P0 是 Frozen Requirement 跨阶段身份断链，P1 是缺少永久 M1.1 累积回归。
+- 控制验证：Result Envelope 排除 `result_digest` 后的 RFC8785 SHA-256 为 `sha256:bd199dcef03f4962e914bf430422b8628cd6bdc97eae453b960063c3364f828e`；JSON 可解析，registry/checkpoint 指向同一结果，control expected-old CAS 从 `d346224...` 成功推进至 `5d50ab9...`，formal 未移动。
+- 门禁判断：M1.1 未通过。下一入口仅为 CR-004 用户决定；确认前不得编码、生成修复任务包、推进代际或启动 S1.4。
+
 ## 2026-08-11 P5 / V1 / M1.1 / S1.3 Generation 2 Attempt 7 本地候选验证
 
 - 控制身份：packet `ep-p5-v1-m1.1-s1.3-g2-a7-20260811` 的 RFC8785 双字段投影摘要重算为 `sha256:ff216e6340036a02e00a4b70676b2237cb39bfe5dfc42b70c82f5df0df0c9e88`；working parent 为 `b0189d06c9a5597ec794a279b33570b00b64d4b9`，formal baseline/ref 为 `a854fd4938b34ab24d88e72430be52b397c91096`，control 启动与收口均为 `563144c01aacdebdb6a5bc4b6b8a9102cc8faf4a`。

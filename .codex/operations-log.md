@@ -1,5 +1,14 @@
 # Operations Log
 
+## 2026-08-12 P5 / V1 / M1.1 累积验收退回与 CR-004
+
+- 独立验收对象固定为 formal `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`、tree `b0178b038e6dd975e90cdd9d3aa7422d2965cf23`、内容摘要 `sha256:648a42bfe2e4733a87bcd0af4f3f248c42e008c6ce89498d40179f8a272de2d9`；工作真源为 `427ea14d8006d1e277610773ea8a0c3622e1eefc`。
+- gate packet、dedup、dispatch ack、fence 41 和 S1.1..S1.3 的正式提升/最终复验/锚链均复算一致。唯一 `clone --no-local` 中冻结安装与 `pnpm check` 通过 122/122，覆盖率 90.78%/82.02%/98.26%，验证后 tracked tree 未变化。
+- 独立结论为 `退回 / 73`，`I=REVISE`、`X=PASS`、`P=REVISE`，P0/P1/P2 为 `1/1/2`。三类 S1.3 fixture 均未消费同名 S1.2 实际 Frozen Requirement，累计身份连续率为 `0/3`；现有测试只证明阶段内契约。
+- Result Envelope 摘要 `sha256:bd199dcef03f4962e914bf430422b8628cd6bdc97eae453b960063c3364f828e` 已以 `gate-returned` 写入 control commit `5d50ab9c0e9d2b88d5647a334c9657a19df26e60`；`refs/nextstep/control` 使用 expected-old `d3462243fdcd161448a898e0743be4b2cd597d8b` 完成 CAS。formal 保持不变。
+- Change Intake：新增 CR-004，分流为当前阶段缺口，建议用户批准后推进 plan generation 3，补三类连续 fixture 和永久 M1.1 累积回归，并重新执行受影响 S1.3 正式证据链与 M1.1 attempt 2。
+- 当前门禁：等待用户决定。确认前不编码、不生成修复 Execution Packet、不推进代际、不移动 formal、不启动 S1.4；不得宣称 M1.1、V1 或 P5 完成。
+
 ## 2026-08-11 P5 / V1 / M1.1 / S1.3 Generation 2 Attempt 7 启动
 
 - 执行身份：只读 packet `ep-p5-v1-m1.1-s1.3-g2-a7-20260811`，RFC8785 双字段投影摘要重算为 `sha256:ff216e6340036a02e00a4b70676b2237cb39bfe5dfc42b70c82f5df0df0c9e88`；working parent 为 `b0189d06c9a5597ec794a279b33570b00b64d4b9`，formal 为 `a854fd4938b34ab24d88e72430be52b397c91096`，启动时 `refs/nextstep/control` 为 `563144c01aacdebdb6a5bc4b6b8a9102cc8faf4a`。

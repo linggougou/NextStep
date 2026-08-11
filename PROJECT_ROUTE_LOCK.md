@@ -31,7 +31,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - Change Intake、恢复、Final Acceptance、交付和宿主归档边界通过故障注入和反扫验证。
   - V1..V4 与 Final Acceptance 分别完成本地验证、适用验收和用户会签。
 - 阶段出口：V1..V4 和 Final Acceptance 全部通过；正式 OID、交付清单、风险、回滚和 PC-20.AR 状态可追溯，并由用户明确确认 P5 产品落地完成。
-- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；`V1 / M1.1 / S1.1`、`S1.2` 与 `S1.3` 均已完成正式提升，formal OID 为 `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`。S1.3 generation 2 attempt 7 的 Final Content Snapshot、独立最终复验、Verification Credential、Audit Anchor、Anchor Proof 与 formal CAS 已闭环。下一最小闭环为 `M1.1 需求与产品真源运行锁` 的累积验收、验收报告与阶段会签；M1.1 门禁通过前不得进入属于 M1.2 的 S1.4。V1 和 P5 仍未完成。
+- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；`V1 / M1.1 / S1.1`、`S1.2` 与 `S1.3` 均已完成正式提升，formal OID 为 `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`。M1.1 累积验收 attempt 1 已执行并以 `退回 / 73` 结束；下一最小闭环为 CR-004 用户决定，以及获批后修复跨阶段 fixture 连续性并重走 S1.3 正式证据链和 M1.1 attempt 2。M1.1 门禁通过前不得进入属于 M1.2 的 S1.4。V1 和 P5 仍未完成。
 - 明确非目标：
   - 不恢复 NextStep Web/UI 候选分支。
   - 不引入常驻服务、数据库、远程控制面或通用多 Agent 编排平台。
@@ -43,7 +43,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - 不改变已会签产品、交互、S4/P3/P4 或验收边界；需要改变时先进入 Change Request。
 - 禁止提前进入的阶段：S7 最终发布判断和 S8 交付归档；V1..V4 也不得跳过前序门禁并行宣告完成。
 - 允许进入下一阶段的条件：P5 Final Acceptance 通过本地可重复验证、独立验收和用户会签；若实现要求改变已会签产品、交互、技术、版本范围、正式提升或验收边界，必须先完成 Change Request。
-- 当前状态：进行中；P5-M0 门禁通过，S1.1、S1.2、S1.3 已正式提升；当前进入 M1.1 大里程碑验收，S1.4 尚未启动
+- 当前状态：进行中；P5-M0 门禁通过，S1.1、S1.2、S1.3 已正式提升；M1.1 累积验收 attempt 1 已退回，当前等待 CR-004 用户决定，S1.4 尚未启动
 
 ## 2.1 里程碑路线图
 
@@ -109,7 +109,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
 
 - Backlog：待建立。
 - Change Request：`docs/change-requests/index.md`
-- 当前阶段缺口：S1.1、S1.2、S1.3 已正式提升；S1.3 attempt 7 的 CV `PASS / 96`、I/X/P `PASS`、L3 `PASS / 96`、最终复验、Credential、Audit Anchor、Anchor Proof 和 formal CAS 均已闭环，对应 PC-03 已取得正式运行证据。当前只允许进入 M1.1 累积验收、验收报告与阶段会签；M1.1 门禁通过前不得启动 S1.4 或宣称 M1.1、V1、P5 完成。保留 P2：长驻 trusted-host 的 replay/session registry 生命周期，以及真实宿主、真实用户动作、开放自然语言语义和 `full` 支持尚未由本轮证明。
+- 当前阶段缺口：S1.1、S1.2、S1.3 已正式提升，但 M1.1 独立累积验收 attempt 1 为 `退回 / 73`，`I=REVISE`、`X=PASS`、`P=REVISE`，P0/P1/P2 为 `1/1/2`。三类 S1.3 fixture 均未消费同名 S1.2 实际 Frozen Requirement，累计身份连续率为 `0/3`；现有 122/122 只能证明阶段内契约。唯一入口为 CR-004 用户决定；确认前不得编码、生成修复任务包、推进计划代际、移动 formal 或启动 S1.4。保留 P2：长驻 trusted-host 的 replay/session registry 生命周期，以及真实宿主、真实用户动作、开放自然语言语义和 `full` 支持尚未由本轮证明。
 - 后续阶段需求：V1..V4 和 Final Acceptance 按活动计划顺序推进；P4 第 12 节“运行集成验收”只允许落实为集成诊断预检，正式 I/X/P 四态结论仍由独立门禁和最终复验链产生。若未来恢复 `Web / UI` 分支，需重新确认其与当前 Skill 主路线的关系。
 - 已拒绝需求：无。
 

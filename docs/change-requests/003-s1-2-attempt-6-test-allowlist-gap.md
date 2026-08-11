@@ -1,6 +1,6 @@
 # S1.2 Attempt 6 测试 Allowlist 漏项
 
-状态：已分流，待 generation 2 任务包执行
+状态：已完成
 记录日期：2026-08-11
 来源：`V1 / M1.1 / S1.2` attempt 6 执行任务阻塞结果
 所属阶段：P5 / V1 / M1.1 / S1.2
@@ -36,3 +36,9 @@ attempt 6 要求 `ConfirmationInteractionStateEvent` 的 `user-action` 分支只
 - generation 1 墓碑和 generation 2 确认已通过 control ref CAS 持久化。
 - generation 2 S1.2 任务包、dispatch-ready、outbox、claim 和 dispatch-ack 完整。
 - 新任务在 allowlist 内完成实现与全量验证；双前置门禁同时通过前，本变更保持未关闭。
+
+## 6. 关闭结果
+
+- generation 1 已墓碑失效，generation 2 S1.2 修复任务、双前置门禁、L3、最终复验、Credential、Audit Anchor、Anchor Proof 与 formal promotion 均已完成。
+- S1.2 正式提升 OID 为 `a854fd4938b34ab24d88e72430be52b397c91096`；后续 S1.3 正式提升未回退该能力。
+- 本变更关闭；后续 M1.1 跨阶段 fixture 连续性问题由 CR-004 独立承接。
