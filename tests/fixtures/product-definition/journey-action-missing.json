@@ -1,0 +1,43 @@
+{
+  "fixture_type": "journey-action-missing",
+  "expected": "reject",
+  "steps": [
+    {
+      "sequence": 1,
+      "actor": {
+        "kind": "direct",
+        "value": "社区志愿者",
+        "source": {
+          "pointer": "/requirement_set/items/2/values/0",
+          "value_digest": "sha256:f8266149d50e82803d3a3ecbc2e2b508b65281e6c56513c05ab2000fbfa90719"
+        }
+      },
+      "state_change": {
+        "from": {
+          "kind": "direct",
+          "value": "社区志愿者",
+          "source": {
+            "pointer": "/requirement_set/items/2/values/0",
+            "value_digest": "sha256:f8266149d50e82803d3a3ecbc2e2b508b65281e6c56513c05ab2000fbfa90719"
+          }
+        },
+        "to": {
+          "kind": "direct",
+          "value": "社区志愿者",
+          "source": {
+            "pointer": "/requirement_set/items/2/values/0",
+            "value_digest": "sha256:f8266149d50e82803d3a3ecbc2e2b508b65281e6c56513c05ab2000fbfa90719"
+          }
+        }
+      },
+      "outcome": {
+        "kind": "direct",
+        "value": "社区志愿者",
+        "source": {
+          "pointer": "/requirement_set/items/2/values/0",
+          "value_digest": "sha256:f8266149d50e82803d3a3ecbc2e2b508b65281e6c56513c05ab2000fbfa90719"
+        }
+      }
+    }
+  ]
+}

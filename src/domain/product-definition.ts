@@ -28,10 +28,23 @@ export interface DerivedProductFact {
 export type ProductFact = DirectProductFact | DerivedProductFact;
 
 export interface ProductMetric {
-  readonly metric: string;
-  readonly target: string;
-  readonly evidence_method: string;
-  readonly source_refs: readonly ProductSourceRef[];
+  readonly metric: ProductFact;
+  readonly target: ProductFact;
+  readonly evidence_method: ProductFact;
+  readonly semantic_source: ProductSourceRef;
+}
+
+export interface ProductJourneyStateChange {
+  readonly from: ProductFact;
+  readonly to: ProductFact;
+}
+
+export interface ProductJourneyStep {
+  readonly sequence: number;
+  readonly actor: ProductFact;
+  readonly action: ProductFact;
+  readonly state_change: ProductJourneyStateChange;
+  readonly outcome: ProductFact;
 }
 
 export interface ProductDefinitionCandidate {
@@ -50,7 +63,7 @@ export interface ProductDefinitionCandidate {
     readonly non_goals: readonly ProductFact[];
     readonly success_metrics: readonly ProductMetric[];
   };
-  readonly user_journey: { readonly product_definition_id: string; readonly steps: readonly ProductFact[] };
+  readonly user_journey: { readonly product_definition_id: string; readonly steps: readonly ProductJourneyStep[] };
   readonly capability_map: { readonly product_definition_id: string; readonly capabilities: readonly ProductFact[] };
   readonly status: "ready-for-signoff";
 }
@@ -216,13 +229,72 @@ function assertFacts(frozen: FrozenRequirement, value: unknown, label: string, a
   for (const fact of value) assertFact(frozen, fact, allowedFields);
 }
 
+function sourceRefsForFact(value: ProductFact): readonly ProductSourceRef[] {
+  return value.kind === "direct" ? [value.source] : value.source_refs;
+}
+
+function sourceRefsMatch(left: ProductSourceRef, right: ProductSourceRef): boolean {
+  return left.pointer === right.pointer && left.value_digest === right.value_digest;
+}
+
+function assertFactSupportsSemanticSource(
+  frozen: FrozenRequirement,
+  value: unknown,
+  semanticSource: ProductSourceRef,
+  allowedFields: readonly string[],
+  label: string,
+): asserts value is ProductFact {
+  assertFact(frozen, value, allowedFields);
+  assertSourceRef(frozen, semanticSource, allowedFields);
+  if (!sourceRefsForFact(value).some((sourceRef) => sourceRefsMatch(sourceRef, semanticSource))) {
+    fail("SOURCE_BINDING_MISMATCH", `${label} must retain its semantic source`);
+  }
+  if (value.kind === "derived") {
+    const source = resolveRequirementSource(frozen, semanticSource.pointer);
+    if (!value.value.includes(source.value) || !value.derivation_summary.includes(source.value)) {
+      fail("SOURCE_BINDING_MISMATCH", `${label} derivation must identify its semantic source`);
+    }
+  }
+}
+
 function assertMetrics(frozen: FrozenRequirement, value: unknown): void {
   if (!Array.isArray(value) || value.length === 0) fail("INVALID_PRODUCT_DEFINITION", "success_metrics is required");
   for (const metric of value) {
-    if (!isPlainRecord(metric) || typeof metric.metric !== "string" || metric.metric.length === 0 || typeof metric.target !== "string" || metric.target.length === 0 || typeof metric.evidence_method !== "string" || metric.evidence_method.length === 0 || !Array.isArray(metric.source_refs) || metric.source_refs.length === 0) {
-      fail("INVALID_PRODUCT_DEFINITION", "Success metric must include metric, target, evidence method, and sources");
+    if (!isPlainRecord(metric) || !isPlainRecord(metric.semantic_source)) {
+      fail("INVALID_PRODUCT_DEFINITION", "Success metric must include a semantic source");
     }
-    for (const sourceRef of metric.source_refs) assertSourceRef(frozen, sourceRef, ["goals", "expected_outputs"]);
+    const semanticSource = metric.semantic_source as unknown as ProductSourceRef;
+    assertFactSupportsSemanticSource(frozen, metric.metric, semanticSource, ["goals", "expected_outputs"], "Metric");
+    assertFactSupportsSemanticSource(frozen, metric.target, semanticSource, ["goals", "expected_outputs"], "Metric target");
+    assertFactSupportsSemanticSource(frozen, metric.evidence_method, semanticSource, ["goals", "expected_outputs"], "Metric evidence method");
+  }
+}
+
+function assertJourneySteps(frozen: FrozenRequirement, value: unknown): void {
+  if (!Array.isArray(value) || value.length === 0) fail("INVALID_PRODUCT_DEFINITION", "journey steps is required");
+  for (const [index, step] of value.entries()) {
+    if (!isPlainRecord(step) || step.sequence !== index + 1 || !isPlainRecord(step.state_change)) {
+      fail("INVALID_PRODUCT_DEFINITION", "Journey steps must be ordered and include a state change");
+    }
+    assertFact(frozen, step.actor, ["scenarios"]);
+    assertFact(frozen, step.action, ["goals", "expected_outputs"]);
+    const stateChange = step.state_change as Record<string, unknown>;
+    assertFact(frozen, stateChange.from, ["goals", "expected_outputs"]);
+    assertFact(frozen, stateChange.to, ["goals", "expected_outputs"]);
+    assertFact(frozen, step.outcome, ["goals", "expected_outputs"]);
+    if ((stateChange.from as ProductFact).value === (stateChange.to as ProductFact).value) {
+      fail("INVALID_PRODUCT_DEFINITION", "Journey state change must change state");
+    }
+    const commonSource = sourceRefsForFact(step.action as ProductFact).find((sourceRef) => (
+      sourceRefsForFact(stateChange.from as ProductFact).some((candidate) => sourceRefsMatch(candidate, sourceRef))
+      && sourceRefsForFact(stateChange.to as ProductFact).some((candidate) => sourceRefsMatch(candidate, sourceRef))
+      && sourceRefsForFact(step.outcome as ProductFact).some((candidate) => sourceRefsMatch(candidate, sourceRef))
+    ));
+    if (commonSource === undefined) fail("SOURCE_BINDING_MISMATCH", "Journey action, state change, and outcome must share one semantic source");
+    assertFactSupportsSemanticSource(frozen, step.action, commonSource, ["goals", "expected_outputs"], "Journey action");
+    assertFactSupportsSemanticSource(frozen, stateChange.from, commonSource, ["goals", "expected_outputs"], "Journey state before");
+    assertFactSupportsSemanticSource(frozen, stateChange.to, commonSource, ["goals", "expected_outputs"], "Journey state after");
+    assertFactSupportsSemanticSource(frozen, step.outcome, commonSource, ["goals", "expected_outputs"], "Journey outcome");
   }
 }
 
@@ -269,7 +341,7 @@ export function parseProductDefinitionCandidate(value: unknown): ProductDefiniti
   const journey = candidateInput.user_journey as Record<string, unknown>;
   const capabilityMap = candidateInput.capability_map as Record<string, unknown>;
   if (journey.product_definition_id !== candidateInput.product_definition_id || capabilityMap.product_definition_id !== candidateInput.product_definition_id) fail("INVALID_PRODUCT_DEFINITION", "Journey and capability map must reference the product definition");
-  assertFacts(frozen, journey.steps, "journey steps", ["scenarios", "goals"]);
+  assertJourneySteps(frozen, journey.steps);
   assertFacts(frozen, capabilityMap.capabilities, "capabilities", ["goals", "expected_outputs"]);
   return Object.freeze({ ...(candidateInput as unknown as Omit<ProductDefinitionCandidate, "status">), frozen_requirement: frozen, status: "ready-for-signoff" as const });
 }

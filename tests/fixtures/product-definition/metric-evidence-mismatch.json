@@ -1,0 +1,45 @@
+{
+  "fixture_type": "metric-evidence-mismatch",
+  "expected": "reject",
+  "success_metrics": [
+    {
+      "metric": {
+        "kind": "derived",
+        "value": "协调每周活动 completion metric",
+        "derivation_summary": "Derived from 协调每周活动 for an auditable product definition",
+        "source_refs": [
+          {
+            "pointer": "/requirement_set/items/1/values/0",
+            "value_digest": "sha256:82cf0601ab9846aaf170c08dc9c88da1d5f34bf20a974404736d997dcf6b9270"
+          }
+        ]
+      },
+      "target": {
+        "kind": "derived",
+        "value": "协调每周活动 completed target",
+        "derivation_summary": "Derived from 协调每周活动 for an auditable product definition",
+        "source_refs": [
+          {
+            "pointer": "/requirement_set/items/1/values/0",
+            "value_digest": "sha256:82cf0601ab9846aaf170c08dc9c88da1d5f34bf20a974404736d997dcf6b9270"
+          }
+        ]
+      },
+      "evidence_method": {
+        "kind": "derived",
+        "value": "inspect unrelated offline plan record",
+        "derivation_summary": "Derived from 协调每周活动 for an auditable product definition",
+        "source_refs": [
+          {
+            "pointer": "/requirement_set/items/1/values/0",
+            "value_digest": "sha256:82cf0601ab9846aaf170c08dc9c88da1d5f34bf20a974404736d997dcf6b9270"
+          }
+        ]
+      },
+      "semantic_source": {
+        "pointer": "/requirement_set/items/1/values/0",
+        "value_digest": "sha256:82cf0601ab9846aaf170c08dc9c88da1d5f34bf20a974404736d997dcf6b9270"
+      }
+    }
+  ]
+}

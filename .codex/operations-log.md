@@ -1579,3 +1579,20 @@
 - GREEN：`pnpm test` 通过 `111/111`；`pnpm check` 通过，覆盖率行 `90.98%`、分支 `82.65%`、函数 `98.06%`。
 - 验证：a4 packet RFC8785 投影摘要复算为 `sha256:1a62be1e4c02d3d2500e0667922e9669ffa331f919ca8eb6d061bf804a567c87`；JSON、`git diff --check`、官方 Skill 校验、官方 npm registry 高危 audit、生产秘密/调试扫描和 allowlist 通过。路线/计划、machine receipt、runtime/reviews/refs、包管理与 TypeScript 配置保持不变。
 - 状态：本地候选准备就绪；新的独立 CV 与 I/X/P 尚未执行，L3、最终复验和正式提升均未启动。
+
+## 2026-08-11 P5 / V1 / M1.1 / S1.3 Generation 2 Attempt 5 启动与 RED
+
+- 控制身份：唯一有效任务包为 `ep-p5-v1-m1.1-s1.3-g2-a5-20260811`，RFC 8785 双字段投影复算摘要为 `sha256:26bc296bd038d4e52ed797348d85a11d551cf955d8b6087ef82374695ef8b5ee`；任务包记录的 dedup key 为 `sha256:e057c764fa4a3687574eadbb45e4f4b81acdd675bec637c0bc0e64dfcbad11a1`，claim/fence 为 `claim-s1.3-g2-a5-f30-20260811` / `30`。
+- 启动检查：HEAD 精确为工作父 `4ddd3aff6c230fd4b99a9890110686caecd02296`，tracked 工作树干净，formal baseline `a854fd4938b34ab24d88e72430be52b397c91096` 是祖先。仓库无项目级 `AGENTS.md`，按全局协议、路线锁和任务包执行；CodeGraph 未初始化，以 `rg`、相邻领域实现和既有测试完成替代影响分析。
+- 范围：仅处理 attempt 5 allowlist 中的产品定义、测试、fixture、Skill 与留痕；不写 runtime/reviews/refs、路线/计划、registry/checkpoint、包管理或 TypeScript 配置。
+- RED：先新增并从磁盘回放 `metric-evidence-mismatch.json` 与 `journey-action-missing.json`。`pnpm test` 编译通过但测试为 `111/113`，两个新增测试均因 `Missing expected exception (ProductDefinitionError)` 失败：现有指标验证接受“检查离线活动计划记录”，现有旅程验证接受仅含“社区志愿者”的事实步骤。
+- 状态：RED 已记录；下一步仅以同一目标/期望输出来源锚和 `actor/action/state_change/outcome` 有序步骤做最小 GREEN，不进入 S1.4/S1.5。
+
+## 2026-08-11 P5 / V1 / M1.1 / S1.3 Generation 2 Attempt 5 GREEN 与候选本地验证
+
+- 最小实现：指标的 `metric`、`target`、`evidence_method` 改为带 direct/derived 来源的事实，并以 `semantic_source` 锚定同一 goals/expected_outputs 值；派生值和推导摘要均须包含该锚，故通用 plan-record 描述不能伪装成完成证据。
+- 旅程模型：每步固定 `sequence`、`actor`、`action`、`state_change.from`、`state_change.to`、`outcome`；序号必须连续，actor 仅取场景，动作/前后状态/结果共享合法目标或期望输出来源，且前后状态不可相同。
+- Fixture：community workshop、expense reminder、project delivery 三份完整独立候选各有两步最小旅程和目标一致指标；两份新增磁盘负例实际回放，分别覆盖无关计划记录和缺动作/状态变化/结果。
+- GREEN：`pnpm test` 通过 `113/113`；`pnpm check` 通过，覆盖率为行 `90.90%`、分支 `82.39%`、函数 `98.17%`。
+- 外围验证：JSON、官方 Skill validator、官方 registry 高危 audit、`git diff --check`、正式生产路径秘密/调试扫描、formal ancestor、allowlist 与受保护路线/管理面/runtime/reviews/refs 不变性均通过。`git fsck --strict` 退出成功，报告的悬挂对象为既有仓库对象且未由本轮写入。
+- 状态：本地候选验证材料已收口，待创建单父非 merge 候选提交；未执行独立候选验证、交互/产品评估、独立审查、最终复验或正式提升。

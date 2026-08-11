@@ -83,6 +83,16 @@ function fact(frozen: ReturnType<typeof frozenRequirement>, pointer: string) {
   return { kind: "direct" as const, value, source: { pointer, value_digest: digestJson(value) } };
 }
 
+function derivedFact(frozen: ReturnType<typeof frozenRequirement>, pointer: string, value: string) {
+  const source = fact(frozen, pointer);
+  return {
+    kind: "derived" as const,
+    value,
+    derivation_summary: `根据 ${source.value} 形成可审计定义`,
+    source_refs: [source.source],
+  };
+}
+
 function candidate(frozen = frozenRequirement()) {
   const intent = "/requirement_set/items/0/values/0";
   const goals = "/requirement_set/items/1/values/0";
@@ -105,13 +115,25 @@ function candidate(frozen = frozenRequirement()) {
       scope: [fact(frozen, outputs)],
       non_goals: [fact(frozen, nonGoals)],
       success_metrics: [{
-        metric: "每周活动协调完成率",
-        target: "每周至少完成一次活动协调",
-        evidence_method: "检查离线活动计划记录",
-        source_refs: [fact(frozen, goals).source],
+        metric: derivedFact(frozen, goals, "协调每周活动完成率"),
+        target: derivedFact(frozen, goals, "协调每周活动：每周至少完成一次"),
+        evidence_method: derivedFact(frozen, goals, "核对协调每周活动的完成记录"),
+        semantic_source: fact(frozen, goals).source,
       }],
     },
-    user_journey: { product_definition_id: deriveProductDefinitionId(frozen), steps: [fact(frozen, scenarios)] },
+    user_journey: {
+      product_definition_id: deriveProductDefinitionId(frozen),
+      steps: [{
+        sequence: 1,
+        actor: fact(frozen, scenarios),
+        action: derivedFact(frozen, goals, "协调每周活动"),
+        state_change: {
+          from: derivedFact(frozen, goals, "协调每周活动待处理"),
+          to: derivedFact(frozen, goals, "协调每周活动已协调"),
+        },
+        outcome: derivedFact(frozen, goals, "协调每周活动已完成"),
+      }],
+    },
     capability_map: { product_definition_id: deriveProductDefinitionId(frozen), capabilities: [fact(frozen, goals)] },
   };
 }
@@ -145,12 +167,22 @@ test("产品字段角色阻断约束冒充指标和场景冒充能力", () => {
     prd: {
       ...value.prd,
       success_metrics: [{
-        ...value.prd.success_metrics[0]!,
-        source_refs: [fact(value.frozen_requirement, "/requirement_set/items/3/values/0").source],
+        metric: derivedFact(value.frozen_requirement, "/requirement_set/items/3/values/0", "不连接外部服务完成率"),
+        target: derivedFact(value.frozen_requirement, "/requirement_set/items/3/values/0", "不连接外部服务已完成"),
+        evidence_method: derivedFact(value.frozen_requirement, "/requirement_set/items/3/values/0", "核对不连接外部服务的完成记录"),
+        semantic_source: fact(value.frozen_requirement, "/requirement_set/items/3/values/0").source,
       }],
     },
   };
   assert.throws(() => parseProductDefinitionCandidate(metricFromConstraint), ProductDefinitionError);
+  const journeyActionFromScenario = {
+    ...value,
+    user_journey: {
+      ...value.user_journey,
+      steps: [{ ...value.user_journey.steps[0]!, action: value.prd.scenarios[0]! }],
+    },
+  };
+  assert.throws(() => parseProductDefinitionCandidate(journeyActionFromScenario), ProductDefinitionError);
   const capabilityFromScenario = {
     ...value,
     capability_map: {
@@ -193,9 +225,50 @@ test("三类目标项目 fixture 仅以 manual-isolated 消费者契约验证完
     const parsed = parseProductDefinitionCandidate(fixture.product_definition);
     assert.equal(parsed.frozen_requirement.frozen_requirement_id, (fixture.frozen_requirement as Record<string, unknown>).frozen_requirement_id);
     assert.equal(parsed.product_definition_id, deriveProductDefinitionId(parsed.frozen_requirement));
+    const goal = parsed.frozen_requirement.requirement_set.items[1]!.values[0]!;
+    const metric = parsed.prd.success_metrics[0]!;
+    assert.equal(metric.metric.kind, "derived");
+    assert.equal(metric.target.kind, "derived");
+    assert.equal(metric.evidence_method.kind, "derived");
+    assert.equal(metric.metric.value.includes(goal), true);
+    assert.equal(metric.target.value.includes(goal), true);
+    assert.equal(metric.evidence_method.value.includes(goal), true);
+    assert.deepEqual(parsed.user_journey.steps.map((step) => step.sequence), [1, 2]);
+    for (const step of parsed.user_journey.steps) {
+      assert.equal(step.actor.kind, "direct");
+      assert.notEqual(step.state_change.from.value, step.state_change.to.value);
+    }
     identities.add(`${parsed.frozen_requirement.project.repository_id}|${parsed.frozen_requirement.frozen_requirement_id}|${parsed.product_definition_id}`);
   }
   assert.equal(identities.size, 3);
+});
+
+test("磁盘指标负例会拒绝只证明无关计划记录而不证明目标达成的候选", async () => {
+  const fixture = JSON.parse(await readFile(resolve(process.cwd(), "tests/fixtures/product-definition/metric-evidence-mismatch.json"), "utf8")) as Record<string, unknown>;
+  assert.equal(fixture.fixture_type, "metric-evidence-mismatch");
+  assert.equal(fixture.expected, "reject");
+  const value = candidate();
+  assert.throws(
+    () => parseProductDefinitionCandidate({
+      ...value,
+      prd: { ...value.prd, success_metrics: fixture.success_metrics },
+    }),
+    ProductDefinitionError,
+  );
+});
+
+test("磁盘旅程负例会拒绝只有参与者或场景而无动作、状态变化和结果的步骤", async () => {
+  const fixture = JSON.parse(await readFile(resolve(process.cwd(), "tests/fixtures/product-definition/journey-action-missing.json"), "utf8")) as Record<string, unknown>;
+  assert.equal(fixture.fixture_type, "journey-action-missing");
+  assert.equal(fixture.expected, "reject");
+  const value = candidate();
+  assert.throws(
+    () => parseProductDefinitionCandidate({
+      ...value,
+      user_journey: { ...value.user_journey, steps: fixture.steps },
+    }),
+    ProductDefinitionError,
+  );
 });
 
 test("缺少范围、非目标、成功指标、旅程或能力映射会确定性阻断", async () => {

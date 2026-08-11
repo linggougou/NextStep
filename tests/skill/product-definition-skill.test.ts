@@ -17,6 +17,8 @@ test("NextStep Skill documents S1.3 Frozen Requirement binding and fail-closed s
     /deterministically derived|确定性派生/i,
     /kind: direct|kind.*derived/i,
     /evidence_method/i,
+    /semantic_source/i,
+    /actor.*action.*state_change.*outcome/i,
     /session capability|session.*能力/i,
     /independent user action|独立用户动作/i,
     /manual-isolated consumer contract/i,
