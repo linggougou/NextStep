@@ -1,5 +1,15 @@
 # Verification Report
 
+## 2026-08-11 P5 / V1 / M1.1 / S1.2 Generation 2 候选前验证
+
+- 控制身份：packet `ep-p5-v1-m1.1-s1.2-g2-a1-20260811`，digest `sha256:166a66e02d8d71db9bd1aa11941db223e50aa704463dbbe404e3bf87607b70fe`，dedup `sha256:1a951bf23252439298d6daad314bae9de7c99c8505bed20d6d6942ee4ee4ca15`，fence `15`；generation 2 ack、派发确认和 control tree 均存在。
+- TDD：RED 为 97/98，裸 reject 可改变 pending session；GREEN 后 `pnpm test` 与主管 `pnpm check` 均为 98/98。
+- 覆盖率：行 `89.99%`、分支 `83.55%`、函数 `97.66%`，全部高于 80%。
+- 行为：user-action 只消费模块授权的 verified capability；裸 action、伪造 capability、跨 display capability 和伪造对象加 expiry 均 fail closed 且不改变 current state；verified reject/cancel 可终结 pending/confirmed，同 session 的 rejected/cancelled/expired/superseded 均不能被 canonical confirm 复活。
+- 辅助门禁：官方 registry audit 无已知漏洞；官方 Skill validator 在临时 PyYAML 运行环境返回 `Skill is valid!`；136 份有效 JSON、`git diff --check`、12/12 allowlist、受保护路径、秘密/调试和 runtime/control tree OID 一致性通过。
+- 工具替代：系统 Python 与 bundled Python 均缺少 `yaml` 模块，直接运行 `quick_validate.py` 两次失败；替代流程只在 `/tmp/nextstep-skill-validator-deps` 安装 `PyYAML 6.0.2` 并重跑，项目依赖和工作树未因此改变。JSON 与 runtime 两次辅助命令口径错误也已按正例集和 tree OID 修正重跑。
+- 当前结论：`candidate-ready`，尚未固定 Git 身份。候选验证与 I/X/P 同时通过前不得启动 L3，也不得宣称 PC-02、M1.1、V1、P5 或阶段完成。
+
 ## 2026-08-11 P5 / V1 / M1.1 / S1.2 Attempt 6 范围门禁
 
 - 控制链：attempt 6 dispatch-ack 已以 expected-old CAS 写入 control commit `1b9ee482a059e8e213bd805b90dadaac1a35982e`；formal ref 未移动。

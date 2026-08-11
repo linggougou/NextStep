@@ -99,7 +99,7 @@ test("Requirement Set combines three target-project candidates with explicit non
     const interactionSession = createConfirmationInteractionSession(verified);
     reduceConfirmationInteractionState(
       interactionSession,
-      { type: "user-action", user_action: userAction, evaluated_at: fixtureInput.host_replay.occurred_at },
+      { type: "user-action", verified_interaction: verified, evaluated_at: fixtureInput.host_replay.occurred_at },
     );
     const frozen = freezeRequirementSet({
       schema_version: "1.0",

@@ -13,6 +13,7 @@ import {
   parseConfirmationChallenge,
   parseConfirmationEnvelope,
   RequirementConfirmationError,
+  type ConfirmationInteractionStateEvent,
   type ConfirmationInteractionVerifier,
 } from "../../src/domain/requirement-confirmation.ts";
 import { buildRequirementSet } from "../../src/domain/requirement-set.ts";
@@ -282,7 +283,7 @@ test("only an injected verifier can turn an unverified replay into a confirmed c
   assert.equal(getConfirmationInteractionState(session).status, "pending");
   const confirmed = reduceConfirmationInteractionState(session, {
     type: "user-action",
-    user_action: verified.user_action,
+    verified_interaction: verified,
     evaluated_at: "2026-08-10T01:05:01.000Z",
   });
   assert.equal(confirmed.status, "confirmed");
@@ -290,9 +291,18 @@ test("only an injected verifier can turn an unverified replay into a confirmed c
   for (const userAction of ["reject", "cancel"] as const) {
     const replay = confirmedReplay(completeRequirementSet(), `confirm-terminal-${userAction}`);
     const terminalSession = createConfirmationInteractionSession(replay.verified);
+    const decisionAction = createUnverifiedUserConfirmationAction(replay.display, {
+      user_action_id: `user-action-terminal-${userAction}`,
+      action: userAction,
+      occurred_at: "2026-08-10T01:05:01.000Z",
+    });
+    const decision = verifyConfirmationInteraction({ display: replay.display, user_action: decisionAction }, {
+      verifier_kind: "manual-isolated-fixture",
+      verify: () => true,
+    });
     const terminal = reduceConfirmationInteractionState(terminalSession, {
       type: "user-action",
-      user_action: { ...replay.verified.user_action, user_action: userAction },
+      verified_interaction: decision,
       evaluated_at: "2026-08-10T01:05:01.000Z",
     });
     assert.equal(terminal.status, userAction === "reject" ? "rejected" : "cancelled");
@@ -323,9 +333,148 @@ test("only an injected verifier can turn an unverified replay into a confirmed c
   assert.throws(
     () => reduceConfirmationInteractionState(futureSession, {
       type: "user-action",
-      user_action: futureReplay.verified.user_action,
+      verified_interaction: futureReplay.verified,
       evaluated_at: "2026-08-10T01:04:59.999Z",
     }),
     (error: unknown) => error instanceof RequirementConfirmationError,
+  );
+});
+
+test("reducer consumes only a verified interaction capability for every user decision", () => {
+  const capabilityEvent = (verifiedInteraction: unknown, evaluatedAt: string) => ({
+    type: "user-action",
+    verified_interaction: verifiedInteraction,
+    evaluated_at: evaluatedAt,
+  }) as unknown as ConfirmationInteractionStateEvent;
+  const verifyDecision = (
+    display: ReturnType<typeof confirmedReplay>["display"],
+    action: "reject" | "cancel",
+    userActionId: string,
+  ) => {
+    const userAction = createUnverifiedUserConfirmationAction(display, {
+      user_action_id: userActionId,
+      action,
+      occurred_at: "2026-08-10T01:05:01.000Z",
+    });
+    return verifyConfirmationInteraction({ display, user_action: userAction }, {
+      verifier_kind: "manual-isolated-fixture",
+      verify: () => true,
+    });
+  };
+
+  const pending = confirmedReplay(completeRequirementSet(), "confirm-capability-pending");
+  const pendingSession = createConfirmationInteractionSession(pending.verified);
+  const bareReject = createUnverifiedUserConfirmationAction(pending.display, {
+    user_action_id: "bare-reject",
+    action: "reject",
+    occurred_at: "2026-08-10T01:05:01.000Z",
+  });
+  assert.throws(
+    () => reduceConfirmationInteractionState(pendingSession, {
+      type: "user-action",
+      user_action: bareReject,
+      evaluated_at: bareReject.occurred_at,
+    } as unknown as ConfirmationInteractionStateEvent),
+    (error: unknown) => error instanceof RequirementConfirmationError,
+  );
+  assert.equal(getConfirmationInteractionState(pendingSession).status, "pending");
+
+  const confirmed = confirmedReplay(completeRequirementSet(), "confirm-capability-confirmed");
+  const confirmedSession = createConfirmationInteractionSession(confirmed.verified);
+  reduceConfirmationInteractionState(confirmedSession, {
+    type: "user-action",
+    verified_interaction: confirmed.verified,
+    evaluated_at: "2026-08-10T01:05:01.000Z",
+  });
+  const bareCancel = createUnverifiedUserConfirmationAction(confirmed.display, {
+    user_action_id: "bare-cancel",
+    action: "cancel",
+    occurred_at: "2026-08-10T01:05:02.000Z",
+  });
+  assert.throws(
+    () => reduceConfirmationInteractionState(confirmedSession, {
+      type: "user-action",
+      user_action: bareCancel,
+      evaluated_at: bareCancel.occurred_at,
+    } as unknown as ConfirmationInteractionStateEvent),
+    (error: unknown) => error instanceof RequirementConfirmationError,
+  );
+  assert.equal(getConfirmationInteractionState(confirmedSession).status, "confirmed");
+
+  const forgedCapability = Object.freeze({ ...pending.verified });
+  assert.throws(
+    () => reduceConfirmationInteractionState(pendingSession, capabilityEvent(forgedCapability, "2026-08-10T01:05:01.000Z")),
+    (error: unknown) => error instanceof RequirementConfirmationError,
+  );
+  assert.throws(
+    () => reduceConfirmationInteractionState(pendingSession, capabilityEvent(forgedCapability, pending.challenge.expires_at)),
+    (error: unknown) => error instanceof RequirementConfirmationError,
+  );
+  const other = confirmedReplay(completeRequirementSet(), "confirm-capability-other-display");
+  const otherReject = verifyDecision(other.display, "reject", "other-display-reject");
+  assert.throws(
+    () => reduceConfirmationInteractionState(pendingSession, capabilityEvent(otherReject, "2026-08-10T01:05:01.000Z")),
+    (error: unknown) => error instanceof RequirementConfirmationError,
+  );
+  assert.equal(getConfirmationInteractionState(pendingSession).status, "pending");
+
+  for (const decision of ["reject", "cancel"] as const) {
+    const replay = confirmedReplay(completeRequirementSet(), `confirm-capability-${decision}`);
+    const session = createConfirmationInteractionSession(replay.verified);
+    const decisionCapability = verifyDecision(replay.display, decision, `verified-${decision}`);
+    const terminal = reduceConfirmationInteractionState(
+      session,
+      capabilityEvent(decisionCapability, "2026-08-10T01:05:01.000Z"),
+    );
+    assert.equal(terminal.status, decision === "reject" ? "rejected" : "cancelled");
+    assert.equal(
+      reduceConfirmationInteractionState(
+        session,
+        capabilityEvent(replay.verified, "2026-08-10T01:05:02.000Z"),
+      ).status,
+      terminal.status,
+    );
+    assert.throws(
+      () => reduceConfirmationInteractionState(
+        session,
+        capabilityEvent(Object.freeze({ ...replay.verified }), "2026-08-10T01:05:03.000Z"),
+      ),
+      (error: unknown) => error instanceof RequirementConfirmationError,
+    );
+  }
+
+  const expiredReplay = confirmedReplay(completeRequirementSet(), "confirm-capability-expired");
+  const expiredSession = createConfirmationInteractionSession(expiredReplay.verified);
+  assert.equal(
+    reduceConfirmationInteractionState(expiredSession, {
+      type: "evaluate",
+      evaluated_at: expiredReplay.challenge.expires_at,
+    }).status,
+    "expired",
+  );
+  assert.equal(
+    reduceConfirmationInteractionState(
+      expiredSession,
+      capabilityEvent(expiredReplay.verified, "2026-08-10T01:05:02.000Z"),
+    ).status,
+    "expired",
+  );
+
+  const supersededReplay = confirmedReplay(completeRequirementSet(), "confirm-capability-superseded");
+  const supersededSession = createConfirmationInteractionSession(supersededReplay.verified);
+  assert.equal(
+    reduceConfirmationInteractionState(supersededSession, {
+      type: "view-change",
+      display: { ...supersededReplay.display, display_id: "display-capability-replacement" },
+      evaluated_at: "2026-08-10T01:05:01.000Z",
+    }).status,
+    "superseded",
+  );
+  assert.equal(
+    reduceConfirmationInteractionState(
+      supersededSession,
+      capabilityEvent(supersededReplay.verified, "2026-08-10T01:05:02.000Z"),
+    ).status,
+    "superseded",
   );
 });

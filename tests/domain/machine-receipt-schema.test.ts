@@ -392,7 +392,7 @@ test("machine receipt validates frozen requirement semantics independently for i
   const interactionSession = createConfirmationInteractionSession(verified);
   reduceConfirmationInteractionState(
     interactionSession,
-    { type: "user-action", user_action: userAction, evaluated_at: "2026-08-10T01:11:01.000Z" },
+    { type: "user-action", verified_interaction: verified, evaluated_at: "2026-08-10T01:11:01.000Z" },
   );
   const frozen = freezeRequirementSet({
     schema_version: "1.0",

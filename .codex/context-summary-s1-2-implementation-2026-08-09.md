@@ -1,5 +1,16 @@
 # S1.2 实现上下文摘要
 
+## 2026-08-11 S1.2 Generation 2 Verified Capability 修复上下文
+
+- generation 1 attempt 5 固定候选 `c8be6bb5f4f5195e268d0762740101d39acf23c2` 的候选验证通过，但 I/X/P 发现裸 reject/cancel 仍可永久终结 pending session；attempt 6 又因两条既有消费者契约测试不在 allowlist 而阻塞，未修改文件。
+- CR-003 已分流为当前阶段缺口。`msg-generation-advance-p5-g2-20260811` 与 `msg-generation-ack-p5-g2-20260811` 已通过 control ref CAS 持久化，generation 1 的 S1.2、CV、I/X/P 全部失效。
+- generation 2 attempt 1 packet digest `sha256:166a66e02d8d71db9bd1aa11941db223e50aa704463dbbe404e3bf87607b70fe`，dedup `sha256:1a951bf23252439298d6daad314bae9de7c99c8505bed20d6d6942ee4ee4ca15`，working parent `82270fe446bb3c571ef477b34805474ce76a4069`，fence `15`。
+- TDD RED 为 97/98：裸 reject 仍可改变 pending session。最小 GREEN 将 reducer `user-action` 改为只接收 `VerifiedConfirmationInteraction`，先验证模块授权对象和 canonical display/session 绑定，再处理终态、时间与 action；confirm 只允许当前 canonical replay，已验证 reject/cancel 可终结同 display session。
+- 永久回归覆盖裸 reject/cancel/confirm、伪造 capability、伪造 capability 加过期时刻、跨 display verified action、pending/confirmed 的 verified reject/cancel、以及 rejected/cancelled/expired/superseded 后 canonical confirm 不复活。machine receipt、Requirement Set、CLI 和 freeze 消费者全部改用 verified capability。
+- 主管 `pnpm check` 通过 98/98，覆盖率行 `89.99%`、分支 `83.55%`、函数 `97.66%`；audit 无已知漏洞，Skill、136 份有效 JSON、`git diff --check`、12/12 allowlist、秘密/调试和 runtime/control tree 精确一致性通过。
+- Skill 校验两次直接运行均因 Python 环境缺少 PyYAML 失败；在 `/tmp/nextstep-skill-validator-deps` 临时安装 `PyYAML 6.0.2` 后，官方 `quick_validate.py` 返回 `Skill is valid!`，未修改项目依赖。JSON 首次误扫故意无效的 `empty-input.json`，runtime 首次 status 比较也受相对 work-tree 口径影响；按正例 JSON 与 tree OID 重跑后通过，两次辅助失败均未修改项目文件。
+- 当前结论仅为本地 `candidate-ready`。固定提交并同时通过独立候选验证与 I/X/P 前，不得启动 L3、进入 S1.3 或作 PC-02、M1.1、V1、P5 完成结论。
+
 ## 2026-08-11 S1.2 Attempt 5 身份与动作修复上下文
 
 - attempt 4 固定候选为 commit `6b9301c9a05709e5f21fc41b7f12015985812f6f`、tree `5119f62ed843d0765d6ca973fed9786c8480c753`、subject digest `sha256:07819e5281c492bc519f16c67cd77dc78bf095389087ee07a2bf2d74e42b1090`。

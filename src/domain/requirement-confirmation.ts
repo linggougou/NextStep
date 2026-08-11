@@ -112,7 +112,7 @@ export interface ConfirmationInteractionSession {
 }
 
 export type ConfirmationInteractionStateEvent =
-  | { readonly type: "user-action"; readonly user_action: UserConfirmationAction; readonly evaluated_at: string }
+  | { readonly type: "user-action"; readonly verified_interaction: VerifiedConfirmationInteraction; readonly evaluated_at: string }
   | { readonly type: "evaluate"; readonly evaluated_at: string }
   | { readonly type: "view-change"; readonly display: ConfirmationViewDisplay; readonly evaluated_at: string };
 
@@ -568,6 +568,18 @@ export function reduceConfirmationInteractionState(
     fail("CONFIRMATION_MISMATCH", "A trusted confirmation interaction session is required");
   }
   const state = record.current_state;
+  const verifiedInteraction = event.type === "user-action" ? event.verified_interaction : undefined;
+  if (
+    event.type === "user-action" &&
+    (
+      verifiedInteraction === undefined ||
+      verifiedInteractions.get(verifiedInteraction) === undefined ||
+      !sameJson(verifiedInteraction.display, record.verified_interaction.display) ||
+      !stateMatchesDisplay(state, verifiedInteraction.display)
+    )
+  ) {
+    fail("CONFIRMATION_MISMATCH", "User action capability does not match the current confirmation session");
+  }
   if (
     state.status === "rejected" ||
     state.status === "cancelled" ||
@@ -598,20 +610,12 @@ export function reduceConfirmationInteractionState(
   if (event.type === "evaluate") {
     return transition(state.status);
   }
-  const action = parseUserConfirmationAction(event.user_action);
+  const action = event.verified_interaction.user_action;
   if (evaluatedAt < parseTime(action.occurred_at, "user action time")) {
     fail("CONFIRMATION_MISMATCH", "A user action cannot be evaluated before it occurs");
   }
-  if (
-    action.requirement_set_generation !== state.requirement_set_generation ||
-    action.challenge_digest !== state.challenge_digest ||
-    action.display_digest !== state.display_digest ||
-    action.expires_at !== state.expires_at
-  ) {
-    return transition("superseded");
-  }
-  if (action.user_action === "confirm" && !sameJson(action, record.verified_interaction.user_action)) {
-    return transition("superseded");
+  if (action.user_action === "confirm" && event.verified_interaction !== record.verified_interaction) {
+    fail("CONFIRMATION_MISMATCH", "Confirm action capability is not the current canonical replay");
   }
   const status: ConfirmationInteractionStatus = action.user_action === "confirm"
     ? "confirmed"

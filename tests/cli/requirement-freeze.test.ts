@@ -82,7 +82,7 @@ function command() {
   const interactionSession = createConfirmationInteractionSession(verified);
   reduceConfirmationInteractionState(
     interactionSession,
-    { type: "user-action", user_action: userAction, evaluated_at: "2026-08-10T01:09:01.000Z" },
+    { type: "user-action", verified_interaction: verified, evaluated_at: "2026-08-10T01:09:01.000Z" },
   );
   return {
     command: {

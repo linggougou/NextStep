@@ -9,7 +9,9 @@ import {
   createUnverifiedUserConfirmationAction,
   reduceConfirmationInteractionState,
   verifyConfirmationInteraction,
+  RequirementConfirmationError,
   type ConfirmationExecutionContext,
+  type ConfirmationInteractionStateEvent,
 } from "../../src/domain/requirement-confirmation.ts";
 import {
   freezeRequirementSet,
@@ -73,7 +75,7 @@ function createCommand(
   if (confirmSession) {
     reduceConfirmationInteractionState(
       interactionSession,
-      { type: "user-action", user_action: userAction, evaluated_at: userAction.occurred_at },
+      { type: "user-action", verified_interaction: verified, evaluated_at: userAction.occurred_at },
     );
   }
   const context: ConfirmationExecutionContext = {
@@ -219,11 +221,22 @@ test("freeze never accepts a saved confirmed snapshot after its session reaches 
     const confirmAction = context.verified_interaction.user_action;
     const savedConfirmedSnapshot = { status: "confirmed" };
     const terminalState = terminalKind === "reject" || terminalKind === "cancel"
-      ? reduceConfirmationInteractionState(context.interaction_session, {
-        type: "user-action",
-        user_action: { ...confirmAction, user_action: terminalKind },
-        evaluated_at: "2026-08-10T01:07:02.000Z",
-      })
+      ? (() => {
+        const decisionAction = createUnverifiedUserConfirmationAction(context.verified_interaction.display, {
+          user_action_id: `user-action-terminal-${terminalKind}`,
+          action: terminalKind,
+          occurred_at: "2026-08-10T01:07:01.000Z",
+        });
+        const decision = verifyConfirmationInteraction({
+          display: context.verified_interaction.display,
+          user_action: decisionAction,
+        }, context.verifier);
+        return reduceConfirmationInteractionState(context.interaction_session, {
+          type: "user-action",
+          verified_interaction: decision,
+          evaluated_at: "2026-08-10T01:07:02.000Z",
+        });
+      })()
       : terminalKind === "expire"
         ? reduceConfirmationInteractionState(context.interaction_session, {
           type: "evaluate",
@@ -277,13 +290,14 @@ test("an unverified confirm action cannot advance a pending session or freeze it
     occurred_at: "2026-08-10T01:07:01.000Z",
   });
 
-  const state = reduceConfirmationInteractionState(context.interaction_session, {
-    type: "user-action",
-    user_action: injectedAction,
-    evaluated_at: injectedAction.occurred_at,
-  });
-
-  assert.notEqual(state.status, "confirmed");
+  assert.throws(
+    () => reduceConfirmationInteractionState(context.interaction_session, {
+      type: "user-action",
+      user_action: injectedAction,
+      evaluated_at: injectedAction.occurred_at,
+    } as unknown as ConfirmationInteractionStateEvent),
+    (error: unknown) => error instanceof RequirementConfirmationError,
+  );
   assert.throws(
     () => freezeRequirementSet(command, [], context),
     (error: unknown) => error instanceof RequirementFreezeError && error.code === "CONFIRMATION_MISMATCH",

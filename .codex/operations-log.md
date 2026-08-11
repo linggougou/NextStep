@@ -1,5 +1,15 @@
 # Operations Log
 
+## 2026-08-11 P5 / V1 / M1.1 / S1.2 Generation 2 本地候选
+
+- CR-003 已按当前阶段缺口分流。attempt 6 `blocked` Result Envelope 摘要 `sha256:a39535235dae438359739f67fad787ef68040a839001c30047345c80da709340` 已写入 control；随后依次 CAS 持久化 generation-advance、generation-ack、g2/a1 packet、dispatch-ready、outbox、fence 15 claim 和 Terra dispatch-ack。当前 control ref 为 `d3adb825ce0e6b4a0ca1ff913e2deb1d8887c3ab`。
+- g2/a1 packet digest `sha256:166a66e02d8d71db9bd1aa11941db223e50aa704463dbbe404e3bf87607b70fe`，dedup `sha256:1a951bf23252439298d6daad314bae9de7c99c8505bed20d6d6942ee4ee4ca15`，working parent `82270fe446bb3c571ef477b34805474ce76a4069`，formal baseline 保持 `8ffaf658e112a5ba26a9f83882f5f71f1ae79454`。
+- TDD RED 为 97/98，证明裸 reject 仍可推进 pending session。GREEN 将 reducer user-action 事件收紧为 live `VerifiedConfirmationInteraction` capability，并在任何终态或 expiry 转换前验证模块授权身份及 canonical display/session；6 个实现/测试路径全部在 allowlist 内。
+- 主管 `pnpm check` 通过 98/98，覆盖率行 `89.99%`、分支 `83.55%`、函数 `97.66%`。Luna 侧检要求补 direct expired/superseded confirm 复活回归后仍为 98/98；其余全排列建议保留为 P2，不扩大当前切片。
+- audit 无已知漏洞；官方 Skill 校验两次因系统与 bundled Python 均缺 PyYAML 而失败，改用 `/tmp` 临时 `PyYAML 6.0.2` 后返回 `Skill is valid!`，未改变仓库依赖。136 份正式/正例/runtime JSON、`git diff --check`、12/12 allowlist、秘密/调试和 runtime tree/control tree OID 一致性通过。
+- 辅助验证纠错：JSON 首次把故意无效的负例 `empty-input.json` 纳入成功集而失败；runtime 首次用相对 `--work-tree` 的 status 输出错误比较对象。两者均未改文件，随后分别按正例集合和临时 index `write-tree == control^{tree}` 重跑通过。
+- 当前只允许固定不可变候选并启动候选验证与 I/X/P；L3、S1.3、PC-02、M1.1、V1 和 P5 结论仍关闭。
+
 ## 2026-08-11 P5 / V1 / M1.1 / S1.2 Attempt 6 阻塞与代际分流
 
 - attempt 5 固定候选 `c8be6bb5f4f5195e268d0762740101d39acf23c2` 的候选验证为通过；I/X/P 为 `I 通过 / X 退回 / P 通过`，新 P1 是未验证 reject/cancel 可永久终结 pending session。双门禁未同时通过，L3 未启动。
