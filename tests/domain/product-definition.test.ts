@@ -27,7 +27,80 @@ import {
 } from "../../src/domain/product-definition.ts";
 import { buildRequirementSet } from "../../src/domain/requirement-set.ts";
 import { createConfirmationChallenge, createConfirmationEnvelope, createConfirmationInteractionSession, createUnverifiedConfirmationViewDisplay, createUnverifiedUserConfirmationAction, reduceConfirmationInteractionState, verifyConfirmationInteraction } from "../../src/domain/requirement-confirmation.ts";
-import { freezeRequirementSet } from "../../src/domain/requirement-freeze.ts";
+import { freezeRequirementSet, recoverFrozenRequirement } from "../../src/domain/requirement-freeze.ts";
+
+const targetProjectFixtures = [
+  "community-workshop",
+  "expense-reminder",
+  "project-delivery-tool",
+] as const;
+
+async function replayFrozenRequirement(fixtureName: (typeof targetProjectFixtures)[number]) {
+  const freezeFixture = JSON.parse(
+    await readFile(resolve(process.cwd(), `tests/fixtures/requirement-freeze/${fixtureName}.json`), "utf8"),
+  ) as {
+    readonly intake_fixture: string;
+    readonly project: { readonly repository_id: string; readonly formal_baseline: string };
+    readonly requirement_set_id: string;
+    readonly version: number;
+    readonly confirmation_id: string;
+    readonly user_resolutions: readonly unknown[];
+    readonly host_replay: {
+      readonly challenge_created_at: string;
+      readonly expires_at: string;
+      readonly display_id: string;
+      readonly displayed_at: string;
+      readonly user_action_id: string;
+      readonly occurred_at: string;
+    };
+  };
+  const intake = JSON.parse(
+    await readFile(resolve(process.cwd(), `tests/fixtures/requirement-intake/${freezeFixture.intake_fixture}`), "utf8"),
+  ) as unknown;
+  const requirementSet = buildRequirementSet({
+    schema_version: "1.0",
+    requirement_set_id: freezeFixture.requirement_set_id,
+    project: freezeFixture.project,
+    version: freezeFixture.version,
+    candidate: intake,
+    user_resolutions: freezeFixture.user_resolutions,
+  });
+  const challenge = createConfirmationChallenge(requirementSet, {
+    confirmation_id: freezeFixture.confirmation_id,
+    created_at: freezeFixture.host_replay.challenge_created_at,
+    expires_at: freezeFixture.host_replay.expires_at,
+  });
+  const display = createUnverifiedConfirmationViewDisplay(challenge, {
+    display_id: freezeFixture.host_replay.display_id,
+    displayed_at: freezeFixture.host_replay.displayed_at,
+  });
+  const userAction = createUnverifiedUserConfirmationAction(display, {
+    user_action_id: freezeFixture.host_replay.user_action_id,
+    action: "confirm",
+    occurred_at: freezeFixture.host_replay.occurred_at,
+  });
+  const verifier = { verifier_kind: "manual-isolated-fixture", verify: () => true } as const;
+  const verified = verifyConfirmationInteraction({ display, user_action: userAction }, verifier);
+  const session = createConfirmationInteractionSession(verified);
+  reduceConfirmationInteractionState(session, {
+    type: "user-action",
+    verified_interaction: verified,
+    evaluated_at: freezeFixture.host_replay.occurred_at,
+  });
+  const frozen = freezeRequirementSet({
+    schema_version: "1.0",
+    action: "freeze-requirement-set",
+    requirement_set: requirementSet,
+    confirmation: createConfirmationEnvelope(verified),
+  }, undefined, {
+    verifier,
+    verified_interaction: verified,
+    interaction_session: session,
+    now: () => new Date(new Date(freezeFixture.host_replay.occurred_at).valueOf() + 1),
+  });
+  const canonical = canonicalizeJson(frozen);
+  return { frozen, canonical, restored: recoverFrozenRequirement(JSON.parse(canonical)) };
+}
 
 function frozenRequirement() {
   const requirementSet = buildRequirementSet({
@@ -402,6 +475,86 @@ test("三类目标项目 fixture 仅以 manual-isolated 消费者契约验证完
     identities.add(`${parsed.frozen_requirement.project.repository_id}|${parsed.frozen_requirement.frozen_requirement_id}|${parsed.product_definition_id}`);
   }
   assert.equal(identities.size, 3);
+});
+
+test("S1.1 -> S1.2 -> JCS 恢复 -> S1.3 会签回放逐类保持 Frozen Requirement 完整连续性", async () => {
+  const replays = new Map<string, Awaited<ReturnType<typeof replayFrozenRequirement>>>();
+  const candidates = new Map<string, Record<string, unknown>>();
+
+  for (const fixtureName of targetProjectFixtures) {
+    const fixture = JSON.parse(
+      await readFile(resolve(process.cwd(), `tests/fixtures/product-definition/${fixtureName}.json`), "utf8"),
+    ) as { readonly frozen_requirement: unknown; readonly product_definition: Record<string, unknown> };
+    const replay = await replayFrozenRequirement(fixtureName);
+    const replayDigest = digestJson(replay.frozen);
+    const candidate = {
+      ...fixture.product_definition,
+      frozen_requirement: replay.restored,
+      frozen_requirement_digest: replayDigest,
+    };
+    const parsed = parseProductDefinitionCandidate(candidate);
+
+    assert.equal(canonicalizeJson(fixture.frozen_requirement), replay.canonical);
+    assert.equal(canonicalizeJson(parsed.frozen_requirement), replay.canonical);
+    assert.equal(canonicalizeJson(replay.restored), replay.canonical);
+    assert.equal(parsed.frozen_requirement.frozen_requirement_id, replay.frozen.frozen_requirement_id);
+    assert.equal(replay.restored.frozen_requirement_id, replay.frozen.frozen_requirement_id);
+    assert.equal(parsed.frozen_requirement_digest, replayDigest);
+    assert.equal(digestJson(replay.restored), replayDigest);
+
+    const challenge = createProductDefinitionSignoffChallenge(parsed, {
+      signoff_id: `signoff-${fixtureName}`,
+      created_at: "2026-08-12T02:00:00.000Z",
+      expires_at: "2026-08-12T03:00:00.000Z",
+    });
+    const display = createUnverifiedProductDefinitionDisplay(challenge, {
+      display_id: `product-display-${fixtureName}`,
+      displayed_at: "2026-08-12T02:05:00.000Z",
+    });
+    const action = createUnverifiedProductDefinitionUserAction(display, {
+      user_action_id: `product-action-${fixtureName}`,
+      action: "confirm",
+      occurred_at: "2026-08-12T02:10:00.000Z",
+    });
+    const verifier = { verifier_kind: "manual-isolated-fixture", verify: () => true } as const;
+    const verified = verifyProductDefinitionInteraction({ display, user_action: action }, verifier);
+    const session = createProductDefinitionInteractionSession(verified);
+    reduceProductDefinitionInteractionState(session, {
+      type: "user-action",
+      verified_interaction: verified,
+      evaluated_at: "2026-08-12T02:10:01.000Z",
+    });
+    const signed = signProductDefinition(parsed, verified, session, () => new Date("2026-08-12T02:11:00.000Z"));
+    const restoredSigned = recoverSignedProductDefinition(JSON.parse(canonicalizeJson(signed)));
+
+    assert.equal(challenge.frozen_requirement_id, replay.frozen.frozen_requirement_id);
+    assert.equal(challenge.frozen_requirement_digest, replayDigest);
+    assert.equal(canonicalizeJson(restoredSigned.product_definition.frozen_requirement), replay.canonical);
+    assert.equal(restoredSigned.product_definition.frozen_requirement.frozen_requirement_id, replay.frozen.frozen_requirement_id);
+    assert.equal(restoredSigned.product_definition.frozen_requirement_digest, replayDigest);
+    assert.equal(restoredSigned.challenge.frozen_requirement_digest, replayDigest);
+
+    replays.set(fixtureName, replay);
+    candidates.set(fixtureName, fixture.product_definition);
+  }
+
+  const communityCandidate = candidates.get("community-workshop")!;
+  const expenseReplay = replays.get("expense-reminder")!;
+  assert.throws(
+    () => parseProductDefinitionCandidate({
+      ...communityCandidate,
+      frozen_requirement: expenseReplay.restored,
+      frozen_requirement_digest: digestJson(expenseReplay.restored),
+    }),
+    ProductDefinitionError,
+  );
+  assert.throws(
+    () => parseProductDefinitionCandidate({
+      ...communityCandidate,
+      frozen_requirement_digest: digestJson(expenseReplay.restored),
+    }),
+    ProductDefinitionError,
+  );
 });
 
 test("磁盘指标负例会拒绝 direct goal 三重复用和带目标词的无关 evidence", async () => {

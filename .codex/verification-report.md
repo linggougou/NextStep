@@ -1,5 +1,13 @@
 # Verification Report
 
+## 2026-08-12 P5 / V1 / M1.1 / S1.3 Generation 3 Attempt 1 本地候选验证
+
+- 控制身份：packet digest `sha256:f47a81844ae40634f295df4db4ddf8a44b4ec9ccf910800f1e3b40b79bc0bba2`，dedup `sha256:34d2dfdcf5a1a9b30d751a8f240adb90b1cdf95126b9887c733c1379809d4af6`，fence `42`，host `019ff360-7a25-74b2-b396-4f9b36237307`；working parent `42865c8f1cc6fdcb709d7475325135724f5d288d`，formal baseline/ref `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`。
+- TDD 与累计链：旧 fixture 的永久连续性断言为 `0/3 RED`；修复后逐类真实执行 S1.1 -> S1.2 -> JCS 恢复 -> S1.3，并把本次 `replay.restored` 注入 candidate 再解析、会签和恢复；ID、完整 canonical JSON、digest 均 `3/3` 一致。
+- 负例：跨项目完整对象轮换和只替换 digest 均被 `parseProductDefinitionCandidate` 拒绝；没有修改生产领域代码以放宽边界。
+- 测试与覆盖率：`pnpm check` 通过 `123/123`，Lines `90.78%`、Branches `82.15%`、Functions `98.26%`；`git diff --check` 通过。
+- 范围与不变性：4 个变更路径全部在 generation 3 packet allowlist；生产源码、Schema、CLI、S1.1/S1.2 输入 fixture、上游文档、runtime/reviews、formal/control refs 未被执行者修改。当前仅为 candidate-ready，不构成 CV、I/X/P、L3、PC-03、M1.1 或 V1 结论。
+
 ## 2026-08-12 P5 / V1 / M1.1 独立累积验收
 
 - 身份验证：formal `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`、tree `b0178b038e6dd975e90cdd9d3aa7422d2965cf23`、内容摘要 `sha256:648a42bfe2e4733a87bcd0af4f3f248c42e008c6ce89498d40179f8a272de2d9`；packet、dedup、dispatch-ack、claim/fence 41 与 source refs 摘要一致。

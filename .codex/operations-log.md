@@ -1,5 +1,14 @@
 # Operations Log
 
+## 2026-08-12 P5 / V1 / M1.1 / S1.3 Generation 3 Attempt 1 执行
+
+- CR-004 已获用户批准。generation 3 控制链按 expected-old CAS 完成：advance、ack、packet/dispatch-ready、outbox intent、fence 42 claim 和 Terra dispatch-ack；当前 control `1547063fce5788d60f4a6743633453cb102d5f46`，formal 保持 `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`。
+- 执行任务：packet `ep-p5-v1-m1.1-s1.3-g3-a1-20260812`，packet digest `sha256:f47a81844ae40634f295df4db4ddf8a44b4ec9ccf910800f1e3b40b79bc0bba2`，dedup `sha256:34d2dfdcf5a1a9b30d751a8f240adb90b1cdf95126b9887c733c1379809d4af6`，claim `claim-s1.3-g3-a1-f42-20260812`，host `019ff360-7a25-74b2-b396-4f9b36237307`。
+- 执行范围严格为 `tests/domain/product-definition.test.ts` 与三份 product-definition fixture；未修改生产源码、Schema、CLI、S1.1/S1.2 fixture、路线锁、计划、runtime/reviews 或 refs。
+- TDD：旧静态 fixture 先由永久累计断言复现 S1.2 -> S1.3 身份连续性 `0/3 RED`；GREEN 后三类真实执行 S1.1 intake -> S1.2 补全/确认/冻结 -> JCS 序列化恢复 -> S1.3 candidate 注入/解析/会签/恢复，`frozen_requirement_id`、完整 canonical JSON 和 digest 均为 `3/3` 连续。
+- 负例：跨项目完整 Frozen Requirement 轮换和仅替换 digest 均 fail closed；累计测试不依赖同一对象引用或固定错误摘要。
+- 本地验证：`pnpm check` 通过 `123/123`，覆盖率 Lines `90.78%`、Branches `82.15%`、Functions `98.26%`；`git diff --check` 和 packet allowlist 通过。候选提交尚未创建，未启动 CV/I-X-P/L3。
+
 ## 2026-08-12 CR-004 用户批准
 
 - 用户明确批准按“当前阶段缺口 + plan generation 3”修复 M1.1 跨阶段 fixture 连续性，并重走 S1.3 正式证据链与 M1.1 attempt 2。

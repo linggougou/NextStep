@@ -1,1 +1,998 @@
-{"evidence_scope":"manual-isolated consumer contract","fixture_type":"complete-product-definition","frozen_requirement":{"confirmation":{"action":"freeze-requirement-set","challenge":{"action":"freeze-requirement-set","confirmation_id":"confirm-project-delivery-tool","confirmation_view":{"action":"freeze-requirement-set","challenge_created_at":"2026-08-11T09:00:00.000Z","confirmation_id":"confirm-project-delivery-tool","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","items":[{"field":"intent_summary","source":"candidate","status":"identified","values":["Create offline project delivery tool"]},{"field":"goals","source":"candidate","status":"identified","values":["delivery milestones"]},{"field":"scenarios","source":"candidate","status":"identified","values":["Project coordinators"]},{"field":"constraints","source":"candidate","status":"identified","values":["No external services"]},{"field":"expected_outputs","source":"candidate","status":"identified","values":["offline project delivery tool"]},{"field":"non_goal_gaps","source":"candidate","status":"identified","values":["No external services"]},{"field":"clarification_gaps","source":"user","status":"none","values":[]}],"project":{"repository_id":"sha256:3333333333333333333333333333333333333333333333333333333333333333"},"record_type":"confirmation-view","requirement_set_digest":"sha256:9bd86e0c52951a9e7d33b016c50267bd294b001b213395bec255a8513cd6742e","requirement_set_generation":1,"requirement_set_id":"req-project-delivery-tool","requirement_set_version":1,"schema_version":"1.0","summary":"intent_summary|identified|Create offline project delivery tool\ngoals|identified|delivery milestones\nscenarios|identified|Project coordinators\nconstraints|identified|No external services\nexpected_outputs|identified|offline project delivery tool\nnon_goal_gaps|identified|No external services\nclarification_gaps|none|"},"confirmation_view_digest":"sha256:525853e9b102b03c8ca7e70611ed31d40335b476066ff1461ca37b7b5248d58d","created_at":"2026-08-11T09:00:00.000Z","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","project":{"repository_id":"sha256:3333333333333333333333333333333333333333333333333333333333333333"},"record_type":"confirmation-challenge","requirement_set_digest":"sha256:9bd86e0c52951a9e7d33b016c50267bd294b001b213395bec255a8513cd6742e","requirement_set_generation":1,"requirement_set_id":"req-project-delivery-tool","requirement_set_version":1,"schema_version":"1.0"},"challenge_digest":"sha256:819d57c06be086257947a45dfb04ba632edc1c534266845d51fd34d9fe168249","confirmation_id":"confirm-project-delivery-tool","confirmation_kind":"explicit-user-confirmation","confirmation_view_digest":"sha256:525853e9b102b03c8ca7e70611ed31d40335b476066ff1461ca37b7b5248d58d","confirmed_at":"2026-08-11T09:10:00.000Z","display":{"action":"freeze-requirement-set","challenge":{"action":"freeze-requirement-set","confirmation_id":"confirm-project-delivery-tool","confirmation_view":{"action":"freeze-requirement-set","challenge_created_at":"2026-08-11T09:00:00.000Z","confirmation_id":"confirm-project-delivery-tool","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","items":[{"field":"intent_summary","source":"candidate","status":"identified","values":["Create offline project delivery tool"]},{"field":"goals","source":"candidate","status":"identified","values":["delivery milestones"]},{"field":"scenarios","source":"candidate","status":"identified","values":["Project coordinators"]},{"field":"constraints","source":"candidate","status":"identified","values":["No external services"]},{"field":"expected_outputs","source":"candidate","status":"identified","values":["offline project delivery tool"]},{"field":"non_goal_gaps","source":"candidate","status":"identified","values":["No external services"]},{"field":"clarification_gaps","source":"user","status":"none","values":[]}],"project":{"repository_id":"sha256:3333333333333333333333333333333333333333333333333333333333333333"},"record_type":"confirmation-view","requirement_set_digest":"sha256:9bd86e0c52951a9e7d33b016c50267bd294b001b213395bec255a8513cd6742e","requirement_set_generation":1,"requirement_set_id":"req-project-delivery-tool","requirement_set_version":1,"schema_version":"1.0","summary":"intent_summary|identified|Create offline project delivery tool\ngoals|identified|delivery milestones\nscenarios|identified|Project coordinators\nconstraints|identified|No external services\nexpected_outputs|identified|offline project delivery tool\nnon_goal_gaps|identified|No external services\nclarification_gaps|none|"},"confirmation_view_digest":"sha256:525853e9b102b03c8ca7e70611ed31d40335b476066ff1461ca37b7b5248d58d","created_at":"2026-08-11T09:00:00.000Z","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","project":{"repository_id":"sha256:3333333333333333333333333333333333333333333333333333333333333333"},"record_type":"confirmation-challenge","requirement_set_digest":"sha256:9bd86e0c52951a9e7d33b016c50267bd294b001b213395bec255a8513cd6742e","requirement_set_generation":1,"requirement_set_id":"req-project-delivery-tool","requirement_set_version":1,"schema_version":"1.0"},"challenge_digest":"sha256:819d57c06be086257947a45dfb04ba632edc1c534266845d51fd34d9fe168249","confirmation_id":"confirm-project-delivery-tool","confirmation_view":{"action":"freeze-requirement-set","challenge_created_at":"2026-08-11T09:00:00.000Z","confirmation_id":"confirm-project-delivery-tool","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","items":[{"field":"intent_summary","source":"candidate","status":"identified","values":["Create offline project delivery tool"]},{"field":"goals","source":"candidate","status":"identified","values":["delivery milestones"]},{"field":"scenarios","source":"candidate","status":"identified","values":["Project coordinators"]},{"field":"constraints","source":"candidate","status":"identified","values":["No external services"]},{"field":"expected_outputs","source":"candidate","status":"identified","values":["offline project delivery tool"]},{"field":"non_goal_gaps","source":"candidate","status":"identified","values":["No external services"]},{"field":"clarification_gaps","source":"user","status":"none","values":[]}],"project":{"repository_id":"sha256:3333333333333333333333333333333333333333333333333333333333333333"},"record_type":"confirmation-view","requirement_set_digest":"sha256:9bd86e0c52951a9e7d33b016c50267bd294b001b213395bec255a8513cd6742e","requirement_set_generation":1,"requirement_set_id":"req-project-delivery-tool","requirement_set_version":1,"schema_version":"1.0","summary":"intent_summary|identified|Create offline project delivery tool\ngoals|identified|delivery milestones\nscenarios|identified|Project coordinators\nconstraints|identified|No external services\nexpected_outputs|identified|offline project delivery tool\nnon_goal_gaps|identified|No external services\nclarification_gaps|none|"},"confirmation_view_digest":"sha256:525853e9b102b03c8ca7e70611ed31d40335b476066ff1461ca37b7b5248d58d","display_id":"display-project-delivery-tool","displayed_at":"2026-08-11T09:05:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","project":{"repository_id":"sha256:3333333333333333333333333333333333333333333333333333333333333333"},"record_type":"confirmation-view-display","requirement_set_digest":"sha256:9bd86e0c52951a9e7d33b016c50267bd294b001b213395bec255a8513cd6742e","requirement_set_generation":1,"requirement_set_id":"req-project-delivery-tool","requirement_set_version":1,"schema_version":"1.0"},"display_digest":"sha256:ca9f189a09026f46451f175c8ce39c6091e37af2319f21930c7481d5f60a213e","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","project":{"repository_id":"sha256:3333333333333333333333333333333333333333333333333333333333333333"},"record_type":"confirmation-envelope","requirement_set_digest":"sha256:9bd86e0c52951a9e7d33b016c50267bd294b001b213395bec255a8513cd6742e","requirement_set_generation":1,"requirement_set_id":"req-project-delivery-tool","requirement_set_version":1,"schema_version":"1.0","user_action":{"action":"freeze-requirement-set","challenge_created_at":"2026-08-11T09:00:00.000Z","challenge_digest":"sha256:819d57c06be086257947a45dfb04ba632edc1c534266845d51fd34d9fe168249","confirmation_id":"confirm-project-delivery-tool","confirmation_view_digest":"sha256:525853e9b102b03c8ca7e70611ed31d40335b476066ff1461ca37b7b5248d58d","display_digest":"sha256:ca9f189a09026f46451f175c8ce39c6091e37af2319f21930c7481d5f60a213e","display_id":"display-project-delivery-tool","displayed_at":"2026-08-11T09:05:00.000Z","event_source":"independent-user-action","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","occurred_at":"2026-08-11T09:10:00.000Z","project":{"repository_id":"sha256:3333333333333333333333333333333333333333333333333333333333333333"},"record_type":"user-confirmation-action","requirement_set_digest":"sha256:9bd86e0c52951a9e7d33b016c50267bd294b001b213395bec255a8513cd6742e","requirement_set_generation":1,"requirement_set_id":"req-project-delivery-tool","requirement_set_version":1,"schema_version":"1.0","user_action":"confirm","user_action_id":"action-project-delivery-tool"},"user_action_digest":"sha256:3f9ffe0d00283cbdbc95a2569d796d88cfe2d6edc43359012ee20366b9f35f17"},"confirmation_binding_digest":"sha256:3c72a2dd74806e282c98c9825c7c4c9786d389a371ec9790164c4173fbcc6a6e","confirmation_view_digest":"sha256:525853e9b102b03c8ca7e70611ed31d40335b476066ff1461ca37b7b5248d58d","frozen_requirement_id":"frozen-886075eccfb226bab9d3f1360c6979b1a6df9d0d7f50798fc132d92dd49bf8ad","next_step":"S1.3.product-definition","project":{"formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","repository_id":"sha256:3333333333333333333333333333333333333333333333333333333333333333"},"requirement_content_digest":"sha256:9bd86e0c52951a9e7d33b016c50267bd294b001b213395bec255a8513cd6742e","requirement_set":{"content_digest":"sha256:9bd86e0c52951a9e7d33b016c50267bd294b001b213395bec255a8513cd6742e","items":[{"field":"intent_summary","source":"candidate","status":"identified","values":["Create offline project delivery tool"]},{"field":"goals","source":"candidate","status":"identified","values":["delivery milestones"]},{"field":"scenarios","source":"candidate","status":"identified","values":["Project coordinators"]},{"field":"constraints","source":"candidate","status":"identified","values":["No external services"]},{"field":"expected_outputs","source":"candidate","status":"identified","values":["offline project delivery tool"]},{"field":"non_goal_gaps","source":"candidate","status":"identified","values":["No external services"]},{"field":"clarification_gaps","source":"user","status":"none","values":[]}],"project":{"formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","repository_id":"sha256:3333333333333333333333333333333333333333333333333333333333333333"},"requirement_set_id":"req-project-delivery-tool","schema_version":"1.0","source_candidate_digest":"sha256:6958f4638658367835c351f4ed0b4dffdafc853f591cf589f8c8351475ef02e2","status":"ready-for-confirmation","summary":"intent_summary|identified|Create offline project delivery tool\ngoals|identified|delivery milestones\nscenarios|identified|Project coordinators\nconstraints|identified|No external services\nexpected_outputs|identified|offline project delivery tool\nnon_goal_gaps|identified|No external services\nclarification_gaps|none|","version":1},"requirement_set_version":1,"schema_version":"1.0","status":"frozen"},"product_definition":{"capability_map":{"capabilities":[{"derivation_summary":"role:capability; derived from the Frozen Requirement source","kind":"derived","source_refs":[{"pointer":"/requirement_set/items/4/values/0","value_digest":"sha256:93d81fa5a0096f32970d65f1f1e481bd8a1935fb6d4403ec4f70af32bd155e13"}],"value":"Provides an offline project delivery tool"}],"product_definition_id":"pd-737eaada8fa4229d85ca128bb67e84cf8c206aab88dcb56710e89834847c5daa"},"frozen_requirement":{"confirmation":{"action":"freeze-requirement-set","challenge":{"action":"freeze-requirement-set","confirmation_id":"confirm-project-delivery-tool","confirmation_view":{"action":"freeze-requirement-set","challenge_created_at":"2026-08-11T09:00:00.000Z","confirmation_id":"confirm-project-delivery-tool","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","items":[{"field":"intent_summary","source":"candidate","status":"identified","values":["Create offline project delivery tool"]},{"field":"goals","source":"candidate","status":"identified","values":["delivery milestones"]},{"field":"scenarios","source":"candidate","status":"identified","values":["Project coordinators"]},{"field":"constraints","source":"candidate","status":"identified","values":["No external services"]},{"field":"expected_outputs","source":"candidate","status":"identified","values":["offline project delivery tool"]},{"field":"non_goal_gaps","source":"candidate","status":"identified","values":["No external services"]},{"field":"clarification_gaps","source":"user","status":"none","values":[]}],"project":{"repository_id":"sha256:3333333333333333333333333333333333333333333333333333333333333333"},"record_type":"confirmation-view","requirement_set_digest":"sha256:9bd86e0c52951a9e7d33b016c50267bd294b001b213395bec255a8513cd6742e","requirement_set_generation":1,"requirement_set_id":"req-project-delivery-tool","requirement_set_version":1,"schema_version":"1.0","summary":"intent_summary|identified|Create offline project delivery tool\ngoals|identified|delivery milestones\nscenarios|identified|Project coordinators\nconstraints|identified|No external services\nexpected_outputs|identified|offline project delivery tool\nnon_goal_gaps|identified|No external services\nclarification_gaps|none|"},"confirmation_view_digest":"sha256:525853e9b102b03c8ca7e70611ed31d40335b476066ff1461ca37b7b5248d58d","created_at":"2026-08-11T09:00:00.000Z","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","project":{"repository_id":"sha256:3333333333333333333333333333333333333333333333333333333333333333"},"record_type":"confirmation-challenge","requirement_set_digest":"sha256:9bd86e0c52951a9e7d33b016c50267bd294b001b213395bec255a8513cd6742e","requirement_set_generation":1,"requirement_set_id":"req-project-delivery-tool","requirement_set_version":1,"schema_version":"1.0"},"challenge_digest":"sha256:819d57c06be086257947a45dfb04ba632edc1c534266845d51fd34d9fe168249","confirmation_id":"confirm-project-delivery-tool","confirmation_kind":"explicit-user-confirmation","confirmation_view_digest":"sha256:525853e9b102b03c8ca7e70611ed31d40335b476066ff1461ca37b7b5248d58d","confirmed_at":"2026-08-11T09:10:00.000Z","display":{"action":"freeze-requirement-set","challenge":{"action":"freeze-requirement-set","confirmation_id":"confirm-project-delivery-tool","confirmation_view":{"action":"freeze-requirement-set","challenge_created_at":"2026-08-11T09:00:00.000Z","confirmation_id":"confirm-project-delivery-tool","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","items":[{"field":"intent_summary","source":"candidate","status":"identified","values":["Create offline project delivery tool"]},{"field":"goals","source":"candidate","status":"identified","values":["delivery milestones"]},{"field":"scenarios","source":"candidate","status":"identified","values":["Project coordinators"]},{"field":"constraints","source":"candidate","status":"identified","values":["No external services"]},{"field":"expected_outputs","source":"candidate","status":"identified","values":["offline project delivery tool"]},{"field":"non_goal_gaps","source":"candidate","status":"identified","values":["No external services"]},{"field":"clarification_gaps","source":"user","status":"none","values":[]}],"project":{"repository_id":"sha256:3333333333333333333333333333333333333333333333333333333333333333"},"record_type":"confirmation-view","requirement_set_digest":"sha256:9bd86e0c52951a9e7d33b016c50267bd294b001b213395bec255a8513cd6742e","requirement_set_generation":1,"requirement_set_id":"req-project-delivery-tool","requirement_set_version":1,"schema_version":"1.0","summary":"intent_summary|identified|Create offline project delivery tool\ngoals|identified|delivery milestones\nscenarios|identified|Project coordinators\nconstraints|identified|No external services\nexpected_outputs|identified|offline project delivery tool\nnon_goal_gaps|identified|No external services\nclarification_gaps|none|"},"confirmation_view_digest":"sha256:525853e9b102b03c8ca7e70611ed31d40335b476066ff1461ca37b7b5248d58d","created_at":"2026-08-11T09:00:00.000Z","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","project":{"repository_id":"sha256:3333333333333333333333333333333333333333333333333333333333333333"},"record_type":"confirmation-challenge","requirement_set_digest":"sha256:9bd86e0c52951a9e7d33b016c50267bd294b001b213395bec255a8513cd6742e","requirement_set_generation":1,"requirement_set_id":"req-project-delivery-tool","requirement_set_version":1,"schema_version":"1.0"},"challenge_digest":"sha256:819d57c06be086257947a45dfb04ba632edc1c534266845d51fd34d9fe168249","confirmation_id":"confirm-project-delivery-tool","confirmation_view":{"action":"freeze-requirement-set","challenge_created_at":"2026-08-11T09:00:00.000Z","confirmation_id":"confirm-project-delivery-tool","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","items":[{"field":"intent_summary","source":"candidate","status":"identified","values":["Create offline project delivery tool"]},{"field":"goals","source":"candidate","status":"identified","values":["delivery milestones"]},{"field":"scenarios","source":"candidate","status":"identified","values":["Project coordinators"]},{"field":"constraints","source":"candidate","status":"identified","values":["No external services"]},{"field":"expected_outputs","source":"candidate","status":"identified","values":["offline project delivery tool"]},{"field":"non_goal_gaps","source":"candidate","status":"identified","values":["No external services"]},{"field":"clarification_gaps","source":"user","status":"none","values":[]}],"project":{"repository_id":"sha256:3333333333333333333333333333333333333333333333333333333333333333"},"record_type":"confirmation-view","requirement_set_digest":"sha256:9bd86e0c52951a9e7d33b016c50267bd294b001b213395bec255a8513cd6742e","requirement_set_generation":1,"requirement_set_id":"req-project-delivery-tool","requirement_set_version":1,"schema_version":"1.0","summary":"intent_summary|identified|Create offline project delivery tool\ngoals|identified|delivery milestones\nscenarios|identified|Project coordinators\nconstraints|identified|No external services\nexpected_outputs|identified|offline project delivery tool\nnon_goal_gaps|identified|No external services\nclarification_gaps|none|"},"confirmation_view_digest":"sha256:525853e9b102b03c8ca7e70611ed31d40335b476066ff1461ca37b7b5248d58d","display_id":"display-project-delivery-tool","displayed_at":"2026-08-11T09:05:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","project":{"repository_id":"sha256:3333333333333333333333333333333333333333333333333333333333333333"},"record_type":"confirmation-view-display","requirement_set_digest":"sha256:9bd86e0c52951a9e7d33b016c50267bd294b001b213395bec255a8513cd6742e","requirement_set_generation":1,"requirement_set_id":"req-project-delivery-tool","requirement_set_version":1,"schema_version":"1.0"},"display_digest":"sha256:ca9f189a09026f46451f175c8ce39c6091e37af2319f21930c7481d5f60a213e","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","project":{"repository_id":"sha256:3333333333333333333333333333333333333333333333333333333333333333"},"record_type":"confirmation-envelope","requirement_set_digest":"sha256:9bd86e0c52951a9e7d33b016c50267bd294b001b213395bec255a8513cd6742e","requirement_set_generation":1,"requirement_set_id":"req-project-delivery-tool","requirement_set_version":1,"schema_version":"1.0","user_action":{"action":"freeze-requirement-set","challenge_created_at":"2026-08-11T09:00:00.000Z","challenge_digest":"sha256:819d57c06be086257947a45dfb04ba632edc1c534266845d51fd34d9fe168249","confirmation_id":"confirm-project-delivery-tool","confirmation_view_digest":"sha256:525853e9b102b03c8ca7e70611ed31d40335b476066ff1461ca37b7b5248d58d","display_digest":"sha256:ca9f189a09026f46451f175c8ce39c6091e37af2319f21930c7481d5f60a213e","display_id":"display-project-delivery-tool","displayed_at":"2026-08-11T09:05:00.000Z","event_source":"independent-user-action","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","occurred_at":"2026-08-11T09:10:00.000Z","project":{"repository_id":"sha256:3333333333333333333333333333333333333333333333333333333333333333"},"record_type":"user-confirmation-action","requirement_set_digest":"sha256:9bd86e0c52951a9e7d33b016c50267bd294b001b213395bec255a8513cd6742e","requirement_set_generation":1,"requirement_set_id":"req-project-delivery-tool","requirement_set_version":1,"schema_version":"1.0","user_action":"confirm","user_action_id":"action-project-delivery-tool"},"user_action_digest":"sha256:3f9ffe0d00283cbdbc95a2569d796d88cfe2d6edc43359012ee20366b9f35f17"},"confirmation_binding_digest":"sha256:3c72a2dd74806e282c98c9825c7c4c9786d389a371ec9790164c4173fbcc6a6e","confirmation_view_digest":"sha256:525853e9b102b03c8ca7e70611ed31d40335b476066ff1461ca37b7b5248d58d","frozen_requirement_id":"frozen-886075eccfb226bab9d3f1360c6979b1a6df9d0d7f50798fc132d92dd49bf8ad","next_step":"S1.3.product-definition","project":{"formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","repository_id":"sha256:3333333333333333333333333333333333333333333333333333333333333333"},"requirement_content_digest":"sha256:9bd86e0c52951a9e7d33b016c50267bd294b001b213395bec255a8513cd6742e","requirement_set":{"content_digest":"sha256:9bd86e0c52951a9e7d33b016c50267bd294b001b213395bec255a8513cd6742e","items":[{"field":"intent_summary","source":"candidate","status":"identified","values":["Create offline project delivery tool"]},{"field":"goals","source":"candidate","status":"identified","values":["delivery milestones"]},{"field":"scenarios","source":"candidate","status":"identified","values":["Project coordinators"]},{"field":"constraints","source":"candidate","status":"identified","values":["No external services"]},{"field":"expected_outputs","source":"candidate","status":"identified","values":["offline project delivery tool"]},{"field":"non_goal_gaps","source":"candidate","status":"identified","values":["No external services"]},{"field":"clarification_gaps","source":"user","status":"none","values":[]}],"project":{"formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","repository_id":"sha256:3333333333333333333333333333333333333333333333333333333333333333"},"requirement_set_id":"req-project-delivery-tool","schema_version":"1.0","source_candidate_digest":"sha256:6958f4638658367835c351f4ed0b4dffdafc853f591cf589f8c8351475ef02e2","status":"ready-for-confirmation","summary":"intent_summary|identified|Create offline project delivery tool\ngoals|identified|delivery milestones\nscenarios|identified|Project coordinators\nconstraints|identified|No external services\nexpected_outputs|identified|offline project delivery tool\nnon_goal_gaps|identified|No external services\nclarification_gaps|none|","version":1},"requirement_set_version":1,"schema_version":"1.0","status":"frozen"},"frozen_requirement_digest":"sha256:ad27d047833e90cfcdff1f6a5225413182da944cb3c6c243a8b395ad7790b031","prd":{"goals":[{"kind":"direct","source":{"pointer":"/requirement_set/items/1/values/0","value_digest":"sha256:f3d92dd5bf8f7aba7ed7187dd2df207176696b8f2e44140bf7c34b030fbade54"},"value":"delivery milestones"}],"non_goals":[{"kind":"direct","source":{"pointer":"/requirement_set/items/5/values/0","value_digest":"sha256:eb20cfdf7f7ac344361eaebb2168fbb5e24b7191a4bfdcb3f5ccd0586247a89a"},"value":"No external services"}],"problem":{"derivation_summary":"role:problem; derived from the Frozen Requirement source","kind":"derived","source_refs":[{"pointer":"/requirement_set/items/2/values/0","value_digest":"sha256:c483f59479fef0782b4fc3383a5e78fe79aa7b96fe4338beb3081752e68f6af4"}],"value":"Project coordinators need an offline way to track delivery milestones"},"product_name":{"kind":"direct","source":{"pointer":"/requirement_set/items/0/values/0","value_digest":"sha256:ae864850a2bea344588352bc9040b97f1c9ec6e2106981a5bba6dfbe3f68a4f1"},"value":"Create offline project delivery tool"},"scenarios":[{"derivation_summary":"role:scenarios; derived from the Frozen Requirement source","kind":"derived","source_refs":[{"pointer":"/requirement_set/items/2/values/0","value_digest":"sha256:c483f59479fef0782b4fc3383a5e78fe79aa7b96fe4338beb3081752e68f6af4"}],"value":"Project coordinators coordinate delivery milestones without external services"}],"scope":[{"kind":"direct","source":{"pointer":"/requirement_set/items/4/values/0","value_digest":"sha256:93d81fa5a0096f32970d65f1f1e481bd8a1935fb6d4403ec4f70af32bd155e13"},"value":"offline project delivery tool"}],"success_metrics":[{"evidence":{"journey_sequence":2,"transition_digest":"sha256:b65d1ed6ddf5b7ad2e1d946ce3ef384723d6ce602a3c0f61c844498fdbb09233"},"measurement":{"kind":"completion-transition"},"target":{"required_state":"completed","semantic_source":{"pointer":"/requirement_set/items/1/values/0","value_digest":"sha256:f3d92dd5bf8f7aba7ed7187dd2df207176696b8f2e44140bf7c34b030fbade54"}}}],"target_users":[{"kind":"direct","source":{"pointer":"/requirement_set/items/2/values/0","value_digest":"sha256:c483f59479fef0782b4fc3383a5e78fe79aa7b96fe4338beb3081752e68f6af4"},"value":"Project coordinators"}]},"product_definition_id":"pd-737eaada8fa4229d85ca128bb67e84cf8c206aab88dcb56710e89834847c5daa","record_type":"product-definition-candidate","schema_version":"1.0","user_journey":{"product_definition_id":"pd-737eaada8fa4229d85ca128bb67e84cf8c206aab88dcb56710e89834847c5daa","steps":[{"action":"start","activity":{"derivation_summary":"role:activity; derived from the Frozen Requirement source","kind":"derived","source_refs":[{"pointer":"/requirement_set/items/1/values/0","value_digest":"sha256:f3d92dd5bf8f7aba7ed7187dd2df207176696b8f2e44140bf7c34b030fbade54"}],"value":"Project coordinators begin planning delivery milestones"},"actor":{"derivation_summary":"role:actor; derived from the Frozen Requirement source","kind":"derived","source_refs":[{"pointer":"/requirement_set/items/2/values/0","value_digest":"sha256:c483f59479fef0782b4fc3383a5e78fe79aa7b96fe4338beb3081752e68f6af4"}],"value":"Project coordinators"},"outcome":"in-progress","result":{"derivation_summary":"role:result; derived from the Frozen Requirement source","kind":"derived","source_refs":[{"pointer":"/requirement_set/items/1/values/0","value_digest":"sha256:f3d92dd5bf8f7aba7ed7187dd2df207176696b8f2e44140bf7c34b030fbade54"}],"value":"Delivery milestone planning is in progress"},"semantic_source":{"pointer":"/requirement_set/items/1/values/0","value_digest":"sha256:f3d92dd5bf8f7aba7ed7187dd2df207176696b8f2e44140bf7c34b030fbade54"},"sequence":1,"state_change":{"from":"not-started","to":"in-progress"}},{"action":"complete","activity":{"derivation_summary":"role:activity; derived from the Frozen Requirement source","kind":"derived","source_refs":[{"pointer":"/requirement_set/items/1/values/0","value_digest":"sha256:f3d92dd5bf8f7aba7ed7187dd2df207176696b8f2e44140bf7c34b030fbade54"}],"value":"Project coordinators finish the delivery milestone plan"},"actor":{"derivation_summary":"role:actor; derived from the Frozen Requirement source","kind":"derived","source_refs":[{"pointer":"/requirement_set/items/2/values/0","value_digest":"sha256:c483f59479fef0782b4fc3383a5e78fe79aa7b96fe4338beb3081752e68f6af4"}],"value":"Project coordinators"},"outcome":"completed","result":{"derivation_summary":"role:result; derived from the Frozen Requirement source","kind":"derived","source_refs":[{"pointer":"/requirement_set/items/4/values/0","value_digest":"sha256:93d81fa5a0096f32970d65f1f1e481bd8a1935fb6d4403ec4f70af32bd155e13"}],"value":"An offline project delivery plan is ready"},"semantic_source":{"pointer":"/requirement_set/items/1/values/0","value_digest":"sha256:f3d92dd5bf8f7aba7ed7187dd2df207176696b8f2e44140bf7c34b030fbade54"},"sequence":2,"state_change":{"from":"in-progress","to":"completed"}}]}},"target_project":"project-delivery-tool"}
+{
+  "evidence_scope": "manual-isolated consumer contract",
+  "fixture_type": "complete-product-definition",
+  "frozen_requirement": {
+    "schema_version": "1.0",
+    "frozen_requirement_id": "frozen-5ca911a65f939c41c59a9a28699f29c6062fa8ac4d633beeb5a6ea59d4411aee",
+    "status": "frozen",
+    "project": {
+      "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
+    },
+    "requirement_set_version": 1,
+    "requirement_set": {
+      "schema_version": "1.0",
+      "requirement_set_id": "req-project-delivery-tool",
+      "project": {
+        "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
+      },
+      "version": 1,
+      "status": "ready-for-confirmation",
+      "source_candidate_digest": "sha256:02dfeca0765c39890718d54757af432eceeb2056da5596edbd5a35d8a035791f",
+      "items": [
+        {
+          "field": "intent_summary",
+          "status": "identified",
+          "values": [
+            "建立一个 AI 项目推进工具"
+          ],
+          "source": "candidate"
+        },
+        {
+          "field": "goals",
+          "status": "identified",
+          "values": [
+            "做一个 AI 项目推进工具"
+          ],
+          "source": "candidate"
+        },
+        {
+          "field": "scenarios",
+          "status": "identified",
+          "values": [
+            "企业团队规划项目时"
+          ],
+          "source": "user"
+        },
+        {
+          "field": "constraints",
+          "status": "identified",
+          "values": [
+            "不连接外部服务"
+          ],
+          "source": "user"
+        },
+        {
+          "field": "expected_outputs",
+          "status": "identified",
+          "values": [
+            "可确认的项目计划"
+          ],
+          "source": "user"
+        },
+        {
+          "field": "non_goal_gaps",
+          "status": "none",
+          "values": [],
+          "source": "user"
+        },
+        {
+          "field": "clarification_gaps",
+          "status": "none",
+          "values": [],
+          "source": "user"
+        }
+      ],
+      "summary": "intent_summary|identified|建立一个 AI 项目推进工具\ngoals|identified|做一个 AI 项目推进工具\nscenarios|identified|企业团队规划项目时\nconstraints|identified|不连接外部服务\nexpected_outputs|identified|可确认的项目计划\nnon_goal_gaps|none|\nclarification_gaps|none|",
+      "content_digest": "sha256:c67e1b77ddfdc42198f3d20dfccb598f2b5fc3fd63bd03bb39854921e6719ac0"
+    },
+    "requirement_content_digest": "sha256:c67e1b77ddfdc42198f3d20dfccb598f2b5fc3fd63bd03bb39854921e6719ac0",
+    "confirmation": {
+      "schema_version": "1.0",
+      "record_type": "confirmation-envelope",
+      "action": "freeze-requirement-set",
+      "project": {
+        "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+      "requirement_set_id": "req-project-delivery-tool",
+      "requirement_set_version": 1,
+      "requirement_set_generation": 1,
+      "requirement_set_digest": "sha256:c67e1b77ddfdc42198f3d20dfccb598f2b5fc3fd63bd03bb39854921e6719ac0",
+      "confirmation_view_digest": "sha256:34fe40d8841fd829f63230bf95e29ae99a53493e87b9b3f361cf02e3a0a8c92c",
+      "confirmation_id": "confirm-project-delivery-tool",
+      "challenge": {
+        "schema_version": "1.0",
+        "record_type": "confirmation-challenge",
+        "action": "freeze-requirement-set",
+        "project": {
+          "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+        "requirement_set_id": "req-project-delivery-tool",
+        "requirement_set_version": 1,
+        "requirement_set_generation": 1,
+        "requirement_set_digest": "sha256:c67e1b77ddfdc42198f3d20dfccb598f2b5fc3fd63bd03bb39854921e6719ac0",
+        "confirmation_view": {
+          "schema_version": "1.0",
+          "record_type": "confirmation-view",
+          "action": "freeze-requirement-set",
+          "project": {
+            "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+          "requirement_set_id": "req-project-delivery-tool",
+          "requirement_set_version": 1,
+          "requirement_set_generation": 1,
+          "requirement_set_digest": "sha256:c67e1b77ddfdc42198f3d20dfccb598f2b5fc3fd63bd03bb39854921e6719ac0",
+          "summary": "intent_summary|identified|建立一个 AI 项目推进工具\ngoals|identified|做一个 AI 项目推进工具\nscenarios|identified|企业团队规划项目时\nconstraints|identified|不连接外部服务\nexpected_outputs|identified|可确认的项目计划\nnon_goal_gaps|none|\nclarification_gaps|none|",
+          "items": [
+            {
+              "field": "intent_summary",
+              "status": "identified",
+              "values": [
+                "建立一个 AI 项目推进工具"
+              ],
+              "source": "candidate"
+            },
+            {
+              "field": "goals",
+              "status": "identified",
+              "values": [
+                "做一个 AI 项目推进工具"
+              ],
+              "source": "candidate"
+            },
+            {
+              "field": "scenarios",
+              "status": "identified",
+              "values": [
+                "企业团队规划项目时"
+              ],
+              "source": "user"
+            },
+            {
+              "field": "constraints",
+              "status": "identified",
+              "values": [
+                "不连接外部服务"
+              ],
+              "source": "user"
+            },
+            {
+              "field": "expected_outputs",
+              "status": "identified",
+              "values": [
+                "可确认的项目计划"
+              ],
+              "source": "user"
+            },
+            {
+              "field": "non_goal_gaps",
+              "status": "none",
+              "values": [],
+              "source": "user"
+            },
+            {
+              "field": "clarification_gaps",
+              "status": "none",
+              "values": [],
+              "source": "user"
+            }
+          ],
+          "confirmation_id": "confirm-project-delivery-tool",
+          "challenge_created_at": "2026-08-10T00:57:00.000Z",
+          "expires_at": "2026-08-10T01:05:00.000Z"
+        },
+        "confirmation_view_digest": "sha256:34fe40d8841fd829f63230bf95e29ae99a53493e87b9b3f361cf02e3a0a8c92c",
+        "confirmation_id": "confirm-project-delivery-tool",
+        "created_at": "2026-08-10T00:57:00.000Z",
+        "expires_at": "2026-08-10T01:05:00.000Z"
+      },
+      "challenge_digest": "sha256:b87612c041943fbfb614c25c1a27b21405090bd5ff1bcc9610844f05c86a8cf4",
+      "display": {
+        "schema_version": "1.0",
+        "record_type": "confirmation-view-display",
+        "action": "freeze-requirement-set",
+        "project": {
+          "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+        "requirement_set_id": "req-project-delivery-tool",
+        "requirement_set_version": 1,
+        "requirement_set_generation": 1,
+        "requirement_set_digest": "sha256:c67e1b77ddfdc42198f3d20dfccb598f2b5fc3fd63bd03bb39854921e6719ac0",
+        "confirmation_view_digest": "sha256:34fe40d8841fd829f63230bf95e29ae99a53493e87b9b3f361cf02e3a0a8c92c",
+        "confirmation_id": "confirm-project-delivery-tool",
+        "confirmation_view": {
+          "schema_version": "1.0",
+          "record_type": "confirmation-view",
+          "action": "freeze-requirement-set",
+          "project": {
+            "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+          "requirement_set_id": "req-project-delivery-tool",
+          "requirement_set_version": 1,
+          "requirement_set_generation": 1,
+          "requirement_set_digest": "sha256:c67e1b77ddfdc42198f3d20dfccb598f2b5fc3fd63bd03bb39854921e6719ac0",
+          "summary": "intent_summary|identified|建立一个 AI 项目推进工具\ngoals|identified|做一个 AI 项目推进工具\nscenarios|identified|企业团队规划项目时\nconstraints|identified|不连接外部服务\nexpected_outputs|identified|可确认的项目计划\nnon_goal_gaps|none|\nclarification_gaps|none|",
+          "items": [
+            {
+              "field": "intent_summary",
+              "status": "identified",
+              "values": [
+                "建立一个 AI 项目推进工具"
+              ],
+              "source": "candidate"
+            },
+            {
+              "field": "goals",
+              "status": "identified",
+              "values": [
+                "做一个 AI 项目推进工具"
+              ],
+              "source": "candidate"
+            },
+            {
+              "field": "scenarios",
+              "status": "identified",
+              "values": [
+                "企业团队规划项目时"
+              ],
+              "source": "user"
+            },
+            {
+              "field": "constraints",
+              "status": "identified",
+              "values": [
+                "不连接外部服务"
+              ],
+              "source": "user"
+            },
+            {
+              "field": "expected_outputs",
+              "status": "identified",
+              "values": [
+                "可确认的项目计划"
+              ],
+              "source": "user"
+            },
+            {
+              "field": "non_goal_gaps",
+              "status": "none",
+              "values": [],
+              "source": "user"
+            },
+            {
+              "field": "clarification_gaps",
+              "status": "none",
+              "values": [],
+              "source": "user"
+            }
+          ],
+          "confirmation_id": "confirm-project-delivery-tool",
+          "challenge_created_at": "2026-08-10T00:57:00.000Z",
+          "expires_at": "2026-08-10T01:05:00.000Z"
+        },
+        "challenge": {
+          "schema_version": "1.0",
+          "record_type": "confirmation-challenge",
+          "action": "freeze-requirement-set",
+          "project": {
+            "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+          "requirement_set_id": "req-project-delivery-tool",
+          "requirement_set_version": 1,
+          "requirement_set_generation": 1,
+          "requirement_set_digest": "sha256:c67e1b77ddfdc42198f3d20dfccb598f2b5fc3fd63bd03bb39854921e6719ac0",
+          "confirmation_view": {
+            "schema_version": "1.0",
+            "record_type": "confirmation-view",
+            "action": "freeze-requirement-set",
+            "project": {
+              "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+            },
+            "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+            "requirement_set_id": "req-project-delivery-tool",
+            "requirement_set_version": 1,
+            "requirement_set_generation": 1,
+            "requirement_set_digest": "sha256:c67e1b77ddfdc42198f3d20dfccb598f2b5fc3fd63bd03bb39854921e6719ac0",
+            "summary": "intent_summary|identified|建立一个 AI 项目推进工具\ngoals|identified|做一个 AI 项目推进工具\nscenarios|identified|企业团队规划项目时\nconstraints|identified|不连接外部服务\nexpected_outputs|identified|可确认的项目计划\nnon_goal_gaps|none|\nclarification_gaps|none|",
+            "items": [
+              {
+                "field": "intent_summary",
+                "status": "identified",
+                "values": [
+                  "建立一个 AI 项目推进工具"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "goals",
+                "status": "identified",
+                "values": [
+                  "做一个 AI 项目推进工具"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "scenarios",
+                "status": "identified",
+                "values": [
+                  "企业团队规划项目时"
+                ],
+                "source": "user"
+              },
+              {
+                "field": "constraints",
+                "status": "identified",
+                "values": [
+                  "不连接外部服务"
+                ],
+                "source": "user"
+              },
+              {
+                "field": "expected_outputs",
+                "status": "identified",
+                "values": [
+                  "可确认的项目计划"
+                ],
+                "source": "user"
+              },
+              {
+                "field": "non_goal_gaps",
+                "status": "none",
+                "values": [],
+                "source": "user"
+              },
+              {
+                "field": "clarification_gaps",
+                "status": "none",
+                "values": [],
+                "source": "user"
+              }
+            ],
+            "confirmation_id": "confirm-project-delivery-tool",
+            "challenge_created_at": "2026-08-10T00:57:00.000Z",
+            "expires_at": "2026-08-10T01:05:00.000Z"
+          },
+          "confirmation_view_digest": "sha256:34fe40d8841fd829f63230bf95e29ae99a53493e87b9b3f361cf02e3a0a8c92c",
+          "confirmation_id": "confirm-project-delivery-tool",
+          "created_at": "2026-08-10T00:57:00.000Z",
+          "expires_at": "2026-08-10T01:05:00.000Z"
+        },
+        "challenge_digest": "sha256:b87612c041943fbfb614c25c1a27b21405090bd5ff1bcc9610844f05c86a8cf4",
+        "display_id": "display-project-delivery-tool",
+        "displayed_at": "2026-08-10T00:58:00.000Z"
+      },
+      "display_digest": "sha256:7f25d1dd367ed57c9d5cf9f7b9942e7b6bc19710251a563d8b87aa6ccc676e4a",
+      "user_action": {
+        "schema_version": "1.0",
+        "record_type": "user-confirmation-action",
+        "action": "freeze-requirement-set",
+        "project": {
+          "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+        "requirement_set_id": "req-project-delivery-tool",
+        "requirement_set_version": 1,
+        "requirement_set_generation": 1,
+        "requirement_set_digest": "sha256:c67e1b77ddfdc42198f3d20dfccb598f2b5fc3fd63bd03bb39854921e6719ac0",
+        "confirmation_view_digest": "sha256:34fe40d8841fd829f63230bf95e29ae99a53493e87b9b3f361cf02e3a0a8c92c",
+        "confirmation_id": "confirm-project-delivery-tool",
+        "challenge_digest": "sha256:b87612c041943fbfb614c25c1a27b21405090bd5ff1bcc9610844f05c86a8cf4",
+        "challenge_created_at": "2026-08-10T00:57:00.000Z",
+        "expires_at": "2026-08-10T01:05:00.000Z",
+        "display_id": "display-project-delivery-tool",
+        "display_digest": "sha256:7f25d1dd367ed57c9d5cf9f7b9942e7b6bc19710251a563d8b87aa6ccc676e4a",
+        "displayed_at": "2026-08-10T00:58:00.000Z",
+        "user_action_id": "user-action-project-delivery-tool",
+        "event_source": "independent-user-action",
+        "user_action": "confirm",
+        "occurred_at": "2026-08-10T01:00:00.000Z"
+      },
+      "user_action_digest": "sha256:eb8a20560300e2b92095cef80356f0c65d467ab50fc2dc5ca6438576e2dbce01",
+      "confirmation_kind": "explicit-user-confirmation",
+      "confirmed_at": "2026-08-10T01:00:00.000Z"
+    },
+    "confirmation_binding_digest": "sha256:fced94df395ae9fdcc11b16c229fdc62fe613a930879ecad20a1cdf4c0ce1d50",
+    "confirmation_view_digest": "sha256:34fe40d8841fd829f63230bf95e29ae99a53493e87b9b3f361cf02e3a0a8c92c",
+    "next_step": "S1.3.product-definition"
+  },
+  "product_definition": {
+    "capability_map": {
+      "capabilities": [
+        {
+          "derivation_summary": "role:capability; derived from the Frozen Requirement source",
+          "kind": "derived",
+          "source_refs": [
+            {
+              "pointer": "/requirement_set/items/4/values/0",
+              "value_digest": "sha256:a8371a25765e20ee0a78159b96337f12afb7fbd7c3dbe9f887df78477cb19a72"
+            }
+          ],
+          "value": "Provides an offline project delivery tool"
+        }
+      ],
+      "product_definition_id": "pd-7913f81f17e361f716c1377f2eaf6c9e623da2e32acaf27b81ed25f04acece06"
+    },
+    "frozen_requirement": {
+      "schema_version": "1.0",
+      "frozen_requirement_id": "frozen-5ca911a65f939c41c59a9a28699f29c6062fa8ac4d633beeb5a6ea59d4411aee",
+      "status": "frozen",
+      "project": {
+        "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
+      },
+      "requirement_set_version": 1,
+      "requirement_set": {
+        "schema_version": "1.0",
+        "requirement_set_id": "req-project-delivery-tool",
+        "project": {
+          "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
+        },
+        "version": 1,
+        "status": "ready-for-confirmation",
+        "source_candidate_digest": "sha256:02dfeca0765c39890718d54757af432eceeb2056da5596edbd5a35d8a035791f",
+        "items": [
+          {
+            "field": "intent_summary",
+            "status": "identified",
+            "values": [
+              "建立一个 AI 项目推进工具"
+            ],
+            "source": "candidate"
+          },
+          {
+            "field": "goals",
+            "status": "identified",
+            "values": [
+              "做一个 AI 项目推进工具"
+            ],
+            "source": "candidate"
+          },
+          {
+            "field": "scenarios",
+            "status": "identified",
+            "values": [
+              "企业团队规划项目时"
+            ],
+            "source": "user"
+          },
+          {
+            "field": "constraints",
+            "status": "identified",
+            "values": [
+              "不连接外部服务"
+            ],
+            "source": "user"
+          },
+          {
+            "field": "expected_outputs",
+            "status": "identified",
+            "values": [
+              "可确认的项目计划"
+            ],
+            "source": "user"
+          },
+          {
+            "field": "non_goal_gaps",
+            "status": "none",
+            "values": [],
+            "source": "user"
+          },
+          {
+            "field": "clarification_gaps",
+            "status": "none",
+            "values": [],
+            "source": "user"
+          }
+        ],
+        "summary": "intent_summary|identified|建立一个 AI 项目推进工具\ngoals|identified|做一个 AI 项目推进工具\nscenarios|identified|企业团队规划项目时\nconstraints|identified|不连接外部服务\nexpected_outputs|identified|可确认的项目计划\nnon_goal_gaps|none|\nclarification_gaps|none|",
+        "content_digest": "sha256:c67e1b77ddfdc42198f3d20dfccb598f2b5fc3fd63bd03bb39854921e6719ac0"
+      },
+      "requirement_content_digest": "sha256:c67e1b77ddfdc42198f3d20dfccb598f2b5fc3fd63bd03bb39854921e6719ac0",
+      "confirmation": {
+        "schema_version": "1.0",
+        "record_type": "confirmation-envelope",
+        "action": "freeze-requirement-set",
+        "project": {
+          "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+        "requirement_set_id": "req-project-delivery-tool",
+        "requirement_set_version": 1,
+        "requirement_set_generation": 1,
+        "requirement_set_digest": "sha256:c67e1b77ddfdc42198f3d20dfccb598f2b5fc3fd63bd03bb39854921e6719ac0",
+        "confirmation_view_digest": "sha256:34fe40d8841fd829f63230bf95e29ae99a53493e87b9b3f361cf02e3a0a8c92c",
+        "confirmation_id": "confirm-project-delivery-tool",
+        "challenge": {
+          "schema_version": "1.0",
+          "record_type": "confirmation-challenge",
+          "action": "freeze-requirement-set",
+          "project": {
+            "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+          "requirement_set_id": "req-project-delivery-tool",
+          "requirement_set_version": 1,
+          "requirement_set_generation": 1,
+          "requirement_set_digest": "sha256:c67e1b77ddfdc42198f3d20dfccb598f2b5fc3fd63bd03bb39854921e6719ac0",
+          "confirmation_view": {
+            "schema_version": "1.0",
+            "record_type": "confirmation-view",
+            "action": "freeze-requirement-set",
+            "project": {
+              "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+            },
+            "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+            "requirement_set_id": "req-project-delivery-tool",
+            "requirement_set_version": 1,
+            "requirement_set_generation": 1,
+            "requirement_set_digest": "sha256:c67e1b77ddfdc42198f3d20dfccb598f2b5fc3fd63bd03bb39854921e6719ac0",
+            "summary": "intent_summary|identified|建立一个 AI 项目推进工具\ngoals|identified|做一个 AI 项目推进工具\nscenarios|identified|企业团队规划项目时\nconstraints|identified|不连接外部服务\nexpected_outputs|identified|可确认的项目计划\nnon_goal_gaps|none|\nclarification_gaps|none|",
+            "items": [
+              {
+                "field": "intent_summary",
+                "status": "identified",
+                "values": [
+                  "建立一个 AI 项目推进工具"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "goals",
+                "status": "identified",
+                "values": [
+                  "做一个 AI 项目推进工具"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "scenarios",
+                "status": "identified",
+                "values": [
+                  "企业团队规划项目时"
+                ],
+                "source": "user"
+              },
+              {
+                "field": "constraints",
+                "status": "identified",
+                "values": [
+                  "不连接外部服务"
+                ],
+                "source": "user"
+              },
+              {
+                "field": "expected_outputs",
+                "status": "identified",
+                "values": [
+                  "可确认的项目计划"
+                ],
+                "source": "user"
+              },
+              {
+                "field": "non_goal_gaps",
+                "status": "none",
+                "values": [],
+                "source": "user"
+              },
+              {
+                "field": "clarification_gaps",
+                "status": "none",
+                "values": [],
+                "source": "user"
+              }
+            ],
+            "confirmation_id": "confirm-project-delivery-tool",
+            "challenge_created_at": "2026-08-10T00:57:00.000Z",
+            "expires_at": "2026-08-10T01:05:00.000Z"
+          },
+          "confirmation_view_digest": "sha256:34fe40d8841fd829f63230bf95e29ae99a53493e87b9b3f361cf02e3a0a8c92c",
+          "confirmation_id": "confirm-project-delivery-tool",
+          "created_at": "2026-08-10T00:57:00.000Z",
+          "expires_at": "2026-08-10T01:05:00.000Z"
+        },
+        "challenge_digest": "sha256:b87612c041943fbfb614c25c1a27b21405090bd5ff1bcc9610844f05c86a8cf4",
+        "display": {
+          "schema_version": "1.0",
+          "record_type": "confirmation-view-display",
+          "action": "freeze-requirement-set",
+          "project": {
+            "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+          "requirement_set_id": "req-project-delivery-tool",
+          "requirement_set_version": 1,
+          "requirement_set_generation": 1,
+          "requirement_set_digest": "sha256:c67e1b77ddfdc42198f3d20dfccb598f2b5fc3fd63bd03bb39854921e6719ac0",
+          "confirmation_view_digest": "sha256:34fe40d8841fd829f63230bf95e29ae99a53493e87b9b3f361cf02e3a0a8c92c",
+          "confirmation_id": "confirm-project-delivery-tool",
+          "confirmation_view": {
+            "schema_version": "1.0",
+            "record_type": "confirmation-view",
+            "action": "freeze-requirement-set",
+            "project": {
+              "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+            },
+            "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+            "requirement_set_id": "req-project-delivery-tool",
+            "requirement_set_version": 1,
+            "requirement_set_generation": 1,
+            "requirement_set_digest": "sha256:c67e1b77ddfdc42198f3d20dfccb598f2b5fc3fd63bd03bb39854921e6719ac0",
+            "summary": "intent_summary|identified|建立一个 AI 项目推进工具\ngoals|identified|做一个 AI 项目推进工具\nscenarios|identified|企业团队规划项目时\nconstraints|identified|不连接外部服务\nexpected_outputs|identified|可确认的项目计划\nnon_goal_gaps|none|\nclarification_gaps|none|",
+            "items": [
+              {
+                "field": "intent_summary",
+                "status": "identified",
+                "values": [
+                  "建立一个 AI 项目推进工具"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "goals",
+                "status": "identified",
+                "values": [
+                  "做一个 AI 项目推进工具"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "scenarios",
+                "status": "identified",
+                "values": [
+                  "企业团队规划项目时"
+                ],
+                "source": "user"
+              },
+              {
+                "field": "constraints",
+                "status": "identified",
+                "values": [
+                  "不连接外部服务"
+                ],
+                "source": "user"
+              },
+              {
+                "field": "expected_outputs",
+                "status": "identified",
+                "values": [
+                  "可确认的项目计划"
+                ],
+                "source": "user"
+              },
+              {
+                "field": "non_goal_gaps",
+                "status": "none",
+                "values": [],
+                "source": "user"
+              },
+              {
+                "field": "clarification_gaps",
+                "status": "none",
+                "values": [],
+                "source": "user"
+              }
+            ],
+            "confirmation_id": "confirm-project-delivery-tool",
+            "challenge_created_at": "2026-08-10T00:57:00.000Z",
+            "expires_at": "2026-08-10T01:05:00.000Z"
+          },
+          "challenge": {
+            "schema_version": "1.0",
+            "record_type": "confirmation-challenge",
+            "action": "freeze-requirement-set",
+            "project": {
+              "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+            },
+            "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+            "requirement_set_id": "req-project-delivery-tool",
+            "requirement_set_version": 1,
+            "requirement_set_generation": 1,
+            "requirement_set_digest": "sha256:c67e1b77ddfdc42198f3d20dfccb598f2b5fc3fd63bd03bb39854921e6719ac0",
+            "confirmation_view": {
+              "schema_version": "1.0",
+              "record_type": "confirmation-view",
+              "action": "freeze-requirement-set",
+              "project": {
+                "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+              },
+              "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+              "requirement_set_id": "req-project-delivery-tool",
+              "requirement_set_version": 1,
+              "requirement_set_generation": 1,
+              "requirement_set_digest": "sha256:c67e1b77ddfdc42198f3d20dfccb598f2b5fc3fd63bd03bb39854921e6719ac0",
+              "summary": "intent_summary|identified|建立一个 AI 项目推进工具\ngoals|identified|做一个 AI 项目推进工具\nscenarios|identified|企业团队规划项目时\nconstraints|identified|不连接外部服务\nexpected_outputs|identified|可确认的项目计划\nnon_goal_gaps|none|\nclarification_gaps|none|",
+              "items": [
+                {
+                  "field": "intent_summary",
+                  "status": "identified",
+                  "values": [
+                    "建立一个 AI 项目推进工具"
+                  ],
+                  "source": "candidate"
+                },
+                {
+                  "field": "goals",
+                  "status": "identified",
+                  "values": [
+                    "做一个 AI 项目推进工具"
+                  ],
+                  "source": "candidate"
+                },
+                {
+                  "field": "scenarios",
+                  "status": "identified",
+                  "values": [
+                    "企业团队规划项目时"
+                  ],
+                  "source": "user"
+                },
+                {
+                  "field": "constraints",
+                  "status": "identified",
+                  "values": [
+                    "不连接外部服务"
+                  ],
+                  "source": "user"
+                },
+                {
+                  "field": "expected_outputs",
+                  "status": "identified",
+                  "values": [
+                    "可确认的项目计划"
+                  ],
+                  "source": "user"
+                },
+                {
+                  "field": "non_goal_gaps",
+                  "status": "none",
+                  "values": [],
+                  "source": "user"
+                },
+                {
+                  "field": "clarification_gaps",
+                  "status": "none",
+                  "values": [],
+                  "source": "user"
+                }
+              ],
+              "confirmation_id": "confirm-project-delivery-tool",
+              "challenge_created_at": "2026-08-10T00:57:00.000Z",
+              "expires_at": "2026-08-10T01:05:00.000Z"
+            },
+            "confirmation_view_digest": "sha256:34fe40d8841fd829f63230bf95e29ae99a53493e87b9b3f361cf02e3a0a8c92c",
+            "confirmation_id": "confirm-project-delivery-tool",
+            "created_at": "2026-08-10T00:57:00.000Z",
+            "expires_at": "2026-08-10T01:05:00.000Z"
+          },
+          "challenge_digest": "sha256:b87612c041943fbfb614c25c1a27b21405090bd5ff1bcc9610844f05c86a8cf4",
+          "display_id": "display-project-delivery-tool",
+          "displayed_at": "2026-08-10T00:58:00.000Z"
+        },
+        "display_digest": "sha256:7f25d1dd367ed57c9d5cf9f7b9942e7b6bc19710251a563d8b87aa6ccc676e4a",
+        "user_action": {
+          "schema_version": "1.0",
+          "record_type": "user-confirmation-action",
+          "action": "freeze-requirement-set",
+          "project": {
+            "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+          "requirement_set_id": "req-project-delivery-tool",
+          "requirement_set_version": 1,
+          "requirement_set_generation": 1,
+          "requirement_set_digest": "sha256:c67e1b77ddfdc42198f3d20dfccb598f2b5fc3fd63bd03bb39854921e6719ac0",
+          "confirmation_view_digest": "sha256:34fe40d8841fd829f63230bf95e29ae99a53493e87b9b3f361cf02e3a0a8c92c",
+          "confirmation_id": "confirm-project-delivery-tool",
+          "challenge_digest": "sha256:b87612c041943fbfb614c25c1a27b21405090bd5ff1bcc9610844f05c86a8cf4",
+          "challenge_created_at": "2026-08-10T00:57:00.000Z",
+          "expires_at": "2026-08-10T01:05:00.000Z",
+          "display_id": "display-project-delivery-tool",
+          "display_digest": "sha256:7f25d1dd367ed57c9d5cf9f7b9942e7b6bc19710251a563d8b87aa6ccc676e4a",
+          "displayed_at": "2026-08-10T00:58:00.000Z",
+          "user_action_id": "user-action-project-delivery-tool",
+          "event_source": "independent-user-action",
+          "user_action": "confirm",
+          "occurred_at": "2026-08-10T01:00:00.000Z"
+        },
+        "user_action_digest": "sha256:eb8a20560300e2b92095cef80356f0c65d467ab50fc2dc5ca6438576e2dbce01",
+        "confirmation_kind": "explicit-user-confirmation",
+        "confirmed_at": "2026-08-10T01:00:00.000Z"
+      },
+      "confirmation_binding_digest": "sha256:fced94df395ae9fdcc11b16c229fdc62fe613a930879ecad20a1cdf4c0ce1d50",
+      "confirmation_view_digest": "sha256:34fe40d8841fd829f63230bf95e29ae99a53493e87b9b3f361cf02e3a0a8c92c",
+      "next_step": "S1.3.product-definition"
+    },
+    "frozen_requirement_digest": "sha256:70482078af38364ef9e925a4500185dd0c16959f94b255ea0fbb2786ab78b728",
+    "prd": {
+      "goals": [
+        {
+          "kind": "direct",
+          "source": {
+            "pointer": "/requirement_set/items/1/values/0",
+            "value_digest": "sha256:27e6fef3c433df07c1c380e3610dfd8b1208f6ea256990565bcccf56b0a38ba5"
+          },
+          "value": "做一个 AI 项目推进工具"
+        }
+      ],
+      "non_goals": [
+        {
+          "kind": "direct",
+          "source": {
+            "pointer": "/requirement_set/items/3/values/0",
+            "value_digest": "sha256:6c82d62b5c3dfc8ec6e525ddc89c0a914b7c0dc493eac7585db9950480ad4da0"
+          },
+          "value": "不连接外部服务"
+        }
+      ],
+      "problem": {
+        "derivation_summary": "role:problem; derived from the Frozen Requirement source",
+        "kind": "derived",
+        "source_refs": [
+          {
+            "pointer": "/requirement_set/items/2/values/0",
+            "value_digest": "sha256:d033da85f8a6fb13f91eae4c4e0315346e96821d287b07ad66a3cba2cce3eccd"
+          }
+        ],
+        "value": "Project coordinators need an offline way to track delivery milestones"
+      },
+      "product_name": {
+        "kind": "direct",
+        "source": {
+          "pointer": "/requirement_set/items/0/values/0",
+          "value_digest": "sha256:d6d239f44b673ac3edfafafa6f4a52672a65d5f59d07daa4f0b13789fc6c06c7"
+        },
+        "value": "建立一个 AI 项目推进工具"
+      },
+      "scenarios": [
+        {
+          "derivation_summary": "role:scenarios; derived from the Frozen Requirement source",
+          "kind": "derived",
+          "source_refs": [
+            {
+              "pointer": "/requirement_set/items/2/values/0",
+              "value_digest": "sha256:d033da85f8a6fb13f91eae4c4e0315346e96821d287b07ad66a3cba2cce3eccd"
+            }
+          ],
+          "value": "Project coordinators coordinate delivery milestones without external services"
+        }
+      ],
+      "scope": [
+        {
+          "kind": "direct",
+          "source": {
+            "pointer": "/requirement_set/items/4/values/0",
+            "value_digest": "sha256:a8371a25765e20ee0a78159b96337f12afb7fbd7c3dbe9f887df78477cb19a72"
+          },
+          "value": "可确认的项目计划"
+        }
+      ],
+      "success_metrics": [
+        {
+          "evidence": {
+            "journey_sequence": 2,
+            "transition_digest": "sha256:76ca2c46673c9b65566664def664b3f837549494401cd1736e0d2fd734db36d7"
+          },
+          "measurement": {
+            "kind": "completion-transition"
+          },
+          "target": {
+            "required_state": "completed",
+            "semantic_source": {
+              "pointer": "/requirement_set/items/1/values/0",
+              "value_digest": "sha256:27e6fef3c433df07c1c380e3610dfd8b1208f6ea256990565bcccf56b0a38ba5"
+            }
+          }
+        }
+      ],
+      "target_users": [
+        {
+          "kind": "direct",
+          "source": {
+            "pointer": "/requirement_set/items/2/values/0",
+            "value_digest": "sha256:d033da85f8a6fb13f91eae4c4e0315346e96821d287b07ad66a3cba2cce3eccd"
+          },
+          "value": "企业团队规划项目时"
+        }
+      ]
+    },
+    "product_definition_id": "pd-7913f81f17e361f716c1377f2eaf6c9e623da2e32acaf27b81ed25f04acece06",
+    "record_type": "product-definition-candidate",
+    "schema_version": "1.0",
+    "user_journey": {
+      "product_definition_id": "pd-7913f81f17e361f716c1377f2eaf6c9e623da2e32acaf27b81ed25f04acece06",
+      "steps": [
+        {
+          "action": "start",
+          "activity": {
+            "derivation_summary": "role:activity; derived from the Frozen Requirement source",
+            "kind": "derived",
+            "source_refs": [
+              {
+                "pointer": "/requirement_set/items/1/values/0",
+                "value_digest": "sha256:27e6fef3c433df07c1c380e3610dfd8b1208f6ea256990565bcccf56b0a38ba5"
+              }
+            ],
+            "value": "Project coordinators begin planning delivery milestones"
+          },
+          "actor": {
+            "derivation_summary": "role:actor; derived from the Frozen Requirement source",
+            "kind": "derived",
+            "source_refs": [
+              {
+                "pointer": "/requirement_set/items/2/values/0",
+                "value_digest": "sha256:d033da85f8a6fb13f91eae4c4e0315346e96821d287b07ad66a3cba2cce3eccd"
+              }
+            ],
+            "value": "Project coordinators"
+          },
+          "outcome": "in-progress",
+          "result": {
+            "derivation_summary": "role:result; derived from the Frozen Requirement source",
+            "kind": "derived",
+            "source_refs": [
+              {
+                "pointer": "/requirement_set/items/1/values/0",
+                "value_digest": "sha256:27e6fef3c433df07c1c380e3610dfd8b1208f6ea256990565bcccf56b0a38ba5"
+              }
+            ],
+            "value": "Delivery milestone planning is in progress"
+          },
+          "semantic_source": {
+            "pointer": "/requirement_set/items/1/values/0",
+            "value_digest": "sha256:27e6fef3c433df07c1c380e3610dfd8b1208f6ea256990565bcccf56b0a38ba5"
+          },
+          "sequence": 1,
+          "state_change": {
+            "from": "not-started",
+            "to": "in-progress"
+          }
+        },
+        {
+          "action": "complete",
+          "activity": {
+            "derivation_summary": "role:activity; derived from the Frozen Requirement source",
+            "kind": "derived",
+            "source_refs": [
+              {
+                "pointer": "/requirement_set/items/1/values/0",
+                "value_digest": "sha256:27e6fef3c433df07c1c380e3610dfd8b1208f6ea256990565bcccf56b0a38ba5"
+              }
+            ],
+            "value": "Project coordinators finish the delivery milestone plan"
+          },
+          "actor": {
+            "derivation_summary": "role:actor; derived from the Frozen Requirement source",
+            "kind": "derived",
+            "source_refs": [
+              {
+                "pointer": "/requirement_set/items/2/values/0",
+                "value_digest": "sha256:d033da85f8a6fb13f91eae4c4e0315346e96821d287b07ad66a3cba2cce3eccd"
+              }
+            ],
+            "value": "Project coordinators"
+          },
+          "outcome": "completed",
+          "result": {
+            "derivation_summary": "role:result; derived from the Frozen Requirement source",
+            "kind": "derived",
+            "source_refs": [
+              {
+                "pointer": "/requirement_set/items/4/values/0",
+                "value_digest": "sha256:a8371a25765e20ee0a78159b96337f12afb7fbd7c3dbe9f887df78477cb19a72"
+              }
+            ],
+            "value": "An offline project delivery plan is ready"
+          },
+          "semantic_source": {
+            "pointer": "/requirement_set/items/1/values/0",
+            "value_digest": "sha256:27e6fef3c433df07c1c380e3610dfd8b1208f6ea256990565bcccf56b0a38ba5"
+          },
+          "sequence": 2,
+          "state_change": {
+            "from": "in-progress",
+            "to": "completed"
+          }
+        }
+      ]
+    }
+  },
+  "target_project": "project-delivery-tool"
+}

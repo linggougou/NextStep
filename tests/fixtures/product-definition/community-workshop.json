@@ -1,1 +1,998 @@
-{"evidence_scope":"manual-isolated consumer contract","fixture_type":"complete-product-definition","frozen_requirement":{"confirmation":{"action":"freeze-requirement-set","challenge":{"action":"freeze-requirement-set","confirmation_id":"confirm-community-workshop","confirmation_view":{"action":"freeze-requirement-set","challenge_created_at":"2026-08-11T09:00:00.000Z","confirmation_id":"confirm-community-workshop","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","items":[{"field":"intent_summary","source":"candidate","status":"identified","values":["Create offline community workshop"]},{"field":"goals","source":"candidate","status":"identified","values":["weekly workshops"]},{"field":"scenarios","source":"candidate","status":"identified","values":["Community volunteers"]},{"field":"constraints","source":"candidate","status":"identified","values":["No external services"]},{"field":"expected_outputs","source":"candidate","status":"identified","values":["offline community workshop"]},{"field":"non_goal_gaps","source":"candidate","status":"identified","values":["No external services"]},{"field":"clarification_gaps","source":"user","status":"none","values":[]}],"project":{"repository_id":"sha256:1111111111111111111111111111111111111111111111111111111111111111"},"record_type":"confirmation-view","requirement_set_digest":"sha256:472daff5b5dd7a68b3155308101aa420ac6e8a6cda628e73f19d9e212bee579b","requirement_set_generation":1,"requirement_set_id":"req-community-workshop","requirement_set_version":1,"schema_version":"1.0","summary":"intent_summary|identified|Create offline community workshop\ngoals|identified|weekly workshops\nscenarios|identified|Community volunteers\nconstraints|identified|No external services\nexpected_outputs|identified|offline community workshop\nnon_goal_gaps|identified|No external services\nclarification_gaps|none|"},"confirmation_view_digest":"sha256:428d2cb79fdbf53f7dd1bd0c5e70b97173521430cbd3640c2298fef2c4cac93a","created_at":"2026-08-11T09:00:00.000Z","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","project":{"repository_id":"sha256:1111111111111111111111111111111111111111111111111111111111111111"},"record_type":"confirmation-challenge","requirement_set_digest":"sha256:472daff5b5dd7a68b3155308101aa420ac6e8a6cda628e73f19d9e212bee579b","requirement_set_generation":1,"requirement_set_id":"req-community-workshop","requirement_set_version":1,"schema_version":"1.0"},"challenge_digest":"sha256:0b15c708faf0c0086ff9c7e63e99e97170d8e72766d848bf0fd1163296520561","confirmation_id":"confirm-community-workshop","confirmation_kind":"explicit-user-confirmation","confirmation_view_digest":"sha256:428d2cb79fdbf53f7dd1bd0c5e70b97173521430cbd3640c2298fef2c4cac93a","confirmed_at":"2026-08-11T09:10:00.000Z","display":{"action":"freeze-requirement-set","challenge":{"action":"freeze-requirement-set","confirmation_id":"confirm-community-workshop","confirmation_view":{"action":"freeze-requirement-set","challenge_created_at":"2026-08-11T09:00:00.000Z","confirmation_id":"confirm-community-workshop","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","items":[{"field":"intent_summary","source":"candidate","status":"identified","values":["Create offline community workshop"]},{"field":"goals","source":"candidate","status":"identified","values":["weekly workshops"]},{"field":"scenarios","source":"candidate","status":"identified","values":["Community volunteers"]},{"field":"constraints","source":"candidate","status":"identified","values":["No external services"]},{"field":"expected_outputs","source":"candidate","status":"identified","values":["offline community workshop"]},{"field":"non_goal_gaps","source":"candidate","status":"identified","values":["No external services"]},{"field":"clarification_gaps","source":"user","status":"none","values":[]}],"project":{"repository_id":"sha256:1111111111111111111111111111111111111111111111111111111111111111"},"record_type":"confirmation-view","requirement_set_digest":"sha256:472daff5b5dd7a68b3155308101aa420ac6e8a6cda628e73f19d9e212bee579b","requirement_set_generation":1,"requirement_set_id":"req-community-workshop","requirement_set_version":1,"schema_version":"1.0","summary":"intent_summary|identified|Create offline community workshop\ngoals|identified|weekly workshops\nscenarios|identified|Community volunteers\nconstraints|identified|No external services\nexpected_outputs|identified|offline community workshop\nnon_goal_gaps|identified|No external services\nclarification_gaps|none|"},"confirmation_view_digest":"sha256:428d2cb79fdbf53f7dd1bd0c5e70b97173521430cbd3640c2298fef2c4cac93a","created_at":"2026-08-11T09:00:00.000Z","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","project":{"repository_id":"sha256:1111111111111111111111111111111111111111111111111111111111111111"},"record_type":"confirmation-challenge","requirement_set_digest":"sha256:472daff5b5dd7a68b3155308101aa420ac6e8a6cda628e73f19d9e212bee579b","requirement_set_generation":1,"requirement_set_id":"req-community-workshop","requirement_set_version":1,"schema_version":"1.0"},"challenge_digest":"sha256:0b15c708faf0c0086ff9c7e63e99e97170d8e72766d848bf0fd1163296520561","confirmation_id":"confirm-community-workshop","confirmation_view":{"action":"freeze-requirement-set","challenge_created_at":"2026-08-11T09:00:00.000Z","confirmation_id":"confirm-community-workshop","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","items":[{"field":"intent_summary","source":"candidate","status":"identified","values":["Create offline community workshop"]},{"field":"goals","source":"candidate","status":"identified","values":["weekly workshops"]},{"field":"scenarios","source":"candidate","status":"identified","values":["Community volunteers"]},{"field":"constraints","source":"candidate","status":"identified","values":["No external services"]},{"field":"expected_outputs","source":"candidate","status":"identified","values":["offline community workshop"]},{"field":"non_goal_gaps","source":"candidate","status":"identified","values":["No external services"]},{"field":"clarification_gaps","source":"user","status":"none","values":[]}],"project":{"repository_id":"sha256:1111111111111111111111111111111111111111111111111111111111111111"},"record_type":"confirmation-view","requirement_set_digest":"sha256:472daff5b5dd7a68b3155308101aa420ac6e8a6cda628e73f19d9e212bee579b","requirement_set_generation":1,"requirement_set_id":"req-community-workshop","requirement_set_version":1,"schema_version":"1.0","summary":"intent_summary|identified|Create offline community workshop\ngoals|identified|weekly workshops\nscenarios|identified|Community volunteers\nconstraints|identified|No external services\nexpected_outputs|identified|offline community workshop\nnon_goal_gaps|identified|No external services\nclarification_gaps|none|"},"confirmation_view_digest":"sha256:428d2cb79fdbf53f7dd1bd0c5e70b97173521430cbd3640c2298fef2c4cac93a","display_id":"display-community-workshop","displayed_at":"2026-08-11T09:05:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","project":{"repository_id":"sha256:1111111111111111111111111111111111111111111111111111111111111111"},"record_type":"confirmation-view-display","requirement_set_digest":"sha256:472daff5b5dd7a68b3155308101aa420ac6e8a6cda628e73f19d9e212bee579b","requirement_set_generation":1,"requirement_set_id":"req-community-workshop","requirement_set_version":1,"schema_version":"1.0"},"display_digest":"sha256:d29a2dea47854615d058c167ef3cf8bc60146ea759dd3815ec6353c0333104f5","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","project":{"repository_id":"sha256:1111111111111111111111111111111111111111111111111111111111111111"},"record_type":"confirmation-envelope","requirement_set_digest":"sha256:472daff5b5dd7a68b3155308101aa420ac6e8a6cda628e73f19d9e212bee579b","requirement_set_generation":1,"requirement_set_id":"req-community-workshop","requirement_set_version":1,"schema_version":"1.0","user_action":{"action":"freeze-requirement-set","challenge_created_at":"2026-08-11T09:00:00.000Z","challenge_digest":"sha256:0b15c708faf0c0086ff9c7e63e99e97170d8e72766d848bf0fd1163296520561","confirmation_id":"confirm-community-workshop","confirmation_view_digest":"sha256:428d2cb79fdbf53f7dd1bd0c5e70b97173521430cbd3640c2298fef2c4cac93a","display_digest":"sha256:d29a2dea47854615d058c167ef3cf8bc60146ea759dd3815ec6353c0333104f5","display_id":"display-community-workshop","displayed_at":"2026-08-11T09:05:00.000Z","event_source":"independent-user-action","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","occurred_at":"2026-08-11T09:10:00.000Z","project":{"repository_id":"sha256:1111111111111111111111111111111111111111111111111111111111111111"},"record_type":"user-confirmation-action","requirement_set_digest":"sha256:472daff5b5dd7a68b3155308101aa420ac6e8a6cda628e73f19d9e212bee579b","requirement_set_generation":1,"requirement_set_id":"req-community-workshop","requirement_set_version":1,"schema_version":"1.0","user_action":"confirm","user_action_id":"action-community-workshop"},"user_action_digest":"sha256:2dc88aff970781e46a58c1015eab4f5d9067202bfdf887d155d6f6b68f966d40"},"confirmation_binding_digest":"sha256:86c295bd37419ed1a2a47dce03d6a361283679c0569ee2bb782008ad65a98ff1","confirmation_view_digest":"sha256:428d2cb79fdbf53f7dd1bd0c5e70b97173521430cbd3640c2298fef2c4cac93a","frozen_requirement_id":"frozen-4959865e30e6e1c511c211f5d100a41c4101e19acb6764b8751857716269a698","next_step":"S1.3.product-definition","project":{"formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","repository_id":"sha256:1111111111111111111111111111111111111111111111111111111111111111"},"requirement_content_digest":"sha256:472daff5b5dd7a68b3155308101aa420ac6e8a6cda628e73f19d9e212bee579b","requirement_set":{"content_digest":"sha256:472daff5b5dd7a68b3155308101aa420ac6e8a6cda628e73f19d9e212bee579b","items":[{"field":"intent_summary","source":"candidate","status":"identified","values":["Create offline community workshop"]},{"field":"goals","source":"candidate","status":"identified","values":["weekly workshops"]},{"field":"scenarios","source":"candidate","status":"identified","values":["Community volunteers"]},{"field":"constraints","source":"candidate","status":"identified","values":["No external services"]},{"field":"expected_outputs","source":"candidate","status":"identified","values":["offline community workshop"]},{"field":"non_goal_gaps","source":"candidate","status":"identified","values":["No external services"]},{"field":"clarification_gaps","source":"user","status":"none","values":[]}],"project":{"formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","repository_id":"sha256:1111111111111111111111111111111111111111111111111111111111111111"},"requirement_set_id":"req-community-workshop","schema_version":"1.0","source_candidate_digest":"sha256:6817c2c2112d84cc2b92044b356df330201acb6e0af00b19802ecd62107dbcf5","status":"ready-for-confirmation","summary":"intent_summary|identified|Create offline community workshop\ngoals|identified|weekly workshops\nscenarios|identified|Community volunteers\nconstraints|identified|No external services\nexpected_outputs|identified|offline community workshop\nnon_goal_gaps|identified|No external services\nclarification_gaps|none|","version":1},"requirement_set_version":1,"schema_version":"1.0","status":"frozen"},"product_definition":{"capability_map":{"capabilities":[{"derivation_summary":"role:capability; derived from the Frozen Requirement source","kind":"derived","source_refs":[{"pointer":"/requirement_set/items/4/values/0","value_digest":"sha256:50be32889620b56becc14eb9e16f09281030807312534bbc5cdb9b2ba5bbb7df"}],"value":"Provides an offline community workshop planner"}],"product_definition_id":"pd-ff983f811336509064c1d90f92ade1bf8276ec92097a2ed1a17b87c3dcd3fa2a"},"frozen_requirement":{"confirmation":{"action":"freeze-requirement-set","challenge":{"action":"freeze-requirement-set","confirmation_id":"confirm-community-workshop","confirmation_view":{"action":"freeze-requirement-set","challenge_created_at":"2026-08-11T09:00:00.000Z","confirmation_id":"confirm-community-workshop","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","items":[{"field":"intent_summary","source":"candidate","status":"identified","values":["Create offline community workshop"]},{"field":"goals","source":"candidate","status":"identified","values":["weekly workshops"]},{"field":"scenarios","source":"candidate","status":"identified","values":["Community volunteers"]},{"field":"constraints","source":"candidate","status":"identified","values":["No external services"]},{"field":"expected_outputs","source":"candidate","status":"identified","values":["offline community workshop"]},{"field":"non_goal_gaps","source":"candidate","status":"identified","values":["No external services"]},{"field":"clarification_gaps","source":"user","status":"none","values":[]}],"project":{"repository_id":"sha256:1111111111111111111111111111111111111111111111111111111111111111"},"record_type":"confirmation-view","requirement_set_digest":"sha256:472daff5b5dd7a68b3155308101aa420ac6e8a6cda628e73f19d9e212bee579b","requirement_set_generation":1,"requirement_set_id":"req-community-workshop","requirement_set_version":1,"schema_version":"1.0","summary":"intent_summary|identified|Create offline community workshop\ngoals|identified|weekly workshops\nscenarios|identified|Community volunteers\nconstraints|identified|No external services\nexpected_outputs|identified|offline community workshop\nnon_goal_gaps|identified|No external services\nclarification_gaps|none|"},"confirmation_view_digest":"sha256:428d2cb79fdbf53f7dd1bd0c5e70b97173521430cbd3640c2298fef2c4cac93a","created_at":"2026-08-11T09:00:00.000Z","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","project":{"repository_id":"sha256:1111111111111111111111111111111111111111111111111111111111111111"},"record_type":"confirmation-challenge","requirement_set_digest":"sha256:472daff5b5dd7a68b3155308101aa420ac6e8a6cda628e73f19d9e212bee579b","requirement_set_generation":1,"requirement_set_id":"req-community-workshop","requirement_set_version":1,"schema_version":"1.0"},"challenge_digest":"sha256:0b15c708faf0c0086ff9c7e63e99e97170d8e72766d848bf0fd1163296520561","confirmation_id":"confirm-community-workshop","confirmation_kind":"explicit-user-confirmation","confirmation_view_digest":"sha256:428d2cb79fdbf53f7dd1bd0c5e70b97173521430cbd3640c2298fef2c4cac93a","confirmed_at":"2026-08-11T09:10:00.000Z","display":{"action":"freeze-requirement-set","challenge":{"action":"freeze-requirement-set","confirmation_id":"confirm-community-workshop","confirmation_view":{"action":"freeze-requirement-set","challenge_created_at":"2026-08-11T09:00:00.000Z","confirmation_id":"confirm-community-workshop","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","items":[{"field":"intent_summary","source":"candidate","status":"identified","values":["Create offline community workshop"]},{"field":"goals","source":"candidate","status":"identified","values":["weekly workshops"]},{"field":"scenarios","source":"candidate","status":"identified","values":["Community volunteers"]},{"field":"constraints","source":"candidate","status":"identified","values":["No external services"]},{"field":"expected_outputs","source":"candidate","status":"identified","values":["offline community workshop"]},{"field":"non_goal_gaps","source":"candidate","status":"identified","values":["No external services"]},{"field":"clarification_gaps","source":"user","status":"none","values":[]}],"project":{"repository_id":"sha256:1111111111111111111111111111111111111111111111111111111111111111"},"record_type":"confirmation-view","requirement_set_digest":"sha256:472daff5b5dd7a68b3155308101aa420ac6e8a6cda628e73f19d9e212bee579b","requirement_set_generation":1,"requirement_set_id":"req-community-workshop","requirement_set_version":1,"schema_version":"1.0","summary":"intent_summary|identified|Create offline community workshop\ngoals|identified|weekly workshops\nscenarios|identified|Community volunteers\nconstraints|identified|No external services\nexpected_outputs|identified|offline community workshop\nnon_goal_gaps|identified|No external services\nclarification_gaps|none|"},"confirmation_view_digest":"sha256:428d2cb79fdbf53f7dd1bd0c5e70b97173521430cbd3640c2298fef2c4cac93a","created_at":"2026-08-11T09:00:00.000Z","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","project":{"repository_id":"sha256:1111111111111111111111111111111111111111111111111111111111111111"},"record_type":"confirmation-challenge","requirement_set_digest":"sha256:472daff5b5dd7a68b3155308101aa420ac6e8a6cda628e73f19d9e212bee579b","requirement_set_generation":1,"requirement_set_id":"req-community-workshop","requirement_set_version":1,"schema_version":"1.0"},"challenge_digest":"sha256:0b15c708faf0c0086ff9c7e63e99e97170d8e72766d848bf0fd1163296520561","confirmation_id":"confirm-community-workshop","confirmation_view":{"action":"freeze-requirement-set","challenge_created_at":"2026-08-11T09:00:00.000Z","confirmation_id":"confirm-community-workshop","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","items":[{"field":"intent_summary","source":"candidate","status":"identified","values":["Create offline community workshop"]},{"field":"goals","source":"candidate","status":"identified","values":["weekly workshops"]},{"field":"scenarios","source":"candidate","status":"identified","values":["Community volunteers"]},{"field":"constraints","source":"candidate","status":"identified","values":["No external services"]},{"field":"expected_outputs","source":"candidate","status":"identified","values":["offline community workshop"]},{"field":"non_goal_gaps","source":"candidate","status":"identified","values":["No external services"]},{"field":"clarification_gaps","source":"user","status":"none","values":[]}],"project":{"repository_id":"sha256:1111111111111111111111111111111111111111111111111111111111111111"},"record_type":"confirmation-view","requirement_set_digest":"sha256:472daff5b5dd7a68b3155308101aa420ac6e8a6cda628e73f19d9e212bee579b","requirement_set_generation":1,"requirement_set_id":"req-community-workshop","requirement_set_version":1,"schema_version":"1.0","summary":"intent_summary|identified|Create offline community workshop\ngoals|identified|weekly workshops\nscenarios|identified|Community volunteers\nconstraints|identified|No external services\nexpected_outputs|identified|offline community workshop\nnon_goal_gaps|identified|No external services\nclarification_gaps|none|"},"confirmation_view_digest":"sha256:428d2cb79fdbf53f7dd1bd0c5e70b97173521430cbd3640c2298fef2c4cac93a","display_id":"display-community-workshop","displayed_at":"2026-08-11T09:05:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","project":{"repository_id":"sha256:1111111111111111111111111111111111111111111111111111111111111111"},"record_type":"confirmation-view-display","requirement_set_digest":"sha256:472daff5b5dd7a68b3155308101aa420ac6e8a6cda628e73f19d9e212bee579b","requirement_set_generation":1,"requirement_set_id":"req-community-workshop","requirement_set_version":1,"schema_version":"1.0"},"display_digest":"sha256:d29a2dea47854615d058c167ef3cf8bc60146ea759dd3815ec6353c0333104f5","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","project":{"repository_id":"sha256:1111111111111111111111111111111111111111111111111111111111111111"},"record_type":"confirmation-envelope","requirement_set_digest":"sha256:472daff5b5dd7a68b3155308101aa420ac6e8a6cda628e73f19d9e212bee579b","requirement_set_generation":1,"requirement_set_id":"req-community-workshop","requirement_set_version":1,"schema_version":"1.0","user_action":{"action":"freeze-requirement-set","challenge_created_at":"2026-08-11T09:00:00.000Z","challenge_digest":"sha256:0b15c708faf0c0086ff9c7e63e99e97170d8e72766d848bf0fd1163296520561","confirmation_id":"confirm-community-workshop","confirmation_view_digest":"sha256:428d2cb79fdbf53f7dd1bd0c5e70b97173521430cbd3640c2298fef2c4cac93a","display_digest":"sha256:d29a2dea47854615d058c167ef3cf8bc60146ea759dd3815ec6353c0333104f5","display_id":"display-community-workshop","displayed_at":"2026-08-11T09:05:00.000Z","event_source":"independent-user-action","expires_at":"2026-08-11T10:00:00.000Z","formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","occurred_at":"2026-08-11T09:10:00.000Z","project":{"repository_id":"sha256:1111111111111111111111111111111111111111111111111111111111111111"},"record_type":"user-confirmation-action","requirement_set_digest":"sha256:472daff5b5dd7a68b3155308101aa420ac6e8a6cda628e73f19d9e212bee579b","requirement_set_generation":1,"requirement_set_id":"req-community-workshop","requirement_set_version":1,"schema_version":"1.0","user_action":"confirm","user_action_id":"action-community-workshop"},"user_action_digest":"sha256:2dc88aff970781e46a58c1015eab4f5d9067202bfdf887d155d6f6b68f966d40"},"confirmation_binding_digest":"sha256:86c295bd37419ed1a2a47dce03d6a361283679c0569ee2bb782008ad65a98ff1","confirmation_view_digest":"sha256:428d2cb79fdbf53f7dd1bd0c5e70b97173521430cbd3640c2298fef2c4cac93a","frozen_requirement_id":"frozen-4959865e30e6e1c511c211f5d100a41c4101e19acb6764b8751857716269a698","next_step":"S1.3.product-definition","project":{"formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","repository_id":"sha256:1111111111111111111111111111111111111111111111111111111111111111"},"requirement_content_digest":"sha256:472daff5b5dd7a68b3155308101aa420ac6e8a6cda628e73f19d9e212bee579b","requirement_set":{"content_digest":"sha256:472daff5b5dd7a68b3155308101aa420ac6e8a6cda628e73f19d9e212bee579b","items":[{"field":"intent_summary","source":"candidate","status":"identified","values":["Create offline community workshop"]},{"field":"goals","source":"candidate","status":"identified","values":["weekly workshops"]},{"field":"scenarios","source":"candidate","status":"identified","values":["Community volunteers"]},{"field":"constraints","source":"candidate","status":"identified","values":["No external services"]},{"field":"expected_outputs","source":"candidate","status":"identified","values":["offline community workshop"]},{"field":"non_goal_gaps","source":"candidate","status":"identified","values":["No external services"]},{"field":"clarification_gaps","source":"user","status":"none","values":[]}],"project":{"formal_baseline":"a854fd4938b34ab24d88e72430be52b397c91096","repository_id":"sha256:1111111111111111111111111111111111111111111111111111111111111111"},"requirement_set_id":"req-community-workshop","schema_version":"1.0","source_candidate_digest":"sha256:6817c2c2112d84cc2b92044b356df330201acb6e0af00b19802ecd62107dbcf5","status":"ready-for-confirmation","summary":"intent_summary|identified|Create offline community workshop\ngoals|identified|weekly workshops\nscenarios|identified|Community volunteers\nconstraints|identified|No external services\nexpected_outputs|identified|offline community workshop\nnon_goal_gaps|identified|No external services\nclarification_gaps|none|","version":1},"requirement_set_version":1,"schema_version":"1.0","status":"frozen"},"frozen_requirement_digest":"sha256:4717892c46d02f8ec4befe3c5a16f94268f8b1368e58bcc15f93304544401765","prd":{"goals":[{"kind":"direct","source":{"pointer":"/requirement_set/items/1/values/0","value_digest":"sha256:58287557b355dbf223ec173703d0cd182bb1fcc1445766628e587b9763440337"},"value":"weekly workshops"}],"non_goals":[{"kind":"direct","source":{"pointer":"/requirement_set/items/5/values/0","value_digest":"sha256:eb20cfdf7f7ac344361eaebb2168fbb5e24b7191a4bfdcb3f5ccd0586247a89a"},"value":"No external services"}],"problem":{"derivation_summary":"role:problem; derived from the Frozen Requirement source","kind":"derived","source_refs":[{"pointer":"/requirement_set/items/2/values/0","value_digest":"sha256:b2e54d9adbf1c6c10ce00295369438750686900941b17051739744ea07f42277"}],"value":"Community volunteers need an offline way to coordinate weekly workshops"},"product_name":{"kind":"direct","source":{"pointer":"/requirement_set/items/0/values/0","value_digest":"sha256:7d5b50945631decaf1d78015669681c16b1b299caf789225c9ce0c4a30f0c1f2"},"value":"Create offline community workshop"},"scenarios":[{"derivation_summary":"role:scenarios; derived from the Frozen Requirement source","kind":"derived","source_refs":[{"pointer":"/requirement_set/items/2/values/0","value_digest":"sha256:b2e54d9adbf1c6c10ce00295369438750686900941b17051739744ea07f42277"}],"value":"Community volunteers coordinate weekly workshops without network access"}],"scope":[{"kind":"direct","source":{"pointer":"/requirement_set/items/4/values/0","value_digest":"sha256:50be32889620b56becc14eb9e16f09281030807312534bbc5cdb9b2ba5bbb7df"},"value":"offline community workshop"}],"success_metrics":[{"evidence":{"journey_sequence":2,"transition_digest":"sha256:76eb72976ac26395b1e236a69868de042f00e8fe8f4fa0235a796614ecd2afbe"},"measurement":{"kind":"completion-transition"},"target":{"required_state":"completed","semantic_source":{"pointer":"/requirement_set/items/1/values/0","value_digest":"sha256:58287557b355dbf223ec173703d0cd182bb1fcc1445766628e587b9763440337"}}}],"target_users":[{"kind":"direct","source":{"pointer":"/requirement_set/items/2/values/0","value_digest":"sha256:b2e54d9adbf1c6c10ce00295369438750686900941b17051739744ea07f42277"},"value":"Community volunteers"}]},"product_definition_id":"pd-ff983f811336509064c1d90f92ade1bf8276ec92097a2ed1a17b87c3dcd3fa2a","record_type":"product-definition-candidate","schema_version":"1.0","user_journey":{"product_definition_id":"pd-ff983f811336509064c1d90f92ade1bf8276ec92097a2ed1a17b87c3dcd3fa2a","steps":[{"action":"start","activity":{"derivation_summary":"role:activity; derived from the Frozen Requirement source","kind":"derived","source_refs":[{"pointer":"/requirement_set/items/1/values/0","value_digest":"sha256:58287557b355dbf223ec173703d0cd182bb1fcc1445766628e587b9763440337"}],"value":"Community volunteers begin planning a weekly workshop"},"actor":{"derivation_summary":"role:actor; derived from the Frozen Requirement source","kind":"derived","source_refs":[{"pointer":"/requirement_set/items/2/values/0","value_digest":"sha256:b2e54d9adbf1c6c10ce00295369438750686900941b17051739744ea07f42277"}],"value":"Community volunteers"},"outcome":"in-progress","result":{"derivation_summary":"role:result; derived from the Frozen Requirement source","kind":"derived","source_refs":[{"pointer":"/requirement_set/items/1/values/0","value_digest":"sha256:58287557b355dbf223ec173703d0cd182bb1fcc1445766628e587b9763440337"}],"value":"Weekly workshop planning is in progress"},"semantic_source":{"pointer":"/requirement_set/items/1/values/0","value_digest":"sha256:58287557b355dbf223ec173703d0cd182bb1fcc1445766628e587b9763440337"},"sequence":1,"state_change":{"from":"not-started","to":"in-progress"}},{"action":"complete","activity":{"derivation_summary":"role:activity; derived from the Frozen Requirement source","kind":"derived","source_refs":[{"pointer":"/requirement_set/items/1/values/0","value_digest":"sha256:58287557b355dbf223ec173703d0cd182bb1fcc1445766628e587b9763440337"}],"value":"Community volunteers finish the weekly workshop plan"},"actor":{"derivation_summary":"role:actor; derived from the Frozen Requirement source","kind":"derived","source_refs":[{"pointer":"/requirement_set/items/2/values/0","value_digest":"sha256:b2e54d9adbf1c6c10ce00295369438750686900941b17051739744ea07f42277"}],"value":"Community volunteers"},"outcome":"completed","result":{"derivation_summary":"role:result; derived from the Frozen Requirement source","kind":"derived","source_refs":[{"pointer":"/requirement_set/items/4/values/0","value_digest":"sha256:50be32889620b56becc14eb9e16f09281030807312534bbc5cdb9b2ba5bbb7df"}],"value":"An offline community workshop plan is ready"},"semantic_source":{"pointer":"/requirement_set/items/1/values/0","value_digest":"sha256:58287557b355dbf223ec173703d0cd182bb1fcc1445766628e587b9763440337"},"sequence":2,"state_change":{"from":"in-progress","to":"completed"}}]}},"target_project":"community-workshop"}
+{
+  "evidence_scope": "manual-isolated consumer contract",
+  "fixture_type": "complete-product-definition",
+  "frozen_requirement": {
+    "schema_version": "1.0",
+    "frozen_requirement_id": "frozen-fe39e84c6388d405908d8edbda2c9b810f6b7122584e6e9d2de21d60e2479210",
+    "status": "frozen",
+    "project": {
+      "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
+    },
+    "requirement_set_version": 2,
+    "requirement_set": {
+      "schema_version": "1.0",
+      "requirement_set_id": "req-community-workshop",
+      "project": {
+        "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
+      },
+      "version": 2,
+      "status": "ready-for-confirmation",
+      "source_candidate_digest": "sha256:e5de415a812be4ec125e33773b598e77bfd8bd21084263165ffb87c7bb0e9c88",
+      "items": [
+        {
+          "field": "intent_summary",
+          "status": "identified",
+          "values": [
+            "为社区新手组织低成本创作工作坊"
+          ],
+          "source": "candidate"
+        },
+        {
+          "field": "goals",
+          "status": "identified",
+          "values": [
+            "低成本创作工作坊"
+          ],
+          "source": "candidate"
+        },
+        {
+          "field": "scenarios",
+          "status": "identified",
+          "values": [
+            "社区新手"
+          ],
+          "source": "candidate"
+        },
+        {
+          "field": "constraints",
+          "status": "identified",
+          "values": [
+            "低成本"
+          ],
+          "source": "candidate"
+        },
+        {
+          "field": "expected_outputs",
+          "status": "identified",
+          "values": [
+            "活动报名清单"
+          ],
+          "source": "user"
+        },
+        {
+          "field": "non_goal_gaps",
+          "status": "rejected",
+          "values": [],
+          "source": "user"
+        },
+        {
+          "field": "clarification_gaps",
+          "status": "deferred",
+          "values": [],
+          "source": "user"
+        }
+      ],
+      "summary": "intent_summary|identified|为社区新手组织低成本创作工作坊\ngoals|identified|低成本创作工作坊\nscenarios|identified|社区新手\nconstraints|identified|低成本\nexpected_outputs|identified|活动报名清单\nnon_goal_gaps|rejected|\nclarification_gaps|deferred|",
+      "content_digest": "sha256:0c5b96d6880fe9b363385e2d68fe747521fcca43f445a73e8d5df51c61558fe9"
+    },
+    "requirement_content_digest": "sha256:0c5b96d6880fe9b363385e2d68fe747521fcca43f445a73e8d5df51c61558fe9",
+    "confirmation": {
+      "schema_version": "1.0",
+      "record_type": "confirmation-envelope",
+      "action": "freeze-requirement-set",
+      "project": {
+        "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      },
+      "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+      "requirement_set_id": "req-community-workshop",
+      "requirement_set_version": 2,
+      "requirement_set_generation": 2,
+      "requirement_set_digest": "sha256:0c5b96d6880fe9b363385e2d68fe747521fcca43f445a73e8d5df51c61558fe9",
+      "confirmation_view_digest": "sha256:cdf72e9289f4322a57488e4f25b15e7b51b9e1057e7a82f890d1d5212a6b8348",
+      "confirmation_id": "confirm-community-workshop",
+      "challenge": {
+        "schema_version": "1.0",
+        "record_type": "confirmation-challenge",
+        "action": "freeze-requirement-set",
+        "project": {
+          "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+        "requirement_set_id": "req-community-workshop",
+        "requirement_set_version": 2,
+        "requirement_set_generation": 2,
+        "requirement_set_digest": "sha256:0c5b96d6880fe9b363385e2d68fe747521fcca43f445a73e8d5df51c61558fe9",
+        "confirmation_view": {
+          "schema_version": "1.0",
+          "record_type": "confirmation-view",
+          "action": "freeze-requirement-set",
+          "project": {
+            "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+          "requirement_set_id": "req-community-workshop",
+          "requirement_set_version": 2,
+          "requirement_set_generation": 2,
+          "requirement_set_digest": "sha256:0c5b96d6880fe9b363385e2d68fe747521fcca43f445a73e8d5df51c61558fe9",
+          "summary": "intent_summary|identified|为社区新手组织低成本创作工作坊\ngoals|identified|低成本创作工作坊\nscenarios|identified|社区新手\nconstraints|identified|低成本\nexpected_outputs|identified|活动报名清单\nnon_goal_gaps|rejected|\nclarification_gaps|deferred|",
+          "items": [
+            {
+              "field": "intent_summary",
+              "status": "identified",
+              "values": [
+                "为社区新手组织低成本创作工作坊"
+              ],
+              "source": "candidate"
+            },
+            {
+              "field": "goals",
+              "status": "identified",
+              "values": [
+                "低成本创作工作坊"
+              ],
+              "source": "candidate"
+            },
+            {
+              "field": "scenarios",
+              "status": "identified",
+              "values": [
+                "社区新手"
+              ],
+              "source": "candidate"
+            },
+            {
+              "field": "constraints",
+              "status": "identified",
+              "values": [
+                "低成本"
+              ],
+              "source": "candidate"
+            },
+            {
+              "field": "expected_outputs",
+              "status": "identified",
+              "values": [
+                "活动报名清单"
+              ],
+              "source": "user"
+            },
+            {
+              "field": "non_goal_gaps",
+              "status": "rejected",
+              "values": [],
+              "source": "user"
+            },
+            {
+              "field": "clarification_gaps",
+              "status": "deferred",
+              "values": [],
+              "source": "user"
+            }
+          ],
+          "confirmation_id": "confirm-community-workshop",
+          "challenge_created_at": "2026-08-10T00:58:00.000Z",
+          "expires_at": "2026-08-10T01:06:00.000Z"
+        },
+        "confirmation_view_digest": "sha256:cdf72e9289f4322a57488e4f25b15e7b51b9e1057e7a82f890d1d5212a6b8348",
+        "confirmation_id": "confirm-community-workshop",
+        "created_at": "2026-08-10T00:58:00.000Z",
+        "expires_at": "2026-08-10T01:06:00.000Z"
+      },
+      "challenge_digest": "sha256:59f55dddd3fe740c1802d6f2c17dc3c7fe3f6866d302809d9e8ad7266825c38f",
+      "display": {
+        "schema_version": "1.0",
+        "record_type": "confirmation-view-display",
+        "action": "freeze-requirement-set",
+        "project": {
+          "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+        "requirement_set_id": "req-community-workshop",
+        "requirement_set_version": 2,
+        "requirement_set_generation": 2,
+        "requirement_set_digest": "sha256:0c5b96d6880fe9b363385e2d68fe747521fcca43f445a73e8d5df51c61558fe9",
+        "confirmation_view_digest": "sha256:cdf72e9289f4322a57488e4f25b15e7b51b9e1057e7a82f890d1d5212a6b8348",
+        "confirmation_id": "confirm-community-workshop",
+        "confirmation_view": {
+          "schema_version": "1.0",
+          "record_type": "confirmation-view",
+          "action": "freeze-requirement-set",
+          "project": {
+            "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+          "requirement_set_id": "req-community-workshop",
+          "requirement_set_version": 2,
+          "requirement_set_generation": 2,
+          "requirement_set_digest": "sha256:0c5b96d6880fe9b363385e2d68fe747521fcca43f445a73e8d5df51c61558fe9",
+          "summary": "intent_summary|identified|为社区新手组织低成本创作工作坊\ngoals|identified|低成本创作工作坊\nscenarios|identified|社区新手\nconstraints|identified|低成本\nexpected_outputs|identified|活动报名清单\nnon_goal_gaps|rejected|\nclarification_gaps|deferred|",
+          "items": [
+            {
+              "field": "intent_summary",
+              "status": "identified",
+              "values": [
+                "为社区新手组织低成本创作工作坊"
+              ],
+              "source": "candidate"
+            },
+            {
+              "field": "goals",
+              "status": "identified",
+              "values": [
+                "低成本创作工作坊"
+              ],
+              "source": "candidate"
+            },
+            {
+              "field": "scenarios",
+              "status": "identified",
+              "values": [
+                "社区新手"
+              ],
+              "source": "candidate"
+            },
+            {
+              "field": "constraints",
+              "status": "identified",
+              "values": [
+                "低成本"
+              ],
+              "source": "candidate"
+            },
+            {
+              "field": "expected_outputs",
+              "status": "identified",
+              "values": [
+                "活动报名清单"
+              ],
+              "source": "user"
+            },
+            {
+              "field": "non_goal_gaps",
+              "status": "rejected",
+              "values": [],
+              "source": "user"
+            },
+            {
+              "field": "clarification_gaps",
+              "status": "deferred",
+              "values": [],
+              "source": "user"
+            }
+          ],
+          "confirmation_id": "confirm-community-workshop",
+          "challenge_created_at": "2026-08-10T00:58:00.000Z",
+          "expires_at": "2026-08-10T01:06:00.000Z"
+        },
+        "challenge": {
+          "schema_version": "1.0",
+          "record_type": "confirmation-challenge",
+          "action": "freeze-requirement-set",
+          "project": {
+            "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+          "requirement_set_id": "req-community-workshop",
+          "requirement_set_version": 2,
+          "requirement_set_generation": 2,
+          "requirement_set_digest": "sha256:0c5b96d6880fe9b363385e2d68fe747521fcca43f445a73e8d5df51c61558fe9",
+          "confirmation_view": {
+            "schema_version": "1.0",
+            "record_type": "confirmation-view",
+            "action": "freeze-requirement-set",
+            "project": {
+              "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+            },
+            "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+            "requirement_set_id": "req-community-workshop",
+            "requirement_set_version": 2,
+            "requirement_set_generation": 2,
+            "requirement_set_digest": "sha256:0c5b96d6880fe9b363385e2d68fe747521fcca43f445a73e8d5df51c61558fe9",
+            "summary": "intent_summary|identified|为社区新手组织低成本创作工作坊\ngoals|identified|低成本创作工作坊\nscenarios|identified|社区新手\nconstraints|identified|低成本\nexpected_outputs|identified|活动报名清单\nnon_goal_gaps|rejected|\nclarification_gaps|deferred|",
+            "items": [
+              {
+                "field": "intent_summary",
+                "status": "identified",
+                "values": [
+                  "为社区新手组织低成本创作工作坊"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "goals",
+                "status": "identified",
+                "values": [
+                  "低成本创作工作坊"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "scenarios",
+                "status": "identified",
+                "values": [
+                  "社区新手"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "constraints",
+                "status": "identified",
+                "values": [
+                  "低成本"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "expected_outputs",
+                "status": "identified",
+                "values": [
+                  "活动报名清单"
+                ],
+                "source": "user"
+              },
+              {
+                "field": "non_goal_gaps",
+                "status": "rejected",
+                "values": [],
+                "source": "user"
+              },
+              {
+                "field": "clarification_gaps",
+                "status": "deferred",
+                "values": [],
+                "source": "user"
+              }
+            ],
+            "confirmation_id": "confirm-community-workshop",
+            "challenge_created_at": "2026-08-10T00:58:00.000Z",
+            "expires_at": "2026-08-10T01:06:00.000Z"
+          },
+          "confirmation_view_digest": "sha256:cdf72e9289f4322a57488e4f25b15e7b51b9e1057e7a82f890d1d5212a6b8348",
+          "confirmation_id": "confirm-community-workshop",
+          "created_at": "2026-08-10T00:58:00.000Z",
+          "expires_at": "2026-08-10T01:06:00.000Z"
+        },
+        "challenge_digest": "sha256:59f55dddd3fe740c1802d6f2c17dc3c7fe3f6866d302809d9e8ad7266825c38f",
+        "display_id": "display-community-workshop",
+        "displayed_at": "2026-08-10T00:59:00.000Z"
+      },
+      "display_digest": "sha256:b0a173caaf30d0f176890ede75425209707fa9bf613b7db6bc3d74b791611dbb",
+      "user_action": {
+        "schema_version": "1.0",
+        "record_type": "user-confirmation-action",
+        "action": "freeze-requirement-set",
+        "project": {
+          "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+        "requirement_set_id": "req-community-workshop",
+        "requirement_set_version": 2,
+        "requirement_set_generation": 2,
+        "requirement_set_digest": "sha256:0c5b96d6880fe9b363385e2d68fe747521fcca43f445a73e8d5df51c61558fe9",
+        "confirmation_view_digest": "sha256:cdf72e9289f4322a57488e4f25b15e7b51b9e1057e7a82f890d1d5212a6b8348",
+        "confirmation_id": "confirm-community-workshop",
+        "challenge_digest": "sha256:59f55dddd3fe740c1802d6f2c17dc3c7fe3f6866d302809d9e8ad7266825c38f",
+        "challenge_created_at": "2026-08-10T00:58:00.000Z",
+        "expires_at": "2026-08-10T01:06:00.000Z",
+        "display_id": "display-community-workshop",
+        "display_digest": "sha256:b0a173caaf30d0f176890ede75425209707fa9bf613b7db6bc3d74b791611dbb",
+        "displayed_at": "2026-08-10T00:59:00.000Z",
+        "user_action_id": "user-action-community-workshop",
+        "event_source": "independent-user-action",
+        "user_action": "confirm",
+        "occurred_at": "2026-08-10T01:01:00.000Z"
+      },
+      "user_action_digest": "sha256:e67a4b7fd1a2047da0938123acbda5da32fe6af8fa72a64f438a9aeb3ef43f48",
+      "confirmation_kind": "explicit-user-confirmation",
+      "confirmed_at": "2026-08-10T01:01:00.000Z"
+    },
+    "confirmation_binding_digest": "sha256:10533924a9496eb15d9da73a3a5d2a57abf033106ba75a18a593b7b91ecfd339",
+    "confirmation_view_digest": "sha256:cdf72e9289f4322a57488e4f25b15e7b51b9e1057e7a82f890d1d5212a6b8348",
+    "next_step": "S1.3.product-definition"
+  },
+  "product_definition": {
+    "capability_map": {
+      "capabilities": [
+        {
+          "derivation_summary": "role:capability; derived from the Frozen Requirement source",
+          "kind": "derived",
+          "source_refs": [
+            {
+              "pointer": "/requirement_set/items/4/values/0",
+              "value_digest": "sha256:5a0f8ad7afa9a6904283a3d2705707c3b440b83cf9b14c9685d35f7761f949f7"
+            }
+          ],
+          "value": "Provides an offline community workshop planner"
+        }
+      ],
+      "product_definition_id": "pd-d64247a97a6e8071d43399e69fa96a9eea1a4b030ae8aff52e07c31807e52a3f"
+    },
+    "frozen_requirement": {
+      "schema_version": "1.0",
+      "frozen_requirement_id": "frozen-fe39e84c6388d405908d8edbda2c9b810f6b7122584e6e9d2de21d60e2479210",
+      "status": "frozen",
+      "project": {
+        "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
+      },
+      "requirement_set_version": 2,
+      "requirement_set": {
+        "schema_version": "1.0",
+        "requirement_set_id": "req-community-workshop",
+        "project": {
+          "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
+        },
+        "version": 2,
+        "status": "ready-for-confirmation",
+        "source_candidate_digest": "sha256:e5de415a812be4ec125e33773b598e77bfd8bd21084263165ffb87c7bb0e9c88",
+        "items": [
+          {
+            "field": "intent_summary",
+            "status": "identified",
+            "values": [
+              "为社区新手组织低成本创作工作坊"
+            ],
+            "source": "candidate"
+          },
+          {
+            "field": "goals",
+            "status": "identified",
+            "values": [
+              "低成本创作工作坊"
+            ],
+            "source": "candidate"
+          },
+          {
+            "field": "scenarios",
+            "status": "identified",
+            "values": [
+              "社区新手"
+            ],
+            "source": "candidate"
+          },
+          {
+            "field": "constraints",
+            "status": "identified",
+            "values": [
+              "低成本"
+            ],
+            "source": "candidate"
+          },
+          {
+            "field": "expected_outputs",
+            "status": "identified",
+            "values": [
+              "活动报名清单"
+            ],
+            "source": "user"
+          },
+          {
+            "field": "non_goal_gaps",
+            "status": "rejected",
+            "values": [],
+            "source": "user"
+          },
+          {
+            "field": "clarification_gaps",
+            "status": "deferred",
+            "values": [],
+            "source": "user"
+          }
+        ],
+        "summary": "intent_summary|identified|为社区新手组织低成本创作工作坊\ngoals|identified|低成本创作工作坊\nscenarios|identified|社区新手\nconstraints|identified|低成本\nexpected_outputs|identified|活动报名清单\nnon_goal_gaps|rejected|\nclarification_gaps|deferred|",
+        "content_digest": "sha256:0c5b96d6880fe9b363385e2d68fe747521fcca43f445a73e8d5df51c61558fe9"
+      },
+      "requirement_content_digest": "sha256:0c5b96d6880fe9b363385e2d68fe747521fcca43f445a73e8d5df51c61558fe9",
+      "confirmation": {
+        "schema_version": "1.0",
+        "record_type": "confirmation-envelope",
+        "action": "freeze-requirement-set",
+        "project": {
+          "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+        "requirement_set_id": "req-community-workshop",
+        "requirement_set_version": 2,
+        "requirement_set_generation": 2,
+        "requirement_set_digest": "sha256:0c5b96d6880fe9b363385e2d68fe747521fcca43f445a73e8d5df51c61558fe9",
+        "confirmation_view_digest": "sha256:cdf72e9289f4322a57488e4f25b15e7b51b9e1057e7a82f890d1d5212a6b8348",
+        "confirmation_id": "confirm-community-workshop",
+        "challenge": {
+          "schema_version": "1.0",
+          "record_type": "confirmation-challenge",
+          "action": "freeze-requirement-set",
+          "project": {
+            "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+          "requirement_set_id": "req-community-workshop",
+          "requirement_set_version": 2,
+          "requirement_set_generation": 2,
+          "requirement_set_digest": "sha256:0c5b96d6880fe9b363385e2d68fe747521fcca43f445a73e8d5df51c61558fe9",
+          "confirmation_view": {
+            "schema_version": "1.0",
+            "record_type": "confirmation-view",
+            "action": "freeze-requirement-set",
+            "project": {
+              "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+            },
+            "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+            "requirement_set_id": "req-community-workshop",
+            "requirement_set_version": 2,
+            "requirement_set_generation": 2,
+            "requirement_set_digest": "sha256:0c5b96d6880fe9b363385e2d68fe747521fcca43f445a73e8d5df51c61558fe9",
+            "summary": "intent_summary|identified|为社区新手组织低成本创作工作坊\ngoals|identified|低成本创作工作坊\nscenarios|identified|社区新手\nconstraints|identified|低成本\nexpected_outputs|identified|活动报名清单\nnon_goal_gaps|rejected|\nclarification_gaps|deferred|",
+            "items": [
+              {
+                "field": "intent_summary",
+                "status": "identified",
+                "values": [
+                  "为社区新手组织低成本创作工作坊"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "goals",
+                "status": "identified",
+                "values": [
+                  "低成本创作工作坊"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "scenarios",
+                "status": "identified",
+                "values": [
+                  "社区新手"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "constraints",
+                "status": "identified",
+                "values": [
+                  "低成本"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "expected_outputs",
+                "status": "identified",
+                "values": [
+                  "活动报名清单"
+                ],
+                "source": "user"
+              },
+              {
+                "field": "non_goal_gaps",
+                "status": "rejected",
+                "values": [],
+                "source": "user"
+              },
+              {
+                "field": "clarification_gaps",
+                "status": "deferred",
+                "values": [],
+                "source": "user"
+              }
+            ],
+            "confirmation_id": "confirm-community-workshop",
+            "challenge_created_at": "2026-08-10T00:58:00.000Z",
+            "expires_at": "2026-08-10T01:06:00.000Z"
+          },
+          "confirmation_view_digest": "sha256:cdf72e9289f4322a57488e4f25b15e7b51b9e1057e7a82f890d1d5212a6b8348",
+          "confirmation_id": "confirm-community-workshop",
+          "created_at": "2026-08-10T00:58:00.000Z",
+          "expires_at": "2026-08-10T01:06:00.000Z"
+        },
+        "challenge_digest": "sha256:59f55dddd3fe740c1802d6f2c17dc3c7fe3f6866d302809d9e8ad7266825c38f",
+        "display": {
+          "schema_version": "1.0",
+          "record_type": "confirmation-view-display",
+          "action": "freeze-requirement-set",
+          "project": {
+            "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+          "requirement_set_id": "req-community-workshop",
+          "requirement_set_version": 2,
+          "requirement_set_generation": 2,
+          "requirement_set_digest": "sha256:0c5b96d6880fe9b363385e2d68fe747521fcca43f445a73e8d5df51c61558fe9",
+          "confirmation_view_digest": "sha256:cdf72e9289f4322a57488e4f25b15e7b51b9e1057e7a82f890d1d5212a6b8348",
+          "confirmation_id": "confirm-community-workshop",
+          "confirmation_view": {
+            "schema_version": "1.0",
+            "record_type": "confirmation-view",
+            "action": "freeze-requirement-set",
+            "project": {
+              "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+            },
+            "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+            "requirement_set_id": "req-community-workshop",
+            "requirement_set_version": 2,
+            "requirement_set_generation": 2,
+            "requirement_set_digest": "sha256:0c5b96d6880fe9b363385e2d68fe747521fcca43f445a73e8d5df51c61558fe9",
+            "summary": "intent_summary|identified|为社区新手组织低成本创作工作坊\ngoals|identified|低成本创作工作坊\nscenarios|identified|社区新手\nconstraints|identified|低成本\nexpected_outputs|identified|活动报名清单\nnon_goal_gaps|rejected|\nclarification_gaps|deferred|",
+            "items": [
+              {
+                "field": "intent_summary",
+                "status": "identified",
+                "values": [
+                  "为社区新手组织低成本创作工作坊"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "goals",
+                "status": "identified",
+                "values": [
+                  "低成本创作工作坊"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "scenarios",
+                "status": "identified",
+                "values": [
+                  "社区新手"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "constraints",
+                "status": "identified",
+                "values": [
+                  "低成本"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "expected_outputs",
+                "status": "identified",
+                "values": [
+                  "活动报名清单"
+                ],
+                "source": "user"
+              },
+              {
+                "field": "non_goal_gaps",
+                "status": "rejected",
+                "values": [],
+                "source": "user"
+              },
+              {
+                "field": "clarification_gaps",
+                "status": "deferred",
+                "values": [],
+                "source": "user"
+              }
+            ],
+            "confirmation_id": "confirm-community-workshop",
+            "challenge_created_at": "2026-08-10T00:58:00.000Z",
+            "expires_at": "2026-08-10T01:06:00.000Z"
+          },
+          "challenge": {
+            "schema_version": "1.0",
+            "record_type": "confirmation-challenge",
+            "action": "freeze-requirement-set",
+            "project": {
+              "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+            },
+            "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+            "requirement_set_id": "req-community-workshop",
+            "requirement_set_version": 2,
+            "requirement_set_generation": 2,
+            "requirement_set_digest": "sha256:0c5b96d6880fe9b363385e2d68fe747521fcca43f445a73e8d5df51c61558fe9",
+            "confirmation_view": {
+              "schema_version": "1.0",
+              "record_type": "confirmation-view",
+              "action": "freeze-requirement-set",
+              "project": {
+                "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+              },
+              "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+              "requirement_set_id": "req-community-workshop",
+              "requirement_set_version": 2,
+              "requirement_set_generation": 2,
+              "requirement_set_digest": "sha256:0c5b96d6880fe9b363385e2d68fe747521fcca43f445a73e8d5df51c61558fe9",
+              "summary": "intent_summary|identified|为社区新手组织低成本创作工作坊\ngoals|identified|低成本创作工作坊\nscenarios|identified|社区新手\nconstraints|identified|低成本\nexpected_outputs|identified|活动报名清单\nnon_goal_gaps|rejected|\nclarification_gaps|deferred|",
+              "items": [
+                {
+                  "field": "intent_summary",
+                  "status": "identified",
+                  "values": [
+                    "为社区新手组织低成本创作工作坊"
+                  ],
+                  "source": "candidate"
+                },
+                {
+                  "field": "goals",
+                  "status": "identified",
+                  "values": [
+                    "低成本创作工作坊"
+                  ],
+                  "source": "candidate"
+                },
+                {
+                  "field": "scenarios",
+                  "status": "identified",
+                  "values": [
+                    "社区新手"
+                  ],
+                  "source": "candidate"
+                },
+                {
+                  "field": "constraints",
+                  "status": "identified",
+                  "values": [
+                    "低成本"
+                  ],
+                  "source": "candidate"
+                },
+                {
+                  "field": "expected_outputs",
+                  "status": "identified",
+                  "values": [
+                    "活动报名清单"
+                  ],
+                  "source": "user"
+                },
+                {
+                  "field": "non_goal_gaps",
+                  "status": "rejected",
+                  "values": [],
+                  "source": "user"
+                },
+                {
+                  "field": "clarification_gaps",
+                  "status": "deferred",
+                  "values": [],
+                  "source": "user"
+                }
+              ],
+              "confirmation_id": "confirm-community-workshop",
+              "challenge_created_at": "2026-08-10T00:58:00.000Z",
+              "expires_at": "2026-08-10T01:06:00.000Z"
+            },
+            "confirmation_view_digest": "sha256:cdf72e9289f4322a57488e4f25b15e7b51b9e1057e7a82f890d1d5212a6b8348",
+            "confirmation_id": "confirm-community-workshop",
+            "created_at": "2026-08-10T00:58:00.000Z",
+            "expires_at": "2026-08-10T01:06:00.000Z"
+          },
+          "challenge_digest": "sha256:59f55dddd3fe740c1802d6f2c17dc3c7fe3f6866d302809d9e8ad7266825c38f",
+          "display_id": "display-community-workshop",
+          "displayed_at": "2026-08-10T00:59:00.000Z"
+        },
+        "display_digest": "sha256:b0a173caaf30d0f176890ede75425209707fa9bf613b7db6bc3d74b791611dbb",
+        "user_action": {
+          "schema_version": "1.0",
+          "record_type": "user-confirmation-action",
+          "action": "freeze-requirement-set",
+          "project": {
+            "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+          "requirement_set_id": "req-community-workshop",
+          "requirement_set_version": 2,
+          "requirement_set_generation": 2,
+          "requirement_set_digest": "sha256:0c5b96d6880fe9b363385e2d68fe747521fcca43f445a73e8d5df51c61558fe9",
+          "confirmation_view_digest": "sha256:cdf72e9289f4322a57488e4f25b15e7b51b9e1057e7a82f890d1d5212a6b8348",
+          "confirmation_id": "confirm-community-workshop",
+          "challenge_digest": "sha256:59f55dddd3fe740c1802d6f2c17dc3c7fe3f6866d302809d9e8ad7266825c38f",
+          "challenge_created_at": "2026-08-10T00:58:00.000Z",
+          "expires_at": "2026-08-10T01:06:00.000Z",
+          "display_id": "display-community-workshop",
+          "display_digest": "sha256:b0a173caaf30d0f176890ede75425209707fa9bf613b7db6bc3d74b791611dbb",
+          "displayed_at": "2026-08-10T00:59:00.000Z",
+          "user_action_id": "user-action-community-workshop",
+          "event_source": "independent-user-action",
+          "user_action": "confirm",
+          "occurred_at": "2026-08-10T01:01:00.000Z"
+        },
+        "user_action_digest": "sha256:e67a4b7fd1a2047da0938123acbda5da32fe6af8fa72a64f438a9aeb3ef43f48",
+        "confirmation_kind": "explicit-user-confirmation",
+        "confirmed_at": "2026-08-10T01:01:00.000Z"
+      },
+      "confirmation_binding_digest": "sha256:10533924a9496eb15d9da73a3a5d2a57abf033106ba75a18a593b7b91ecfd339",
+      "confirmation_view_digest": "sha256:cdf72e9289f4322a57488e4f25b15e7b51b9e1057e7a82f890d1d5212a6b8348",
+      "next_step": "S1.3.product-definition"
+    },
+    "frozen_requirement_digest": "sha256:f3a3568e302990e6611fc78150510d29332aafcc012ce92a3fc434bb8a0f2179",
+    "prd": {
+      "goals": [
+        {
+          "kind": "direct",
+          "source": {
+            "pointer": "/requirement_set/items/1/values/0",
+            "value_digest": "sha256:edd22fd54a7d300df52780817bc380ac652de80e35f07b78481e52f7c37652d2"
+          },
+          "value": "低成本创作工作坊"
+        }
+      ],
+      "non_goals": [
+        {
+          "kind": "direct",
+          "source": {
+            "pointer": "/requirement_set/items/3/values/0",
+            "value_digest": "sha256:7a2178ab568bdd74d8b36c4322391d77c223b72e65005f79a2a05e867d968697"
+          },
+          "value": "低成本"
+        }
+      ],
+      "problem": {
+        "derivation_summary": "role:problem; derived from the Frozen Requirement source",
+        "kind": "derived",
+        "source_refs": [
+          {
+            "pointer": "/requirement_set/items/2/values/0",
+            "value_digest": "sha256:acac58e7a93130d135a17a642cc4005de054f26f646780aeac88290931852dc7"
+          }
+        ],
+        "value": "Community volunteers need an offline way to coordinate weekly workshops"
+      },
+      "product_name": {
+        "kind": "direct",
+        "source": {
+          "pointer": "/requirement_set/items/0/values/0",
+          "value_digest": "sha256:e65a7cf1541db058ef79e45808f94b0521deb8916639117b36b79a31e535a888"
+        },
+        "value": "为社区新手组织低成本创作工作坊"
+      },
+      "scenarios": [
+        {
+          "derivation_summary": "role:scenarios; derived from the Frozen Requirement source",
+          "kind": "derived",
+          "source_refs": [
+            {
+              "pointer": "/requirement_set/items/2/values/0",
+              "value_digest": "sha256:acac58e7a93130d135a17a642cc4005de054f26f646780aeac88290931852dc7"
+            }
+          ],
+          "value": "Community volunteers coordinate weekly workshops without network access"
+        }
+      ],
+      "scope": [
+        {
+          "kind": "direct",
+          "source": {
+            "pointer": "/requirement_set/items/4/values/0",
+            "value_digest": "sha256:5a0f8ad7afa9a6904283a3d2705707c3b440b83cf9b14c9685d35f7761f949f7"
+          },
+          "value": "活动报名清单"
+        }
+      ],
+      "success_metrics": [
+        {
+          "evidence": {
+            "journey_sequence": 2,
+            "transition_digest": "sha256:f52b7af8f4da4ddd87cfce4768edca082d2f6d526b541eddae9a17fbaf6f2a8f"
+          },
+          "measurement": {
+            "kind": "completion-transition"
+          },
+          "target": {
+            "required_state": "completed",
+            "semantic_source": {
+              "pointer": "/requirement_set/items/1/values/0",
+              "value_digest": "sha256:edd22fd54a7d300df52780817bc380ac652de80e35f07b78481e52f7c37652d2"
+            }
+          }
+        }
+      ],
+      "target_users": [
+        {
+          "kind": "direct",
+          "source": {
+            "pointer": "/requirement_set/items/2/values/0",
+            "value_digest": "sha256:acac58e7a93130d135a17a642cc4005de054f26f646780aeac88290931852dc7"
+          },
+          "value": "社区新手"
+        }
+      ]
+    },
+    "product_definition_id": "pd-d64247a97a6e8071d43399e69fa96a9eea1a4b030ae8aff52e07c31807e52a3f",
+    "record_type": "product-definition-candidate",
+    "schema_version": "1.0",
+    "user_journey": {
+      "product_definition_id": "pd-d64247a97a6e8071d43399e69fa96a9eea1a4b030ae8aff52e07c31807e52a3f",
+      "steps": [
+        {
+          "action": "start",
+          "activity": {
+            "derivation_summary": "role:activity; derived from the Frozen Requirement source",
+            "kind": "derived",
+            "source_refs": [
+              {
+                "pointer": "/requirement_set/items/1/values/0",
+                "value_digest": "sha256:edd22fd54a7d300df52780817bc380ac652de80e35f07b78481e52f7c37652d2"
+              }
+            ],
+            "value": "Community volunteers begin planning a weekly workshop"
+          },
+          "actor": {
+            "derivation_summary": "role:actor; derived from the Frozen Requirement source",
+            "kind": "derived",
+            "source_refs": [
+              {
+                "pointer": "/requirement_set/items/2/values/0",
+                "value_digest": "sha256:acac58e7a93130d135a17a642cc4005de054f26f646780aeac88290931852dc7"
+              }
+            ],
+            "value": "Community volunteers"
+          },
+          "outcome": "in-progress",
+          "result": {
+            "derivation_summary": "role:result; derived from the Frozen Requirement source",
+            "kind": "derived",
+            "source_refs": [
+              {
+                "pointer": "/requirement_set/items/1/values/0",
+                "value_digest": "sha256:edd22fd54a7d300df52780817bc380ac652de80e35f07b78481e52f7c37652d2"
+              }
+            ],
+            "value": "Weekly workshop planning is in progress"
+          },
+          "semantic_source": {
+            "pointer": "/requirement_set/items/1/values/0",
+            "value_digest": "sha256:edd22fd54a7d300df52780817bc380ac652de80e35f07b78481e52f7c37652d2"
+          },
+          "sequence": 1,
+          "state_change": {
+            "from": "not-started",
+            "to": "in-progress"
+          }
+        },
+        {
+          "action": "complete",
+          "activity": {
+            "derivation_summary": "role:activity; derived from the Frozen Requirement source",
+            "kind": "derived",
+            "source_refs": [
+              {
+                "pointer": "/requirement_set/items/1/values/0",
+                "value_digest": "sha256:edd22fd54a7d300df52780817bc380ac652de80e35f07b78481e52f7c37652d2"
+              }
+            ],
+            "value": "Community volunteers finish the weekly workshop plan"
+          },
+          "actor": {
+            "derivation_summary": "role:actor; derived from the Frozen Requirement source",
+            "kind": "derived",
+            "source_refs": [
+              {
+                "pointer": "/requirement_set/items/2/values/0",
+                "value_digest": "sha256:acac58e7a93130d135a17a642cc4005de054f26f646780aeac88290931852dc7"
+              }
+            ],
+            "value": "Community volunteers"
+          },
+          "outcome": "completed",
+          "result": {
+            "derivation_summary": "role:result; derived from the Frozen Requirement source",
+            "kind": "derived",
+            "source_refs": [
+              {
+                "pointer": "/requirement_set/items/4/values/0",
+                "value_digest": "sha256:5a0f8ad7afa9a6904283a3d2705707c3b440b83cf9b14c9685d35f7761f949f7"
+              }
+            ],
+            "value": "An offline community workshop plan is ready"
+          },
+          "semantic_source": {
+            "pointer": "/requirement_set/items/1/values/0",
+            "value_digest": "sha256:edd22fd54a7d300df52780817bc380ac652de80e35f07b78481e52f7c37652d2"
+          },
+          "sequence": 2,
+          "state_change": {
+            "from": "in-progress",
+            "to": "completed"
+          }
+        }
+      ]
+    }
+  },
+  "target_project": "community-workshop"
+}
