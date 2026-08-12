@@ -1,5 +1,11 @@
 # Operations Log
 
+## 2026-08-12 CR-004 用户批准
+
+- 用户明确批准按“当前阶段缺口 + plan generation 3”修复 M1.1 跨阶段 fixture 连续性，并重走 S1.3 正式证据链与 M1.1 attempt 2。
+- 授权范围仅包含 generation 3 控制链、三类连续 fixture、永久累计回归和既有正式门禁；不改变产品定位、技术栈、PC 定义、版本归属或验收标准。
+- formal 在新证据链通过前保持 `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`；S1.4 继续关闭。
+
 ## 2026-08-12 P5 / V1 / M1.1 累积验收退回与 CR-004
 
 - 独立验收对象固定为 formal `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`、tree `b0178b038e6dd975e90cdd9d3aa7422d2965cf23`、内容摘要 `sha256:648a42bfe2e4733a87bcd0af4f3f248c42e008c6ce89498d40179f8a272de2d9`；工作真源为 `427ea14d8006d1e277610773ea8a0c3622e1eefc`。
