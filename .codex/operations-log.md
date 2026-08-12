@@ -6,6 +6,7 @@
 - 授权路线：`F0 -> S1.2 新 formal F12 -> S1.3 新 formal F13 -> M1.1 attempt 2 -> 用户会签`；当前只允许先建立 generation 4 管理面和 S1.2 新链。
 - 强制边界：F12 前不得生成 S1.3 Execution Packet；S1.2 失败停在 F0，S1.3 失败停在 F12；M1.1 会签前不得启动 S1.4。
 - 当前状态：本条仅固化用户批准和项目真源，尚未推进 control plan_generation、生成任务包、修改生产代码/Schema 或移动 formal。
+- 真源消歧：清理 P5 活动计划和 PRODUCT_SENSE 中残留的“等待 CR-005 用户门禁/未获批准前”文字；`.codex/runtime` 为未跟踪陈旧镜像，只允许在 control CAS 稳定后从 ref 单向同步，不能作为控制真源。
 
 ## 2026-08-12 CR-005 第四轮独立复审
 

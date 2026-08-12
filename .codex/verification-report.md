@@ -6,6 +6,7 @@
 - 当前批准提交只包含 CR-004/005、审查包、路线锁、计划、状态入口和 `.codex` 留痕；不包含生产代码、Schema、测试、fixture 或 execution packet。
 - 进入 generation 4 前置：批准真源形成不可变项目提交后，control 写 user-decision，随后 generation-advance 和 generation-ack 分别以 expected-old CAS 固化。
 - 门禁结论：批准门禁通过；代际尚未推进，formal 仍为 F0。F12 前禁止 S1.3 packet，M1.1 会签前禁止 S1.4。
+- 状态冲突复验：P5 活动计划与 PRODUCT_SENSE 已统一为“CR-005 已批准、先推进 generation 4/S1.2”；未跟踪 `.codex/runtime` 的旧 plan/formal 值不作为 ref 真源，后续从稳定 control 单向刷新。
 
 ## 2026-08-12 CR-005 第四轮独立复审验证
 

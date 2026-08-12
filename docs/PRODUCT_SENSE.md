@@ -92,6 +92,6 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 
 ## 当前交付物
 
-- P5 活动计划：`docs/exec-plans/active/p5-product-implementation-milestones.md`，进行中且等待 CR-005 用户门禁
+- P5 活动计划：`docs/exec-plans/active/p5-product-implementation-milestones.md`，CR-005 已批准，当前推进 generation 4 与 S1.2 F0→F12 先行链
 - P3 版本与里程碑拆解：`docs/exec-plans/completed/p3-version-and-milestone-breakdown.md`，已会签并归档
 - 当前变更入口：`docs/change-requests/005-product-definition-semantic-contract-gap.md`，已批准；按 S1.2 F0→F12 先行链执行
