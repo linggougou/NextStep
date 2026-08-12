@@ -1868,3 +1868,36 @@
 - R5 在 CAS 前完成 packet、dedup、ready、outbox、registry、checkpoint 共 11 项身份断言，并以 fence 59 派发。唯一 `git clone --no-local` 隔离副本通过冻结安装、`pnpm check` 126/126、覆盖率 Lines 90.78% / Branches 82.30% / Functions 98.37%、Skill、JSON、Git、上游保护、秘密/调试扫描及官方 npm high audit。
 - R5 Final Verification 结论为“通过”，result digest `sha256:a81c96b73f09a152fb123c69152895e23143178748944184e96d40be0f8d4711`。项目外 Credential 为 `evidence:verification-credential-de6ab16f57f7b596a6d9f03d7c916357eb13cfa7294511c74e37ff4b3a2462f2.json`，原始 SHA-256 `sha256:de6ab16f57f7b596a6d9f03d7c916357eb13cfa7294511c74e37ff4b3a2462f2`，3456 bytes，JCS、文件名、目录 0700、文件 0600、F0/R4/control/claim/fence/host 绑定经主管复核通过。
 - 当前仅准备 Audit Anchor；formal 仍为 F0 `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`。S1.3 generation 4 未生成，S1.4 未启动。
+
+## 2026-08-12 S1.2 Generation 4 R5 与 Audit Anchor 独立就绪审查
+
+- 路线与边界：本轮属于 P5 / V1 / M1.1 / S1.2 的 S7 独立审查，只判断 R5 与 Audit Anchor 是否可进入 Anchor Verification；不执行 Anchor Verification、Anchor Proof、formal CAS、普通提交、推送或下游派发。
+- 核对结果：Final Snapshot `1fc2eb42f1d399df1aa37eec244f3229a123af89`、Audit Anchor `8540763a9719cda5c5632b68bb770c95f0ceaecf` 及其唯一父、R5 Result `sha256:a81c96b...`、Credential `sha256:de6ab16f...`、control `0258f9ff...` 与 formal F0 `f3fdd265...` 均匹配；219 条受保护路径一致。
+- fail-closed：R1/R3/R4 blocked 与 R2 tombstone 历史完整，没有错误 Credential 或 formal 移动；S1.3 generation 4 未生成，S1.4 未启动。
+- 审查结论：`PASS / 97`，P0/P1/P2 = `0/0/1`。仅授权进入 Anchor Verification，不表示 S1.2 正式提升完成。
+- P2：路线锁、PLANS 和活动计划仍显示等待 Final Content Snapshot；这是当前 Anchor 白名单导致的暂态滞后，待 F0->F12 后独立同步，不重建或污染 `8540763...`。
+- 提交判断：当前不得从 main 另做普通提交；先验证既有精确 Anchor、生成项目外 Proof 并完成 expected-old=F0 的 CAS。审查新增文件与留痕不属于现有 Audit Anchor，不得并入该锚。
+
+## 2026-08-12 P5 里程碑结构解释性审阅
+
+- 目标：解释 P5 为什么拆为 4 个版本、9 个大里程碑和 18 个小里程碑，以及每个阶段的实际产出和用户价值。
+- 真源：只读核对已会签的 `docs/exec-plans/completed/p3-version-and-milestone-breakdown.md` 与当前 `docs/exec-plans/active/p5-product-implementation-milestones.md`。
+- 结论：18 个小里程碑不是 18 个页面或同等规模功能，而是 PC-01..20 按依赖拆成的可失败、可回退运行闭环。V1 负责真源生成，V2 负责计划与任务包，V3 负责隔离执行和正式提升，V4 负责量化验收和关闭。
+- 进度口径：按业务小里程碑仅 S1.1 完成、S1.2 待 F12 收口；但凭证、Audit Anchor、CAS 等 V3 底层机制已经为当前正式证据链提前落地，不能用 2/18 直接推导总工程完成率。
+- 本轮无生产代码、路线、refs、门禁或计划修改，不运行测试，不形成新的验收结论。
+
+## 2026-08-13 S1.2 F12 收口与 S1.3 交接独立审查
+
+- 核心事实：Anchor Verification `sha256:e92c75f7...`、项目外 Proof `sha256:0e073010...` 和 promotion `sha256:bbbc068e...` 可复核；formal 已由 expected-old F0 成功 CAS 到 `8540763a...`，control `62b78f03...` 将 S1.2 标为 formally-promoted。
+- 边界：S1.3 generation 4 packet 未创建，S1.4 未启动；对方列出的 S1.3 Product Definition 2.0 范围与 CR-005 一致，无新门禁。
+- 交接缺口：main 仍为 F12 父提交 `1fc2eb42...`；工作区保留锚后审查和日志增量；路线锁、README、PLANS、PRODUCT_SENSE、QA index 与 P5 活动计划仍陈述等待 Snapshot/formal F0。
+- 审查结论：`REVISE / 84`，P0/P1/P2=`0/2/0`。返工仅针对 main/锚后证据保全和状态真源同步，不重做 S1.2 正式证据链。
+- 下一入口：保全锚后增量 -> main ff-only 到 F12 -> 恢复审查证据 -> 同步状态真源 -> 独立锚后状态提交 -> refs/工作区复核；完成前仅允许 S1.3 规划，不创建 packet 或编码。
+
+## 2026-08-13 F12 到 S1.3 交接整理
+
+- 路线与范围：继续执行 P5 / V1 / M1.1 已会签路线；本轮只做 F12 交接、状态真源同步和证据保全，不创建 S1.3 generation 4 packet、不编码、不启动 S1.4、不重做 Anchor、Proof 或 CAS、不 push。
+- 证据保全：先以 `git stash -u` 保全锚后 readiness/F12 审查文件及本日志、verification-report 的追加内容；之后从 stash 选择性恢复。F12 中已跟踪的 `final-verification.json` 与保全副本 blob `sha256:4ab0b5d9a99fd1652ab2c65a08c3aaec096b26ee` 一致，未覆盖。
+- refs 同步：`main` 以 `git merge --ff-only refs/nextstep/formal` 从 `1fc2eb42f1d399df1aa37eec244f3229a123af89` 快进到 `8540763a9719cda5c5632b68bb770c95f0ceaecf`；`refs/nextstep/formal` 未移动，`refs/nextstep/control` 仍为 `62b78f035df2512ba35560a67aa3b200737ec52c`。
+- 状态入口：已同步 `PROJECT_ROUTE_LOCK.md`、`README.md`、`docs/PLANS.md`、`docs/PRODUCT_SENSE.md`、`docs/qa/index.md` 和 P5 活动计划，统一写明 S1.2 generation 4 已正式提升到 F12、main 已包含 F12、S1.3 generation 4 仅规划且 packet 未创建、S1.4 未启动、M1.1/V1/P5 尚未完成；P3 的 18 个小里程碑与门禁未改。
+- 验证口径：本轮仅涉及文档、状态入口、审查证据和项目留痕，没有生产代码、Schema、测试或 fixture 变化，因此不重复运行 `pnpm check`；沿用绑定 F12 Final Verification 的 `126/126` 本地证据，并执行 `git diff --check` 及身份/文件存在性复核。

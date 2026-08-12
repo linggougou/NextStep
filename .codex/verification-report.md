@@ -1873,3 +1873,28 @@
 - 时钟裁决：仅以 control 父链证明 R1 blocked result 的最晚可证持久化顺序，保留其错误自报时间和阻塞结论；不得推广为通用 lease、expiry、用户动作或执行完成时钟。
 - Credential：`sha256:de6ab16f57f7b596a6d9f03d7c916357eb13cfa7294511c74e37ff4b3a2462f2`，3456 bytes，JCS、原始 SHA-256、文件名、0700/0600 和字段绑定复核通过。
 - 阶段判断：Final Verification 已通过，但 Audit Anchor、Anchor Proof 与 F0→F12 formal CAS 尚未完成，因此 S1.2 仍不得宣称正式提升完成。
+
+## 2026-08-12 S1.2 Generation 4 R5 / Audit Anchor Readiness Review
+
+- 审查包：`.codex/reviews/p5-v1-m1.1-s1.2-generation-4-r5-anchor-readiness-2026-08-12/`。
+- 结论：`PASS / 97`，P0/P1/P2 = `0/0/1`；R5 Final Verification 与 Audit Anchor 具备进入 Anchor Verification 的条件。
+- 独立核对：Anchor `8540763a...` 为单父提交，唯一父为 Snapshot `1fc2eb42...`；三项 Anchor 内容 blob 与审查前工作区一致；Credential 为 3456 bytes、0600，原始 SHA-256 为 `de6ab16f...`；formal 仍为 F0，control 为 `0258f9ff...`。
+- 未复跑 `pnpm check`：R5 已在绑定 Final Snapshot 的唯一 `clone --no-local` 隔离副本完成 126/126；本轮为只读身份与门禁审查，重复在不同工作树运行不能替代已绑定证据。
+- 当前门禁：S1.2 尚未正式完成。下一步依次为 Anchor Verification、项目外 Anchor Proof、Credential/Proof 复核和 expected-old=F0 的 `F0 -> F12` CAS；完成前不得生成 S1.3 generation 4 packet。
+- 非阻塞风险：状态入口仍显示等待 Final Content Snapshot，待 formal promotion 后独立同步；不得为此重建当前 Audit Anchor。
+
+## 2026-08-13 S1.2 F12 Handoff Review
+
+- 结果：`REVISE / 84`，P0/P1/P2=`0/2/0`；S1.2 formally-promoted 的核心事实通过，F12 到 S1.3 的交接未通过。
+- 通过证据：formal `8540763a...`；control `62b78f03...`；promotion expected-old F0/CAS success；Anchor Verification 和 Proof 摘要、权限、内容绑定通过；pending dispatch 为 0。
+- 未通过项：项目状态入口仍报告 F0；main 尚未快进；当前 tracked/untracked 锚后审查证据尚无明确保全、同步和恢复结果。
+- 门禁：不得重做 Anchor；不得在交接同步完成前生成 S1.3 generation 4 packet。完成状态同步后复核 formal/control 不变、main 包含 F12、锚后证据存在且工作区状态明确。
+- 本轮不复跑 `pnpm check`：审查对象为 formal/control/Proof 和交接状态，不修改生产代码；S1.2 精确 Snapshot 的 126/126 证据保持有效。
+
+## 2026-08-13 F12 到 S1.3 交接验证
+
+- 交接结果：通过。Anchor `8540763a9719cda5c5632b68bb770c95f0ceaecf` 未重建或改写；`refs/nextstep/formal` 仍指向该 Anchor，`refs/nextstep/control` 仍为 `62b78f035df2512ba35560a67aa3b200737ec52c`。
+- main：以 `ff-only` 从 F12 的直接父 `1fc2eb42f1d399df1aa37eec244f3229a123af89` 快进到 F12，因此 `main` 当前包含 F12；未执行 push。
+- 证据：锚后 readiness 审查、F12 handoff 审查、context summary、operations-log 和 verification-report 的追加内容均已恢复；F12 已跟踪 `final-verification.json` 与保全副本摘要一致。
+- 状态：S1.3 generation 4 仅规划，packet 未创建；pending dispatch 为 `[]`；S1.4 未启动；M1.1、V1、P5 尚未完成。
+- 本轮没有生产代码、Schema、测试或 fixture 改动，不运行 `pnpm check`；复用精确 F12 Final Verification 的 `126/126` 证据，新增 `git diff --check` 通过。

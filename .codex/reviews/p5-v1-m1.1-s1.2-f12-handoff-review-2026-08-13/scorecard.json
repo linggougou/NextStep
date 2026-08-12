@@ -1,0 +1,139 @@
+{
+  "review_id": "p5-v1-m1.1-s1.2-f12-handoff-review-2026-08-13",
+  "task_id": "S1.2-F12-HANDOFF",
+  "lane": "independent-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-formal-promotion-and-next-stage-handoff-v1",
+  "artifact_refs": [
+    "formal:8540763a9719cda5c5632b68bb770c95f0ceaecf",
+    "control:62b78f035df2512ba35560a67aa3b200737ec52c",
+    "git:1fc2eb42f1d399df1aa37eec244f3229a123af89",
+    "control:promotions/formal-promotion-s1.2-g4-a3.json",
+    "control:results/result-anchor-verification-s1.2-g4-a1-f60-20260812.json",
+    "evidence:anchor-proof-0e073010540db26b75aace463c704c4d1f7138c359b675eada217d00cdb832e8.json",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/PLANS.md",
+    "docs/change-requests/005-product-definition-semantic-contract-gap.md"
+  ],
+  "hard_gates": [
+    {
+      "id": "anchor_verification_and_proof",
+      "status": "pass",
+      "evidence": "Anchor Verification result e92c75f7... 为 passed；项目外 Anchor Proof 文件存在、0600、3662 bytes，原始 SHA-256 为 0e073010...，绑定 Anchor 8540763a...、Credential de6ab16f... 和 219 条受保护路径。"
+    },
+    {
+      "id": "formal_expected_old_cas",
+      "status": "pass",
+      "evidence": "promotion bbbc068e... 记录 expected_old_formal_oid=f3fdd265...、new_formal_oid=8540763a...、cas_outcome=success；当前 refs/nextstep/formal 精确为 8540763a...。"
+    },
+    {
+      "id": "control_state",
+      "status": "pass",
+      "evidence": "control 62b78f03... 的 checkpoint 与 registry 将 S1.2 标为 formally-promoted，formal_oid=8540763a...，pending dispatch 为空，next_stage 仅为 S1.3 generation 4 planning。"
+    },
+    {
+      "id": "downstream_not_started",
+      "status": "pass",
+      "evidence": "未发现 S1.3 generation 4 packet，S1.4 未启动，符合 CR-005 的 F0->F12->F13 顺序。"
+    },
+    {
+      "id": "route_and_status_truth_alignment",
+      "status": "fail",
+      "evidence": "PROJECT_ROUTE_LOCK、README、PLANS、PRODUCT_SENSE、QA index 和 P5 活动计划仍声明等待 Final Content Snapshot、formal F0，与当前 formal F12 和 control formally-promoted 冲突。"
+    },
+    {
+      "id": "main_and_review_evidence_handoff",
+      "status": "fail",
+      "evidence": "main/HEAD 仍为 1fc2eb42...；工作区对 Anchor 已包含的 operations-log、verification-report 有锚后追加内容，并有 readiness 审查等未跟踪文件。直接执行 git merge --ff-only refs/nextstep/formal 会因 tracked 本地修改被覆盖而中止；当前尚无可复核的保全、快进、恢复、状态同步顺序。"
+    },
+    {
+      "id": "s1_3_scope_alignment",
+      "status": "pass",
+      "evidence": "报告列出的 Product Definition 2.0 Schema、Domain、CLI、Machine Receipt、Skill、fixture 与正负例均落在 CR-005 第 7.3、9、10 节已批准范围内，未增加新门禁。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "promotion_correctness",
+      "score": 30,
+      "max_score": 30,
+      "reason": "Anchor Verification、Proof 与 expected-old CAS 的身份和结果完整，S1.2 正式提升事实成立。",
+      "evidence_refs": ["control:promotions/formal-promotion-s1.2-g4-a3.json", "formal:8540763a9719cda5c5632b68bb770c95f0ceaecf"]
+    },
+    {
+      "id": "evidence_integrity",
+      "score": 24,
+      "max_score": 25,
+      "reason": "关键摘要、权限、Anchor 身份与保护路径可复核；本轮未发现伪报或历史覆盖。",
+      "evidence_refs": ["control:results/result-anchor-verification-s1.2-g4-a1-f60-20260812.json", "evidence:anchor-proof-0e073010540db26b75aace463c704c4d1f7138c359b675eada217d00cdb832e8.json"]
+    },
+    {
+      "id": "stage_boundary",
+      "score": 20,
+      "max_score": 20,
+      "reason": "S1.3/S1.4 均未提前启动，下一步范围符合 CR-005。",
+      "evidence_refs": ["docs/change-requests/005-product-definition-semantic-contract-gap.md", "control:checkpoint.json"]
+    },
+    {
+      "id": "state_truth_consistency",
+      "score": 5,
+      "max_score": 15,
+      "reason": "控制面已到 F12，但所有用户状态入口仍停在 F0，违反路线锁作为当前状态真源的要求。",
+      "evidence_refs": ["PROJECT_ROUTE_LOCK.md", "README.md", "docs/PLANS.md", "docs/PRODUCT_SENSE.md", "docs/qa/index.md"]
+    },
+    {
+      "id": "handoff_safety",
+      "score": 5,
+      "max_score": 10,
+      "reason": "报告正确识别 dirty worktree，但未给出可验证的锚后证据保全、main 快进与恢复方案，尚不能安全生成下一任务包。",
+      "evidence_refs": ["git:1fc2eb42f1d399df1aa37eec244f3229a123af89", "formal:8540763a9719cda5c5632b68bb770c95f0ceaecf"]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 84,
+    "penalty_total": 0,
+    "final_score": 84,
+    "max_score": 100
+  },
+  "severity_summary": {
+    "P0": 0,
+    "P1": 2,
+    "P2": 0
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "先保全锚后 readiness 审查文件和 operations-log/verification-report 的锚后增量，再将 main 以 ff-only 同步到 formal F12，恢复锚后证据；不得重建或改写 8540763... Audit Anchor。",
+    "将 PROJECT_ROUTE_LOCK、README、PLANS、PRODUCT_SENSE、QA index 与 P5 活动计划统一更新为：S1.2 已正式提升到 F12，main 同步状态如实记录，S1.3 generation 4 仅处于规划且 packet 未创建，S1.4 未启动。",
+    "把上述同步形成独立的锚后状态提交并复核 formal 仍为 8540763...、control 仍为 62b78f03...、working tree clean 或仅含明确列出的用户改动，然后才能生成 S1.3 generation 4 packet。"
+  ],
+  "nice_to_have": [
+    "S1.3 汇报继续区分新增产品测试与既有证据工具重复运行，不为稳定工具链另建门禁。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "signal": "REVISE",
+      "conclusion": "S1.2 F12 提升客观成立；项目状态真源与 main 交接尚未闭合。"
+    },
+    {
+      "role": "Strict Judge",
+      "signal": "REVISE",
+      "score": 84,
+      "conclusion": "核心成果正确，但在路线锁仍陈述 F0 时启动 S1.3 会造成基线和用户认知冲突。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "signal": "PASS",
+      "conclusion": "报告已按业务语言区分能力、证据和风险，没有把 S1.2 收口夸大为 M1.1 或 V1 完成。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "signal": "REVISE",
+      "score": 84,
+      "conclusion": "接受 S1.2 formally-promoted 结论；完成 main 与状态真源同步前，仅允许 S1.3 规划，不授权创建 packet 或编码。"
+    }
+  ],
+  "reviewed_at": "2026-08-13T00:00:00+08:00",
+  "verdict_scope": "REVISE 针对 F12 到 S1.3 的交接状态，不要求重做 S1.2、Anchor Verification、Proof 或 formal CAS。"
+}
