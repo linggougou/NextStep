@@ -1864,3 +1864,12 @@
 - 影响：Snapshot 自身 JCS digest 正确，但引用的门禁内容身份错误，因此不能签发 Verification Credential、不能创建 Audit Anchor 或移动 formal。项目外新 Credential 为零。
 - 通过项：`pnpm check` 126/126，覆盖率 90.78%/82.30%/98.37%；packet、execution、CV、I/X/P、L3、Snapshot、transaction 自描述摘要，L3 审查文件可寻址与算术，Skill、官方 high audit、JSON、Git、上游保护及秘密/调试扫描通过。
 - 恢复：不改写 r1；以新提交生成 r2 Snapshot 并重新执行 Final Verification attempt 2。formal 仍为 F0，S1.3 generation 4 与 S1.4 均未启动。
+## 2026-08-12 S1.2 Generation 4 R5 Final Verification
+
+- 门禁结论：通过。R1、R2、R3、R4 失败/取消对象均保留且未被覆盖；R5 是唯一可进入 Audit Anchor 的 Final Verification 结果。
+- 身份：packet `sha256:5e097fdf19ff718d3bd67e003b411db0ea544f11a1b145faabfe22acc89bf1d8`、dedup `sha256:8a978cdb1db9adb7e2c0ff166159dc0b36219f354205376d39933f173ffc7cf8`、claim `claim-s1.2-fv-g4-a5-f59-20260812`、fence `59`、host `019ff636-eb0e-79a2-b267-3f7bd8078f66`、control `c488467b6a242df2363d4a462454764d81550827`、formal F0 和 R4 Snapshot 全部一致。
+- 内容：R4 Snapshot digest `sha256:80e4a43feccdaff89cb97f0edfd5be5a984beeb6e5472abe435161f0dc6c6475`，Write Transaction digest `sha256:a51b6ceabae7d6a5c0314041130465f28dbf07c6ec2b8c637c06d53abc129531`，Git subject `1fc2eb42f1d399df1aa37eec244f3229a123af89` / tree `b94fba62c3d37942d092dcad6302b05310ffbac3`。
+- 验证：`pnpm check` 126/126；覆盖率 Lines 90.78%、Branches 82.30%、Functions 98.37%；Execution、CV、I/X/P、L3 `PASS / 96`、review artifact、Skill、JSON、Git、上游保护、秘密/调试扫描和官方 npm high audit 通过。
+- 时钟裁决：仅以 control 父链证明 R1 blocked result 的最晚可证持久化顺序，保留其错误自报时间和阻塞结论；不得推广为通用 lease、expiry、用户动作或执行完成时钟。
+- Credential：`sha256:de6ab16f57f7b596a6d9f03d7c916357eb13cfa7294511c74e37ff4b3a2462f2`，3456 bytes，JCS、原始 SHA-256、文件名、0700/0600 和字段绑定复核通过。
+- 阶段判断：Final Verification 已通过，但 Audit Anchor、Anchor Proof 与 F0→F12 formal CAS 尚未完成，因此 S1.2 仍不得宣称正式提升完成。

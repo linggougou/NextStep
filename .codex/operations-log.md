@@ -1859,3 +1859,12 @@
 - r1 Snapshot `5f88b5780b25dcdfedfcbadcb934da6813d1677e` 的 Snapshot 对象自摘要可复算，但 `applicable_gates.independent-review.result_digest` 手工录入时将正确的 `...ce6d5e...` 误写为 `...ce6d1e...`。独立 Final Verification fence 55 精确识别该一字符证据引用错误，结论阻塞，未生成 Credential。
 - 其余复验通过：唯一 `--no-local` 隔离副本 `pnpm check` 126/126，覆盖率 Lines 90.78%、Branches 82.30%、Functions 98.37%；packet/result 自摘要、JSON、Skill/L3 算术、官方 high audit、git fsck/diff、上游保护、秘密/调试扫描和无 S1.3 generation 4 packet 均通过。
 - 恢复规则：保留 r1 Snapshot、transaction、packet、claim/fence 和阻塞结论为不可变历史，不原地改写；生成只修正该 L3 digest 引用的 r2 Final Content Snapshot，并重新派发绑定新 Snapshot/tree/digest 的 Final Verification attempt 2。formal 继续保持 F0。
+## 2026-08-12 P5 / V1 / M1.1 / S1.2 Generation 4 Final Verification R1-R5
+
+- R1 因 Final Content Snapshot 内 L3 result digest 一字符错误按 fence 55 fail closed，未生成 Credential；blocked result digest 为 `sha256:1d8c757d8cb634574555d677c241bd84767ef724e33ab7d10c177d51414e49fe`。
+- R2 在宿主执行前发现 snapshot/control 时间晚于主管墙钟，已以 tombstone 取消，无 dispatch-ack、无复验、无 Credential。R3 复验确认 R1 自报 `completed_at` 与控制持久化时间矛盾并阻塞；完整 result digest 为 `sha256:b89b0236af5d551f0d9dfc2c3f93b780c2562faad5ff168872db53302c457073`。
+- 独立时钟裁决确认 control commit `caa0e180c46561088b001c937c21b71a775b37a8` 首次持久化 R1 result，父提交不含该结果，commit time 为 `2026-08-12T21:53:45+08:00`。裁决只用于证明控制持久化顺序，不改写 R1 `completed_at`，不作为通用可信执行时钟；digest 为 `sha256:701be2193469126a7070f491e724313e03add7e9896a412986bebae19f6583fc`。
+- R4 因 packet 内旧 dedup 与 ready/ack/outbox 新 dedup 不一致按 fence 58 fail closed，未生成 Credential；result digest 为 `sha256:37c094de1c6fd34e9f2f5ef010084349c136a5abe3057c0f199e1b617ee28836`。
+- R5 在 CAS 前完成 packet、dedup、ready、outbox、registry、checkpoint 共 11 项身份断言，并以 fence 59 派发。唯一 `git clone --no-local` 隔离副本通过冻结安装、`pnpm check` 126/126、覆盖率 Lines 90.78% / Branches 82.30% / Functions 98.37%、Skill、JSON、Git、上游保护、秘密/调试扫描及官方 npm high audit。
+- R5 Final Verification 结论为“通过”，result digest `sha256:a81c96b73f09a152fb123c69152895e23143178748944184e96d40be0f8d4711`。项目外 Credential 为 `evidence:verification-credential-de6ab16f57f7b596a6d9f03d7c916357eb13cfa7294511c74e37ff4b3a2462f2.json`，原始 SHA-256 `sha256:de6ab16f57f7b596a6d9f03d7c916357eb13cfa7294511c74e37ff4b3a2462f2`，3456 bytes，JCS、文件名、目录 0700、文件 0600、F0/R4/control/claim/fence/host 绑定经主管复核通过。
+- 当前仅准备 Audit Anchor；formal 仍为 F0 `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`。S1.3 generation 4 未生成，S1.4 未启动。
