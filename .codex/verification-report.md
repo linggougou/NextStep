@@ -1857,3 +1857,10 @@
 - 门禁结论：Execution、CV、I/X/P 均通过；L3 `PASS / 96`，P0/P1=0，P2=2，`required_fixes=[]`。本轮只授权进入 Final Content Snapshot，不等于 S1.2 正式提升或 M1.1/V1/P5 完成。
 - 当前正式边界：formal 仍为 F0 `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`；下一步为 Final Content Snapshot、独立最终复验、Verification Credential、Audit Anchor、Anchor Proof 和 F0→F12 expected-old CAS。F0→F12 完成前不得生成 S1.3 generation 4 packet；S1.4 仍禁止启动。
 - 状态入口已同步到上述事实；本轮没有修改生产代码、Schema、测试、fixture、历史证据、`.codex/runtime` 或 refs。
+
+## 2026-08-12 S1.2 Generation 4 Final Content Snapshot r1 最终复验
+
+- 结论：阻塞。r1 Snapshot 对象引用的 L3 result digest 为 `sha256:4075791493d7bd6b03955ff7f573ce6d1e58f43a764c08c05f47fe4581047f`，正确不可变 L3 result digest 为 `sha256:4075791493d7bd6b03955ff7f573ce6d5e1e58f43a764c08c05f47fe4581047f`。
+- 影响：Snapshot 自身 JCS digest 正确，但引用的门禁内容身份错误，因此不能签发 Verification Credential、不能创建 Audit Anchor 或移动 formal。项目外新 Credential 为零。
+- 通过项：`pnpm check` 126/126，覆盖率 90.78%/82.30%/98.37%；packet、execution、CV、I/X/P、L3、Snapshot、transaction 自描述摘要，L3 审查文件可寻址与算术，Skill、官方 high audit、JSON、Git、上游保护及秘密/调试扫描通过。
+- 恢复：不改写 r1；以新提交生成 r2 Snapshot 并重新执行 Final Verification attempt 2。formal 仍为 F0，S1.3 generation 4 与 S1.4 均未启动。

@@ -1853,3 +1853,9 @@
 - 四项前置门禁：Execution `sha256:8218aaf4767457a3cb278b1d9c9594a3157785e66866eba9e6a390a153c58911`、CV `sha256:c5929aca2ab8943398d3660274ad38c0c871e65b9a22954f20b6a49a330e58e8`、I/X/P `sha256:85a3ac2c4e5dcd7f49450561269a4eea6d4b79b97eb0b633574b63e3425fc98d` 均通过；L3 `PASS / 96`，P0/P1=0，P2=2，result `sha256:4075791493d7bd6b03955ff7f573ce6d5e1e58f43a764c08c05f47fe4581047f`，`required_fixes=[]`。
 - 当前控制边界：formal 仍为 F0 `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`，control 为 `90abc796bc4984a70435e05f9d4ca064e0d3fc38`，下一门禁为 Final Content Snapshot；Snapshot、最终复验、Verification Credential、Audit Anchor、Anchor Proof 和 F0→F12 CAS 完成前不得移动 formal，不得生成 S1.3 generation 4 packet。
 - 状态同步范围：仅同步 README、路线锁、PLANS、P5 活动计划、PRODUCT_SENSE、QA index，并追加本日志与 verification-report；未修改 src、schemas、skills、tests、fixture、历史审查、`.codex/runtime` 或 refs。S1.4、M1.1、V1、P5 仍未完成。
+
+## 2026-08-12 S1.2 Generation 4 Final Content Snapshot r1 阻塞与 r2 重建
+
+- r1 Snapshot `5f88b5780b25dcdfedfcbadcb934da6813d1677e` 的 Snapshot 对象自摘要可复算，但 `applicable_gates.independent-review.result_digest` 手工录入时将正确的 `...ce6d5e...` 误写为 `...ce6d1e...`。独立 Final Verification fence 55 精确识别该一字符证据引用错误，结论阻塞，未生成 Credential。
+- 其余复验通过：唯一 `--no-local` 隔离副本 `pnpm check` 126/126，覆盖率 Lines 90.78%、Branches 82.30%、Functions 98.37%；packet/result 自摘要、JSON、Skill/L3 算术、官方 high audit、git fsck/diff、上游保护、秘密/调试扫描和无 S1.3 generation 4 packet 均通过。
+- 恢复规则：保留 r1 Snapshot、transaction、packet、claim/fence 和阻塞结论为不可变历史，不原地改写；生成只修正该 L3 digest 引用的 r2 Final Content Snapshot，并重新派发绑定新 Snapshot/tree/digest 的 Final Verification attempt 2。formal 继续保持 F0。
