@@ -25,4 +25,7 @@ test("NextStep Skill documents S1.2 explicit confirmation, immutable freeze, and
   assert.match(skill, /chat|聊天/i);
   assert.match(skill, /PC-17/);
   assert.match(skill, /S1\.3/);
+  assert.match(skill, /non_goal_gaps.*identified.*none|identified.*none.*non_goal_gaps/i);
+  assert.match(skill, /clarification_gaps.*none|none.*clarification_gaps/i);
+  assert.match(skill, /version.*minus.*1|前驱/i);
 });

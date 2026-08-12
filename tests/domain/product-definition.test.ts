@@ -44,6 +44,7 @@ async function replayFrozenRequirement(fixtureName: (typeof targetProjectFixture
     readonly requirement_set_id: string;
     readonly version: number;
     readonly confirmation_id: string;
+    readonly known_frozen_records?: readonly unknown[];
     readonly user_resolutions: readonly unknown[];
     readonly host_replay: {
       readonly challenge_created_at: string;
@@ -92,6 +93,9 @@ async function replayFrozenRequirement(fixtureName: (typeof targetProjectFixture
     action: "freeze-requirement-set",
     requirement_set: requirementSet,
     confirmation: createConfirmationEnvelope(verified),
+    ...(freezeFixture.known_frozen_records === undefined
+      ? {}
+      : { known_frozen_records: freezeFixture.known_frozen_records }),
   }, undefined, {
     verifier,
     verified_interaction: verified,
@@ -477,10 +481,7 @@ test("三类目标项目 fixture 仅以 manual-isolated 消费者契约验证完
   assert.equal(identities.size, 3);
 });
 
-test("S1.1 -> S1.2 -> JCS 恢复 -> S1.3 会签回放逐类保持 Frozen Requirement 完整连续性", async () => {
-  const replays = new Map<string, Awaited<ReturnType<typeof replayFrozenRequirement>>>();
-  const candidates = new Map<string, Record<string, unknown>>();
-
+test("F0 -> F12 累计回放对升级 Frozen Requirement 严格拒绝旧 Product Definition 1.0，并保持未升级项目完整会签链", async () => {
   for (const fixtureName of targetProjectFixtures) {
     const fixture = JSON.parse(
       await readFile(resolve(process.cwd(), `tests/fixtures/product-definition/${fixtureName}.json`), "utf8"),
@@ -492,15 +493,28 @@ test("S1.1 -> S1.2 -> JCS 恢复 -> S1.3 会签回放逐类保持 Frozen Require
       frozen_requirement: replay.restored,
       frozen_requirement_digest: replayDigest,
     };
-    const parsed = parseProductDefinitionCandidate(candidate);
 
+    assert.equal(canonicalizeJson(replay.restored), replay.canonical);
+    assert.equal(replay.restored.frozen_requirement_id, replay.frozen.frozen_requirement_id);
+    assert.equal(digestJson(replay.restored), replayDigest);
+
+    if (fixtureName === "community-workshop" || fixtureName === "expense-reminder") {
+      assert.notEqual(canonicalizeJson(fixture.frozen_requirement), replay.canonical);
+      assert.notEqual(digestJson(fixture.frozen_requirement), replayDigest);
+      assert.notEqual(fixture.product_definition.product_definition_id, deriveProductDefinitionId(replay.restored));
+      assert.throws(
+        () => parseProductDefinitionCandidate(candidate),
+        (error: unknown) => error instanceof ProductDefinitionError && error.code === "INVALID_PRODUCT_DEFINITION",
+      );
+      continue;
+    }
+
+    // F12 后由 Product Definition 2.0 的 S1.3 generation 4 packet 恢复这两类升级 fixture 的成功链。
+    const parsed = parseProductDefinitionCandidate(candidate);
     assert.equal(canonicalizeJson(fixture.frozen_requirement), replay.canonical);
     assert.equal(canonicalizeJson(parsed.frozen_requirement), replay.canonical);
-    assert.equal(canonicalizeJson(replay.restored), replay.canonical);
     assert.equal(parsed.frozen_requirement.frozen_requirement_id, replay.frozen.frozen_requirement_id);
-    assert.equal(replay.restored.frozen_requirement_id, replay.frozen.frozen_requirement_id);
     assert.equal(parsed.frozen_requirement_digest, replayDigest);
-    assert.equal(digestJson(replay.restored), replayDigest);
 
     const challenge = createProductDefinitionSignoffChallenge(parsed, {
       signoff_id: `signoff-${fixtureName}`,
@@ -533,28 +547,7 @@ test("S1.1 -> S1.2 -> JCS 恢复 -> S1.3 会签回放逐类保持 Frozen Require
     assert.equal(restoredSigned.product_definition.frozen_requirement.frozen_requirement_id, replay.frozen.frozen_requirement_id);
     assert.equal(restoredSigned.product_definition.frozen_requirement_digest, replayDigest);
     assert.equal(restoredSigned.challenge.frozen_requirement_digest, replayDigest);
-
-    replays.set(fixtureName, replay);
-    candidates.set(fixtureName, fixture.product_definition);
   }
-
-  const communityCandidate = candidates.get("community-workshop")!;
-  const expenseReplay = replays.get("expense-reminder")!;
-  assert.throws(
-    () => parseProductDefinitionCandidate({
-      ...communityCandidate,
-      frozen_requirement: expenseReplay.restored,
-      frozen_requirement_digest: digestJson(expenseReplay.restored),
-    }),
-    ProductDefinitionError,
-  );
-  assert.throws(
-    () => parseProductDefinitionCandidate({
-      ...communityCandidate,
-      frozen_requirement_digest: digestJson(expenseReplay.restored),
-    }),
-    ProductDefinitionError,
-  );
 });
 
 test("磁盘指标负例会拒绝 direct goal 三重复用和带目标词的无关 evidence", async () => {

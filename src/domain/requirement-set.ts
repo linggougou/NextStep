@@ -168,11 +168,24 @@ function assertItemSemantics(items: readonly RequirementSetItem[]): void {
 
 export function listUnresolvedRequirementFields(requirementSet: RequirementSet): readonly RequirementField[] {
   return requirementSet.items
-    .filter((item) => item.status === "unresolved")
+    .filter((item) => !isRequirementItemReady(item))
     .map((item) => item.field);
 }
 
-export function parseRequirementSet(value: unknown): RequirementSet {
+export function isRequirementItemReady(item: RequirementSetItem): boolean {
+  if (item.field === "non_goal_gaps") {
+    return item.status === "identified" || item.status === "none";
+  }
+  if (item.field === "clarification_gaps") {
+    return item.status === "none";
+  }
+  return item.status !== "unresolved";
+}
+
+function parseRequirementSetWithReadiness(
+  value: unknown,
+  itemIsReady: (item: RequirementSetItem) => boolean,
+): RequirementSet {
   let snapshot: ReturnType<typeof assertNoSensitiveFields>;
   try {
     snapshot = assertNoSensitiveFields(value);
@@ -194,13 +207,21 @@ export function parseRequirementSet(value: unknown): RequirementSet {
   } catch {
     invalid("Requirement Set content identity does not match");
   }
-  const expectedStatus = listUnresolvedRequirementFields(requirementSet).length === 0
+  const expectedStatus = requirementSet.items.every(itemIsReady)
     ? "ready-for-confirmation"
     : "incomplete";
   if (requirementSet.status !== expectedStatus) {
     invalid("Requirement Set status does not match unresolved items");
   }
   return requirementSet;
+}
+
+export function parseRequirementSet(value: unknown): RequirementSet {
+  return parseRequirementSetWithReadiness(value, isRequirementItemReady);
+}
+
+export function recoverHistoricalRequirementSet(value: unknown): RequirementSet {
+  return parseRequirementSetWithReadiness(value, (item) => item.status !== "unresolved");
 }
 
 export function buildRequirementSet(value: RequirementSetInput): RequirementSet {
@@ -253,7 +274,7 @@ export function buildRequirementSet(value: RequirementSetInput): RequirementSet 
     requirement_set_id: snapshot.requirement_set_id,
     project: snapshot.project,
     version: snapshot.version,
-    status: items.some((item) => item.status === "unresolved")
+    status: items.some((item) => !isRequirementItemReady(item))
       ? "incomplete" as const
       : "ready-for-confirmation" as const,
     source_candidate_digest: digestJson(intake),

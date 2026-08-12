@@ -5,20 +5,428 @@
     "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
   },
   "requirement_set_id": "req-expense-reminder",
-  "version": 1,
-  "confirmation_id": "confirm-expense-reminder",
+  "version": 2,
+  "confirmation_id": "confirm-expense-reminder-v2",
   "host_replay": {
     "evidence_scope": "consumer-contract-only",
     "challenge_created_at": "2026-08-10T00:59:00.000Z",
     "expires_at": "2026-08-10T01:07:00.000Z",
-    "display_id": "display-expense-reminder",
+    "display_id": "display-expense-reminder-v2",
     "displayed_at": "2026-08-10T01:00:00.000Z",
-    "user_action_id": "user-action-expense-reminder",
+    "user_action_id": "user-action-expense-reminder-v2",
     "occurred_at": "2026-08-10T01:02:00.000Z"
   },
   "user_resolutions": [
-    { "field": "constraints", "status": "identified", "values": ["仅保存本地数据"] },
-    { "field": "non_goal_gaps", "status": "none", "values": [] },
-    { "field": "clarification_gaps", "status": "identified", "values": ["工作日早上提醒"] }
+    {
+      "field": "constraints",
+      "status": "identified",
+      "values": [
+        "仅保存本地数据",
+        "工作日早上提醒"
+      ]
+    },
+    {
+      "field": "non_goal_gaps",
+      "status": "none",
+      "values": []
+    },
+    {
+      "field": "clarification_gaps",
+      "status": "none",
+      "values": []
+    }
+  ],
+  "known_frozen_records": [
+    {
+      "schema_version": "1.0",
+      "frozen_requirement_id": "frozen-7d7d0d4cd25a56986c356f302f8b88d93c27ed17c228dde1f5728d0bdccd401e",
+      "status": "frozen",
+      "project": {
+        "repository_id": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+        "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
+      },
+      "requirement_set_version": 1,
+      "requirement_set": {
+        "schema_version": "1.0",
+        "requirement_set_id": "req-expense-reminder",
+        "project": {
+          "repository_id": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
+        },
+        "version": 1,
+        "status": "ready-for-confirmation",
+        "source_candidate_digest": "sha256:fada7279dbcd27ed40212051e9590cb57fef924d89ca2d51e36904337eecdd29",
+        "items": [
+          {
+            "field": "intent_summary",
+            "status": "identified",
+            "values": [
+              "用提醒工具减少忘记报销的情况"
+            ],
+            "source": "candidate"
+          },
+          {
+            "field": "goals",
+            "status": "identified",
+            "values": [
+              "忘记报销"
+            ],
+            "source": "candidate"
+          },
+          {
+            "field": "scenarios",
+            "status": "identified",
+            "values": [
+              "忘记报销"
+            ],
+            "source": "candidate"
+          },
+          {
+            "field": "constraints",
+            "status": "identified",
+            "values": [
+              "仅保存本地数据"
+            ],
+            "source": "user"
+          },
+          {
+            "field": "expected_outputs",
+            "status": "identified",
+            "values": [
+              "提醒工具"
+            ],
+            "source": "candidate"
+          },
+          {
+            "field": "non_goal_gaps",
+            "status": "none",
+            "values": [],
+            "source": "user"
+          },
+          {
+            "field": "clarification_gaps",
+            "status": "none",
+            "values": [],
+            "source": "user"
+          }
+        ],
+        "summary": "intent_summary|identified|用提醒工具减少忘记报销的情况\ngoals|identified|忘记报销\nscenarios|identified|忘记报销\nconstraints|identified|仅保存本地数据\nexpected_outputs|identified|提醒工具\nnon_goal_gaps|none|\nclarification_gaps|none|",
+        "content_digest": "sha256:fad9773b259e1827dce7779a1cde8ea442d460394e69d1d29b0565c4630033a8"
+      },
+      "requirement_content_digest": "sha256:fad9773b259e1827dce7779a1cde8ea442d460394e69d1d29b0565c4630033a8",
+      "confirmation": {
+        "schema_version": "1.0",
+        "record_type": "confirmation-envelope",
+        "action": "freeze-requirement-set",
+        "project": {
+          "repository_id": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+        },
+        "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+        "requirement_set_id": "req-expense-reminder",
+        "requirement_set_version": 1,
+        "requirement_set_generation": 1,
+        "requirement_set_digest": "sha256:fad9773b259e1827dce7779a1cde8ea442d460394e69d1d29b0565c4630033a8",
+        "confirmation_view_digest": "sha256:1a0ab3b7b9c773ff20b84cf5e25300d36c2307f879addd518cfb0fda7611daf9",
+        "confirmation_id": "confirm-expense-reminder-v2-previous-v1",
+        "challenge": {
+          "schema_version": "1.0",
+          "record_type": "confirmation-challenge",
+          "action": "freeze-requirement-set",
+          "project": {
+            "repository_id": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+          },
+          "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+          "requirement_set_id": "req-expense-reminder",
+          "requirement_set_version": 1,
+          "requirement_set_generation": 1,
+          "requirement_set_digest": "sha256:fad9773b259e1827dce7779a1cde8ea442d460394e69d1d29b0565c4630033a8",
+          "confirmation_view": {
+            "schema_version": "1.0",
+            "record_type": "confirmation-view",
+            "action": "freeze-requirement-set",
+            "project": {
+              "repository_id": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+            },
+            "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+            "requirement_set_id": "req-expense-reminder",
+            "requirement_set_version": 1,
+            "requirement_set_generation": 1,
+            "requirement_set_digest": "sha256:fad9773b259e1827dce7779a1cde8ea442d460394e69d1d29b0565c4630033a8",
+            "summary": "intent_summary|identified|用提醒工具减少忘记报销的情况\ngoals|identified|忘记报销\nscenarios|identified|忘记报销\nconstraints|identified|仅保存本地数据\nexpected_outputs|identified|提醒工具\nnon_goal_gaps|none|\nclarification_gaps|none|",
+            "items": [
+              {
+                "field": "intent_summary",
+                "status": "identified",
+                "values": [
+                  "用提醒工具减少忘记报销的情况"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "goals",
+                "status": "identified",
+                "values": [
+                  "忘记报销"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "scenarios",
+                "status": "identified",
+                "values": [
+                  "忘记报销"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "constraints",
+                "status": "identified",
+                "values": [
+                  "仅保存本地数据"
+                ],
+                "source": "user"
+              },
+              {
+                "field": "expected_outputs",
+                "status": "identified",
+                "values": [
+                  "提醒工具"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "non_goal_gaps",
+                "status": "none",
+                "values": [],
+                "source": "user"
+              },
+              {
+                "field": "clarification_gaps",
+                "status": "none",
+                "values": [],
+                "source": "user"
+              }
+            ],
+            "confirmation_id": "confirm-expense-reminder-v2-previous-v1",
+            "challenge_created_at": "2026-08-10T00:50:00.000Z",
+            "expires_at": "2026-08-10T00:59:00.000Z"
+          },
+          "confirmation_view_digest": "sha256:1a0ab3b7b9c773ff20b84cf5e25300d36c2307f879addd518cfb0fda7611daf9",
+          "confirmation_id": "confirm-expense-reminder-v2-previous-v1",
+          "created_at": "2026-08-10T00:50:00.000Z",
+          "expires_at": "2026-08-10T00:59:00.000Z"
+        },
+        "challenge_digest": "sha256:eee4c0e9e4474da42a852e1ab4087e9db2e7a49876c3128eaa0281243f9dbd51",
+        "display": {
+          "schema_version": "1.0",
+          "record_type": "confirmation-view-display",
+          "action": "freeze-requirement-set",
+          "project": {
+            "repository_id": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+          },
+          "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+          "requirement_set_id": "req-expense-reminder",
+          "requirement_set_version": 1,
+          "requirement_set_generation": 1,
+          "requirement_set_digest": "sha256:fad9773b259e1827dce7779a1cde8ea442d460394e69d1d29b0565c4630033a8",
+          "confirmation_view_digest": "sha256:1a0ab3b7b9c773ff20b84cf5e25300d36c2307f879addd518cfb0fda7611daf9",
+          "confirmation_id": "confirm-expense-reminder-v2-previous-v1",
+          "confirmation_view": {
+            "schema_version": "1.0",
+            "record_type": "confirmation-view",
+            "action": "freeze-requirement-set",
+            "project": {
+              "repository_id": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+            },
+            "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+            "requirement_set_id": "req-expense-reminder",
+            "requirement_set_version": 1,
+            "requirement_set_generation": 1,
+            "requirement_set_digest": "sha256:fad9773b259e1827dce7779a1cde8ea442d460394e69d1d29b0565c4630033a8",
+            "summary": "intent_summary|identified|用提醒工具减少忘记报销的情况\ngoals|identified|忘记报销\nscenarios|identified|忘记报销\nconstraints|identified|仅保存本地数据\nexpected_outputs|identified|提醒工具\nnon_goal_gaps|none|\nclarification_gaps|none|",
+            "items": [
+              {
+                "field": "intent_summary",
+                "status": "identified",
+                "values": [
+                  "用提醒工具减少忘记报销的情况"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "goals",
+                "status": "identified",
+                "values": [
+                  "忘记报销"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "scenarios",
+                "status": "identified",
+                "values": [
+                  "忘记报销"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "constraints",
+                "status": "identified",
+                "values": [
+                  "仅保存本地数据"
+                ],
+                "source": "user"
+              },
+              {
+                "field": "expected_outputs",
+                "status": "identified",
+                "values": [
+                  "提醒工具"
+                ],
+                "source": "candidate"
+              },
+              {
+                "field": "non_goal_gaps",
+                "status": "none",
+                "values": [],
+                "source": "user"
+              },
+              {
+                "field": "clarification_gaps",
+                "status": "none",
+                "values": [],
+                "source": "user"
+              }
+            ],
+            "confirmation_id": "confirm-expense-reminder-v2-previous-v1",
+            "challenge_created_at": "2026-08-10T00:50:00.000Z",
+            "expires_at": "2026-08-10T00:59:00.000Z"
+          },
+          "challenge": {
+            "schema_version": "1.0",
+            "record_type": "confirmation-challenge",
+            "action": "freeze-requirement-set",
+            "project": {
+              "repository_id": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+            },
+            "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+            "requirement_set_id": "req-expense-reminder",
+            "requirement_set_version": 1,
+            "requirement_set_generation": 1,
+            "requirement_set_digest": "sha256:fad9773b259e1827dce7779a1cde8ea442d460394e69d1d29b0565c4630033a8",
+            "confirmation_view": {
+              "schema_version": "1.0",
+              "record_type": "confirmation-view",
+              "action": "freeze-requirement-set",
+              "project": {
+                "repository_id": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+              },
+              "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+              "requirement_set_id": "req-expense-reminder",
+              "requirement_set_version": 1,
+              "requirement_set_generation": 1,
+              "requirement_set_digest": "sha256:fad9773b259e1827dce7779a1cde8ea442d460394e69d1d29b0565c4630033a8",
+              "summary": "intent_summary|identified|用提醒工具减少忘记报销的情况\ngoals|identified|忘记报销\nscenarios|identified|忘记报销\nconstraints|identified|仅保存本地数据\nexpected_outputs|identified|提醒工具\nnon_goal_gaps|none|\nclarification_gaps|none|",
+              "items": [
+                {
+                  "field": "intent_summary",
+                  "status": "identified",
+                  "values": [
+                    "用提醒工具减少忘记报销的情况"
+                  ],
+                  "source": "candidate"
+                },
+                {
+                  "field": "goals",
+                  "status": "identified",
+                  "values": [
+                    "忘记报销"
+                  ],
+                  "source": "candidate"
+                },
+                {
+                  "field": "scenarios",
+                  "status": "identified",
+                  "values": [
+                    "忘记报销"
+                  ],
+                  "source": "candidate"
+                },
+                {
+                  "field": "constraints",
+                  "status": "identified",
+                  "values": [
+                    "仅保存本地数据"
+                  ],
+                  "source": "user"
+                },
+                {
+                  "field": "expected_outputs",
+                  "status": "identified",
+                  "values": [
+                    "提醒工具"
+                  ],
+                  "source": "candidate"
+                },
+                {
+                  "field": "non_goal_gaps",
+                  "status": "none",
+                  "values": [],
+                  "source": "user"
+                },
+                {
+                  "field": "clarification_gaps",
+                  "status": "none",
+                  "values": [],
+                  "source": "user"
+                }
+              ],
+              "confirmation_id": "confirm-expense-reminder-v2-previous-v1",
+              "challenge_created_at": "2026-08-10T00:50:00.000Z",
+              "expires_at": "2026-08-10T00:59:00.000Z"
+            },
+            "confirmation_view_digest": "sha256:1a0ab3b7b9c773ff20b84cf5e25300d36c2307f879addd518cfb0fda7611daf9",
+            "confirmation_id": "confirm-expense-reminder-v2-previous-v1",
+            "created_at": "2026-08-10T00:50:00.000Z",
+            "expires_at": "2026-08-10T00:59:00.000Z"
+          },
+          "challenge_digest": "sha256:eee4c0e9e4474da42a852e1ab4087e9db2e7a49876c3128eaa0281243f9dbd51",
+          "display_id": "display-confirm-expense-reminder-v2-previous-v1",
+          "displayed_at": "2026-08-10T00:51:00.000Z"
+        },
+        "display_digest": "sha256:5ed55ec8b8e3caebc020dff6d1bcea9eae022bce2aff1ad1bb29ff7e47fd21db",
+        "user_action": {
+          "schema_version": "1.0",
+          "record_type": "user-confirmation-action",
+          "action": "freeze-requirement-set",
+          "project": {
+            "repository_id": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+          },
+          "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+          "requirement_set_id": "req-expense-reminder",
+          "requirement_set_version": 1,
+          "requirement_set_generation": 1,
+          "requirement_set_digest": "sha256:fad9773b259e1827dce7779a1cde8ea442d460394e69d1d29b0565c4630033a8",
+          "confirmation_view_digest": "sha256:1a0ab3b7b9c773ff20b84cf5e25300d36c2307f879addd518cfb0fda7611daf9",
+          "confirmation_id": "confirm-expense-reminder-v2-previous-v1",
+          "challenge_digest": "sha256:eee4c0e9e4474da42a852e1ab4087e9db2e7a49876c3128eaa0281243f9dbd51",
+          "challenge_created_at": "2026-08-10T00:50:00.000Z",
+          "expires_at": "2026-08-10T00:59:00.000Z",
+          "display_id": "display-confirm-expense-reminder-v2-previous-v1",
+          "display_digest": "sha256:5ed55ec8b8e3caebc020dff6d1bcea9eae022bce2aff1ad1bb29ff7e47fd21db",
+          "displayed_at": "2026-08-10T00:51:00.000Z",
+          "user_action_id": "user-action-confirm-expense-reminder-v2-previous-v1",
+          "event_source": "independent-user-action",
+          "user_action": "confirm",
+          "occurred_at": "2026-08-10T00:52:00.000Z"
+        },
+        "user_action_digest": "sha256:a44d2fecd4d9b341c69d03747ed6fad85d1a6d7485ce766cfcb82f515e19a8fa",
+        "confirmation_kind": "explicit-user-confirmation",
+        "confirmed_at": "2026-08-10T00:52:00.000Z"
+      },
+      "confirmation_binding_digest": "sha256:6673131fc2c55095fda655df413dfb8c8ede74892081d02d1cff943bd6e3899b",
+      "confirmation_view_digest": "sha256:1a0ab3b7b9c773ff20b84cf5e25300d36c2307f879addd518cfb0fda7611daf9",
+      "next_step": "S1.3.product-definition"
+    }
   ]
 }

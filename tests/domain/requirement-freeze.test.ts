@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
 import test from "node:test";
 
 import {
@@ -25,12 +27,15 @@ function createCommand(
   confirmationId = "confirm-freeze-001",
   expectedOutput = "本地清单",
   confirmSession = true,
+  version = 1,
+  repositoryId = `sha256:${"8".repeat(64)}`,
+  requirementSetId = "req-freeze",
 ) {
   const requirementSet = buildRequirementSet({
     schema_version: "1.0",
-    requirement_set_id: "req-freeze",
-    project: { repository_id: `sha256:${"8".repeat(64)}`, formal_baseline: "8ffaf658e112a5ba26a9f83882f5f71f1ae79454" },
-    version: 1,
+    requirement_set_id: requirementSetId,
+    project: { repository_id: repositoryId, formal_baseline: "8ffaf658e112a5ba26a9f83882f5f71f1ae79454" },
+    version,
     candidate: {
       schema_version: "1.0",
       candidate: {
@@ -162,6 +167,79 @@ test("freeze scans every matching confirmation history record before deciding id
 
   const idempotent = freezeRequirementSet(exactInput.command, [exact, exact], exactInput.context);
   assert.equal(idempotent.frozen_requirement_id, exact.frozen_requirement_id);
+});
+
+test("freeze requires one exact prior frozen version and rejects conflicting history", () => {
+  const v1 = createCommand("confirm-version-v1", "第一版输出");
+  const frozenV1 = freezeRequirementSet(v1.command, [], v1.context);
+  const recoveredV1 = recoverFrozenRequirement(JSON.parse(JSON.stringify(frozenV1)));
+  const v2 = createCommand("confirm-version-v2", "第二版输出", true, 2);
+
+  assert.deepEqual(recoveredV1, frozenV1);
+  assert.throws(
+    () => freezeRequirementSet(v2.command, [], v2.context),
+    (error: unknown) => error instanceof RequirementFreezeError && error.code === "IDENTITY_CONFLICT",
+  );
+  assert.doesNotThrow(() => freezeRequirementSet(v2.command, [frozenV1], v2.context));
+  assert.throws(
+    () => freezeRequirementSet(v2.command, [frozenV1, frozenV1], v2.context),
+    (error: unknown) => error instanceof RequirementFreezeError && error.code === "IDENTITY_CONFLICT",
+  );
+
+  const foreignV1 = createCommand(
+    "confirm-version-foreign-v1",
+    "外部项目输出",
+    true,
+    1,
+    `sha256:${"9".repeat(64)}`,
+  );
+  const foreignFrozenV1 = freezeRequirementSet(foreignV1.command, [], foreignV1.context);
+  assert.throws(
+    () => freezeRequirementSet(v2.command, [foreignFrozenV1], v2.context),
+    (error: unknown) => error instanceof RequirementFreezeError && error.code === "IDENTITY_CONFLICT",
+  );
+
+  const v3 = createCommand("confirm-version-v3", "第三版输出", true, 3);
+  assert.throws(
+    () => freezeRequirementSet(v3.command, [frozenV1], v3.context),
+    (error: unknown) => error instanceof RequirementFreezeError && error.code === "IDENTITY_CONFLICT",
+  );
+
+  const sameVersionDifferentContent = createCommand("confirm-version-v2-other", "冲突第二版输出", true, 2);
+  const conflictingV2 = freezeRequirementSet(sameVersionDifferentContent.command, [frozenV1], sameVersionDifferentContent.context);
+  assert.throws(
+    () => freezeRequirementSet(v2.command, [frozenV1, conflictingV2], v2.context),
+    (error: unknown) => error instanceof RequirementFreezeError && error.code === "IDENTITY_CONFLICT",
+  );
+
+  const competingV1 = createCommand("confirm-version-v1-other", "冲突第一版输出");
+  assert.throws(
+    () => freezeRequirementSet(competingV1.command, [frozenV1], competingV1.context),
+    (error: unknown) => error instanceof RequirementFreezeError && error.code === "IDENTITY_CONFLICT",
+  );
+
+  const repeatedV1 = createCommand("confirm-version-v1-repeated", "第一版输出");
+  assert.throws(
+    () => freezeRequirementSet(repeatedV1.command, [frozenV1], repeatedV1.context),
+    (error: unknown) => error instanceof RequirementFreezeError && error.code === "IDENTITY_CONFLICT",
+  );
+  assert.throws(
+    () => freezeRequirementSet(repeatedV1.command, [conflictingV2], repeatedV1.context),
+    (error: unknown) => error instanceof RequirementFreezeError && error.code === "IDENTITY_CONFLICT",
+  );
+});
+
+test("historical version 1 Frozen Requirement remains independently recoverable", async () => {
+  const fixture = JSON.parse(await readFile(
+    resolve(process.cwd(), "tests/fixtures/product-definition/expense-reminder.json"),
+    "utf8",
+  )) as { readonly frozen_requirement: unknown };
+
+  const recovered = recoverFrozenRequirement(fixture.frozen_requirement);
+
+  assert.equal(recovered.requirement_set_version, 1);
+  assert.equal(recovered.requirement_set.requirement_set_id, "req-expense-reminder");
+  assert.equal(recovered.confirmation.confirmation_id, "confirm-expense-reminder");
 });
 
 test("freeze fails closed without a trusted execution context", () => {

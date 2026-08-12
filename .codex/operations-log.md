@@ -1830,3 +1830,20 @@
 - 审查产物：`.codex/reviews/current-project-state-drift-review-2026-08-12/scorecard.json` 与 `verdict.md`。结论 `REVISE / 66`，P0=1、P1=3；不授权 S1.3 attempt 3。
 - 工具替代：本轮为结构与契约审查，不涉及调用关系图初始化；按用户未授权 CodeGraph 初始化的路线锁边界，使用 `rg`、Git 对象读取、JSON 结构检查和本地 `pnpm check` 完成替代验证。
 - 结束状态：审查已结束，下一步需要用户先确认修订后的产品语义决策与门禁顺序；M1.1、V1、P5 继续未完成，S1.4 不得启动。
+
+## 2026-08-12 P5 / V1 / M1.1 / S1.2 Generation 4 Attempt 1 上游修复
+
+- 执行身份：working parent `497e121508d9de63b85b873b1b3938ef6bf5a429`；packet `ep-p5-v1-m1.1-s1.2-g4-a1-20260812`，digest `sha256:f94c8772476bb76ecd51edffa5e62371bd48a04f137a0d18d7f168b947a649e0`；claim/fence `claim-s1.2-g4-a1-f47-20260812` / `47`。formal `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36` 与 control `94f513fd254cc576e07eaa575e62a274af1278d5` 均只读未移动。
+- RED：readiness、版本前驱和 Skill 永久回归先红；旧实现错误放行 `non_goal_gaps` rejected/deferred、`clarification_gaps` 非 none，且 version>1 缺前驱仍可冻结。
+- GREEN：新 Requirement Set/确认/冻结严格消费字段 readiness；v1 拒绝同仓库同 Requirement Set 的任意历史，v>1 只接受唯一精确 version-1 前驱；重复前驱、同版本不同内容、跨项目、跳版本和新身份均 fail closed。历史 Frozen Requirement 只走独立恢复兼容校验，不放宽新冻结。
+- fixture：community-workshop v3（活动报名清单、两个 gap=none、新 confirmation/display/action，前驱 v1/v2）；expense-reminder v2（constraints 含仅保存本地数据/工作日早上提醒、clarification_gaps=none、新交互身份，前驱 v1）。Schema 仍 1.0，未扩字段。
+- 定向验证：领域与版本链 `12/12` 通过；历史 v1 独立恢复、v1 任意同系列历史冲突、v>1 精确唯一前驱和新身份均有永久断言；fixture 前驱链、JCS、diff check、allowlist、refs 不变性和敏感字段扫描通过。
+- 阻塞：全量 `pnpm check` 仍有 1 项 S1.3 累积回放失败：禁止修改的 `tests/domain/product-definition.test.ts` 未把新 fixture 的 `known_frozen_records` 传入 v3/v2 freeze replay，严格前驱校验返回 `IDENTITY_CONFLICT`。未创建候选提交，不宣称 S1.3、M1.1、V1 或 P5 完成。
+
+## 2026-08-12 P5 / V1 / M1.1 / S1.2 Generation 4 Attempt 2 累计回放接线
+
+- 执行身份：working parent `497e121508d9de63b85b873b1b3938ef6bf5a429`；packet `ep-p5-v1-m1.1-s1.2-g4-a2-20260812`，digest `sha256:88857d712fb69f56c48fa75c81871df9a9044893f8cb572d523019cb31316df0`；claim/fence `claim-s1.2-g4-a2-f48-20260812` / `48`。formal 为 `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`；control 仅只读观察，未写入。
+- TDD 接线：先精确复现 attempt 1 的 `125/126`；随后仅在 `tests/domain/product-definition.test.ts` 的 `FreezeFixture` 增加可选 `known_frozen_records`，并在 `replayFrozenRequirement` 的 freeze command 中原样传入。project-delivery-tool 缺少该字段时继续不传入。
+- 结果：缺失前驱的 `IDENTITY_CONFLICT` 已消除，但全量 `pnpm check` 仍为 `125/126`。唯一失败为 `S1.1 -> S1.2 -> JCS 恢复 -> S1.3 会签回放逐类保持 Frozen Requirement 完整连续性`，严格 Product Definition 身份检查返回 `INVALID_PRODUCT_DEFINITION: Product definition ID does not match Frozen Requirement identity`。
+- 边界审计：community-workshop 的 requirement-freeze fixture 已为 v3（前驱 v1/v2），expense-reminder 已为 v2（前驱 v1），而受保护的 product-definition fixtures 分别仍绑定历史 v2/v1 Frozen Requirement。累计测试还严格要求磁盘 fixture Frozen Requirement 的完整 JCS 等于新回放 JCS；因此在不修改受保护 fixture、不修改 Product Definition 生产代码、且不弱化 frozen ID/JCS/digest/会签断言的条件下无法通过。
+- 分流：该不一致需要 Change Intake 授权来更新 S1.3 consumer fixture，或重新定义跨阶段固定身份策略；当前 packet 明确禁止两者，故不扩大改动、不创建候选提交。`git diff --check`、allowlist、formal/working-parent 祖先关系和受保护 ref 不变性均已复验。

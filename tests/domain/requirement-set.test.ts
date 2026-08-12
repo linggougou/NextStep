@@ -19,6 +19,8 @@ import {
   verifyConfirmationInteraction,
 } from "../../src/domain/requirement-confirmation.ts";
 import { freezeRequirementSet, recoverFrozenRequirement } from "../../src/domain/requirement-freeze.ts";
+import { canonicalizeJson } from "../../src/domain/canonical-json.ts";
+import { digestJson } from "../../src/domain/content-digest.ts";
 
 const freezeFixtureDirectory = resolve(process.cwd(), "tests/fixtures/requirement-freeze");
 const intakeFixtureDirectory = resolve(process.cwd(), "tests/fixtures/requirement-intake");
@@ -39,6 +41,7 @@ interface FreezeFixture {
     readonly occurred_at: string;
   };
   readonly user_resolutions: readonly unknown[];
+  readonly known_frozen_records?: readonly unknown[];
 }
 
 async function readFixture(name: string): Promise<FreezeFixture> {
@@ -60,7 +63,7 @@ async function createSet(name = "project-delivery-tool.json") {
   });
 }
 
-test("Requirement Set combines three target-project candidates with explicit none, rejected, and deferred facts", async () => {
+test("Requirement Set replays the new target-project versions with complete frozen identities", async () => {
   for (const fixture of [
     "project-delivery-tool.json",
     "community-workshop.json",
@@ -68,15 +71,15 @@ test("Requirement Set combines three target-project candidates with explicit non
   ]) {
     const requirementSet = await createSet(fixture);
     const parsed = parseRequirementSet(requirementSet);
+    const fixtureInput = await readFixture(fixture);
 
     assert.equal(parsed.status, "ready-for-confirmation");
     assert.equal(parsed.requirement_set_id, (await readFixture(fixture)).requirement_set_id);
     assert.ok(parsed.items.some((item) => item.status === "identified"));
     assert.ok(Object.isFrozen(parsed));
     assert.equal(Object.getPrototypeOf(parsed), null);
-    assert.equal(listUnresolvedRequirementFields(parsed).length, 0);
+    assert.deepEqual(listUnresolvedRequirementFields(parsed), []);
 
-    const fixtureInput = await readFixture(fixture);
     const challenge = createConfirmationChallenge(parsed, {
       confirmation_id: fixtureInput.confirmation_id,
       created_at: fixtureInput.host_replay.challenge_created_at,
@@ -106,6 +109,7 @@ test("Requirement Set combines three target-project candidates with explicit non
       action: "freeze-requirement-set",
       requirement_set: parsed,
       confirmation: createConfirmationEnvelope(verified),
+      ...(fixtureInput.known_frozen_records === undefined ? {} : { known_frozen_records: fixtureInput.known_frozen_records }),
     }, undefined, {
       verifier,
       verified_interaction: verified,
@@ -114,6 +118,18 @@ test("Requirement Set combines three target-project candidates with explicit non
     });
     assert.equal(fixtureInput.host_replay.evidence_scope, "consumer-contract-only");
     assert.equal(recoverFrozenRequirement(JSON.parse(JSON.stringify(frozen))).frozen_requirement_id, frozen.frozen_requirement_id);
+    assert.equal(frozen.requirement_set_version, fixtureInput.version);
+    assert.equal(canonicalizeJson(JSON.parse(canonicalizeJson(frozen))), canonicalizeJson(frozen));
+    assert.equal(frozen.requirement_set.content_digest, frozen.requirement_content_digest);
+    if (fixtureInput.version > 1) {
+      assert.ok(fixtureInput.known_frozen_records);
+      const predecessor = recoverFrozenRequirement(fixtureInput.known_frozen_records.at(-1));
+      assert.equal(frozen.requirement_set_version, predecessor.requirement_set_version + 1);
+      assert.notEqual(frozen.frozen_requirement_id, predecessor.frozen_requirement_id);
+      assert.notEqual(frozen.confirmation.confirmation_id, predecessor.confirmation.confirmation_id);
+      assert.notEqual(frozen.confirmation.display.display_id, predecessor.confirmation.display.display_id);
+      assert.notEqual(frozen.confirmation.user_action.user_action_id, predecessor.confirmation.user_action.user_action_id);
+    }
   }
 
   const explicitNone = await createSet();
@@ -121,11 +137,63 @@ test("Requirement Set combines three target-project candidates with explicit non
     explicitNone.items.find((item) => item.field === "non_goal_gaps")?.status,
     "none",
   );
-  const deferred = await createSet("community-workshop.json");
+  const community = await createSet("community-workshop.json");
   assert.equal(
-    deferred.items.find((item) => item.field === "clarification_gaps")?.status,
-    "deferred",
+    community.items.find((item) => item.field === "clarification_gaps")?.status,
+    "none",
   );
+  const expense = await createSet("expense-reminder.json");
+  assert.deepEqual(
+    expense.items.find((item) => item.field === "constraints")?.values,
+    ["仅保存本地数据", "工作日早上提醒"],
+  );
+});
+
+test("Requirement Set rejects all non-ready non-goal and clarification states during parsing", async () => {
+  const communityFixture = await readFixture("community-workshop.json");
+  const expenseFixture = await readFixture("expense-reminder.json");
+  const communityCandidate = JSON.parse(
+    await readFile(resolve(intakeFixtureDirectory, communityFixture.intake_fixture), "utf8"),
+  ) as unknown;
+  const expenseCandidate = JSON.parse(
+    await readFile(resolve(intakeFixtureDirectory, expenseFixture.intake_fixture), "utf8"),
+  ) as unknown;
+  const community = buildRequirementSet({
+    schema_version: "1.0",
+    requirement_set_id: communityFixture.requirement_set_id,
+    project: communityFixture.project,
+    version: 2,
+    candidate: communityCandidate,
+    user_resolutions: [
+      { field: "expected_outputs", status: "identified", values: ["活动报名清单"] },
+      { field: "non_goal_gaps", status: "rejected", values: [] },
+      { field: "clarification_gaps", status: "deferred", values: [] },
+    ],
+  });
+  const expense = buildRequirementSet({
+    schema_version: "1.0",
+    requirement_set_id: expenseFixture.requirement_set_id,
+    project: expenseFixture.project,
+    version: 1,
+    candidate: expenseCandidate,
+    user_resolutions: [
+      { field: "constraints", status: "identified", values: ["仅保存本地数据"] },
+      { field: "non_goal_gaps", status: "none", values: [] },
+      { field: "clarification_gaps", status: "identified", values: ["工作日早上提醒"] },
+    ],
+  });
+
+  for (const requirementSet of [community, expense]) {
+    assert.equal(requirementSet.status, "incomplete");
+    assert.throws(
+      () => createConfirmationChallenge(requirementSet, {
+        confirmation_id: "confirm-blocked-readiness",
+        created_at: "2026-08-10T01:00:00.000Z",
+        expires_at: "2026-08-10T01:05:00.000Z",
+      }),
+      /unresolved|incomplete/i,
+    );
+  }
 });
 
 test("Requirement Set retains unresolved facts and rejects forged or duplicate user resolutions", async () => {

@@ -1744,6 +1744,14 @@
 - 残余风险：fixture 仅证明 `manual-isolated consumer contract`，不证明真实用户动作、可信宿主适配器/探针或 `full` 支持；不包含 S1.4 载体/Profile 或 S1.5 正式真源写入。
 - 执行结论：`candidate-ready`，不构成 PC-03、M1.1、V1、P5 或任何阶段门禁结论。
 
+## 2026-08-12 P5 / V1 / M1.1 / S1.2 Generation 4 Attempt 1 验证
+
+- 范围：仅修改 packet allowlist 内 Requirement Set/confirmation/freeze、两份 requirement-freeze fixture、Skill、测试和本项目留痕；未改 Schema、Product Definition、Machine Receipt、docs、路线锁、runtime/reviews、package 配置或 refs。
+- RED/GREEN：定向 RED 复现 readiness 与缺前驱放行；随后领域、确认、CLI、Machine Receipt、Skill 定向回归通过 `35/35`，Requirement Set/Frozen Requirement 版本链通过 `12/12`。
+- 版本证据：community 当前 v3、前驱 `[1,2]`；expense 当前 v2、前驱 `[1]`。所有前驱经 `recoverFrozenRequirement` 恢复，JCS round-trip 通过；新版本的 confirmation/display/user-action/frozen identity 均不同于前驱。
+- 全量 `pnpm check`：未通过，当前仅剩 1 项失败：`S1.1 -> S1.2 -> JCS 恢复 -> S1.3 会签回放逐类保持 Frozen Requirement 完整连续性`，错误 `IDENTITY_CONFLICT: Requirement Set version requires exactly one prior frozen version`。根因是该 allowlist 外 S1.3 测试未传入新 fixture 的 `known_frozen_records`；不能通过放宽前驱规则绕过。
+- 覆盖率：失败运行仍报告行 `90.61%`、分支 `82.04%`、函数 `98.32%`，均高于 packet 要求的 80%，但全量测试失败故不得 candidate-ready。未创建 candidate commit。
+
 ## 2026-08-12 P5 / V1 / M1.1 / S1.3 Final Verification
 
 - 结论：`通过`；独立最终复验任务 `019ff1e8-ed89-7900-b497-3177c45589bc` 以精确 Final Content Snapshot 执行唯一 `--no-local` 隔离验证。
@@ -1764,6 +1772,15 @@
 - 收口验证：`pnpm check` 通过 122/122，覆盖率为行 `90.78%`、分支 `82.02%`、函数 `98.26%`；formal/control、promotion/anchor/result/proof/credential 摘要、父链、packet/dedup、claim/fence/host、JSON、工作树和路径边界均通过；未使用强制更新、未 push。
 - 审查结论：`通过 / 96`。P0 = 0，P1 = 0；S1.3 正式门禁通过，对应 PC-03 已取得正式运行证据。保留 P2 为长驻 trusted-host registry 生命周期及真实宿主/用户动作/开放自然语言语义/`full` 支持未证明。
 - 阶段边界：下一入口为 M1.1 累积验收与阶段会签；不得直接进入 S1.4，M1.1、V1 和 P5 仍未完成。
+
+## 2026-08-12 P5 / V1 / M1.1 / S1.2 Generation 4 Attempt 2 验证
+
+- Packet：`ep-p5-v1-m1.1-s1.2-g4-a2-20260812`，digest `sha256:88857d712fb69f56c48fa75c81871df9a9044893f8cb572d523019cb31316df0`，claim/fence `claim-s1.2-g4-a2-f48-20260812` / `48`；working parent `497e121508d9de63b85b873b1b3938ef6bf5a429`，formal `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`。
+- RED/GREEN：attempt 1 全量失败先精确复现为 `125/126`，失败为缺失 `known_frozen_records` 导致的版本前驱 `IDENTITY_CONFLICT`。授权的最小测试接线后该 RED 失败消失；未修改 Product Definition 生产代码、Schema 或 product-definition fixture，且未放宽任何累计断言。
+- 全量验证：`pnpm check` 运行 typecheck、build 与覆盖率测试；typecheck/build 通过，测试 `125/126`，唯一失败为累计回放中的 `INVALID_PRODUCT_DEFINITION: Product definition ID does not match Frozen Requirement identity`。覆盖率 Lines `90.78%`、Branches `82.30%`、Functions `98.37%`，均高于 80%，但因测试失败不满足候选门禁。
+- 根因证据：新 S1.2 freeze fixture 的 community-workshop v3 和 expense-reminder v2 必须使用新 confirmation/display/action/frozen identity；既有受保护 S1.3 consumer fixture 则分别固定 v2/v1 Frozen Requirement 和由其派生的 Product Definition ID。累计测试要求旧 fixture 的完整 Frozen Requirement JCS 与新 replay JCS 完全相等，故严格身份校验必然失败。修复只能触及 packet 禁止的 product-definition fixture 或生产代码，或削弱 JCS/identity/digest/signoff 断言，均违反 failure_rules。
+- 范围与不变性：`git diff --check` 通过；变更路径均为 packet allowlist 子集。formal、control、`.codex/runtime`、`.codex/reviews` 和受保护上游未由本执行者写入；formal 是 working parent 祖先。对变更路径进行敏感字段模式扫描未发现新增高置信凭据。
+- 结论：`blocked`。不得形成 candidate-ready、不得提交候选；下一步必须进入 Change Intake，授权受保护 S1.3 consumer fixture 与新 S1.2 Frozen Requirement 身份之间的正式迁移策略。该结论不构成 S1.3、M1.1、V1 或 P5 完成。
 
 ## 2026-08-11 S1.3 Generation 2 Attempt 7 嵌套 Display 重入 TDD 复核
 

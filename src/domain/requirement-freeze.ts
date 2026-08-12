@@ -7,15 +7,12 @@ import { digestJson, type Sha256Digest } from "./content-digest.ts";
 import {
   assertConfirmationMatchesRequirementSet,
   assertConfirmationExecutionContext,
+  assertHistoricalConfirmationMatchesRequirementSet,
   parseConfirmationEnvelope,
   type ConfirmationExecutionContext,
   type ConfirmationEnvelope,
 } from "./requirement-confirmation.ts";
-import {
-  listUnresolvedRequirementFields,
-  parseRequirementSet,
-  type RequirementSet,
-} from "./requirement-set.ts";
+import { listUnresolvedRequirementFields, parseRequirementSet, recoverHistoricalRequirementSet, type RequirementSet } from "./requirement-set.ts";
 import { assertNoSensitiveContent, assertNoSensitiveFields } from "./sensitive-fields.ts";
 import { isPlainRecord } from "./value-guards.ts";
 
@@ -83,6 +80,43 @@ function translateConfirmationError(error: unknown): never {
   fail("CONFIRMATION_MISMATCH", "Confirmation does not match the Requirement Set");
 }
 
+function isSameRequirementSeries(left: FrozenRequirement, requirementSet: RequirementSet): boolean {
+  return left.project.repository_id === requirementSet.project.repository_id &&
+    left.requirement_set.requirement_set_id === requirementSet.requirement_set_id;
+}
+
+function assertVersionPredecessor(
+  requirementSet: RequirementSet,
+  confirmation: ConfirmationEnvelope,
+  records: readonly FrozenRequirement[],
+): FrozenRequirement | undefined {
+  const series = records.filter((record) => isSameRequirementSeries(record, requirementSet));
+  const sameVersion = series.filter((record) => record.requirement_set_version === requirementSet.version);
+  const bindingDigest = digestJson(confirmation);
+  const exactRecord = sameVersion.find(
+    (record) =>
+      record.requirement_content_digest === requirementSet.content_digest &&
+      record.confirmation_binding_digest === bindingDigest,
+  );
+  if (sameVersion.length > (exactRecord === undefined ? 0 : 1) || (sameVersion.length > 0 && exactRecord === undefined)) {
+    fail("IDENTITY_CONFLICT", "Requirement Set version is already bound to different frozen content");
+  }
+  if (exactRecord !== undefined) {
+    return exactRecord;
+  }
+  if (requirementSet.version === 1) {
+    if (series.length !== 0) {
+      fail("IDENTITY_CONFLICT", "Requirement Set version 1 cannot have a frozen predecessor");
+    }
+    return undefined;
+  }
+  const predecessors = series.filter((record) => record.requirement_set_version === requirementSet.version - 1);
+  if (predecessors.length !== 1) {
+    fail("IDENTITY_CONFLICT", "Requirement Set version requires exactly one prior frozen version");
+  }
+  return undefined;
+}
+
 export function parseRequirementFreezeCommand(value: unknown): RequirementFreezeCommand {
   let snapshot: ReturnType<typeof assertNoSensitiveFields>;
   try {
@@ -136,9 +170,9 @@ export function recoverFrozenRequirement(value: unknown): FrozenRequirement {
   let requirementSet: RequirementSet;
   let confirmation: ConfirmationEnvelope;
   try {
-    requirementSet = parseRequirementSet(snapshot.requirement_set);
+    requirementSet = recoverHistoricalRequirementSet(snapshot.requirement_set);
     confirmation = parseConfirmationEnvelope(snapshot.confirmation);
-    assertConfirmationMatchesRequirementSet(confirmation, requirementSet);
+    assertHistoricalConfirmationMatchesRequirementSet(confirmation, requirementSet);
   } catch (error) {
     translateConfirmationError(error);
   }
@@ -152,7 +186,7 @@ export function recoverFrozenRequirement(value: unknown): FrozenRequirement {
   ) {
     fail("INVALID_REQUIREMENT_FREEZE", "Frozen requirement identity does not match its content");
   }
-  if (requirementSet.status !== "ready-for-confirmation" || listUnresolvedRequirementFields(requirementSet).length !== 0) {
+  if (requirementSet.status !== "ready-for-confirmation") {
     fail("UNRESOLVED_REQUIREMENTS", "Frozen requirement contains unresolved facts");
   }
   return snapshot as unknown as FrozenRequirement;
@@ -187,6 +221,10 @@ export function freezeRequirementSet(
   }
   if (matchingConfirmation.length > 0) {
     return matchingConfirmation[0]!;
+  }
+  const prior = assertVersionPredecessor(command.requirement_set, command.confirmation, recoveredRecords);
+  if (prior !== undefined) {
+    return prior;
   }
   const contentDigest = command.requirement_set.content_digest;
   return recoverFrozenRequirement({

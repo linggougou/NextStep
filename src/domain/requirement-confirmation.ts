@@ -3,7 +3,12 @@ import { Ajv, type ValidateFunction } from "ajv";
 import confirmationSchema from "../../schemas/v1/requirement-confirmation.schema.json" with { type: "json" };
 import { canonicalizeJson } from "./canonical-json.ts";
 import { assertDigestMatches, digestJson, type Sha256Digest } from "./content-digest.ts";
-import { REQUIREMENT_FIELDS, parseRequirementSet, type RequirementSet } from "./requirement-set.ts";
+import {
+  REQUIREMENT_FIELDS,
+  parseRequirementSet,
+  recoverHistoricalRequirementSet,
+  type RequirementSet,
+} from "./requirement-set.ts";
 import { assertNoSensitiveContent, assertNoSensitiveFields } from "./sensitive-fields.ts";
 import { isPlainRecord } from "./value-guards.ts";
 
@@ -269,6 +274,13 @@ export function createConfirmationChallenge(
   if (parseTime(input.expires_at, "confirmation expiry") <= parseTime(input.created_at, "confirmation challenge time")) {
     fail("INVALID_CONFIRMATION", "Confirmation expiry must be after challenge creation");
   }
+  return createConfirmationChallengeForRequirementSet(requirementSet, input);
+}
+
+function createConfirmationChallengeForRequirementSet(
+  requirementSet: RequirementSet,
+  input: { readonly confirmation_id: string; readonly created_at: string; readonly expires_at: string },
+): ConfirmationChallenge {
   const view = confirmationView(requirementSet, input);
   return parseConfirmationChallenge({
     schema_version: "1.0",
@@ -740,5 +752,24 @@ export function assertConfirmationMatchesRequirementSet(
   });
   if (!sameJson(envelope.challenge, expectedChallenge)) {
     fail("CONFIRMATION_MISMATCH", "Confirmation does not bind the current Requirement Set");
+  }
+}
+
+export function assertHistoricalConfirmationMatchesRequirementSet(
+  value: ConfirmationEnvelope,
+  requirementSetValue: RequirementSet,
+): void {
+  const envelope = parseConfirmationEnvelope(value);
+  const requirementSet = recoverHistoricalRequirementSet(requirementSetValue);
+  if (requirementSet.status !== "ready-for-confirmation") {
+    fail("UNRESOLVED_REQUIREMENTS", "Historical Requirement Set is incomplete");
+  }
+  const expectedChallenge = createConfirmationChallengeForRequirementSet(requirementSet, {
+    confirmation_id: envelope.confirmation_id,
+    created_at: envelope.challenge.created_at,
+    expires_at: envelope.challenge.expires_at,
+  });
+  if (!sameJson(envelope.challenge, expectedChallenge)) {
+    fail("CONFIRMATION_MISMATCH", "Confirmation does not bind the historical Requirement Set");
   }
 }
