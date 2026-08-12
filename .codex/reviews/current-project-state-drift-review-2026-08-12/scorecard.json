@@ -1,0 +1,152 @@
+{
+  "review_id": "current-project-state-drift-review-2026-08-12",
+  "task_id": "PROJECT-STATE-REVIEW",
+  "lane": "independent-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-route-stage-and-execution-drift-v1",
+  "artifact_refs": [
+    "git:fc374f1f9d485c3ae37a5f2d81014f49c8f53bae",
+    "formal:f3fdd26542e5e562f0b01a9a716d3eb8b46cae36",
+    "control:d48b544aa3566d3e6a5bd985054301dfdc52326c",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/exec-plans/completed/p3-version-and-milestone-breakdown.md",
+    "docs/exec-plans/active/p5-product-implementation-milestones.md",
+    "docs/change-requests/005-product-definition-semantic-contract-gap.md",
+    "docs/qa/p5-v1-m1.1-acceptance-2026-08-12.md"
+  ],
+  "hard_gates": [
+    {
+      "id": "route_and_stage_order",
+      "status": "pass",
+      "evidence": "路线仍为 Skill 主载体、文档/Git 真源和 P5 顺序实施；S1.4 被明确关闭，未恢复 Web/UI、换栈或提前声明 V1/P5 完成。"
+    },
+    {
+      "id": "reported_identity_and_test_facts",
+      "status": "pass",
+      "evidence": "refs/nextstep/formal=f3fdd265...、refs/nextstep/control=d48b544a... 与回复一致；当前 HEAD 的 pnpm check 为 123/123，attempt 2 的 125/125 被明确记录在 blocked Result Envelope 中且未创建候选。"
+    },
+    {
+      "id": "change_intake_boundary",
+      "status": "pass",
+      "evidence": "attempt 2 没有越过 packet 禁止范围修改 src/** 或 schemas/**，CR-005 在生产契约变更前建立，formal 未移动。"
+    },
+    {
+      "id": "cr005_root_cause_evidence",
+      "status": "pass",
+      "evidence": "Schema facts 的 minItems=1、assertFacts 空数组拒绝、non_goals 允许 constraints，以及测试未独立绑定 S1.2 回放均可由当前代码和 attempt 2 差异复核。"
+    },
+    {
+      "id": "product_semantic_decision",
+      "status": "fail",
+      "evidence": "CR-005 直接建议 none/rejected/空值统一映射为 non_goals=[]，但未先对照已会签 PC-03 的‘PRD 含非目标、缺项不得进入原型’和 S1.3 DoD 的‘非目标齐全’说明状态语义；none、rejected、deferred、identified 的产品含义尚未逐态裁决。"
+    },
+    {
+      "id": "upstream_field_ownership",
+      "status": "fail",
+      "evidence": "expense-reminder 将已确认产品行为‘工作日早上提醒’存入 clarification_gaps；CR-005 倾向扩大 S1.3 activity/result/capability 对 clarification_gaps 的消费资格，却未先判断该事实是否应回到 S1.2 的 goals/scenarios/constraints/expected_outputs。"
+    },
+    {
+      "id": "cumulative_gate_before_promotion",
+      "status": "fail",
+      "evidence": "P5 活动计划要求每个小里程碑运行累积回归，但 S1.3 在 122/122、L3 PASS/96、最终复验、Anchor Proof 和 formal promotion 后，M1.1 才发现 S1.2->S1.3 连续率 0/3；跨阶段最小回放门禁执行过晚。"
+    },
+    {
+      "id": "current_truth_source_consistency",
+      "status": "fail",
+      "evidence": "README 仍写 P5-M0 且不进入 S1.1，docs/PRODUCT_SENSE.md 仍写 P3，docs/qa/index.md 仍写暂无代码测试；它们与路线锁 P5/S1.3 blocked 状态冲突。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "strategic_alignment",
+      "score": 22,
+      "max_score": 25,
+      "reason": "产品定位、载体、技术栈和版本顺序没有改变，主路线未跑偏。",
+      "evidence_refs": ["PROJECT_ROUTE_LOCK.md", "docs/PLANS.md"]
+    },
+    {
+      "id": "stage_gate_effectiveness",
+      "score": 11,
+      "max_score": 25,
+      "reason": "阶段内门禁完整，但跨阶段身份和产品语义直到 formal promotion 后才暴露，门禁顺序没有以最低成本阻止返工。",
+      "evidence_refs": ["docs/qa/p5-v1-m1.1-acceptance-2026-08-12.md", "docs/exec-plans/active/p5-product-implementation-milestones.md"]
+    },
+    {
+      "id": "product_contract_correctness",
+      "score": 13,
+      "max_score": 20,
+      "reason": "CR-005 找到了真实代码冲突，但建议方案尚未完成上游字段归属和非目标四态语义裁决。",
+      "evidence_refs": ["docs/change-requests/005-product-definition-semantic-contract-gap.md", "src/domain/requirement-set.ts", "src/domain/product-definition.ts"]
+    },
+    {
+      "id": "evidence_and_status_honesty",
+      "score": 18,
+      "max_score": 20,
+      "reason": "blocked、墓碑、未创建候选、formal 不移动和测试范围均如实记录；回复没有把失败包装成完成。",
+      "evidence_refs": ["git:d48b544aa3566d3e6a5bd985054301dfdc52326c:results/result-execution-s1.3-g3-a2-20260812.json"]
+    },
+    {
+      "id": "operational_focus",
+      "score": 5,
+      "max_score": 10,
+      "reason": "审计链强度显著高于当前跨阶段产品语义门禁成熟度；27 个 review 目录、352 个 .codex 文件和多轮正式提升没有提前发现最基本的连续性与字段语义问题。",
+      "evidence_refs": [".codex/operations-log.md", ".codex/verification-report.md", ".codex/reviews/"]
+    }
+  ],
+  "penalties": [
+    {
+      "id": "stale_current_state_sources",
+      "severity": "P1",
+      "deduction": 3,
+      "reason": "三个用户/Agent 常用入口保留旧阶段状态，会直接增加错误恢复和错误派发风险。",
+      "evidence_refs": ["README.md:5", "README.md:34", "docs/PRODUCT_SENSE.md:72", "docs/qa/index.md:3"]
+    }
+  ],
+  "totals": {
+    "raw_score": 69,
+    "penalty_total": 3,
+    "final_score": 66,
+    "max_score": 100
+  },
+  "severity_summary": {
+    "P0": 1,
+    "P1": 3,
+    "P2": 0
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "不要按 CR-005 当前文本直接批准 attempt 3；先把 non_goal_gaps 的 identified/none/rejected/deferred 四态逐项映射到产品定义通过、空集合或退回 S1.2 的规则，并引用 PC-03/S1.3 DoD。",
+    "先裁决‘工作日早上提醒’的上游字段归属；若它不是澄清缺口，就重建受影响 S1.2 真源链，不要用全局放宽 clarification_gaps 消费资格掩盖上游错位。",
+    "把三类 S1.1->S1.2->S1.3 累积回放和产品语义断言前移为 S1.3 候选形成前硬门；通过后再执行 CV/I/X/P/L3/最终复验/正式提升。",
+    "同步 README、docs/PRODUCT_SENSE.md 和 docs/qa/index.md 的当前阶段，消除并行真源冲突。"
+  ],
+  "nice_to_have": [
+    "在 M1.1 关闭前暂停新增安全强化和审计链扩展，只处理当前 P0/P1 产品闭环问题。",
+    "复盘 P5-M0 与 S1.3 多轮审查，将快速跨阶段 smoke gate 放在高成本证据链之前。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "signal": "REVISE",
+      "conclusion": "路线/引用/测试陈述可复核，但产品语义裁决、上游字段归属、累积门禁时序和状态真源一致性存在硬缺口。"
+    },
+    {
+      "role": "Strict Judge",
+      "signal": "REVISE",
+      "score": 66,
+      "conclusion": "主路线未跑偏，执行重心和 CR-005 修复方向已出现偏移；按当前方案继续会把上游数据语义缺口固化进 v1 契约。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "signal": "REVISE",
+      "conclusion": "大量精确摘要和审计术语没有替代最小跨阶段产品语义验证；状态入口文档也出现模板式陈旧。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "signal": "REVISE",
+      "score": 66,
+      "conclusion": "不批准 CR-005 当前版本或启动 attempt 3；先修订决策和门禁顺序，之后再由用户批准高风险基础变更。"
+    }
+  ],
+  "reviewed_at": "2026-08-12T10:10:27+08:00"
+}

@@ -1,0 +1,130 @@
+{
+  "review_id": "current-project-state-drift-rereview-2-2026-08-12",
+  "task_id": "PROJECT-STATE-REVIEW-R3",
+  "lane": "independent-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-route-stage-and-execution-drift-v1",
+  "artifact_refs": [
+    "git:fc374f1f9d485c3ae37a5f2d81014f49c8f53bae",
+    "formal:f3fdd26542e5e562f0b01a9a716d3eb8b46cae36",
+    "control:9230a79d621da0f9fb5301afec50f671bc51d169",
+    "docs/change-requests/005-product-definition-semantic-contract-gap.md",
+    "docs/change-requests/004-m1-1-cross-stage-fixture-continuity-gap.md",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/exec-plans/active/p5-product-implementation-milestones.md"
+  ],
+  "hard_gates": [
+    {
+      "id": "previous_required_revisions",
+      "status": "pass",
+      "evidence": "CR-005 已明确 generation 4、S1.2 先行完整正式提升、Product Definition 2.0 精确结构和消费者迁移；CR-004 与 PRODUCT_SENSE 的历史入口歧义已关闭。"
+    },
+    {
+      "id": "authorization_and_ref_boundary",
+      "status": "pass",
+      "evidence": "control 9230a79d... 仍为 plan_generation 3，generation_4_authorized=false、attempt_3_authorized=false；formal 仍为 f3fdd265...，无 packet、生产代码或 Schema 变更。"
+    },
+    {
+      "id": "contract_versioning_and_migration",
+      "status": "pass",
+      "evidence": "Product Definition subject 升为 2.0，Requirement/Frozen Requirement、Machine Receipt 信封和会签外围记录维持各自 1.0；旧产品 1.0 fail closed，并覆盖 Domain、Schema、CLI、receipt、Skill、fixture、签署和恢复。"
+    },
+    {
+      "id": "upstream_stage_rebuild_order",
+      "status": "pass",
+      "evidence": "第 8、10、13 节固定 S1.2 generation 4 完整正式提升 -> 新 formal baseline -> S1.3 generation 4 完整正式提升 -> M1.1 attempt 2 -> 用户会签。"
+    },
+    {
+      "id": "formal_transition_and_failure_recovery",
+      "status": "fail",
+      "evidence": "CR-005 第 170-174 行要求 S1.2 formal promotion 后读取新 formal 并执行 S1.3；第 217、221 行却称完整新链通过前 formal 保持 f3fdd265...，失败时保留该旧 formal。S1.2 已提升而 S1.3 失败时两种状态不可同时成立，且正式 ref 不能靠回退解决。"
+    },
+    {
+      "id": "mechanical_consistency",
+      "status": "pass",
+      "evidence": "git diff --check、全部适用 JSON 解析和 14 个变更 Markdown 本地链接检查通过；状态入口均保持 CR-005 待用户决定、S1.4 未启动。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "strategic_alignment",
+      "score": 25,
+      "max_score": 25,
+      "reason": "产品定位、Skill 主载体、技术栈、P5/V1/M1.1 阶段和 S1.4 阻断均保持一致。",
+      "evidence_refs": ["PROJECT_ROUTE_LOCK.md", "docs/PLANS.md"]
+    },
+    {
+      "id": "product_semantic_correctness",
+      "score": 20,
+      "max_score": 20,
+      "reason": "非目标与澄清逐态语义、字段归属、独立 S1.2 真源和候选前累积回放已经形成可验证规则。",
+      "evidence_refs": ["docs/change-requests/005-product-definition-semantic-contract-gap.md:43", "docs/change-requests/005-product-definition-semantic-contract-gap.md:76", "docs/change-requests/005-product-definition-semantic-contract-gap.md:85"]
+    },
+    {
+      "id": "execution_and_gate_order",
+      "score": 18,
+      "max_score": 25,
+      "reason": "主执行顺序已经正确，但 formal 两段式推进与失败停留点存在直接冲突，尚不能安全授权执行。",
+      "evidence_refs": ["docs/change-requests/005-product-definition-semantic-contract-gap.md:162", "docs/change-requests/005-product-definition-semantic-contract-gap.md:214"]
+    },
+    {
+      "id": "contract_migration_safety",
+      "score": 20,
+      "max_score": 20,
+      "reason": "破坏性 wire shape 已用 Product Definition 2.0 隔离，legacy 拒绝和所有相关消费者迁移边界完整。",
+      "evidence_refs": ["docs/change-requests/005-product-definition-semantic-contract-gap.md:95", "docs/change-requests/005-product-definition-semantic-contract-gap.md:151"]
+    },
+    {
+      "id": "status_and_evidence_honesty",
+      "score": 9,
+      "max_score": 10,
+      "reason": "当前 ref、授权、测试沿用边界和未启动状态如实记录；定向复验只有留痕摘要，没有单独可定位的审查包。",
+      "evidence_refs": [".codex/operations-log.md:3", ".codex/verification-report.md:3", "control:9230a79d621da0f9fb5301afec50f671bc51d169"]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 92,
+    "penalty_total": 0,
+    "final_score": 92,
+    "max_score": 100
+  },
+  "severity_summary": {
+    "P0": 0,
+    "P1": 1,
+    "P2": 1
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "把 formal 明确为两段式单向推进：CR 获批到 S1.2 promotion 前保持 f3fdd265...；S1.2 promotion 后 formal 指向 S1.2 新锚并成为 S1.3 baseline；S1.3 失败时停留在该 S1.2 formal，不回退到 f3fdd265...；S1.3 通过后再推进到 S1.3 新锚。同步修正第 2、8、11、13 节的相关表述。"
+  ],
+  "nice_to_have": [
+    "为用户所称的定向复验补一个最小独立证据引用，明确审查者、对象版本和结论范围；这不阻塞 CR 文本修订。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "signal": "REVISE",
+      "conclusion": "上一轮四项必改均已关闭，授权与机械门禁通过；formal 失败恢复规则仍有一项客观冲突。"
+    },
+    {
+      "role": "Strict Judge",
+      "signal": "REVISE",
+      "score": 92,
+      "conclusion": "产品语义和版本迁移已达到可执行水平，但 formal 单向推进不能同时采用两套互斥规则。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "signal": "PASS",
+      "score": 98,
+      "conclusion": "入口文档、历史授权和版本术语已基本收口，未发现模板化或状态粉饰。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "signal": "REVISE",
+      "score": 92,
+      "conclusion": "不批准当前文本实施；仅需消除 formal 两段式推进和失败停留点歧义后再次复审。"
+    }
+  ],
+  "reviewed_at": "2026-08-12T13:35:59+08:00"
+}

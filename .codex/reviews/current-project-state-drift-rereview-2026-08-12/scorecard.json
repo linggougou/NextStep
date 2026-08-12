@@ -1,0 +1,139 @@
+{
+  "review_id": "current-project-state-drift-rereview-2026-08-12",
+  "task_id": "PROJECT-STATE-REVIEW-R2",
+  "lane": "independent-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-route-stage-and-execution-drift-v1",
+  "artifact_refs": [
+    "git:fc374f1f9d485c3ae37a5f2d81014f49c8f53bae",
+    "formal:f3fdd26542e5e562f0b01a9a716d3eb8b46cae36",
+    "control:1e8892ab8ef8b5d413a85fd077a61ed836e42eb6",
+    "docs/change-requests/005-product-definition-semantic-contract-gap.md",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/PLANS.md",
+    "docs/PRODUCT_SENSE.md",
+    "docs/qa/index.md"
+  ],
+  "hard_gates": [
+    {
+      "id": "original_required_revisions",
+      "status": "pass",
+      "evidence": "CR-005 已逐态裁决 non_goal_gaps 和 clarification_gaps，裁决工作日早上提醒归属 S1.2 constraints，将三类累积语义回放前移到 candidate-ready 之前，并同步 README/QA/当前阶段入口。"
+    },
+    {
+      "id": "authorization_and_ref_boundary",
+      "status": "pass",
+      "evidence": "control 1e8892ab... 仅记录 revise 决定且 attempt_3_authorized=false；formal 仍为 f3fdd265...，业务代码、Schema、测试和 fixture 未修改。"
+    },
+    {
+      "id": "current_baseline_verification",
+      "status": "pass",
+      "evidence": "当前 HEAD 的 corepack pnpm check 通过 123/123，覆盖率为 90.78% / 82.15% / 98.26%；git diff --check 通过。"
+    },
+    {
+      "id": "upstream_stage_rebuild_order",
+      "status": "fail",
+      "evidence": "CR-005 要求重建 community-workshop 与 expense-reminder 的 S1.2 版本并声明旧 S1.2 credential/promotion 不得复用，但仍把入口表述为 S1.3 attempt 3，关闭条件只明确 S1.3 正式证据链；未规定新的 S1.2 候选、CV/I/X/P/L3/FV/Anchor/formal promotion 必须先完成。"
+    },
+    {
+      "id": "plan_generation_boundary",
+      "status": "fail",
+      "evidence": "修订范围从 S1.3 fixture/Schema 扩展到 S1.2 readiness、字段来源证据和版本链，已经改变已冻结任务输入与范围。P4 §9/§18 要求提高 plan_generation 并重新生成任务包，不能沿用 generation 3 的 S1.3 attempt 3。"
+    },
+    {
+      "id": "wire_contract_versioning",
+      "status": "fail",
+      "evidence": "CR-005 将 prd.non_goals 从 ProductFact[] 改为 status/items/source 对象，却未给出精确 JSON Schema、schema_version 选择、旧 1.0 拒绝/兼容规则及 machine-receipt/Skill 消费迁移。当前运行时只支持 schema_version 1.0。"
+    },
+    {
+      "id": "current_truth_source_consistency",
+      "status": "fail",
+      "evidence": "README 与 QA 已同步，PRODUCT_SENSE 当前阶段已同步，但其‘当前交付物’仍指向不存在的 docs/exec-plans/active/p3-version-and-milestone-breakdown.md，并称 P3 候选待形成。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "strategic_alignment",
+      "score": 24,
+      "max_score": 25,
+      "reason": "主路线、载体、技术栈和阶段阻断保持一致，原四项方向性问题已关闭。",
+      "evidence_refs": ["PROJECT_ROUTE_LOCK.md", "docs/change-requests/005-product-definition-semantic-contract-gap.md"]
+    },
+    {
+      "id": "product_semantic_correctness",
+      "score": 19,
+      "max_score": 20,
+      "reason": "非目标与澄清状态语义、工作日提醒字段归属和 constraint 隔离已清楚；剩余风险主要是契约表达与版本化。",
+      "evidence_refs": ["docs/change-requests/005-product-definition-semantic-contract-gap.md:37", "docs/change-requests/005-product-definition-semantic-contract-gap.md:58"]
+    },
+    {
+      "id": "execution_and_gate_order",
+      "score": 13,
+      "max_score": 25,
+      "reason": "候选前累积门已前移，但 S1.2 新版本的独立正式门禁和新 plan generation 尚未成为明确前置。",
+      "evidence_refs": ["docs/change-requests/005-product-definition-semantic-contract-gap.md:70", "docs/change-requests/005-product-definition-semantic-contract-gap.md:79", "docs/design-docs/p4-execution-mechanism-design.md:167"]
+    },
+    {
+      "id": "contract_migration_safety",
+      "score": 10,
+      "max_score": 20,
+      "reason": "已识别 wire-shape 变化，但缺少 schema_version、精确结构和消费者迁移决策，尚不能授权实现。",
+      "evidence_refs": ["docs/change-requests/005-product-definition-semantic-contract-gap.md:115", "src/domain/contract-version.ts", "schemas/v1/product-definition.schema.json"]
+    },
+    {
+      "id": "status_and_evidence_honesty",
+      "score": 9,
+      "max_score": 10,
+      "reason": "授权、测试、control/formal 和未实现边界如实记录；仅残留一个 PRODUCT_SENSE 旧交付物入口。",
+      "evidence_refs": ["README.md", "docs/qa/index.md", "docs/PRODUCT_SENSE.md:93"]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 75,
+    "penalty_total": 0,
+    "final_score": 75,
+    "max_score": 100
+  },
+  "severity_summary": {
+    "P0": 1,
+    "P1": 2,
+    "P2": 1
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "把获批后的入口改为新的 plan_generation：先创建并完成 S1.2 上游修复任务及其完整正式门禁，再以新的 formal baseline 生成 S1.3 任务；不得沿用 generation 3 S1.3 attempt 3。",
+    "补齐 product-definition 线格式版本策略：给出 non_goals 的精确 JSON 形状，明确保持 1.0 兼容还是升版，以及旧版拒绝/迁移、machine receipt、CLI、Skill 和 fixture 的处理。",
+    "把 CR-005 关闭条件改为 S1.2 新版本正式提升 -> S1.3 新链正式提升 -> M1.1 attempt 2 -> 用户会签的显式顺序，并消除‘S1.2 既有结论不受影响’与‘旧证据不得复用’的歧义。",
+    "修正 docs/PRODUCT_SENSE.md 的当前交付物，指向 active P5 计划和当前 CR-005 门禁。"
+  ],
+  "nice_to_have": [
+    "将 field-status source ref 定义成独立类型，不复用只允许 /values/N 的 ProductSourceRef。",
+    "明确时间约束只进入 scope，不要求 journey/capability 逐字复述，以避免再次制造错误来源。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "signal": "REVISE",
+      "conclusion": "原四项修订和当前边界均可复核；新发现 S1.2 正式顺序、代际和 wire-version 三项客观缺口。"
+    },
+    {
+      "role": "Strict Judge",
+      "signal": "REVISE",
+      "score": 75,
+      "conclusion": "产品语义已经收敛，但实施协议尚不足以阻止错误复用旧 S1.2 证据或在 1.0 下静默破坏线格式。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "signal": "REVISE",
+      "conclusion": "大部分状态入口已同步；PRODUCT_SENSE 尾部仍残留不存在的 P3 active 链接，属于未完全收口。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "signal": "REVISE",
+      "score": 75,
+      "conclusion": "不批准修订版 CR-005 实施；补齐新代际、S1.2 先行正式门禁和契约版本策略后再复审。"
+    }
+  ],
+  "reviewed_at": "2026-08-12T11:54:58+08:00"
+}

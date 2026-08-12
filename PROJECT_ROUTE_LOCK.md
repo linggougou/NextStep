@@ -31,7 +31,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - Change Intake、恢复、Final Acceptance、交付和宿主归档边界通过故障注入和反扫验证。
   - V1..V4 与 Final Acceptance 分别完成本地验证、适用验收和用户会签。
 - 阶段出口：V1..V4 和 Final Acceptance 全部通过；正式 OID、交付清单、风险、回滚和 PC-20.AR 状态可追溯，并由用户明确确认 P5 产品落地完成。
-- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；`V1 / M1.1 / S1.1`、`S1.2` 与 `S1.3` 均已完成正式提升，formal OID 为 `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`。M1.1 累积验收 attempt 1 已执行并以 `退回 / 73` 结束；下一最小闭环为 CR-004 用户决定，以及获批后修复跨阶段 fixture 连续性并重走 S1.3 正式证据链和 M1.1 attempt 2。M1.1 门禁通过前不得进入属于 M1.2 的 S1.4。V1 和 P5 仍未完成。
+- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；`V1 / M1.1 / S1.1`、`S1.2` 与 `S1.3` 均已完成旧链正式提升，当前 formal `F0` 为 `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`。CR-004 generation 3 已把跨阶段 Frozen Requirement 身份、完整内容和 digest 连续性修复为 `3/3`，但 attempt 2 因产品定义语义契约冲突而阻塞，未创建候选。CR-005 经第四轮独立复审 `PASS / 98` 后已获用户批准；协议固定为 `F0 -> S1.2 新 formal F12 -> S1.3 新 formal F13` 两段式单向推进。下一入口为 plan_generation 4 与 S1.2 新链；F12 前不得生成 S1.3 packet，M1.1 新链通过前不得进入 S1.4。V1 和 P5 仍未完成。
 - 明确非目标：
   - 不恢复 NextStep Web/UI 候选分支。
   - 不引入常驻服务、数据库、远程控制面或通用多 Agent 编排平台。
@@ -43,7 +43,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - 不改变已会签产品、交互、S4/P3/P4 或验收边界；需要改变时先进入 Change Request。
 - 禁止提前进入的阶段：S7 最终发布判断和 S8 交付归档；V1..V4 也不得跳过前序门禁并行宣告完成。
 - 允许进入下一阶段的条件：P5 Final Acceptance 通过本地可重复验证、独立验收和用户会签；若实现要求改变已会签产品、交互、技术、版本范围、正式提升或验收边界，必须先完成 Change Request。
-- 当前状态：进行中；P5-M0 门禁通过，S1.1、S1.2、S1.3 已正式提升；CR-004 已获用户批准，当前推进 generation 3 修复控制链，S1.4 尚未启动
+- 当前状态：进行中；CR-005 已通过 `PASS / 98` 独立审查并获用户批准，等待推进 plan_generation 4 和 S1.2 generation 4 attempt 1；formal 仍为 F0，S1.4 未启动
 
 ## 2.1 里程碑路线图
 
@@ -109,7 +109,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
 
 - Backlog：待建立。
 - Change Request：`docs/change-requests/index.md`
-- 当前阶段缺口：S1.1、S1.2、S1.3 已正式提升，但 M1.1 独立累积验收 attempt 1 为 `退回 / 73`，`I=REVISE`、`X=PASS`、`P=REVISE`，P0/P1/P2 为 `1/1/2`。三类 S1.3 fixture 均未消费同名 S1.2 实际 Frozen Requirement，累计身份连续率为 `0/3`；现有 122/122 只能证明阶段内契约。CR-004 已获用户批准，当前只允许推进 generation 3、S1.3 连续性修复及其完整证据重建；新链通过前不得移动 formal 或启动 S1.4。保留 P2：长驻 trusted-host 的 replay/session registry 生命周期，以及真实宿主、真实用户动作、开放自然语言语义和 `full` 支持尚未由本轮证明。
+- 当前阶段缺口：M1.1 attempt 1 为 `退回 / 73`；CR-004 generation 3 将身份连续性修复为 `3/3`，但 attempt 2 因语义契约冲突阻塞且无候选。CR-005 已通过 `PASS / 98` 独立审查并获用户批准；授权按 expected-old CAS 执行 `F0 -> F12 -> F13`。当前先推进 plan_generation 4 和 S1.2 新链；S1.2 失败停 F0，S1.3 失败停 F12。F12 前不得生成 S1.3 packet，M1.1 会签前不得启动 S1.4。
 - 后续阶段需求：V1..V4 和 Final Acceptance 按活动计划顺序推进；P4 第 12 节“运行集成验收”只允许落实为集成诊断预检，正式 I/X/P 四态结论仍由独立门禁和最终复验链产生。若未来恢复 `Web / UI` 分支，需重新确认其与当前 Skill 主路线的关系。
 - 已拒绝需求：无。
 

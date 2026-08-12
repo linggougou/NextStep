@@ -8,7 +8,8 @@
 
 ## 活动变更
 
-- [M1.1 跨阶段 fixture 连续性缺口](./004-m1-1-cross-stage-fixture-continuity-gap.md)：已分流为当前阶段缺口；等待用户决定是否推进 plan generation 3 和 S1.3 修复链。
+- [M1.1 跨阶段 fixture 连续性缺口](./004-m1-1-cross-stage-fixture-continuity-gap.md)：已获批并推进 generation 3；身份连续性已达到 `3/3`，但 attempt 2 暴露产品定义生产契约缺口，完整关闭条件尚未满足。
+- [产品定义非目标与来源角色契约缺口](./005-product-definition-semantic-contract-gap.md)：第四轮独立复审 `PASS / 98` 后获用户批准；下一步推进 generation 4，并先完成 S1.2 F0→F12 正式链。
 
 ## 分流规则
 

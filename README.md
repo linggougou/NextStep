@@ -2,7 +2,7 @@
 
 NextStep 是以 Skill 为主交互入口、以项目文档和 Git 为正式真源的 AI 项目闭环落地系统。
 
-当前处于 `P5-M0 实施就绪门禁`。这一阶段只建立工程基线、契约内核、临时 Git fixture 和本地验证入口，不代表任何 `PC-01..PC-20` 已交付。
+当前处于 `P5 / V1 / M1.1` 缺口修复。CR-005 已通过 `PASS / 98` 独立审查并获用户批准；下一步推进 plan_generation 4，只启动 S1.2 新链，S1.3 packet 必须等待 F0→F12 正式提升完成。
 
 ## 环境
 
@@ -31,7 +31,10 @@ pnpm check
 
 ## 当前边界
 
-- 不进入 S1.1，不生成或派发真实 Execution Packet。
-- 不初始化 `refs/nextstep/formal` 或 `refs/nextstep/control`。
+- 不创建 generation 3 S1.3 attempt 3，不推进 plan_generation 4，不修改生产 Schema/领域规则。
+- 不移动 `refs/nextstep/formal`；`refs/nextstep/control` 只允许记录当前门禁和恢复状态。
+- 不启动 S1.4；M1.1、V1 和 P5 均未完成。
 - 不接入 Codex SDK/App Server，不声明宿主 `full` 支持。
 - 不恢复 Web/UI 分支，不引入常驻服务或数据库。
+
+当前正式状态与下一入口以 `PROJECT_ROUTE_LOCK.md` 和 `docs/PLANS.md` 为准。

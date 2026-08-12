@@ -1,5 +1,102 @@
 # Verification Report
 
+## 2026-08-12 CR-005 用户批准边界验证
+
+- 用户决定：批准 CR-005 为高风险基础变更和当前阶段缺口；允许推进 plan_generation 4，并按 S1.2 先行、S1.3 后继的两段式 formal 链实施。
+- 当前批准提交只包含 CR-004/005、审查包、路线锁、计划、状态入口和 `.codex` 留痕；不包含生产代码、Schema、测试、fixture 或 execution packet。
+- 进入 generation 4 前置：批准真源形成不可变项目提交后，control 写 user-decision，随后 generation-advance 和 generation-ack 分别以 expected-old CAS 固化。
+- 门禁结论：批准门禁通过；代际尚未推进，formal 仍为 F0。F12 前禁止 S1.3 packet，M1.1 会签前禁止 S1.4。
+
+## 2026-08-12 CR-005 第四轮独立复审验证
+
+- 结论：`PASS / 98`，P0=0、P1=0、P2=1，`required_fixes=[]`。第三轮唯一 P1 已关闭，CR-005 可提交用户批准，但未自动获批。
+- 规则复验：CR 第 2、8、11、13 节对 `F0 -> F12 -> F13` 两次 expected-old CAS、S1.2/S1.3 失败停留点、禁止 ref 回退和关闭条件完全一致。
+- 既有硬门：generation 4、S1.2 先行正式链、Product Definition 2.0、legacy 1.0 拒绝、消费者迁移、逐态语义、上游字段归属和候选前独立累积回放继续通过。
+- 控制验证：HEAD `fc374f1f9d485c3ae37a5f2d81014f49c8f53bae`；control `48a9ae06fd1b16d9e1bbcff021177eb067d65ed5`；formal `F0=f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`。plan_generation=3、pending dispatch=0，generation 4/attempt 3 未授权。
+- 状态入口：路线锁、README、PLANS、PRODUCT_SENSE、CR/QA index、P5 活动计划和 CR-005 均已同步为第四轮 `PASS / 98`、具备提交用户批准条件但尚未批准；generation 4 与 S1.4 未启动。
+- 机械验证：`git diff --check` 通过；全部适用 JSON 逐文件 `jq empty` 通过；15 个变更 Markdown 本地链接存在；formal 是 HEAD 祖先。
+- 测试边界：未修改生产代码、Schema、测试或 fixture，不重跑 `pnpm check`；最近当前 HEAD 的 `123/123` 证据继续有效。
+- 审查包：`.codex/reviews/current-project-state-drift-rereview-3-2026-08-12/`。下一入口只能是用户对 CR-005 的批准决定。
+- 门禁解释：审查门禁已通过，用户批准门禁尚未通过；未新增 control 用户决定消息，control 保持 `48a9ae06...`。
+
+## 2026-08-12 CR-005 第三轮独立复审验证
+
+- 结论：`REVISE / 92`，P0=0、P1=1、P2=1；上一轮 generation、S1.2 顺序、2.0 wire contract 和 PRODUCT_SENSE 四项必改均已关闭。
+- 通过项：CR-005 的逐态语义、字段归属、候选前累积回放、Product Definition 2.0 精确结构、legacy 拒绝、消费者迁移和 generation 4 主顺序与现有 P4/P5 真源相容。
+- 阻断项：CR-005 第 170-174 行与第 217、221 行对 formal 状态给出互斥规则；必须明确 S1.2/S1.3 两次 promotion 的单向推进和各自失败停留点。
+- 控制面：HEAD `fc374f1f9d485c3ae37a5f2d81014f49c8f53bae`；control `9230a79d621da0f9fb5301afec50f671bc51d169`；formal `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`。checkpoint `plan_generation=3`，无 pending dispatch，未授权 generation 4/attempt 3。
+- 机械检查：`git diff --check` 通过；项目内适用 JSON 逐文件 `jq empty` 通过；14 个变更 Markdown 的本地链接存在性检查通过；formal 是 HEAD 祖先。
+- 测试边界：未修改生产代码、Schema、测试或 fixture，未重跑 `pnpm check`；最近 HEAD 的 `123/123` 证据继续有效。
+- 审查包：`.codex/reviews/current-project-state-drift-rereview-2-2026-08-12/`。当前不得批准实施、推进 plan_generation 4、生成任务包、移动 formal 或启动 S1.4。
+
+## 2026-08-12 CR-005 formal 两段式推进复验
+
+- 规则一致性：CR 第 2 节定义 `F0 -> F12 -> F13`；第 8 节定义两次 expected-old CAS 与 S1.2/S1.3 失败停留点；第 11 节不再要求完整新链通过前保持 F0；第 13 节以 F12、F13 两次 promotion 作为关闭条件。
+- 状态入口一致性：路线锁、README、PLANS、PRODUCT_SENSE、CR/QA index 和 P5 活动计划均以第三轮 `REVISE / 92` 为当前结论，并保持 generation 4 未授权、S1.4 未启动。
+- 独立结论：只读定向复核 `PASS`，`P0/P1=0/0`；历史问题描述中保留的旧冲突不构成现行规则，未发现失败回到 F0 的授权文字。
+- 控制证据：`refs/nextstep/control=48a9ae06fd1b16d9e1bbcff021177eb067d65ed5`；第三轮消息为 revise/92 且 generation 4/attempt 3 均未授权。checkpoint 仍为 `plan_generation=3`、pending dispatch=0。
+- formal 证据：`refs/nextstep/formal=f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`，即当前 F0；本轮没有执行 F0->F12 或 F12->F13 promotion。
+- 测试边界：仅修改文档与 control 审计状态，未修改生产代码、Schema、测试或 fixture，因此未重跑 `pnpm check`；沿用当前 HEAD 的 `123/123` 证据。
+- 门禁结论：第三轮唯一 P1 已关闭为送审候选，但 CR-005 仍等待用户批准；不得据此推进 generation 4、生成任务包或移动 formal。
+
+## 2026-08-12 CR-005 第二轮硬缺口收口验证
+
+- 代际与依赖：CR-005 明确采用 `plan_generation 4`，S1.2 generation 4 必须先走完 CV/I/X/P/L3/FV/Credential/Anchor/Proof/formal promotion；S1.3 只能从该新 formal 生成。旧正式提升只作历史证据。
+- 线格式与迁移：Product Definition 2.0 的 `non_goals` 精确结构、状态条件、字段级 source、旧 1.0 拒绝，以及 Domain/Schema/CLI/Machine Receipt/Skill/fixture/签署恢复迁移均已定义。Machine Receipt 信封 1.0 与 subject 2.0 分层明确，subject 版本要求对象内外等值。
+- 状态入口：`docs/PRODUCT_SENSE.md` 当前交付物指向存在的 active P5、completed P3 和 CR-005；所引用文件及本轮检查范围内 Markdown 本地链接均存在。
+- 可重复检查：`git diff --check` 通过；两轮审查 `scorecard.json` 均可解析；control 决策消息仍为 `decision=revise`、`generation_4_authorized=false`、`attempt_3_authorized=false`。
+- 历史授权消歧：CR-004 的 generation 3 用户决定和授权范围已改为历史口径，明确 attempt 2 阻塞后授权面关闭、generation 3 attempt 3 永不作为入口；关闭条件不再把旧批准表述为当前待执行门禁。
+- 独立定向复验：上一轮发现该歧义的同一只读审查者确认修复后 `PASS`，`P0/P1=0/0`；三个原硬缺口与新增历史授权歧义均已闭合。
+- 引用与代际：control `9230a79d621da0f9fb5301afec50f671bc51d169`，checkpoint `plan_generation=3`；formal `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`，且为 HEAD `fc374f1f9d485c3ae37a5f2d81014f49c8f53bae` 祖先。
+- 测试说明：未修改 `src/**`、`schemas/**`、`tests/**` 或 fixture，故未重复运行 `pnpm check`；最近当前 HEAD 证据仍为 `123/123`、覆盖率 `90.78% / 82.15% / 98.26%`。
+- 门禁结论：三个实施前硬缺口已形成可复审候选，但这不是 CR-005 批准。generation 4、生产实现、任务包、formal promotion 和 S1.4 均保持关闭。
+
+## 2026-08-12 CR-005 第二轮复审整改验证
+
+- 复审输入：`.codex/reviews/current-project-state-drift-rereview-2026-08-12/`，结论 `REVISE / 75`；当前 HEAD 的既有复验为 `123/123`、覆盖率 `90.78% / 82.15% / 98.26%`。
+- P0 关闭设计：执行入口改为获批后推进 plan_generation 4；S1.2 新版本先完成全部正式门禁和 formal promotion，S1.3 再从新 formal baseline 生成新任务。generation 3 attempt 3 不再使用。
+- 线格式设计：Product Definition 2.0 的 `prd.non_goals` 精确为 `{status,items,source}`；字段级 source 绑定完整 non_goal_gaps item 和 RFC8785 digest。旧 1.0 产品候选 fail closed，无自动迁移。
+- 迁移覆盖：v2 Schema、Domain、CLI、Machine Receipt product data、Skill、三份 2.0 正例、1.0 legacy 负例、签署/恢复和正式证据均列入范围。Machine Receipt 信封仍为 1.0，其 product data `schema_version` 为 2.0。
+- 关闭顺序：S1.2 formal promotion -> S1.3 2.0 候选前累积硬门及 formal promotion -> M1.1 attempt 2 -> 用户会签，已写入 CR-005。
+- 状态入口：PRODUCT_SENSE 的不存在 P3 active 链接已替换为 active P5、completed P3 和 CR-005；README、路线锁、PLANS、QA、活动计划和 CR index 同步为 `REVISE / 75` 与 generation 4 待批准。
+- 控制验证：control `9230a79d621da0f9fb5301afec50f671bc51d169` 的第二轮 user-decision 表明 generation 4/attempt 3 均未授权；checkpoint plan_generation 仍为 3；formal 仍为 `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`。
+- 范围结论：本轮仅修改文档、审查留痕和 control 用户决定，不修改产品代码、Schema、测试、fixture 或任务包；不构成 CR-005 批准或 generation 4 启动。
+
+## 2026-08-12 CR-005 修订候选复审
+
+- 裁决：`REVISE / 75`，P0=1、P1=2、P2=1。上次四个方向性必改项已基本关闭，但实施授权门禁仍未通过。
+- 本地证据：当前 `corepack pnpm check` 为 `123/123`，失败/跳过/取消为 0，覆盖率 `90.78% / 82.15% / 98.26%`；`git diff --check` 通过。
+- 身份证据：`refs/nextstep/control=1e8892ab8ef8b5d413a85fd077a61ed836e42eb6`，user-decision 明确 `attempt_3_authorized=false`；`refs/nextstep/formal=f3fdd26542e5e562f0b01a9a716d3eb8b46cae36` 且为 HEAD 祖先。
+- 通过项：非目标与澄清逐态门禁、工作日提醒的上游归属、S1.3 候选前累积回放、当前测试事实和未实施边界均可复核。
+- P0：S1.2 上游新版本没有被定义为先于 S1.3 的独立正式提升链；修订范围已改变冻结任务输入与依赖，必须使用新 plan generation，不能复用 generation 3 attempt 3。
+- P1：product-definition `non_goals` wire shape 的精确结构、schema_version、旧版兼容/拒绝和消费者迁移未定义；当前仅支持 1.0。
+- P1：S1.2 既有结论保留与两类新版本旧证据不可复用之间存在歧义，关闭条件未覆盖 S1.2 完整新证据链。
+- P2：PRODUCT_SENSE 的当前交付物仍引用不存在的 P3 active 计划。
+- 审查证据：`.codex/reviews/current-project-state-drift-rereview-2026-08-12/scorecard.json`、`.codex/reviews/current-project-state-drift-rereview-2026-08-12/verdict.md`。
+- 门禁结论：不批准修订版 CR-005，不启动 S1.3 attempt 3、S1.4 或任何生产契约修改。
+
+## 2026-08-12 CR-005 修订与状态入口复验
+
+- 用户门禁：审查结论 `REVISE / 66`；CR-005 原方案未获批准，S1.3 attempt 3 未获授权。
+- 产品裁决：`non_goal_gaps` 五态和 `clarification_gaps` 五态已分别定义进入/退回规则；显式 `none` 需要字段级确认来源，不等同于裸空数组；constraint 不得充当 non-goal。
+- 上游裁决：“工作日早上提醒”归入 S1.2 constraints；community-workshop 与 expense-reminder 均需重建 S1.2 版本，S1.3 不扩大 `clarification_gaps` 来源资格。
+- 流程裁决：三类累积身份与产品语义回放成为候选前硬门，早于 CV/I/X/P/L3/最终复验/正式提升。
+- 状态一致性：README、PRODUCT_SENSE、QA index、路线锁、PLANS、活动计划和 Change Request 索引均指向 P5/V1/M1.1、CR-005 修订候选等待用户决定；未再把 P5-M0/P3/暂无代码测试作为当前状态。
+- 控制一致性：control `1e8892ab8ef8b5d413a85fd077a61ed836e42eb6` 记录 user-decision revise 与 `attempt_3_authorized=false`；formal 仍为 `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`。
+- 范围：本轮只修改文档、审查留痕和 control 用户决定，不修改 `src/**`、`schemas/**`、测试或 fixture，不生成 packet 或候选。
+- 当前基线复验：`pnpm check` 通过 `123/123`，失败、跳过、取消均为 0；覆盖率 Lines `90.78%`、Branches `82.15%`、Functions `98.26%`。该结果属于当前 HEAD，不复用 attempt 2 的 `125/125`。
+
+## 2026-08-12 S1.3 Generation 3 Attempt 2 阻塞验证
+
+- 身份与范围：packet `sha256:ff8ffe37a5d9889d4912bdf384039291bac99e287ad05fafc0c9c27a5b0e1c18`，fence `45`，host `019ff392-36eb-7593-94ec-2e728dc4c709`；实际差异仅为 `tests/domain/product-definition.test.ts` 与两份受影响 product-definition fixture，allowlist 通过，`git diff --check` 通过。
+- 测试：永久语义回归先产生 `21/23 RED`；修订后主管本地 `pnpm check` 通过 `125/125`，失败/跳过/取消均为 0。覆盖率 Lines `90.78%`、Branches `82.15%`、Functions `98.26%`。
+- 反证：`schemas/v1/product-definition.schema.json` 的通用 facts 强制 `minItems: 1`，`src/domain/product-definition.ts` 的 `assertFacts` 同样拒绝空集合，并允许 `non_goals` 来源包含 `constraints`。两份上游 `non_goal_gaps` 均无 identified 值，因此当前补丁仍把 constraint 包装为 derived non-goal，违反 packet 失败规则。
+- 真源绑定：新增两条语义测试读取同一 S1.3 fixture 的内嵌 Frozen Requirement 与产品定义，不能防止两侧同步篡改；独立评审同时发现 `clarification_gaps` 来源映射和通用 target-user 断言弱化问题。
+- 工程结论：测试与覆盖率通过，写集与 refs 不变性通过。
+- 阶段门禁：`阻塞 / REVISE`，P0=0、P1=4、P2=1；工程全绿不替代产品语义与范围门禁。没有候选、CV、I/X/P、L3、Final Verification、Credential、Anchor 或 formal promotion。
+- 控制证据：blocked Result Envelope digest `sha256:d12eb69f11a3023ca38c4410b3b516f469d12831eb1e49e5401448a7baae1c93`；control expected-old CAS 到 `d48b544aa3566d3e6a5bd985054301dfdc52326c`，formal 未移动。执行差异已由原执行者仅用补丁撤销。
+- 下一入口：CR-005 用户决定。获批前不得修改生产 Schema/领域规则或创建 attempt 3；S1.4 继续关闭。
+
 ## 2026-08-12 P5 / V1 / M1.1 / S1.3 Generation 3 Attempt 1 本地候选验证
 
 - 控制身份：packet digest `sha256:f47a81844ae40634f295df4db4ddf8a44b4ec9ccf910800f1e3b40b79bc0bba2`，dedup `sha256:34d2dfdcf5a1a9b30d751a8f240adb90b1cdf95126b9887c733c1379809d4af6`，fence `42`，host `019ff360-7a25-74b2-b396-4f9b36237307`；working parent `42865c8f1cc6fdcb709d7475325135724f5d288d`，formal baseline/ref `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`。
@@ -1696,6 +1793,18 @@
 - 残余 P2：长驻 trusted-host 的 replay/session registry 生命周期未定义上界；开放自然语言语义和真实宿主、真实用户动作、`full` 支持未由本轮证明。
 - 门禁结论：通过。仅授权固定候选进入 Final Content Snapshot，不等于 PC-03、M1.1、V1、P5、最终复验、Credential、Anchor Proof 或 formal promotion 完成。
 - 下一门禁：生成 Final Content Snapshot 和 Write Transaction，对精确 Snapshot 执行独立最终复验并 create-once 写入项目外 Verification Credential。
+
+## 2026-08-12 当前项目状态与路线偏移审查
+
+- 审查对象：当前 `HEAD=fc374f1f9d485c3ae37a5f2d81014f49c8f53bae`、formal/control refs、路线锁、P3/P4/P5 真源、CR-004/CR-005、M1.1 验收报告、当前生产契约和未提交状态同步改动。
+- 本地复验：`corepack pnpm check` 通过 `123/123`，失败、跳过、取消均为 `0`；覆盖率 Lines `90.78%`、Branches `82.15%`、Functions `98.26%`。
+- 身份复验：formal 为 `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`，control 为 `d48b544aa3566d3e6a5bd985054301dfdc52326c`；formal 是 HEAD 祖先。attempt 2 Result Envelope 为 `blocked`、`subject_ref=null`，摘要 `sha256:d12eb69f11a3023ca38c4410b3b516f469d12831eb1e49e5401448a7baae1c93`。
+- 通过项：主路线、当前阶段顺序、S1.4 阻断、状态回复诚实性、Change Intake 边界、CR-005 代码根因均可复核。
+- P0：CR-005 未完成 `non_goal_gaps` 四态产品语义和 `clarification_gaps` 上游字段归属裁决，不能按当前文本授权修改 v1 Schema/领域规则并启动 attempt 3。
+- P1：S1.3 累积跨阶段门禁晚于 Final Verification/Anchor/formal promotion；README、PRODUCT_SENSE、QA index 三个状态入口陈旧；审计链成本已显著领先于当前产品语义门禁成熟度。
+- 裁决：`REVISE / 66`。项目主路线未跑偏，但执行重心和当前修复策略已偏；先修订 CR-005、前移累积回归并同步状态真源，再决定是否启动新 attempt。
+- 审查证据：`.codex/reviews/current-project-state-drift-review-2026-08-12/scorecard.json`、`.codex/reviews/current-project-state-drift-review-2026-08-12/verdict.md`。
+- 门禁判断：M1.1 继续阻塞，不批准 CR-005 当前版本，不启动 S1.3 attempt 3 或 S1.4。
 
 ## 2026-08-11 S1.3 Generation 2 Attempt 6 候选本地验证
 

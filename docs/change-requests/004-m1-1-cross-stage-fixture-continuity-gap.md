@@ -1,6 +1,6 @@
 # M1.1 跨阶段 Fixture 连续性缺口
 
-- 状态：用户已批准，实施中
+- 状态：generation 3 历史修复已执行并阻塞收口；后续入口已由 CR-005 用户门禁取代
 - 记录日期：2026-08-12
 - 来源：`P5 / V1 / M1.1` 独立累积验收 attempt 1 退回
 - 所属阶段：P5 / V1 / M1.1
@@ -42,13 +42,20 @@ M1.1 独立累积验收发现，三类目标项目的 S1.3 product-definition fi
 
 ## 6. 用户决定
 
-- 当前决定：用户于 2026-08-12 明确批准按“当前阶段缺口 + plan generation 3”实施修复，并重走 S1.3 正式证据链与 M1.1 attempt 2。
-- 授权范围：推进 generation 3、生成不可变修复任务包、实现三类连续 fixture 和永久累计回归，以及执行既有门禁链。
+- 历史决定：用户于 2026-08-12 曾明确批准按“当前阶段缺口 + plan generation 3”实施修复，并重走 S1.3 正式证据链与 M1.1 attempt 2；该决定仅解释本 CR 已发生的 generation 3 attempt 1/2，不再授权任何后续 attempt。
+- 历史授权范围：generation 3 的不可变修复任务包、三类连续 fixture、永久累计回归及既有门禁链。attempt 2 阻塞后，该授权面已关闭；generation 3 attempt 3 永久不再作为入口。
 - 继续禁止：降低 M1.1 验收标准、原地改写旧证据、在新链通过前移动 formal，或在 M1.1 会签前启动 S1.4。
 
 ## 7. 关闭条件
 
-- 用户批准分流和 generation 3。
+- generation 3 的历史批准与执行记录已留存；它不满足 CR-005 generation 4 新链的授权或依赖。
 - 三类累计身份连续率达到 `3/3`，永久回归可重复且负例 fail closed。
 - 受影响 S1.3 正式证据链重新闭环，M1.1 attempt 2 的 I/X/P 与总门禁通过。
 - 用户完成 M1.1 阶段会签后，才允许关闭本变更并评估 S1.4 入口。
+
+## 8. Generation 3 执行更新
+
+- attempt 1 已把三类跨阶段 Frozen Requirement 身份、完整 JCS 内容和 digest 连续性修复为 `3/3`，但独立 P 门禁退回两个产品语义映射。
+- attempt 2 的测试与 fixture 修订通过本地 `125/125`，但主管和独立评审确认：现有生产契约强制 `non_goals` 非空并允许 constraint 充当 non-goal，且永久语义回归未独立绑定 S1.2 真源。
+- attempt 2 已以 `blocked` Result Envelope 固化并墓碑失效，未创建候选；formal 未移动，S1.4 继续关闭。
+- 唯一后续入口为 [CR-005](./005-product-definition-semantic-contract-gap.md) 用户决定；CR-005 获批后也只能推进 plan_generation 4，先闭合 S1.2 新正式链。不得创建 generation 3 attempt 3，也不得在获批前修改生产 Schema/领域规则。
