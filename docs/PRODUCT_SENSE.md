@@ -73,7 +73,7 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 
 - 当前里程碑：P5 / V1 / M1.1 需求与产品真源运行锁
 - 当前生命周期阶段：S5 开发落地中的缺口处理与变更门禁
-- 当前状态：CR-005 已通过 `PASS / 98` 独立审查并获用户批准；等待推进 plan_generation 4 和 S1.2 新链，S1.4 未启动
+- 当前状态：S1.2 generation 4 attempt 3 候选已通过 Execution、CV、I/X/P 和 L3 `PASS / 96`，当前等待 Final Content Snapshot；formal 仍为 F0，S1.3 generation 4 尚未生成，S1.4 未启动
 - 当前正式状态、边界和下一入口以 `PROJECT_ROUTE_LOCK.md` 与 `docs/PLANS.md` 为准。
 
 ## S3 已会签交付物
@@ -92,6 +92,6 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 
 ## 当前交付物
 
-- P5 活动计划：`docs/exec-plans/active/p5-product-implementation-milestones.md`，CR-005 已批准，当前推进 generation 4 与 S1.2 F0→F12 先行链
+- P5 活动计划：`docs/exec-plans/active/p5-product-implementation-milestones.md`，当前推进 S1.2 generation 4 attempt 3 的 Final Content Snapshot 与 F0→F12 先行链
 - P3 版本与里程碑拆解：`docs/exec-plans/completed/p3-version-and-milestone-breakdown.md`，已会签并归档
 - 当前变更入口：`docs/change-requests/005-product-definition-semantic-contract-gap.md`，已批准；按 S1.2 F0→F12 先行链执行

@@ -1851,3 +1851,9 @@
 - 执行自检评分：`94/100`，建议 `candidate-ready`；未发现 P0/P1 本地阻塞项。尚未进行的独立 CV/I/X/P、L3、最终复验和正式提升构成剩余扣分。
 - 残余风险：仍只证明 `manual-isolated consumer contract`，不证明真实宿主适配、真实用户动作探针或 `full` 支持；不包含 S1.4 或 S1.5。
 - 执行结论：`candidate-ready`，不构成 PC-03、M1.1、V1、P5 或任何阶段门禁结论。
+## 2026-08-12 P5 / V1 / M1.1 / S1.2 Generation 4 Attempt 3 当前状态同步
+
+- 当前候选：`6cbecde55a1b8092411898a883af510abcd6990e`，parent `497e121508d9de63b85b873b1b3938ef6bf5a429`，tree `a0b0db65df0e0d5878b161fab67103ddb2772cb3`，subject digest `sha256:b2cbfe3e8063a81b7a4be81606b4d6f12d56c5cb1294709802cac0997e650c9c`。
+- 门禁结论：Execution、CV、I/X/P 均通过；L3 `PASS / 96`，P0/P1=0，P2=2，`required_fixes=[]`。本轮只授权进入 Final Content Snapshot，不等于 S1.2 正式提升或 M1.1/V1/P5 完成。
+- 当前正式边界：formal 仍为 F0 `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`；下一步为 Final Content Snapshot、独立最终复验、Verification Credential、Audit Anchor、Anchor Proof 和 F0→F12 expected-old CAS。F0→F12 完成前不得生成 S1.3 generation 4 packet；S1.4 仍禁止启动。
+- 状态入口已同步到上述事实；本轮没有修改生产代码、Schema、测试、fixture、历史证据、`.codex/runtime` 或 refs。

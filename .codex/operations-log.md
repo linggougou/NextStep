@@ -1847,3 +1847,9 @@
 - 结果：缺失前驱的 `IDENTITY_CONFLICT` 已消除，但全量 `pnpm check` 仍为 `125/126`。唯一失败为 `S1.1 -> S1.2 -> JCS 恢复 -> S1.3 会签回放逐类保持 Frozen Requirement 完整连续性`，严格 Product Definition 身份检查返回 `INVALID_PRODUCT_DEFINITION: Product definition ID does not match Frozen Requirement identity`。
 - 边界审计：community-workshop 的 requirement-freeze fixture 已为 v3（前驱 v1/v2），expense-reminder 已为 v2（前驱 v1），而受保护的 product-definition fixtures 分别仍绑定历史 v2/v1 Frozen Requirement。累计测试还严格要求磁盘 fixture Frozen Requirement 的完整 JCS 等于新回放 JCS；因此在不修改受保护 fixture、不修改 Product Definition 生产代码、且不弱化 frozen ID/JCS/digest/会签断言的条件下无法通过。
 - 分流：该不一致需要 Change Intake 授权来更新 S1.3 consumer fixture，或重新定义跨阶段固定身份策略；当前 packet 明确禁止两者，故不扩大改动、不创建候选提交。`git diff --check`、allowlist、formal/working-parent 祖先关系和受保护 ref 不变性均已复验。
+## 2026-08-12 P5 / V1 / M1.1 / S1.2 Generation 4 Attempt 3 当前状态同步
+
+- 状态校正：S1.2 generation 4 attempt 3 固定候选为 `6cbecde55a1b8092411898a883af510abcd6990e`，parent `497e121508d9de63b85b873b1b3938ef6bf5a429`，tree `a0b0db65df0e0d5878b161fab67103ddb2772cb3`，subject digest `sha256:b2cbfe3e8063a81b7a4be81606b4d6f12d56c5cb1294709802cac0997e650c9c`。
+- 四项前置门禁：Execution `sha256:8218aaf4767457a3cb278b1d9c9594a3157785e66866eba9e6a390a153c58911`、CV `sha256:c5929aca2ab8943398d3660274ad38c0c871e65b9a22954f20b6a49a330e58e8`、I/X/P `sha256:85a3ac2c4e5dcd7f49450561269a4eea6d4b79b97eb0b633574b63e3425fc98d` 均通过；L3 `PASS / 96`，P0/P1=0，P2=2，result `sha256:4075791493d7bd6b03955ff7f573ce6d5e1e58f43a764c08c05f47fe4581047f`，`required_fixes=[]`。
+- 当前控制边界：formal 仍为 F0 `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`，control 为 `90abc796bc4984a70435e05f9d4ca064e0d3fc38`，下一门禁为 Final Content Snapshot；Snapshot、最终复验、Verification Credential、Audit Anchor、Anchor Proof 和 F0→F12 CAS 完成前不得移动 formal，不得生成 S1.3 generation 4 packet。
+- 状态同步范围：仅同步 README、路线锁、PLANS、P5 活动计划、PRODUCT_SENSE、QA index，并追加本日志与 verification-report；未修改 src、schemas、skills、tests、fixture、历史审查、`.codex/runtime` 或 refs。S1.4、M1.1、V1、P5 仍未完成。

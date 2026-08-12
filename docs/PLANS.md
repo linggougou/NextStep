@@ -5,7 +5,7 @@
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
 - 当前活动里程碑：V1 / M1.1 需求与产品真源运行锁累积验收
-- 当前状态：P5-M0 已关闭；CR-005 已通过 `PASS / 98` 独立审查并获用户批准；等待推进 plan_generation 4 和 S1.2 新链，S1.4 未启动
+- 当前状态：S1.2 generation 4 attempt 3 候选已通过 Execution、CV、I/X/P 和 L3 `PASS / 96`，正在等待 Final Content Snapshot；formal 仍为 F0，S1.3 generation 4 尚未生成，S1.4 未启动
 
 ## 当前活动计划
 
@@ -27,7 +27,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。P5-M0、S1.1、S1.2 与 S1.3 已完成旧链正式提升，当前 formal `F0` 为 `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`。M1.1 attempt 1 的 `0/3` 身份缺口已在 CR-004 generation 3 修复为 `3/3`，但 attempt 2 因产品定义语义契约冲突以 `blocked` 结束且无候选。CR-005 已通过 `PASS / 98` 独立审查并获用户批准；下一入口是推进 plan_generation 4、墓碑旧代际，并建立 S1.2 generation 4 attempt 1。正式链按 `F0 -> F12 -> F13` 单向推进；F12 前不得生成 S1.3 packet，M1.1 会签前不启动 S1.4。
+P5 已于 2026-08-08 单独启动。旧链正式提升仅作历史证据，当前 formal `F0` 为 `f3fdd26542e5e562f0b01a9a716d3eb8b46cae36`。M1.1 attempt 1 的 `0/3` 身份缺口已在 CR-004 generation 3 修复为 `3/3`，但 attempt 2 因产品定义语义契约冲突以 `blocked` 结束且无候选。CR-005 已通过 `PASS / 98` 独立审查并获用户批准。S1.2 generation 4 attempt 3 候选 `6cbecde55a1b8092411898a883af510abcd6990e` 已通过 Execution、CV、I/X/P 和 L3 `PASS / 96`，当前等待 Final Content Snapshot；formal promotion 完成前不得生成 S1.3 generation 4 packet，M1.1 会签前不启动 S1.4。
 
 实施顺序保持 P3 已会签结构：
 
