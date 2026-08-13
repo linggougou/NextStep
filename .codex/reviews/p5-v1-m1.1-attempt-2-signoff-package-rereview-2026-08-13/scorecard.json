@@ -1,0 +1,133 @@
+{
+  "review_id": "p5-v1-m1.1-attempt-2-signoff-package-rereview-2026-08-13",
+  "task_id": "M1.1-ATTEMPT-2-USER-SIGNOFF-PACKAGE-R2",
+  "lane": "independent-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-milestone-acceptance-signoff-readiness-v1",
+  "artifact_refs": [
+    "git:f9bbc89b042b063d1fc4367cd9ddebd554142a1a",
+    "formal:84c051f7426ec5d2a9bed70aa02a1f321bd81e11",
+    "control:380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad",
+    "docs/qa/p5-v1-m1.1-acceptance-attempt-2-2026-08-13.md",
+    ".codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-review-2026-08-13/scorecard.json",
+    "docs/change-requests/004-m1-1-cross-stage-fixture-continuity-gap.md",
+    "docs/change-requests/005-product-definition-semantic-contract-gap.md"
+  ],
+  "hard_gates": [
+    {
+      "id": "previous_required_fixes",
+      "status": "pass",
+      "evidence": "验收报告和会签正文已完整列出三个 P2；旧覆盖率已标为不可映射数据，当前可重复口径统一为 148/148 与 90.90%/82.94%/98.40%。"
+    },
+    {
+      "id": "commit_scope",
+      "status": "pass",
+      "evidence": "f9bbc89... 只修改验收报告、审查文档和 .codex 留痕；相对 9aef41a... 的 src/tests/schemas/skills/package/lockfile 均无差异。"
+    },
+    {
+      "id": "formal_control_and_downstream_boundary",
+      "status": "pass",
+      "evidence": "formal 仍为 F13 84c051f...，control 仍为 380e4ba...，pending dispatch=0，registry 仍为 awaiting-user-signoff，control 中无 S1.4 对象。"
+    },
+    {
+      "id": "m1_1_acceptance_preservation",
+      "status": "pass",
+      "evidence": "M1.1 Result 341d36aa... 未重建，PASS / 97、I/X/P 与三个 P2 保持不变。"
+    },
+    {
+      "id": "signoff_effect_semantics",
+      "status": "fail",
+      "evidence": "会签文本一方面要求确认 PC-01..03 可作为 M1.1 正式完成依据，另一方面又声明即使完成会签，M1.1 仍未完成且 S1.4 仍禁止启动。CR-004/005 明确用户会签是 M1.1 关闭条件；正确边界应是会签固化后 M1.1 完成，但 S1.4 仍需单独入口判断/授权。"
+    },
+    {
+      "id": "terminal_review_claim_traceability",
+      "status": "fail",
+      "evidence": "回复声称最终独立文档终审 PASS、必须修复项 0，但仓库内唯一 signoff-package 终审产物仍是上一轮 REVISE / 94，未发现对应 PASS scorecard、verdict 或 Result。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "revision_completeness",
+      "score": 25,
+      "max_score": 25,
+      "reason": "上轮两个具体披露修订均完整落地。",
+      "evidence_refs": ["docs/qa/p5-v1-m1.1-acceptance-attempt-2-2026-08-13.md", "git:f9bbc89b042b063d1fc4367cd9ddebd554142a1a"]
+    },
+    {
+      "id": "evidence_and_ref_integrity",
+      "score": 30,
+      "max_score": 30,
+      "reason": "验收 Result、formal、control 与 S1.4 禁入边界均未被修订提交改变。",
+      "evidence_refs": ["formal:84c051f7426ec5d2a9bed70aa02a1f321bd81e11", "control:380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad"]
+    },
+    {
+      "id": "signoff_state_transition",
+      "score": 10,
+      "max_score": 25,
+      "reason": "会签后的 M1.1 状态与 S1.4 授权边界被混为一谈，导致批准后没有明确、可执行的状态转移。",
+      "evidence_refs": ["docs/qa/p5-v1-m1.1-acceptance-attempt-2-2026-08-13.md", "docs/change-requests/004-m1-1-cross-stage-fixture-continuity-gap.md"]
+    },
+    {
+      "id": "review_traceability",
+      "score": 8,
+      "max_score": 10,
+      "reason": "修订和上轮 REVISE 均有留痕，但声称存在的最终 PASS 终审没有对应产物。",
+      "evidence_refs": [".codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-review-2026-08-13/scorecard.json"]
+    },
+    {
+      "id": "status_honesty",
+      "score": 10,
+      "max_score": 10,
+      "reason": "工作树、提交范围、refs、未 push 和 S1.4 未启动的陈述均准确。",
+      "evidence_refs": ["git:f9bbc89b042b063d1fc4367cd9ddebd554142a1a", "PROJECT_ROUTE_LOCK.md"]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 83,
+    "penalty_total": 0,
+    "final_score": 83,
+    "max_score": 100
+  },
+  "severity_summary": {
+    "P0": 0,
+    "P1": 1,
+    "P2": 1
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "重写会签效果：用户明确批准后，主控应先重新读取 formal/control 并以 expected-old CAS 固化 user sign-off；CAS 成功后将 M1.1 标记为完成，并可关闭 CR-004/CR-005 的 M1.1 会签缺口。V1/P5 仍未完成。",
+    "保留授权隔离：本次会签不授权启动 S1.4；M1.1 会签固化后只允许单独评估 S1.4 入口，生成 packet、编码或派发仍需后续明确动作。不要写成会签后 M1.1 仍未完成或永久禁止 S1.4。",
+    "删除或更正“最终独立文档终审 PASS、必须修复项 0”的既成结论声明；在新的 PASS scorecard/verdict 实际落盘前不得这样表述。",
+    "仅修订会签报告/请求与必要留痕并形成普通文档提交；不改 M1.1 Result、control、formal，不重跑验收，不启动 S1.4。"
+  ],
+  "nice_to_have": [
+    "建议将用户回复拆为两个授权位：A. 批准并授权固化 M1.1 会签；B. 是否授权后续单独启动 S1.4。本轮只请求 A。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "signal": "REVISE",
+      "conclusion": "上轮修订已通过，但会签状态转移与路线锁不一致，且终审 PASS 声明无落盘证据。"
+    },
+    {
+      "role": "Strict Judge",
+      "signal": "REVISE",
+      "score": 83,
+      "conclusion": "验收本体继续有效；必须把 M1.1 完成和 S1.4 启动授权拆开。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "signal": "REVISE",
+      "conclusion": "会签正文同时宣称正式完成依据和会签后仍未完成，属于关键状态语义自相矛盾。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "signal": "REVISE",
+      "score": 83,
+      "conclusion": "暂不建议用户签署当前文字；修正状态转移后可再做一次终审，不重做 M1.1 验收。"
+    }
+  ],
+  "reviewed_at": "2026-08-13T22:20:00+08:00",
+  "verdict_scope": "REVISE 只针对用户会签的状态效果和无证据的终审 PASS 声明；不推翻 M1.1 attempt 2 PASS / 97，也不要求重建任何正式证据。"
+}

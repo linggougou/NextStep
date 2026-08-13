@@ -1981,7 +1981,32 @@
 - 复算：packet（同时排除 `packet_digest`、`dedup_key`）=`sha256:97fec135...`，dedup=`sha256:a8ccbc55...`，Result（仅排除 `result_digest`）=`sha256:341d36aa...`，均匹配；scorecard `100-3=97`。
 - 本地验证：当前 main `9aef41a...` 的 `pnpm check` 为 `148/148`，覆盖率 `90.90% / 82.94% / 98.40%`；`git diff --check` 通过，生产/测试/Schema/依赖相对 F13 无变更。
 - 修订项：补全第三个 P2 风险；修正当前 main 覆盖率口径。两项均为文档级，不重建 Result/control/formal，也不授权 S1.4。
+
+## 2026-08-13 M1.1 Attempt 2 Sign-off Package Rereview
+
+- 结果：`REVISE / 83`，P0/P1/P2=`0/1/1`；上轮两个必修项均关闭，M1.1 `PASS / 97` 保持有效。
+- refs/范围：main=`f9bbc89...`，formal=`84c051f...`，control=`380e4ba...`；文档提交未修改生产/测试/Schema/依赖，pending=0，无 S1.4 对象。
+- 阻塞会签项：会签后 M1.1 状态与 S1.4 授权语义冲突。正确边界为“固化会签后 M1.1 完成；不自动授权 S1.4，只单独评估入口”。
+- 披露项：未发现所称最终 PASS 终审产物；新的 PASS 结论实际落盘前不得作为既成证据报告。
+- 不运行 `pnpm check`：本轮仅审查文档状态语义，前一轮在相同生产内容上的 `148/148` 证据有效。
 - 修订后验证：验收报告 §8 与 §9、独立 verdict 均完整列出三个 P2，并声明均不阻塞 M1.1 会签、由宿主相关里程碑承接；S1.4 仅出现在禁止/未启动语境，M1.1/V1/P5 未误报完成。
 - 覆盖率归属：formal F13 隔离副本与 HEAD `9aef41a...` 独立复跑分别列示，二者均为 `148/148`、Lines `90.90%`、Branches `82.94%`、Functions `98.40%`；旧 `90.74% / 82.75% / 98.40%` 已明确为不可映射到现存工作树的旧运行上下文数据。
-- 最终独立终审：Qwen3.8 Max 只读核验 6/6 项通过，结论 `PASS`、必须修复项 0。未重跑 `pnpm check`，采用用户提供的 HEAD 独立复跑结果；formal/control 保持 `84c051f... / 380e4ba...`。
-- 最终结论：会签包修订完成，可重新提交用户会签；本结论不重建 M1.1 Result，不移动 control/formal，不授权或启动 S1.4。
+- 终审声明状态：此前“最终独立文档终审 PASS、必须修复项 0”的声明无对应产物，已撤回，等待新的独立终审。
+
+## 2026-08-13 M1.1 Attempt 2 会签包修订本轮状态
+
+- 本轮仅修订会签请求、会签后状态效果和必要留痕；保持三个 P2、`PASS / 97` 验收本体、覆盖率口径及 formal/control/Result 不变。
+- 会签前仍为“等待用户会签”。用户明确批准后，主控必须实时重读并确认 formal=`84c051f7426ec5d2a9bed70aa02a1f321bd81e11`、control=`380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad`、Result digest=`sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea`、`plan_generation=4` 未变化，再以实时 expected-old control CAS 固化 user sign-off。
+- CAS 成功后的状态效果：M1.1 标记正式完成，CR-004/CR-005 的 M1.1 会签缺口关闭；V1、P5 仍未完成。本次会签不授权启动 S1.4，固化后只允许单独评估 S1.4 入口，生成 packet、编码、派发仍需后续明确动作。
+- 终审前状态：此前“最终独立文档终审 PASS、必须修复项 0”的声明无对应产物，已撤回；在新的独立终审执行并落盘前，仓库尚无对应 PASS 终审产物。
+- 按用户指令不运行测试、不修改 control/formal/Result、不启动 S1.4，不修改历史 REVISE/94 或 REVISE/83 审查产物。
+
+## 2026-08-13 M1.1 Attempt 2 Sign-off Package Final Review
+
+- 实际产物：`.codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-final-review-2026-08-13/scorecard.json`、`verdict.md`。
+- 裁决：`PASS / 100`，P0/P1/P2=`0/0/0`，六个 hard gate 全部 `pass`，五个维度合计 `100/100`，penalty=0，`required_fixes=[]`；Verifier、Strict Judge、Anti-Slop Judge、Chief Reviewer 均为 PASS。
+- 身份复核：HEAD 基线 `f9bbc89...`，formal=`84c051f...`，control=`380e4ba...`，Result digest=`sha256:341d36aa...`，`plan_generation=4`；Result JCS digest 独立复算匹配，pending dispatch=0，无 S1.4 对象。
+- 状态语义：批准前等待会签；批准后实时重读四项身份并执行 expected-old control CAS；CAS 成功后 M1.1 完成并关闭 CR-004/CR-005 会签缺口，V1/P5 未完成；CAS 失败不固化、不标记完成。本次会签不授权启动 S1.4，只允许后续单独评估入口。
+- 终审完整性：主控对 scorecard 一处自指时间表述作消歧，不改变硬门、评分、证据或 verdict；原 Reviewer 只读复核后返回 `CONFIRMED`，维持 `PASS / 100`。
+- 验证范围：`jq empty`、scorecard 算术/字段/角色、verdict 四节、`git diff --check` 和文档范围检查通过；按用户指令未运行测试，未修改 Result/control/formal，未启动 S1.4。
+- 最终结论：新的 PASS 终审证据已真实落盘，会签包可以重新提交用户会签；用户批准及会签 CAS 尚未发生。

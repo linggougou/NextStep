@@ -1997,6 +1997,29 @@
 - 独立复跑：当前 main `9aef41a...` 执行 `pnpm check` 为 `148/148`，覆盖率 Lines `90.90%`、Branches `82.94%`、Functions `98.40%`；与收口回复中标为“当前 main”的 `90.74% / 82.75% / 98.40%` 不一致，需修正文档口径。
 - 会签透明度：scorecard/Result 为 P2=3，但用户验收报告风险章节只列 2 项，漏披露 dispatch-ack 在验证窗口内发生、因果顺序依赖 control Git 父链这一非阻塞 P2。
 - 裁决：会签包 `REVISE / 94`，P0/P1/P2=`0/1/1`；仅修订风险披露和覆盖率口径，不推翻 `PASS / 97`，不重跑验收、不改 control/formal、不启动 S1.4。
+
+## 2026-08-13 M1.1 Attempt 2 会签包第二轮复审
+
+- 上轮关闭项：提交 `f9bbc89...` 已完整披露三个 P2，并将当前可重复覆盖率统一为 `148/148`、`90.90% / 82.94% / 98.40%`；提交范围仅为文档/留痕，formal/control/Result/S1.4 边界不变。
+- 新 P1：会签请求既称证据可作为 M1.1 正式完成依据，又称完成会签后 M1.1 仍未完成且 S1.4 仍禁止启动。按 CR-004/005，正确效果应是会签固化后 M1.1 完成；本次会签不授权 S1.4，只允许后续单独评估入口。
+- 新 P2：回复声称“最终独立文档终审 PASS、必须修复项 0”，但未找到对应 PASS scorecard/verdict；现有 signoff-package 审查仍为 `REVISE / 94`。
+- 裁决：`REVISE / 83`，P0/P1/P2=`0/1/1`。只修订会签状态效果和终审声明，不重做 M1.1 验收、不改 refs、不启动 S1.4。
 - 修订完成：验收报告与 verdict 已逐项披露三个 P2，并明确三项均不阻塞 M1.1 会签、后续由宿主相关里程碑承接；会签正文删除启动 S1.4 的授权表述，保持 M1.1/V1/P5 未完成。
 - 覆盖率纠偏：formal F13 隔离副本与 HEAD `9aef41a...` 独立复跑均记录为 `148/148`、Lines `90.90%`、Branches `82.94%`、Functions `98.40%`；旧 `90.74% / 82.75% / 98.40%` 只作为无法映射到现存工作树的旧运行上下文记录，不再作为当前 main 口径。
-- 最终终审：Qwen3.8 Max 对当前 diff 执行只读终审，6/6 项通过，结论 `PASS`、必须修复项 0；未运行测试、未修改 control/formal、未启动 S1.4。
+- 终审声明状态：此前“最终独立文档终审 PASS、必须修复项 0”的声明无对应产物，已撤回，等待新的独立终审。
+
+## 2026-08-13 M1.1 Attempt 2 会签包修订本轮状态
+
+- 本轮仅修订会签请求、会签后状态效果和必要留痕；保持三个 P2、`PASS / 97` 验收本体、覆盖率口径及 formal/control/Result 不变。
+- 会签前仍为“等待用户会签”。用户明确批准后，主控必须实时重读并确认 formal=`84c051f7426ec5d2a9bed70aa02a1f321bd81e11`、control=`380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad`、Result digest=`sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea`、`plan_generation=4` 未变化，再以实时 expected-old control CAS 固化 user sign-off。
+- CAS 成功后的状态效果：M1.1 标记正式完成，CR-004/CR-005 的 M1.1 会签缺口关闭；V1、P5 仍未完成。本次会签不授权启动 S1.4，固化后只允许单独评估 S1.4 入口，生成 packet、编码、派发仍需后续明确动作。
+- 终审前状态：此前“最终独立文档终审 PASS、必须修复项 0”的声明无对应产物，已撤回；在新的独立终审执行并落盘前，仓库尚无对应 PASS 终审产物。
+- 按用户指令不运行测试、不修改 control/formal/Result、不启动 S1.4，不修改历史 REVISE/94 或 REVISE/83 审查产物。
+
+## 2026-08-13 M1.1 Attempt 2 会签包最终独立终审
+
+- 终审执行：Qwen3.8 Max 独立 L3 Reviewer 读取当前候选、历史 `REVISE / 94` 与 `REVISE / 83`、CR-004/CR-005 关闭条件及实时 formal/control/Result/plan_generation 身份；未运行 `pnpm check`，未修改候选文档、refs 或正式证据。
+- 终审产物：`.codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-final-review-2026-08-13/scorecard.json` 与 `verdict.md` 已实际落盘。结论 `PASS / 100`，P0/P1/P2=`0/0/0`，六个 hard gate 全部通过，`required_fixes=[]`。
+- 主控复核：scorecard 必填字段、四角色、算术 `100-0=100`、verdict 四节、JSON 与 `git diff --check` 均通过。主控只修正 scorecard 一处自指时间歧义；原 Reviewer 随后只读确认 `CONFIRMED`，维持 `PASS / 100`。
+- 会签效果：批准前保持 `awaiting-user-signoff`；批准后必须实时重读 formal/control/Result/plan_generation 并以实时 expected-old control CAS 固化；CAS 成功后 M1.1 正式完成并关闭 CR-004/CR-005 的 M1.1 会签缺口，V1/P5 仍未完成。本次会签不授权启动 S1.4，只允许后续单独评估入口。
+- 边界：本 PASS 仅证明用户会签包可以重新提交，不代表用户已批准，不执行 user-signoff CAS，不移动 control/formal，不重建 Result，不启动 S1.4，不 push。

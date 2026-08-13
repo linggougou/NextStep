@@ -1,0 +1,173 @@
+{
+  "review_id": "p5-v1-m1.1-attempt-2-signoff-package-final-review-2026-08-13",
+  "task_id": "M1.1-ATTEMPT-2-USER-SIGNOFF-PACKAGE-R3-FINAL",
+  "lane": "independent-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-milestone-acceptance-signoff-readiness-v1",
+  "artifact_refs": [
+    "git:f9bbc89b042b063d1fc4367cd9ddebd554142a1a",
+    "worktree-diff:docs/qa/p5-v1-m1.1-acceptance-attempt-2-2026-08-13.md",
+    "worktree-diff:.codex/reviews/p5-v1-m1.1-attempt-2-2026-08-13/verdict.md",
+    "worktree-diff:.codex/operations-log.md",
+    "worktree-diff:.codex/verification-report.md",
+    "worktree-untracked:.codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-rereview-2026-08-13/",
+    "formal:84c051f7426ec5d2a9bed70aa02a1f321bd81e11",
+    "control:380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad",
+    "control:results/result-milestone-acceptance-m1.1-g4-a2-f72-20260813.json",
+    "control:checkpoint.json",
+    "control:registry.json",
+    ".codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-review-2026-08-13/scorecard.json",
+    ".codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-rereview-2026-08-13/scorecard.json",
+    ".codex/reviews/p5-v1-m1.1-attempt-2-2026-08-13/scorecard.json",
+    "docs/change-requests/004-m1-1-cross-stage-fixture-continuity-gap.md",
+    "docs/change-requests/005-product-definition-semantic-contract-gap.md"
+  ],
+  "hard_gates": [
+    {
+      "id": "three_p2_and_coverage_intact",
+      "status": "pass",
+      "evidence": "验收报告 §8 与 §9、会签 verdict 必须修改节逐项列全三个 P2，与 control Result risks 三项 P2 及已提交 scorecard severity_summary P0/P1/P2=0/0/3 一致；覆盖率当前口径在验收报告 §7、verdict 证据、operations-log、verification-report 统一为 148/148 与 90.90%/82.94%/98.40%，旧 90.74%/82.75%/98.40% 仅以“无法映射到现存工作树的旧运行上下文”语境出现。"
+    },
+    {
+      "id": "awaiting_signoff_and_post_approval_cas_semantics",
+      "status": "pass",
+      "evidence": "实时读取：refs/nextstep/formal=84c051f7426ec5d2a9bed70aa02a1f321bd81e11、refs/nextstep/control=380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad、checkpoint.json plan_generation=4、user_signoff.status=pending、registry M1.1-I-X-P status=awaiting-user-signoff；Result digest 经独立 JCS 复算（仅排除 result_digest）= sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea，与登记一致。四份候选文本均写明：批准前等待会签；批准后先实时重读 formal/control/Result digest/plan_generation=4，再以实时 expected-old control CAS 固化；CAS 成功后 M1.1 正式完成并关闭 CR-004/CR-005 的 M1.1 会签缺口，V1/P5 仍未完成；读取不一致或 CAS 失败则不固化、不标记完成；本次不授权启动 S1.4，固化后仅允许单独评估 S1.4 入口，packet/编码/派发需后续明确动作。"
+    },
+    {
+      "id": "no_post_signoff_incomplete_error_semantics",
+      "status": "pass",
+      "evidence": "对四份候选文件 grep “即使完成本次会签/会签后仍未完成” 类表述无残留；全部文本采用 REVISE/83 要求的正确转移：会签固化成功后 M1.1 完成，S1.4 授权与会签隔离。"
+    },
+    {
+      "id": "no_unsubstantiated_final_pass_claim",
+      "status": "pass",
+      "evidence": "operations-log 与 verification-report 明确记录此前“最终独立文档终审 PASS、必须修复项 0”声明无对应产物、已撤回、等待新的独立终审、本轮正式终审尚未执行；验收报告与会签 verdict 中无任何终审 PASS 既成声明；本终审开始前 .codex/reviews 下不存在 signoff-package PASS 审查包，本目录是首次实际落盘的对应 PASS 终审包。"
+    },
+    {
+      "id": "change_scope_docs_trace_only",
+      "status": "pass",
+      "evidence": "git status/diff：变更仅为 docs/qa 验收报告、会签 verdict、operations-log、verification-report 四处修订加未提交的 REVISE/83 历史审查包；相对 formal F13，src/tests/schemas/skills/package.json/pnpm-lock.yaml 无差异；refs/nextstep/formal 与 refs/nextstep/control 未移动；Result 未重建（digest 复算一致）；control 中 pending_dispatch_messages=[] 且无 S1.4 对象。"
+    },
+    {
+      "id": "date_2026_08_13",
+      "status": "pass",
+      "evidence": "git diff 新增行中出现的全部 6 处日期均为 2026-08-13，无其他日期。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "revision_completeness",
+      "score": 25,
+      "max_score": 25,
+      "reason": "REVISE/83 的四项必修全部落地：会签效果改写为实时重读+expected-old CAS+成功后 M1.1 完成并关闭 CR-004/CR-005 会签缺口；S1.4 授权隔离且保留失败回退语义；无证据终审 PASS 声明已撤回并标注等待新终审；仅文档与留痕修订。",
+      "evidence_refs": [
+        ".codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-rereview-2026-08-13/scorecard.json",
+        "docs/qa/p5-v1-m1.1-acceptance-attempt-2-2026-08-13.md",
+        ".codex/reviews/p5-v1-m1.1-attempt-2-2026-08-13/verdict.md",
+        ".codex/operations-log.md",
+        ".codex/verification-report.md"
+      ]
+    },
+    {
+      "id": "evidence_and_ref_integrity",
+      "score": 30,
+      "max_score": 30,
+      "reason": "本轮终审实时独立读取 formal/control/checkpoint/registry 并与候选文本逐一比对一致；Result digest 独立 JCS 复算匹配；control 提交 380e4ba 为 dcf3e933 的单父提交且只新增 Result 与会签请求、更新 registry/checkpoint；main 相对 F13 无生产/测试/Schema/依赖变化。",
+      "evidence_refs": [
+        "control:380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad",
+        "control:results/result-milestone-acceptance-m1.1-g4-a2-f72-20260813.json",
+        "formal:84c051f7426ec5d2a9bed70aa02a1f321bd81e11",
+        "git:f9bbc89b042b063d1fc4367cd9ddebd554142a1a"
+      ]
+    },
+    {
+      "id": "signoff_state_transition",
+      "score": 25,
+      "max_score": 25,
+      "reason": "状态转移明确且可执行：批准前=等待会签；批准→实时重读四项身份→实时 expected-old control CAS；成功→M1.1 完成、CR-004/CR-005 M1.1 会签缺口关闭、V1/P5 未完成、S1.4 仅留单独评估入口；失败或不一致→保持等待会签。与 CR-004 §7、CR-005 §13 关闭条件一致，且未把 S1.4 写成永久禁止或自动授权。",
+      "evidence_refs": [
+        "docs/change-requests/004-m1-1-cross-stage-fixture-continuity-gap.md",
+        "docs/change-requests/005-product-definition-semantic-contract-gap.md",
+        "docs/qa/p5-v1-m1.1-acceptance-attempt-2-2026-08-13.md"
+      ]
+    },
+    {
+      "id": "review_traceability",
+      "score": 10,
+      "max_score": 10,
+      "reason": "REVISE/94 与 REVISE/83 审查包均保留且未被修改；REVISE/83 轮留痕完整记录新 P1/P2 与裁决；终审 PASS 声明的撤回在两份留痕中均带原声明原文、撤回原因与当前等待状态，满足 REVISE/83 必修项 3 的“删除或更正”要求。",
+      "evidence_refs": [
+        ".codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-review-2026-08-13/scorecard.json",
+        ".codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-rereview-2026-08-13/verdict.md",
+        ".codex/operations-log.md",
+        ".codex/verification-report.md"
+      ]
+    },
+    {
+      "id": "status_honesty",
+      "score": 10,
+      "max_score": 10,
+      "reason": "候选文本的全部状态声明经独立核验为真：等待用户会签、pending dispatch=0、无 S1.4 对象、V1/P5 未完成、无 PASS 终审产物、未提交变更范围准确；未发现夸大或既成化表述。",
+      "evidence_refs": [
+        "control:checkpoint.json",
+        "control:registry.json",
+        ".codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-final-review-2026-08-13/scorecard.json"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100
+  },
+  "severity_summary": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "历史留痕中被更正的旧终审声明行若以“划线保留+更正说明”替代原地替换，审计链会更完整；本轮原地更正是 REVISE/83 必修项明确要求的做法，不构成扣分。",
+    "未来可把用户回复拆为两个授权位：A 批准并授权固化 M1.1 会签；B 是否授权后续单独评估/启动 S1.4。本轮仅请求 A，符合既定边界。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "signal": "PASS",
+      "conclusion": "六项硬门全部通过：三个 P2 与覆盖率口径完整正确；批准前 awaiting-user-signoff、批准后实时重读+expected-old CAS 语义齐备且失败路径明确；无错误状态语义；无无证据终审 PASS 声明；变更范围仅文档/留痕；日期均为 2026-08-13。"
+    },
+    {
+      "role": "Strict Judge",
+      "signal": "PASS",
+      "score": 100,
+      "conclusion": "REVISE/94 与 REVISE/83 的全部必修项经逐项证据核验关闭；身份、摘要、状态机与 CR 关闭条件相互一致，未发现新的可扣分缺陷。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "signal": "PASS",
+      "conclusion": "无模板衰减或复制粘贴错漏：四项身份在全部出现处逐字一致且与实时读取值匹配；dcf3e933 未被误写为会签 CAS 的 expected-old；无空洞承诺或自相矛盾表述。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "signal": "PASS",
+      "score": 100,
+      "conclusion": "会签包修订候选通过终审，可提交用户会签。本 PASS 仅覆盖会签包修订文本与留痕，不改变 M1.1 仍等待用户会签的事实，不执行 CAS，不移动 control/formal，不重建 Result，不授权或启动 S1.4。"
+    }
+  ],
+  "reviewed_at": "2026-08-13T23:58:00+08:00",
+  "verdict_scope": "PASS 仅针对 M1.1 attempt 2 用户会签包修订候选（R3 终审，含未提交工作树变更）。维持 M1.1 attempt 2 验收本体 PASS / 97 不变；M1.1 在用户明确批准且主控完成实时重读与 expected-old control CAS 成功前保持“等待用户会签”；V1、P5 未完成；本次不授权启动 S1.4，固化后仅允许单独评估 S1.4 入口，packet、编码、派发需后续明确动作。",
+  "post_review_delta": {
+    "reviewed_change": "docs/qa/p5-v1-m1.1-acceptance-attempt-2-2026-08-13.md §9 会签引文措辞精化：OLD“确认 PC-01..03 与三类累计连续性证据可作为 M1.1 正式完成依据；批准后请按下述实时读取与 expected-old control CAS 固化 user sign-off。” → NEW“确认 PC-01..03 与三类累计连续性证据满足 M1.1 完成条件；授权主控在重新核对 formal/control/Result/plan_generation 身份后，以实时 expected-old control CAS 固化本次 user sign-off。” 同句内连接词微调（“CAS 成功后将 M1.1 标记为正式完成”“只允许后续单独评估 S1.4 入口”），其他文件与语义不变。",
+    "status": "confirmed",
+    "reviewed_at": "2026-08-13T16:00:00Z",
+    "evidence": [
+      "重读 docs/qa 全文：§1–§8 与 §9 失败回退段落逐字未变，三个 P2、四项身份、覆盖率口径、日期均保持终审时状态；唯一差异为 §9 引文该句。",
+      "“满足 M1.1 完成条件”未引入既成完成语义：M1.1 仍仅在 CAS 成功后标记正式完成，批准前状态仍为“等待用户会签”（§1、§8、§9 后段未变）。",
+      "新措辞显式授权主控在重新核对 formal/control/Result/plan_generation 四项身份后执行实时 expected-old control CAS，并将授权限定为“本次 user sign-off”，与硬门 awaiting_signoff_and_post_approval_cas_semantics 完全一致且比旧“请按下述…固化”更精确。",
+      "S1.4 授权隔离、V1/P5 未完成、三项 P2 不阻塞会签的表述在引文内原样保留；git status 显示其余候选文件与留痕未被触碰。"
+    ]
+  }
+}
