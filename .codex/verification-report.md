@@ -1933,3 +1933,13 @@
 - 产品测试：`pnpm check` 通过 `148/148`，覆盖率 Lines `90.90%`、Branches `82.94%`、Functions `98.40%`；历史恢复后 readiness、非法 non-goal/clarification 状态、source-state 错配、legacy 1.0、来源冒充、跨项目互换、摘要替换与同步篡改均 fail closed。
 - 控制验证：三份 Result 的 RFC8785/JCS 投影摘要复算匹配，packet/dedup/claim/fence/host/candidate/formal 身份一致；control=`d4d7c35ce55d342a5ab96a27721367d9cd813b67`，pending dispatch=0，formal=F12。
 - 门禁结论：通过，仅允许创建 Final Content Snapshot。真实 trusted-host/full、真实用户动作不在本轮证明范围；F13、M1.1、V1、P5 未完成，S1.4 未启动。
+
+## 2026-08-13 S1.3 Generation 4 Final Content Snapshot / Final Verification
+
+- Snapshot 身份：`git:484e634e3a94a289e03cdab92b61d9d78f7de922`，tree `358555b6f9570467f67c2d5da5472f1254459a50`，digest `sha256:ae7bb04db1a758fbbab2d6d40fa301496590c3168f864513d89451026c8391c3`；唯一父为 attempt 3 候选。Write Transaction digest `sha256:f23dc2e013a48b7182eda0585891e624d27d13ee96f57168db5952b850e5e244`。
+- 独立工程复验：唯一 `--no-local` clone detached 到 Snapshot，离线冻结安装后 `pnpm check` 通过 `148/148`；覆盖率 Lines `90.90%`、Branches `82.94%`、Functions `98.40%`，工作树 clean。
+- 产品验证：三类 F12→S1.3 身份、完整 canonical JSON、digest、产品语义连续率 `3/3`；readiness、non-goals source-state、legacy 1.0、非法状态、来源冒充、跨项目互换、摘要替换、同步篡改、Pointer 越界与未冻结输入均 fail closed。
+- 工程与范围：34 个适用 JSON 可解析，预置 empty-input 负例保持 INVALID_JSON；`git fsck --strict`、`git diff --check`、14 条 Snapshot 变更、12 条 transaction integration paths、P3/P4/S4 上游保护、秘密/调试扫描及官方 npm high audit 通过。
+- Credential：`sha256:f1fe4b79ce3b731600740f365cb28b8004f848c1a19c035453cbf9afce6a9b9b`，5855 bytes；原始字节等于 JCS，内容寻址文件名、目录 0700、文件 0600、exclusive temp、hard-link no-replace、文件与父目录 fsync 全部通过。
+- Final Verification Result：`sha256:ad676f6594f3e2d4065f2a41e259f06a3f5e4ba526e83fbf2240a4db3886d290`；packet/dedup/claim/fence/host/control/F12/Snapshot/Transaction/Execution/CV/I-X-P/L3 身份匹配，pending dispatch=0，formal 未移动。
+- 结论：通过，仅允许创建 Audit Anchor。Anchor Verification、Anchor Proof 与 expected-old=F12 的 F12→F13 CAS 尚未执行；M1.1 attempt 2 与用户会签未完成，S1.4 不得启动。

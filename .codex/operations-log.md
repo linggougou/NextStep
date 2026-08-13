@@ -1948,3 +1948,12 @@
 - 工具替代：本工作树未提供 `tsx` 包，首次结果摘要复算在写入前以 `ERR_MODULE_NOT_FOUND` 停止；改为直接导入刚由 `pnpm check` 构建的 `dist/src/domain/canonical-json.js`，先用三份历史 Result 证明算法等价，再生成当前摘要。registry 两次预提交断言误用了顶层键/忽略历史墓碑，均在暂存前停止，无提交或 ref 副作用，随后按实际 schema 和 generation/packet 身份修正。
 - 时间边界：三个 Agent 自报时间与手工 dispatch 记录存在偏差；保留原始自报值，但只用 control 提交父链裁决因果顺序，不把墙钟偏差扩展为新门禁。
 - 当前门禁：仅授权进入 Final Content Snapshot，不等于 F13、M1.1、V1 或 P5 完成；不启动 S1.4，不 push。
+
+## 2026-08-13 S1.3 Generation 4 Final Snapshot 与 Final Verification
+
+- Final Content Snapshot：普通提交 `484e634e3a94a289e03cdab92b61d9d78f7de922`，tree `358555b6f9570467f67c2d5da5472f1254459a50`，唯一父为候选 `0dc22758a9138f7d69ad812d7617eda709d0c392`；Snapshot digest `sha256:ae7bb04db1a758fbbab2d6d40fa301496590c3168f864513d89451026c8391c3`，Write Transaction digest `sha256:f23dc2e013a48b7182eda0585891e624d27d13ee96f57168db5952b850e5e244`。
+- Final Verification：qwen3.8-max high Agent `019ffa61-e1fa-72d0-a619-5f61d702ed35` 在唯一 `git clone --no-local` 隔离副本执行，`pnpm check` 为 `148/148`，覆盖率 Lines `90.90%`、Branches `82.94%`、Functions `98.40%`；三类身份、完整内容、digest 与产品语义连续率 `3/3`。
+- Result 与 Credential：FV Result digest `sha256:ad676f6594f3e2d4065f2a41e259f06a3f5e4ba526e83fbf2240a4db3886d290`；项目外 Credential 为 `evidence:verification-credential-f1fe4b79ce3b731600740f365cb28b8004f848c1a19c035453cbf9afce6a9b9b.json`，5855 bytes，raw SHA-256/JCS/文件名/0700/0600/create-once/no-replace/fsync 与 claim/fence/host/F12/Snapshot/Transaction 绑定经 Agent 和主控双重复核通过。
+- 控制链：packet `sha256:80a0d263...`、dedup `sha256:123c060d...`、claim/fence=`claim-s1.3-fv-g4-a1-f70-20260813 / 70`；control 已以 expected-old CAS 推进至 `46c7cbded6b81c829f15a03df85f05dab60880b7`，pending dispatch=0，formal 保持 F12。
+- 时间与非阻塞风险：早先手工时间字段存在 wall-clock skew，只用 control Git 父链裁决因果顺序；manual-isolated/headless 不证明 trusted-host、真实用户动作或 full 支持；当前 FV dedup 派生字段集与 S1.2 旧包不同，但五处身份一致，无冲突。
+- 当前门禁：允许生成单父 Audit Anchor；Anchor 只允许追加本日志、verification-report 与本次专属 `final-verification.json`。状态入口的 Snapshot/FV 滞后待 F12→F13 CAS 后独立同步，不得污染 Anchor。F13、M1.1、V1、P5 未完成，S1.4 未启动，不 push。
