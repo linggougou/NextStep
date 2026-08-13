@@ -181,9 +181,9 @@ function candidate(frozen = frozenRequirement()) {
   const intent = "/requirement_set/items/0/values/0";
   const goals = "/requirement_set/items/1/values/0";
   const scenarios = "/requirement_set/items/2/values/0";
-  const constraints = "/requirement_set/items/3/values/0";
   const outputs = "/requirement_set/items/4/values/0";
-  const nonGoals = "/requirement_set/items/5/values/0";
+  const nonGoalItemPointer = "/requirement_set/items/5";
+  const nonGoalItem = frozen.requirement_set.items[5]!;
   const productDefinitionId = deriveProductDefinitionId(frozen);
   const semanticSource = fact(frozen, goals).source;
   const actor = derivedFact(frozen, scenarios, "社区志愿者", "actor");
@@ -210,7 +210,7 @@ function candidate(frozen = frozenRequirement()) {
     },
   ];
   return {
-    schema_version: "1.0",
+    schema_version: "2.0",
     record_type: "product-definition-candidate",
     product_definition_id: productDefinitionId,
     frozen_requirement: frozen,
@@ -222,7 +222,14 @@ function candidate(frozen = frozenRequirement()) {
       goals: [fact(frozen, goals)],
       scenarios: [derivedFact(frozen, scenarios, "社区志愿者在离线环境安排每周活动", "scenarios")],
       scope: [fact(frozen, outputs)],
-      non_goals: [fact(frozen, nonGoals)],
+      non_goals: {
+        status: "identified" as const,
+        items: [fact(frozen, `${nonGoalItemPointer}/values/0`)],
+        source: {
+          pointer: nonGoalItemPointer,
+          item_digest: digestJson(nonGoalItem),
+        },
+      },
       success_metrics: [{
         measurement: { kind: "completion-transition" as const },
         target: { semantic_source: semanticSource, required_state: "completed" as const },
@@ -481,7 +488,15 @@ test("三类目标项目 fixture 仅以 manual-isolated 消费者契约验证完
   assert.equal(identities.size, 3);
 });
 
-test("F0 -> F12 累计回放对升级 Frozen Requirement 严格拒绝旧 Product Definition 1.0，并保持未升级项目完整会签链", async () => {
+test("F12 -> S1.3 累计回放保持三类 Frozen Requirement 身份 3/3 连续并拒绝 legacy 1.0", async () => {
+  const legacy = JSON.parse(
+    await readFile(resolve(process.cwd(), "tests/fixtures/product-definition/legacy-1.0-candidate.json"), "utf8"),
+  ) as { readonly product_definition: unknown };
+  assert.throws(
+    () => parseProductDefinitionCandidate(legacy.product_definition),
+    (error: unknown) => error instanceof ProductDefinitionError && error.code === "INVALID_PRODUCT_DEFINITION",
+  );
+
   for (const fixtureName of targetProjectFixtures) {
     const fixture = JSON.parse(
       await readFile(resolve(process.cwd(), `tests/fixtures/product-definition/${fixtureName}.json`), "utf8"),
@@ -498,18 +513,6 @@ test("F0 -> F12 累计回放对升级 Frozen Requirement 严格拒绝旧 Product
     assert.equal(replay.restored.frozen_requirement_id, replay.frozen.frozen_requirement_id);
     assert.equal(digestJson(replay.restored), replayDigest);
 
-    if (fixtureName === "community-workshop" || fixtureName === "expense-reminder") {
-      assert.notEqual(canonicalizeJson(fixture.frozen_requirement), replay.canonical);
-      assert.notEqual(digestJson(fixture.frozen_requirement), replayDigest);
-      assert.notEqual(fixture.product_definition.product_definition_id, deriveProductDefinitionId(replay.restored));
-      assert.throws(
-        () => parseProductDefinitionCandidate(candidate),
-        (error: unknown) => error instanceof ProductDefinitionError && error.code === "INVALID_PRODUCT_DEFINITION",
-      );
-      continue;
-    }
-
-    // F12 后由 Product Definition 2.0 的 S1.3 generation 4 packet 恢复这两类升级 fixture 的成功链。
     const parsed = parseProductDefinitionCandidate(candidate);
     assert.equal(canonicalizeJson(fixture.frozen_requirement), replay.canonical);
     assert.equal(canonicalizeJson(parsed.frozen_requirement), replay.canonical);
@@ -548,6 +551,60 @@ test("F0 -> F12 累计回放对升级 Frozen Requirement 严格拒绝旧 Product
     assert.equal(restoredSigned.product_definition.frozen_requirement_digest, replayDigest);
     assert.equal(restoredSigned.challenge.frozen_requirement_digest, replayDigest);
   }
+});
+
+test("S1.3 candidate-ready 硬门拒绝 constraint 与 clarification 冒充 non-goal", async () => {
+  const constraintFixture = JSON.parse(
+    await readFile(resolve(process.cwd(), "tests/fixtures/product-definition/constraint-as-non-goal.json"), "utf8"),
+  ) as { readonly product_definition: unknown };
+  assert.throws(() => parseProductDefinitionCandidate(constraintFixture.product_definition), ProductDefinitionError);
+
+  const fixture = JSON.parse(
+    await readFile(resolve(process.cwd(), "tests/fixtures/product-definition/expense-reminder.json"), "utf8"),
+  ) as { readonly product_definition: Record<string, unknown> };
+  const value = structuredClone(fixture.product_definition) as Record<string, unknown>;
+  const frozen = value.frozen_requirement as ReturnType<typeof frozenRequirement>;
+  const prd = value.prd as Record<string, unknown>;
+  prd.non_goals = {
+    status: "none",
+    items: [],
+    source: {
+      pointer: "/requirement_set/items/6",
+      item_digest: digestJson(frozen.requirement_set.items[6]),
+    },
+  };
+  assert.throws(() => parseProductDefinitionCandidate(value), ProductDefinitionError);
+});
+
+test("S1.3 candidate-ready 硬门拒绝跨项目 Frozen Requirement 互换", async () => {
+  const fixtures = await Promise.all(["community-workshop", "expense-reminder"].map(async (name) => JSON.parse(
+    await readFile(resolve(process.cwd(), `tests/fixtures/product-definition/${name}.json`), "utf8"),
+  ) as { readonly product_definition: Record<string, unknown> }));
+  const left = structuredClone(fixtures[0]!.product_definition) as Record<string, unknown>;
+  const right = fixtures[1]!.product_definition;
+  left.frozen_requirement = right.frozen_requirement;
+  left.frozen_requirement_digest = right.frozen_requirement_digest;
+  left.product_definition_id = right.product_definition_id;
+  (left.user_journey as Record<string, unknown>).product_definition_id = right.product_definition_id;
+  (left.capability_map as Record<string, unknown>).product_definition_id = right.product_definition_id;
+
+  assert.throws(() => parseProductDefinitionCandidate(left), ProductDefinitionError);
+});
+
+test("S1.3 candidate-ready 硬门拒绝仅替换摘要和同步篡改内嵌对象", async () => {
+  const fixture = JSON.parse(
+    await readFile(resolve(process.cwd(), "tests/fixtures/product-definition/community-workshop.json"), "utf8"),
+  ) as { readonly product_definition: Record<string, unknown> };
+  assert.throws(
+    () => parseProductDefinitionCandidate({ ...fixture.product_definition, frozen_requirement_digest: `sha256:${"a".repeat(64)}` }),
+    ProductDefinitionError,
+  );
+
+  const tampered = structuredClone(fixture.product_definition) as Record<string, unknown>;
+  const frozen = tampered.frozen_requirement as ReturnType<typeof frozenRequirement>;
+  (frozen.requirement_set.items[1]!.values as string[])[0] = "被篡改的产品目标";
+  tampered.frozen_requirement_digest = digestJson(frozen);
+  assert.throws(() => parseProductDefinitionCandidate(tampered), ProductDefinitionError);
 });
 
 test("磁盘指标负例会拒绝 direct goal 三重复用和带目标词的无关 evidence", async () => {
@@ -1015,7 +1072,7 @@ test("成功机器回执精确绑定完整产品定义的 JCS 与摘要", () => 
       canonical_json: canonicalizeJson(record),
       digest: digestJson(record),
       product_definition: record,
-      schema_version: "1.0",
+      schema_version: "2.0",
     },
   });
   assert.equal(receipt.code, "PRODUCT_DEFINITION_ACCEPTED");

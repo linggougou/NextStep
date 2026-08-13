@@ -231,15 +231,15 @@ test("freeze requires one exact prior frozen version and rejects conflicting his
 
 test("historical version 1 Frozen Requirement remains independently recoverable", async () => {
   const fixture = JSON.parse(await readFile(
-    resolve(process.cwd(), "tests/fixtures/product-definition/expense-reminder.json"),
+    resolve(process.cwd(), "tests/fixtures/requirement-freeze/expense-reminder.json"),
     "utf8",
-  )) as { readonly frozen_requirement: unknown };
+  )) as { readonly known_frozen_records: readonly unknown[] };
 
-  const recovered = recoverFrozenRequirement(fixture.frozen_requirement);
+  const recovered = recoverFrozenRequirement(fixture.known_frozen_records[0]);
 
   assert.equal(recovered.requirement_set_version, 1);
   assert.equal(recovered.requirement_set.requirement_set_id, "req-expense-reminder");
-  assert.equal(recovered.confirmation.confirmation_id, "confirm-expense-reminder");
+  assert.match(recovered.confirmation.confirmation_id, /expense-reminder.*v1/);
 });
 
 test("freeze fails closed without a trusted execution context", () => {
