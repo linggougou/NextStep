@@ -1901,3 +1901,11 @@
 - refs 同步：`main` 以 `git merge --ff-only refs/nextstep/formal` 从 `1fc2eb42f1d399df1aa37eec244f3229a123af89` 快进到 `8540763a9719cda5c5632b68bb770c95f0ceaecf`；`refs/nextstep/formal` 未移动，`refs/nextstep/control` 仍为 `62b78f035df2512ba35560a67aa3b200737ec52c`。
 - 状态入口：已同步 `PROJECT_ROUTE_LOCK.md`、`README.md`、`docs/PLANS.md`、`docs/PRODUCT_SENSE.md`、`docs/qa/index.md` 和 P5 活动计划，统一写明 S1.2 generation 4 已正式提升到 F12、main 已包含 F12、S1.3 generation 4 仅规划且 packet 未创建、S1.4 未启动、M1.1/V1/P5 尚未完成；P3 的 18 个小里程碑与门禁未改。
 - 验证口径：本轮仅涉及文档、状态入口、审查证据和项目留痕，没有生产代码、Schema、测试或 fixture 变化，因此不重复运行 `pnpm check`；沿用绑定 F12 Final Verification 的 `126/126` 本地证据，并执行 `git diff --check` 及身份/文件存在性复核。
+
+## 2026-08-13 S1.3 Generation 4 持续开发启动
+
+- 用户授权自主规划和持续开发，要求各功能通过独立 worktree 分派第三方 Claude Code 或 OpenCode，验收合格后回收对应 Agent。
+- 路线判断：当前属于 P5 / V1 / M1.1 / S1.3，服务 F12 -> F13 阶段出口；CR-005 已批准，F12 已完成，因此允许生成 S1.3 generation 4 packet，但 packet 持久化前不编码。
+- 并行边界：domain/schema、receipt/CLI、fixture/Skill、候选前累计硬门四条互斥写入线；主控负责 control、集成、完整验证和门禁。
+- 工具替代：Claude Code `2.1.227` 与 OpenCode `1.18.16` 可用，dmux 不存在；使用独立 Git worktree 与后台 CLI 会话替代，隔离和验收规则不变。
+- 非目标：不改变已会签里程碑、验收门禁、产品定位、技术栈或七字段总体模型；不启动 S1.4，不 push；失败时 formal 停留 F12。
