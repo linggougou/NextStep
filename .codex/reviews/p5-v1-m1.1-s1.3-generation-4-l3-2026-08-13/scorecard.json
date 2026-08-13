@@ -1,0 +1,132 @@
+{
+  "review_id": "s1.3-g4-l3-20260813",
+  "task_id": "S1.3-generation-4-L3-attempt-1",
+  "lane": "P5/V1/M1.1/S1.3",
+  "review_level": "L3",
+  "rubric_id": "nextstep-s1.3-product-definition-2.0-l3-v1",
+  "artifact_refs": [
+    "git:0f06ba44079f55f6d5b9235342ac7229b2efb8ca",
+    "refs/nextstep/formal:8540763a9719cda5c5632b68bb770c95f0ceaecf",
+    "refs/nextstep/control:gate-requests/gate-independent-review-s1.3-g4-a1-20260813.json",
+    "refs/nextstep/control:results/result-execution-s1.3-g4-a2-20260813.json",
+    "refs/nextstep/control:results/result-candidate-verification-s1.3-g4-a1-20260813.json",
+    "refs/nextstep/control:results/result-product-interaction-s1.3-g4-a1-20260813.json"
+  ],
+  "hard_gates": [
+    {
+      "id": "candidate_identity_and_allowlist",
+      "status": "pass",
+      "evidence": "candidate=0f06ba4, tree=e07b451d, parent=5c17d5a, F12 ancestor verified; 17 changed paths covered."
+    },
+    {
+      "id": "execution_cv_ixp_binding",
+      "status": "pass",
+      "evidence": "Execution/CV/I-X-P bind the same candidate and subject digest sha256:38af3398..."
+    },
+    {
+      "id": "product_definition_2_and_continuity",
+      "status": "pass",
+      "evidence": "Product Definition 2.0, Machine Receipt 1.0 envelope/2.0 subject, three-project continuity 3/3."
+    },
+    {
+      "id": "fail_closed_unready_requirement",
+      "status": "fail",
+      "evidence": "Historical recovery accepts non-unresolved rejected/deferred states; source item status is not matched to product non-goals status."
+    },
+    {
+      "id": "no_p0_p1_defect",
+      "status": "fail",
+      "evidence": "One P1 readiness defect remains; no P0 found."
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "路线与 CR-005 一致性",
+      "score": 14,
+      "max_score": 15,
+      "reason": "主体顺序与 F12 到 F13 单向边界一致，但 S1.3 未重复执行 CR-005 当前 readiness。",
+      "evidence_refs": ["docs/change-requests/005-product-definition-semantic-contract-gap.md", "src/domain/product-definition.ts"]
+    },
+    {
+      "name": "Product Definition 2.0 线格式",
+      "score": 20,
+      "max_score": 20,
+      "reason": "2.0 专用结构和 legacy 1.0 拒绝边界完整。",
+      "evidence_refs": ["schemas/v2/product-definition.schema.json", "src/domain/product-definition.ts"]
+    },
+    {
+      "name": "S1.2 readiness 与非目标语义",
+      "score": 10,
+      "max_score": 20,
+      "reason": "历史恢复路径没有在 S1.3 入口重新执行当前字段 readiness，也未绑定源状态与产品状态。",
+      "evidence_refs": ["src/domain/requirement-set.ts", "src/domain/product-definition.ts"]
+    },
+    {
+      "name": "来源绑定与产品语义",
+      "score": 15,
+      "max_score": 15,
+      "reason": "三类来源、完整内容、摘要和产品语义连续率为 3/3。",
+      "evidence_refs": ["tests/domain/product-definition.test.ts", "tests/domain/requirement-freeze.test.ts"]
+    },
+    {
+      "name": "Machine Receipt、CLI、Skill、fixture",
+      "score": 14,
+      "max_score": 15,
+      "reason": "消费者迁移完整，剩余扣分来自同一 readiness 缺口的入口影响。",
+      "evidence_refs": ["src/domain/machine-receipt.ts", "src/cli/product-definition.ts", "skills/nextstep/SKILL.md"]
+    },
+    {
+      "name": "控制证据与审查范围",
+      "score": 15,
+      "max_score": 15,
+      "reason": "Execution、CV、I/X/P 和 L3 均绑定同一候选，未冒领后续门禁。",
+      "evidence_refs": ["refs/nextstep/control"]
+    }
+  ],
+  "penalties": [
+    {
+      "severity": "P1",
+      "deduction": 5,
+      "reason": "未就绪 Frozen Requirement 可进入 S1.3 解析边界。",
+      "evidence_refs": ["src/domain/product-definition.ts", "src/domain/requirement-set.ts"]
+    },
+    {
+      "severity": "P2",
+      "deduction": 1,
+      "reason": "状态入口与当前 L3 control 状态滞后。",
+      "evidence_refs": ["PROJECT_ROUTE_LOCK.md", "README.md", "docs/PLANS.md"]
+    }
+  ],
+  "totals": {
+    "raw_score": 88,
+    "penalty_total": 6,
+    "final_score": 82,
+    "max_score": 100
+  },
+  "severity_summary": {
+    "P0": 0,
+    "P1": 1,
+    "P2": 1
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "S1.3 解析前执行当前 Requirement Set readiness 校验。",
+    "阻断 non_goal_gaps 的 rejected/deferred/unresolved 和 clarification_gaps 的非 none 状态。",
+    "校验 non_goals.source item 状态与 Product Definition non_goals.status 一致。",
+    "补充历史未就绪和状态错配负例测试。"
+  ],
+  "nice_to_have": [],
+  "risks": [
+    {
+      "severity": "P2",
+      "risk": "当前 fixture 和 I/X/P 仅证明 manual-isolated consumer contract，不证明 trusted-host/full 支持。"
+    }
+  ],
+  "reviewers": [
+    {"role": "Verifier", "signal": "REVISE", "conclusion": "未就绪需求 fail-closed hard gate 失败。"},
+    {"role": "Strict Judge", "signal": "REVISE", "score": 82, "conclusion": "主体实现完整，但 readiness/source-state 边界存在 P1 缺陷。"},
+    {"role": "Anti-Slop Judge", "signal": "PASS", "conclusion": "未发现模板化或证据包装问题。"},
+    {"role": "Chief Reviewer", "signal": "REVISE", "score": 82, "conclusion": "完成最小修复和负例验证后再审查。"}
+  ],
+  "reviewed_at": "2026-08-13T05:58:00Z"
+}

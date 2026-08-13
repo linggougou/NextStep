@@ -1,6 +1,6 @@
 # P5 产品落地实施里程碑
 
-状态：进行中；S1.2 generation 4 已正式提升到 F12，formal 为 `8540763a9719cda5c5632b68bb770c95f0ceaecf`；main 已 ff-only 同步并包含 F12。S1.3 generation 4 仅处于规划，packet 未创建；S1.4 未启动。M1.1、V1、P5 尚未完成
+状态：进行中；S1.2 generation 4 已正式提升到 F12。S1.3 generation 4 attempt 3 已通过 CV、I/X/P 与 L3 `PASS / 98`，当前等待 Final Content Snapshot；formal 仍为 F12。S1.4 未启动，F13、M1.1、V1、P5 尚未完成
 启动日期：2026-08-08
 
 ## 1. 阶段目标
@@ -11,9 +11,9 @@
 
 - 生命周期阶段：`S5 开发落地`。
 - 项目里程碑：`P5 产品落地`。
-- 当前活动里程碑：`V1 / M1.1 需求与产品真源运行锁` 缺口修复；S1.2 generation 4 已正式提升到 F12。当前整理 F12 到 S1.3 的交接；S1.3 generation 4 仅处于规划，packet 未创建；S1.4 未启动。
+- 当前活动里程碑：`V1 / M1.1 需求与产品真源运行锁` 缺口修复；S1.2 generation 4 已正式提升到 F12，S1.3 generation 4 已通过候选后 L3，当前执行 Final Content Snapshot；S1.4 未启动。
 - 本轮启动授权：用户于 2026-08-08 在 P4 会签归档后明确要求继续，授权单独启动 P5 并建立实施里程碑。
-- 路线性质：沿用已会签路线，不改变产品定位、主交互载体、技术栈、版本范围或验收门禁。CR-005 用户门禁已通过，S1.2 generation 4 已按 `F0→F12` 正式提升；当前只允许规划 S1.3 generation 4，不得创建 packet、编码或绕过大里程碑门禁进入 S1.4。
+- 路线性质：沿用已会签路线，不改变产品定位、主交互载体、技术栈、版本范围或验收门禁。CR-005 用户门禁已通过，S1.2 generation 4 已按 `F0→F12` 正式提升；S1.3 generation 4 候选已通过 L3，但 F13 前仍不得宣称正式完成或绕过 M1.1 进入 S1.4。
 
 ## 3. 正式上游
 
@@ -158,4 +158,4 @@ P5-M0 不是新增产品版本，不改变 P3 的 PC 主版本归属，也不能
 
 P5 的最终阶段出口是：V1..V4 和 Final Acceptance 全部通过本地可重复验证、独立 I/X/P、适用 Profile 验收和用户会签；交付清单、正式 OID、已知风险、回滚与 PC-20.AR 状态可追溯。此前 P5 保持进行中，不得归档本计划或宣告完整产品完成。
 
-当前 M1.1 attempt 1 的正式结论为 `退回 / 73`。CR-004 generation 3 已使三类累计身份连续率达到 `3/3`，但 S1.3 attempt 2 因产品定义生产契约冲突以 `blocked` 结束且未创建候选。CR-005 已获用户批准。S1.2 generation 4 已正式提升到 F12，formal 为 `8540763a9719cda5c5632b68bb770c95f0ceaecf`，main 已 ff-only 同步并包含 F12。当前只允许规划 S1.3 generation 4，packet 未创建；后续顺序为 `F12→S1.3→F13→M1.1 attempt 2→用户会签`。S1.4 未启动，M1.1、V1 和 P5 均未完成。
+当前 M1.1 attempt 1 的正式结论为 `退回 / 73`。CR-004 generation 3 已使三类累计身份连续率达到 `3/3`，CR-005 已获用户批准。S1.2 generation 4 已正式提升到 F12；S1.3 generation 4 attempt 3 候选 `0dc22758...` 已通过 CV、I/X/P 和 L3 `PASS / 98`，下一步为 Final Content Snapshot、Final Verification、Credential、Anchor、Proof 与 expected-old=F12 的 F12→F13 CAS。之后才执行 `M1.1 attempt 2→用户会签`。S1.4 未启动，F13、M1.1、V1 和 P5 均未完成。

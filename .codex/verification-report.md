@@ -1898,3 +1898,38 @@
 - 证据：锚后 readiness 审查、F12 handoff 审查、context summary、operations-log 和 verification-report 的追加内容均已恢复；F12 已跟踪 `final-verification.json` 与保全副本摘要一致。
 - 状态：S1.3 generation 4 仅规划，packet 未创建；pending dispatch 为 `[]`；S1.4 未启动；M1.1、V1、P5 尚未完成。
 - 本轮没有生产代码、Schema、测试或 fixture 改动，不运行 `pnpm check`；复用精确 F12 Final Verification 的 `126/126` 证据，新增 `git diff --check` 通过。
+
+## 2026-08-13 S1.3 Generation 4 Attempt 1 Blocked Control Verification
+
+- 结论：通过。允许以 expected-old `3eb9213e35c5ae3421183b607a5a968d3047539d` 将 control CAS 到 `9e7f8cdaae35ae41ddc59b5904745f279eb0678d`；该结论仅确认 attempt 1 blocked 留痕，不构成 S1.3 candidate-ready 或任何产品门禁通过。
+- 父链与范围：`9e7f8cd` 唯一父为 `3eb9213e`；差异仅为 `checkpoint.json`、`registry.json`、blocked Execution Result 与 cancel tombstone，`git diff --check` 和四份 JSON 解析通过。
+- 摘要：Result 以 RFC 8785/JCS 投影排除 `result_digest` 后复算为 `sha256:46c8cb57565c1fe326a7aa95d2acb41cbaf9ffcf7927c7a0ed4ceae8e90e3e60`，与记录一致。
+- 状态一致性：S1.3 attempt 1 为 `blocked`，tombstone 的 `minimum_valid_task_attempt=2`，registry `candidate_digest=null`，checkpoint `pending_dispatch_messages=[]`；formal 仍为 F12 `8540763a9719cda5c5632b68bb770c95f0ceaecf`。
+- 产品边界：既有候选 `0f06ba4` 的 `pnpm check 146/146` 与三类连续率 `3/3` 证据保持有效，但必须由 corrected attempt 2 重新固定后才能进入 CV/I/X/P/L3。
+- 第三方替代：Claude Code 无输出超时，OpenCode provider 返回 404；以独立 worktree 的本地机械复验替代当前只读审查，不跳过后续独立产品门禁。
+
+## 2026-08-13 S1.3 Generation 4 Attempt 2 Pre-Ack Verification
+
+- 控制身份：corrected packet `sha256:adc0ce77c07178838f7ddd246e35f47ed5af563bd1d7d24066ec1eac1c40d5e4`、dedup `sha256:bebbaaf99d5c7579a156518aba7435482f9ac39ee8f0f46ef0fa4a377e351938`、dispatch payload `sha256:8a1df7ca9b6537987038e61301a6ae1bb15c12e164d44b46762b1f8952cdbe34` 均由项目既有 RFC 8785/JCS 工具复算匹配。
+- 最小差异：相对 attempt 1，排除 packet 自身身份、attempt、时间和 working parent 后，只有 `allowed_paths`、`worker_slices`、`candidate_form` 三个对象变化；业务契约、required outputs、failure rules 与禁止范围未改变。新增允许路径精确为 `tests/domain/requirement-freeze.test.ts`。
+- 产品验证：`pnpm check` 为 `146/146`；覆盖率 `90.78% / 82.71% / 98.38%`。受影响测试为 `66/66`，覆盖 Product Definition 2.0、legacy 1.0 rejection、Machine Receipt/CLI 双层版本、Skill/fixture、三类累计 `3/3` 与攻击负例。
+- Git/范围：候选 `0f06ba4` 为单父提交，F12 是其祖先；候选相对 `5972c11` 的 changed paths 均在 corrected allowlist，`git diff --check`、JSON 和秘密/调试扫描通过；两个第三方只读 worktree 均 clean。
+- 工具替代：Claude Code 无输出通道异常，OpenCode 因 OpenRouter 余额不足无法生成结论。替代审查正在隔离子代理中运行；在其返回前，本节只构成 pre-ack 验证，不构成 candidate-ready、CV、I/X/P、L3 或 S1.3 完成结论。
+- 当前门禁：`refs/nextstep/control=f91a8d5935d25f8462b60f33ceb9c9f7245f61ec`，claim/fence 为 `claim-s1.3-g4-a2-f62-20260813` / `62`，pending dispatch 为 1；formal 仍为 F12。下一步仅允许完成同一 packet 的宿主绑定、dispatch-ack 与 Execution Result。
+
+## 2026-08-13 S1.3 Generation 4 CV / I-X-P Host Replacement
+
+- 候选 Execution Result 已固定为 candidate-ready：subject `0f06ba4` / tree `e07b451d...` / actual parent `5c17d5a...` / digest `sha256:38af3398...`；Execution Result digest `sha256:68513a2a...`。
+- CV packet digest `sha256:66d44379...`，claim/fence=`claim-s1.3-cv-g4-a1-f63-20260813` / `63`；I/X/P packet digest `sha256:b3eee70e...`，claim/fence=`claim-s1.3-ixp-g4-a1-f64-20260813` / `64`。
+- 用户要求正式 Agent 统一切换为 `gpt-5.6-luna` xhigh。Claude Code/OpenCode 仅保留为工具诊断，不进入正式 gate result；Luna CV 与 Luna I/X/P 正在独立只读复验。
+- 门禁状态：尚无正式 CV 或 I/X/P Result，pending dispatch=2，formal 保持 F12；本节不构成双门禁通过或 L3 启动授权。
+
+## 2026-08-13 S1.3 Generation 4 Attempt 3 CV / I-X-P / L3 Verification
+
+- 候选身份：commit `0dc22758a9138f7d69ad812d7617eda709d0c392`，tree `2d394f7231200247a6b62ae7c7e77cf7ffc5f13d`，parent `0f06ba44079f55f6d5b9235342ac7229b2efb8ca`，subject digest `sha256:ce75d98e12e2d2b2f990550b057a82c0c992a470d165cfc01723bc9124dd0ff0`；F12 是其祖先。
+- Candidate Verification：通过，P0/P1/P2=`0/0/1`；Result digest `sha256:5158af52474e112a5bc5682bb6f16e2ac058c8c0bd9a955260ba2eed433f3739`。
+- I/X/P：I、X、P 均通过，`98/100`，P0/P1/P2=`0/0/1`；三类累计连续率 `3/3`，Result digest `sha256:09b7efa94e101d1354a6c38f28205178635355919b105bb07e1ee6889ab8881d`。
+- L3：`PASS / 98`，P0/P1/P2=`0/0/3`，`required_fixes=[]`；Result digest `sha256:3a0744341ff787e1d4279462a1ebf2854372284d4bba4065e70867682f49ed8a`。审查产物位于 `.codex/reviews/p5-v1-m1.1-s1.3-generation-4-l3-a2-2026-08-13/`，旧 `REVISE / 82` 证据保持不变。
+- 产品测试：`pnpm check` 通过 `148/148`，覆盖率 Lines `90.90%`、Branches `82.94%`、Functions `98.40%`；历史恢复后 readiness、非法 non-goal/clarification 状态、source-state 错配、legacy 1.0、来源冒充、跨项目互换、摘要替换与同步篡改均 fail closed。
+- 控制验证：三份 Result 的 RFC8785/JCS 投影摘要复算匹配，packet/dedup/claim/fence/host/candidate/formal 身份一致；control=`d4d7c35ce55d342a5ab96a27721367d9cd813b67`，pending dispatch=0，formal=F12。
+- 门禁结论：通过，仅允许创建 Final Content Snapshot。真实 trusted-host/full、真实用户动作不在本轮证明范围；F13、M1.1、V1、P5 未完成，S1.4 未启动。

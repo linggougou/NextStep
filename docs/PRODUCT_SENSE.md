@@ -73,7 +73,7 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 
 - 当前里程碑：P5 / V1 / M1.1 需求与产品真源运行锁
 - 当前生命周期阶段：S5 开发落地中的缺口处理与变更门禁
-- 当前状态：S1.2 generation 4 已正式提升到 F12，formal 为 `8540763a9719cda5c5632b68bb770c95f0ceaecf`；main 已 ff-only 同步并包含 F12。S1.3 generation 4 仅处于规划，packet 未创建，S1.4 未启动。M1.1、V1、P5 尚未完成。
+- 当前状态：S1.2 generation 4 已正式提升到 F12；S1.3 generation 4 attempt 3 已通过 CV、I/X/P 与 L3 `PASS / 98`，等待 Final Content Snapshot。formal 仍为 F12，S1.4 未启动。F13、M1.1、V1、P5 尚未完成。
 - 当前正式状态、边界和下一入口以 `PROJECT_ROUTE_LOCK.md` 与 `docs/PLANS.md` 为准。
 
 ## S3 已会签交付物
@@ -92,6 +92,6 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 
 ## 当前交付物
 
-- P5 活动计划：`docs/exec-plans/active/p5-product-implementation-milestones.md`，S1.2 generation 4 已正式提升到 F12；当前整理 F12 到 S1.3 的交接，S1.3 generation 4 仅处于规划且 packet 未创建
+- P5 活动计划：`docs/exec-plans/active/p5-product-implementation-milestones.md`，S1.3 generation 4 attempt 3 已通过 L3，当前等待 Final Content Snapshot
 - P3 版本与里程碑拆解：`docs/exec-plans/completed/p3-version-and-milestone-breakdown.md`，已会签并归档
-- 当前变更入口：`docs/change-requests/005-product-definition-semantic-contract-gap.md`，已批准；S1.2 generation 4 的 F0→F12 先行链已完成，当前仅整理 F12 到 S1.3 的交接
+- 当前变更入口：`docs/change-requests/005-product-definition-semantic-contract-gap.md`，已批准；F0→F12 先行链和 S1.3 候选审查已完成，当前执行 F12→F13 的最终证据链

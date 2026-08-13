@@ -1,6 +1,14 @@
 # S1.3 Generation 4 执行计划
 
-状态：规划完成，等待 Execution Packet 持久化后实施。
+状态：generation 4 attempt 3 候选已通过 CV、I/X/P 与 L3 `PASS / 98`；当前进入 Final Content Snapshot，formal 仍为 F12。
+
+## 0. 当前恢复点
+
+- 候选：`0dc22758a9138f7d69ad812d7617eda709d0c392`，全量 `pnpm check` 为 `148/148`，三类身份与产品语义连续率 `3/3`。
+- attempt 1：仅控制范围声明不完整，不代表产品实现失败；保留 blocked Result 与 tombstone，不包装为 candidate-ready。
+- attempt 2：corrected packet 已关闭 allowlist 缺口并形成旧候选；L3 `REVISE / 82` 发现 readiness/source-state P1。
+- attempt 3：只修改 `src/domain/product-definition.ts` 与 `tests/domain/product-definition-v2.test.ts` 关闭该 P1；CV 与 I/X/P 均通过，L3 attempt 2 为 `PASS / 98`。
+- formal 在 Final Snapshot、Final Verification、Credential、Anchor、Proof 与 F12→F13 CAS 全部通过前保持 F12；M1.1 用户会签前不启动 S1.4。
 
 ## 1. 控制面
 
@@ -60,3 +68,10 @@
 ## 5. 候选后门禁
 
 依次执行独立 CV 与 I/X/P，二者通过后运行 L3；再执行 Final Content Snapshot、Final Verification、项目外 Credential、Audit Anchor、Anchor Verification、Anchor Proof 和 expected-old=F12 的 F12 -> F13 CAS。任一步失败均停留 F12，不进入 M1.1 attempt 2 或 S1.4。
+
+## 6. F13 与 M1.1 停点
+
+1. F12 -> F13 成功后，以 ff-only 同步 main，并以独立普通提交同步状态入口；不 push。
+2. 生成 M1.1 attempt 2 累积验收任务，验证三类 S1.1 -> S1.2 -> S1.3 连续链及 PC-01..PC-03。
+3. M1.1 通过后停在用户会签门禁，明确报告业务能力、formal/control/main、风险与下一里程碑。
+4. 未获用户会签前不创建 S1.4 packet，不编码 S1.4。

@@ -31,7 +31,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - Change Intake、恢复、Final Acceptance、交付和宿主归档边界通过故障注入和反扫验证。
   - V1..V4 与 Final Acceptance 分别完成本地验证、适用验收和用户会签。
 - 阶段出口：V1..V4 和 Final Acceptance 全部通过；正式 OID、交付清单、风险、回滚和 PC-20.AR 状态可追溯，并由用户明确确认 P5 产品落地完成。
-- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；旧链正式提升仅作历史证据。CR-004 generation 3 已把跨阶段 Frozen Requirement 身份、完整内容和 digest 连续性修复为 `3/3`，但 M1.1 attempt 1 仍为退回，CR-005 已按第四轮独立复审 `PASS / 98` 获用户批准。S1.2 generation 4 已正式提升到 F12，formal 为 `8540763a9719cda5c5632b68bb770c95f0ceaecf`，main 已 ff-only 同步并包含 F12。S1.3 generation 4 仅处于规划，packet 未创建；协议固定为 `F0 -> F12 -> F13` 两段式单向推进，M1.1 新链通过前不得进入 S1.4。M1.1、V1 和 P5 仍未完成。
+- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；旧链正式提升仅作历史证据。CR-004 generation 3 已把跨阶段 Frozen Requirement 身份、完整内容和 digest 连续性修复为 `3/3`，但 M1.1 attempt 1 仍为退回，CR-005 已按第四轮独立复审 `PASS / 98` 获用户批准。S1.2 generation 4 已正式提升到 F12；S1.3 generation 4 attempt 3 已实现 Product Definition 2.0，CV 与 I/X/P 通过，L3 为 `PASS / 98`，当前仅授权进入 Final Content Snapshot。formal 仍为 F12 `8540763a9719cda5c5632b68bb770c95f0ceaecf`；协议固定为 `F0 -> F12 -> F13` 两段式单向推进，M1.1 新链通过前不得进入 S1.4。F13、M1.1、V1 和 P5 仍未完成。
 - 明确非目标：
   - 不恢复 NextStep Web/UI 候选分支。
   - 不引入常驻服务、数据库、远程控制面或通用多 Agent 编排平台。
@@ -43,7 +43,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - 不改变已会签产品、交互、S4/P3/P4 或验收边界；需要改变时先进入 Change Request。
 - 禁止提前进入的阶段：S7 最终发布判断和 S8 交付归档；V1..V4 也不得跳过前序门禁并行宣告完成。
 - 允许进入下一阶段的条件：P5 Final Acceptance 通过本地可重复验证、独立验收和用户会签；若实现要求改变已会签产品、交互、技术、版本范围、正式提升或验收边界，必须先完成 Change Request。
-- 当前状态：进行中；S1.2 generation 4 已正式提升到 F12，formal 为 `8540763a9719cda5c5632b68bb770c95f0ceaecf`；main 已 ff-only 同步并包含 F12。S1.3 generation 4 仅处于规划，packet 未创建；S1.4 未启动，M1.1、V1、P5 尚未完成
+- 当前状态：进行中；S1.2 generation 4 已正式提升到 F12。S1.3 generation 4 attempt 3 候选为 `0dc22758a9138f7d69ad812d7617eda709d0c392`，CV、I/X/P 与 L3 已通过，下一门禁是 Final Content Snapshot；formal 仍为 F12，S1.4 未启动，F13、M1.1、V1、P5 尚未完成
 
 ## 2.1 里程碑路线图
 
@@ -59,7 +59,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
 | S4 技术架构 | 基于已会签的 Skill 交互真源和 S4 技术输入补充契约明确怎么实现 | 架构、技术栈、Interaction Source 模型、数据模型、风险与回滚 | 技术路线、高风险点和真源写入一致性可验证 | 独立技术审查与用户确认 | 门禁通过 |
 | P3 版本与里程碑拆解 | 把完整项目拆成版本路线、大里程碑和小里程碑 | 版本路线图、大里程碑计划、小里程碑清单、验收矩阵 | 每个小里程碑有输入、输出、DoD、测试方式、非目标和验收方式 | 用户确认 | 门禁通过 |
 | P4 执行机制设计 | 定义执行任务包、测试验收、合入、交互验收、产品验收和变更管理机制 | 设计文档、流程图、状态机、数据模型 | 执行、测试、交互验收、合入、变更可闭环 | 独立规划审查与用户确认 | 门禁通过 |
-| P5 产品落地 | 按已确认小里程碑逐步实现并合入大里程碑 | 可运行产品、测试报告、交互验收报告、产品验收报告、交付清单 | 本地验证、交互验收和产品验收通过；含 UI 分支额外通过 UI 还原验收 | 版本与阶段会签 | 进行中（S1.2 generation 4 已正式提升到 F12；S1.3 generation 4 仅规划，packet 未创建） |
+| P5 产品落地 | 按已确认小里程碑逐步实现并合入大里程碑 | 可运行产品、测试报告、交互验收报告、产品验收报告、交付清单 | 本地验证、交互验收和产品验收通过；含 UI 分支额外通过 UI 还原验收 | 版本与阶段会签 | 进行中（S1.3 generation 4 已通过 L3，等待 Final Content Snapshot；formal 仍为 F12） |
 
 ## 3. 产品真源
 
@@ -109,7 +109,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
 
 - Backlog：待建立。
 - Change Request：`docs/change-requests/index.md`
-- 当前阶段缺口：M1.1 attempt 1 为 `退回 / 73`；CR-004 generation 3 将身份连续性修复为 `3/3`，CR-005 已通过 `PASS / 98` 独立审查并获用户批准。S1.2 generation 4 已正式提升到 F12，formal 为 `8540763a9719cda5c5632b68bb770c95f0ceaecf`；main 已 ff-only 同步并包含 F12。S1.3 generation 4 仅处于规划，packet 未创建；S1.4 未启动，M1.1 会签前不得启动 S1.4。
+- 当前阶段缺口：M1.1 attempt 1 为 `退回 / 73`；CR-004 generation 3 将身份连续性修复为 `3/3`，CR-005 已通过 `PASS / 98` 独立审查并获用户批准。S1.2 generation 4 已正式提升到 F12；S1.3 generation 4 attempt 3 已通过 CV、I/X/P 与 L3 `PASS / 98`，等待 Final Content Snapshot、Final Verification 和 F12 到 F13 正式提升。S1.4 未启动，M1.1 会签前不得启动 S1.4。
 - 后续阶段需求：V1..V4 和 Final Acceptance 按活动计划顺序推进；P4 第 12 节“运行集成验收”只允许落实为集成诊断预检，正式 I/X/P 四态结论仍由独立门禁和最终复验链产生。若未来恢复 `Web / UI` 分支，需重新确认其与当前 Skill 主路线的关系。
 - 已拒绝需求：无。
 

@@ -1909,3 +1909,42 @@
 - 并行边界：domain/schema、receipt/CLI、fixture/Skill、候选前累计硬门四条互斥写入线；主控负责 control、集成、完整验证和门禁。
 - 工具替代：Claude Code `2.1.227` 与 OpenCode `1.18.16` 可用，dmux 不存在；使用独立 Git worktree 与后台 CLI 会话替代，隔离和验收规则不变。
 - 非目标：不改变已会签里程碑、验收门禁、产品定位、技术栈或七字段总体模型；不启动 S1.4，不 push；失败时 formal 停留 F12。
+
+## 2026-08-13 S1.3 Generation 4 Attempt 1 阻塞复核与持续执行计划
+
+- 生命周期与路线：当前仍为 S5 / P5 / V1 / M1.1 / S1.3，里程碑真源为路线锁、P3 完成计划、P5 活动计划与已批准 CR-005；本轮服务 F12 -> F13，不改变 18 个小里程碑或现有门禁。
+- 产品状态：`0f06ba44079f55f6d5b9235342ac7229b2efb8ca` 已包含 Product Definition 2.0、Machine Receipt/CLI、三类 fixture/Skill 和候选前累计硬门；`pnpm check` 已通过 `146/146`，三类身份与产品语义连续率为 `3/3`。
+- 控制缺口：attempt 1 packet 漏列必要历史 Frozen Requirement 恢复回归 `tests/domain/requirement-freeze.test.ts`。该路径实际参与候选且不在 allowlist，故按 P4 fail closed，将 attempt 1 记为 blocked；不得把既有提交包装成 attempt 1 candidate-ready。
+- blocked 证据：控制提交 `9e7f8cdaae35ae41ddc59b5904745f279eb0678d` 的父为当前 control `3eb9213e...`，只修改 checkpoint、registry、blocked Execution Result 与 cancel tombstone；Result JCS 投影摘要复算为 `sha256:46c8cb57565c1fe326a7aa95d2acb41cbaf9ffcf7927c7a0ed4ceae8e90e3e60`，pending dispatch 为 0，candidate digest 为空，formal 保持 F12。
+- 恢复策略：同一 `plan_generation=4` 提高到 attempt 2，只补 allowlist 路径，working parent 绑定 `0f06ba4`，禁止新增产品差异；随后依次执行 Execution、独立 CV、I/X/P、L3、Final Snapshot、Final Verification、Credential、Audit Anchor、Anchor Verification、Proof 与 F12 -> F13 expected-old CAS。
+- 后续停点：F13 后执行 M1.1 attempt 2，并停在用户会签；未会签前不得创建 S1.4 packet 或编码 S1.4，不 push。
+- 第三方工具：Orca 编排 CLI 当前不存在；Claude Code 只读审查在限定窗口无输出并被终止，OpenCode provider 返回 `404 Not Found`。替代为独立 detached worktree + Git/JSON/JCS/ref 机械复核；工具异常不降低门禁，后续第三方门禁恢复时继续使用独立 worktree。
+
+## 2026-08-13 S1.3 Generation 4 Attempt 2 Corrected Packet 与候选复验
+
+- 恢复算法：从原始会话与 attempt 1 控制对象恢复并交叉核对 Execution Packet 身份公式。`packet_digest` 为排除 `packet_digest`、`dedup_key` 后的 RFC 8785/JCS 摘要；`dedup_key` 绑定 repository、stage、generation、attempt、baseline、working parent 与 packet digest。
+- corrected packet：保持 `plan_generation=4`、baseline F12 和既有产品契约不变；`task_attempt=2`，working parent 绑定既有候选 `0f06ba44079f55f6d5b9235342ac7229b2efb8ca`，只给全局 allowlist 与 cumulative worker slice 增加 `tests/domain/requirement-freeze.test.ts`。packet digest 为 `sha256:adc0ce77c07178838f7ddd246e35f47ed5af563bd1d7d24066ec1eac1c40d5e4`，dedup 为 `sha256:bebbaaf99d5c7579a156518aba7435482f9ac39ee8f0f46ef0fa4a377e351938`。
+- 控制推进：prepare `60fc36d2...` 已以 expected-old=`9e7f8cda...` CAS；claim `f91a8d59...` 已以 expected-old=`60fc36d2...` CAS，claim/fence=`claim-s1.3-g4-a2-f62-20260813` / `62`。每一步均先确认 formal 仍为 F12；当前尚未 dispatch-ack，pending dispatch 保持 1。
+- 主控复验：`pnpm check` 通过 `146/146`，覆盖率 Lines `90.78%`、Branches `82.71%`、Functions `98.38%`；受影响 66 项测试全部通过。三类 S1.1 -> S1.2 -> JCS 恢复 -> S1.3 身份与产品语义为 `3/3`；constraint/clarification 冒充、跨项目互换、仅替换 digest、同步篡改和 legacy 1.0 均 fail closed。
+- 范围复核：候选为单父提交，F12 为祖先；相对 generation 4 working parent 的 16 条 changed paths 全部在 corrected allowlist，包含必要的 `tests/domain/requirement-freeze.test.ts`；`git diff --check`、JSON 解析、秘密/调试扫描通过，未生成新的产品代码差异。
+- 工具异常：首次结构化生成误用不存在的 `json-canonicalize` 直接路径，命令在写入前失败；随后复用项目 `dist/src/domain/content-digest.js` 成功。一次差异断言因数组顺序而在提交前失败，改为集合断言后通过。两次失败均无暂存、提交或 ref 副作用。
+- 第三方执行：Claude Code 两次最小只读 CLI 调用均正常退出但输出文件为 0 bytes；OpenCode 首次模型别名无效，修正后被 OpenRouter 余额不足阻塞。两个候选 worktree 保持 clean。按工具缺失协议，以只读隔离子代理审查和主控本地机械复验补偿；不降低后续 CV、I/X/P、L3 门禁。
+- 当前边界：formal 仍为 F12，main 未变，不 push；独立替代审查返回前不创建 dispatch-ack 或 Execution Result，不进入 CV/I/X/P/L3，不启动 S1.4。
+
+## 2026-08-13 S1.3 Generation 4 双前置门禁 Agent 切换
+
+- 用户调整：后续不再使用第三方 Claude Code/OpenCode，所有子 Agent 统一为 `gpt-5.6-luna`、`xhigh`。该调整只改变执行宿主，不改变 P3/P4 里程碑、门禁、候选、packet、fence 或验收条件。
+- 第三方历史诊断：OpenCode 已在 fence 64 下完成 I/X/P 诊断并给出 `PASS / 96`，Claude Code CV 持续零输出；两者均未修改 worktree。按用户新指令，OpenCode 结论不直接作为正式 control result，Claude 进程已终止。
+- 正式替代：Luna Agent `019ff971-7538-73a0-b100-4ad22cc7f11e` 独占 CV/fence 63；Luna Agent `019ff971-75a4-7743-bca1-ad8d29f19594` 独占 I/X/P/fence 64。二者均只读，不写 control/ref，不共享结论。
+- 当前状态：公开 control 仍为 `f1a02cfedb8f1792d5545f7444bb6151bf1e5577`，双 outbox 为 claimed，pending dispatch=2，formal 仍为 F12；两名 Luna 返回前不 ack、不写 gate result、不启动 L3。
+
+## 2026-08-13 S1.3 Generation 4 Attempt 3 双门禁与 L3 收口
+
+- 产品修复：attempt 3 候选 `0dc22758a9138f7d69ad812d7617eda709d0c392` 仅修改 `src/domain/product-definition.ts` 与 `tests/domain/product-definition-v2.test.ts`，在历史 Frozen Requirement 恢复后复用当前 readiness，并强制 non-goals 状态与完整 source item 状态一致。
+- 主控与独立验证：`pnpm check` 为 `148/148`，覆盖率 Lines `90.90%`、Branches `82.94%`、Functions `98.40%`；CV 通过，P0/P1=0；I/X/P 全部通过，`98/100`，三类身份、完整内容、digest 和产品语义连续率 `3/3`。
+- 正式 Agent：CV=`019ff9a1-faeb-7ce0-be69-4f1d222acaf4`，I/X/P=`019ff9a1-fd19-7ae1-ba6b-34fcd28fa67a`，L3=`019ff9b9-62d9-7872-bc52-2fb6f0032537`；均为 `gpt-5.6-luna / xhigh`，只读并已回收。
+- L3：attempt 2 `PASS / 98`，P0/P1/P2=`0/0/3`，`required_fixes=[]`；上一轮 readiness/source-state P1 已关闭。结果摘要为 `sha256:3a0744341ff787e1d4279462a1ebf2854372284d4bba4065e70867682f49ed8a`。
+- 控制状态：CV、I/X/P、L3 Result 均按 RFC8785/JCS 排除 `result_digest` 复算匹配；control 以 expected-old CAS 推进至 `d4d7c35ce55d342a5ab96a27721367d9cd813b67`，pending dispatch=0，formal 保持 F12。
+- 工具替代：本工作树未提供 `tsx` 包，首次结果摘要复算在写入前以 `ERR_MODULE_NOT_FOUND` 停止；改为直接导入刚由 `pnpm check` 构建的 `dist/src/domain/canonical-json.js`，先用三份历史 Result 证明算法等价，再生成当前摘要。registry 两次预提交断言误用了顶层键/忽略历史墓碑，均在暂存前停止，无提交或 ref 副作用，随后按实际 schema 和 generation/packet 身份修正。
+- 时间边界：三个 Agent 自报时间与手工 dispatch 记录存在偏差；保留原始自报值，但只用 control 提交父链裁决因果顺序，不把墙钟偏差扩展为新门禁。
+- 当前门禁：仅授权进入 Final Content Snapshot，不等于 F13、M1.1、V1 或 P5 完成；不启动 S1.4，不 push。

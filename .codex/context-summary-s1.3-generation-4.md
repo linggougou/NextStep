@@ -5,7 +5,8 @@
 - 生命周期：S5 开发落地。
 - 当前里程碑：P5 / V1 / M1.1 / S1.3。
 - 正式基线：F12 `8540763a9719cda5c5632b68bb770c95f0ceaecf`。
-- 控制基线：`62b78f035df2512ba35560a67aa3b200737ec52c`，`plan_generation=4`，`pending_dispatch_messages=[]`。
+- 当前产品候选：`0dc22758a9138f7d69ad812d7617eda709d0c392`，在 Product Definition 2.0 基础上补齐历史恢复后的当前 readiness 与 non-goals source-state 强绑定。
+- 当前公开控制：`d4d7c35ce55d342a5ab96a27721367d9cd813b67`，`plan_generation=4`，`pending_dispatch_messages=[]`；CV、I/X/P 与 L3 attempt 2 均已通过。
 - 里程碑真源：`PROJECT_ROUTE_LOCK.md`、P3 完成计划、P5 活动计划、CR-005。
 
 ## 本轮目标
@@ -49,4 +50,6 @@
 
 ## 工具替代
 
-用户要求使用第三方 Claude Code 或 OpenCode。两者本机可用；dmux 未安装，因此使用多个独立 Git worktree 和后台 CLI 会话实现同等隔离与并行，主控负责监督、验收和回收。
+用户最初要求使用第三方 Claude Code 或 OpenCode；后续明确改为所有正式子 Agent 使用 `gpt-5.6-luna / xhigh`。正式 CV、I/X/P 与 L3 均按新要求执行并在完成后回收。
+
+2026-08-13 复核时，Orca 编排 CLI 不存在；第三方异常仅作历史诊断，不进入正式门禁结果。当前下一门禁是 Final Content Snapshot；formal 保持 F12，M1.1 会签前不启动 S1.4。
