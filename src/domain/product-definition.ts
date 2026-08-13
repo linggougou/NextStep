@@ -1,6 +1,7 @@
 import { Ajv, type ValidateFunction } from "ajv";
 
-import productDefinitionSchema from "../../schemas/v1/product-definition.schema.json" with { type: "json" };
+// 运行时只加载 Product Definition 2.0 Schema；v1 Schema 仅作为历史格式证据保留在仓库中。
+import productDefinitionSchema from "../../schemas/v2/product-definition.schema.json" with { type: "json" };
 import { canonicalizeJson, snapshotJsonValue } from "./canonical-json.ts";
 import { assertDigestMatches, digestJson, type Sha256Digest } from "./content-digest.ts";
 import { recoverFrozenRequirement, type FrozenRequirement } from "./requirement-freeze.ts";
@@ -11,6 +12,29 @@ export interface ProductSourceRef {
   readonly pointer: string;
   readonly value_digest: Sha256Digest;
 }
+
+// 字段级状态来源引用：绑定完整 Requirement Set item 及其 RFC8785 摘要，
+// 与只允许 /values/N 的 ProductSourceRef 相互独立，不得混用。
+export interface ProductFieldStatusSourceRef {
+  readonly pointer: string;
+  readonly item_digest: Sha256Digest;
+}
+
+export type ProductNonGoalsStatus = "identified" | "none";
+
+export interface ProductNonGoalsIdentified {
+  readonly status: "identified";
+  readonly items: readonly ProductFact[];
+  readonly source: ProductFieldStatusSourceRef;
+}
+
+export interface ProductNonGoalsNone {
+  readonly status: "none";
+  readonly items: readonly [];
+  readonly source: ProductFieldStatusSourceRef;
+}
+
+export type ProductNonGoals = ProductNonGoalsIdentified | ProductNonGoalsNone;
 
 export interface DirectProductFact {
   readonly kind: "direct";
@@ -53,7 +77,7 @@ export interface ProductJourneyStep {
 }
 
 export interface ProductDefinitionCandidate {
-  readonly schema_version: "1.0";
+  readonly schema_version: "2.0";
   readonly record_type: "product-definition-candidate";
   readonly product_definition_id: string;
   readonly frozen_requirement: FrozenRequirement;
@@ -65,7 +89,7 @@ export interface ProductDefinitionCandidate {
     readonly goals: readonly ProductFact[];
     readonly scenarios: readonly ProductFact[];
     readonly scope: readonly ProductFact[];
-    readonly non_goals: readonly ProductFact[];
+    readonly non_goals: ProductNonGoals;
     readonly success_metrics: readonly ProductMetric[];
   };
   readonly user_journey: { readonly product_definition_id: string; readonly steps: readonly ProductJourneyStep[] };
@@ -164,6 +188,11 @@ export class ProductDefinitionError extends Error {
     this.code = code;
   }
 }
+
+// 产品定义专属线格式版本：只接受 2.0 正例。该判定不放宽全局
+// assertSupportedContractVersion（其继续只接受 1.0 信封与其他 1.0 契约对象）。
+const PRODUCT_DEFINITION_CANDIDATE_VERSION = "2.0";
+const NON_GOAL_ITEM_POINTER_PATTERN = /^\/requirement_set\/items\/(\d+)$/;
 
 const ajv = new Ajv({ strict: true, allErrors: true, ownProperties: true });
 const validateCandidate: ValidateFunction = ajv.compile(productDefinitionSchema);
@@ -281,6 +310,58 @@ function assertFacts(
 ): void {
   if (!Array.isArray(value) || value.length === 0) fail("INVALID_PRODUCT_DEFINITION", `${label} is required`);
   for (const fact of value) assertFact(frozen, fact, allowedFields, role, directFactRoles);
+}
+
+// 非目标状态对象校验：先验证字段级状态来源，再验证 identified 条目。
+// 合法候选只存在 identified/none 两态；rejected/deferred/unresolved 已由
+// S1.2 字段级 readiness 阻断，出现即 fail closed。
+function assertNonGoals(
+  frozen: FrozenRequirement,
+  value: unknown,
+  directFactRoles: Map<string, ProductFactRole>,
+): void {
+  if (
+    !isPlainRecord(value) ||
+    Object.keys(value).length !== 3 ||
+    !Object.hasOwn(value, "status") ||
+    !Object.hasOwn(value, "items") ||
+    !Object.hasOwn(value, "source")
+  ) {
+    fail("INVALID_PRODUCT_DEFINITION", "Product non-goals must contain exactly status, items, and source");
+  }
+  const status = value.status;
+  if (status !== "identified" && status !== "none") {
+    fail("INVALID_PRODUCT_DEFINITION", "Product non-goals status must be identified or none");
+  }
+  const items = value.items;
+  if (!Array.isArray(items)) fail("INVALID_PRODUCT_DEFINITION", "Product non-goals items must be an array");
+  const source = value.source;
+  if (
+    !isPlainRecord(source) ||
+    Object.keys(source).length !== 2 ||
+    typeof source.pointer !== "string" ||
+    typeof source.item_digest !== "string"
+  ) {
+    fail("INVALID_PRODUCT_DEFINITION", "Invalid product non-goals field status source");
+  }
+  // 字段级来源必须精确指向完整的 non_goal_gaps Requirement Set item：
+  // 不能指向 constraint/clarification 等其他字段 item，也不能退化为 /values/N。
+  const pointerMatch = NON_GOAL_ITEM_POINTER_PATTERN.exec(source.pointer);
+  const item = pointerMatch === null ? undefined : frozen.requirement_set.items[Number(pointerMatch[1])];
+  if (item === undefined || item.field !== "non_goal_gaps") {
+    fail("SOURCE_BINDING_MISMATCH", "Product non-goals source must bind the complete non_goal_gaps Requirement Set item");
+  }
+  // item_digest 是该完整 item 的 RFC8785 SHA-256，显式 none 也保留字段、状态、空值和用户来源证据。
+  if (digestJson(item) !== source.item_digest) {
+    fail("SOURCE_BINDING_MISMATCH", "Product non-goals source digest must bind the complete Requirement Set item");
+  }
+  if (status === "none") {
+    if (items.length !== 0) fail("INVALID_PRODUCT_DEFINITION", "Explicit none cannot carry fabricated non-goal facts");
+    return;
+  }
+  if (items.length === 0) fail("INVALID_PRODUCT_DEFINITION", "Identified non-goals require at least one user-confirmed fact");
+  // constraints 永远不能充当非目标来源；条目只允许绑定 non_goal_gaps item 下的值。
+  for (const fact of items) assertFact(frozen, fact, ["non_goal_gaps"], "non_goals", directFactRoles);
 }
 
 function sourceRefsMatch(left: ProductSourceRef, right: ProductSourceRef): boolean {
@@ -406,7 +487,18 @@ export function parseProductDefinitionCandidate(value: unknown): ProductDefiniti
         return record;
       })()
     : snapshot;
-  if (!isPlainRecord(candidateInput) || !validateCandidate(candidateInput)) {
+  if (!isPlainRecord(candidateInput)) {
+    fail("INVALID_PRODUCT_DEFINITION", "Invalid product definition schema");
+  }
+  // 产品专属版本判定：只接受 2.0 正例；旧 1.0 候选明确拒绝，
+  // 不提供自动迁移、双读、猜测或旧签名复用。
+  if (candidateInput.schema_version !== PRODUCT_DEFINITION_CANDIDATE_VERSION) {
+    if (candidateInput.schema_version === "1.0") {
+      fail("INVALID_PRODUCT_DEFINITION", "Product Definition 1.0 candidates are rejected; rebuild a 2.0 candidate from the current Frozen Requirement");
+    }
+    fail("INVALID_PRODUCT_DEFINITION", "Product definition candidate must use schema_version 2.0");
+  }
+  if (!validateCandidate(candidateInput)) {
     fail("INVALID_PRODUCT_DEFINITION", "Invalid product definition schema");
   }
   let frozen: FrozenRequirement;
@@ -425,7 +517,7 @@ export function parseProductDefinitionCandidate(value: unknown): ProductDefiniti
   assertFacts(frozen, prd.goals, "goals", ["goals"], "goals", directFactRoles);
   assertFacts(frozen, prd.scenarios, "scenarios", ["scenarios"], "scenarios", directFactRoles);
   assertFacts(frozen, prd.scope, "scope", ["goals", "expected_outputs", "constraints"], "scope", directFactRoles);
-  assertFacts(frozen, prd.non_goals, "non_goals", ["non_goal_gaps", "constraints"], "non_goals", directFactRoles);
+  assertNonGoals(frozen, prd.non_goals, directFactRoles);
   const journey = candidateInput.user_journey as Record<string, unknown>;
   const capabilityMap = candidateInput.capability_map as Record<string, unknown>;
   if (journey.product_definition_id !== candidateInput.product_definition_id || capabilityMap.product_definition_id !== candidateInput.product_definition_id) fail("INVALID_PRODUCT_DEFINITION", "Journey and capability map must reference the product definition");
