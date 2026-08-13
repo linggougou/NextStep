@@ -1971,4 +1971,6 @@
 - Control 方案审计：GPT-5.6 Luna 确认只有 control-only CAS 合法；expected-old 必须实时读取为 `dcf3e933...`，formal 必须保持 F13，registry/checkpoint 必须处于 `awaiting-user-signoff / pending`，不得启动 S1.4 或标记 M1.1 完成。
 - 本地主验证：`jq empty` 通过；scorecard `100 - 3 = 97`；P0/P1/P2=`0/0/3`；`git diff --check`、`git fsck --strict`、无生产/测试/依赖变更检查通过；`pnpm check` 148/148，main 工作树覆盖率 Lines `90.74%`、Branches `82.75%`、Functions `98.40%`。
 - Control 候选验证：result envelope 采用 RFC8785 JCS + SHA-256、仅排除 `result_digest`，候选 digest `sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea`；候选只含 result、signoff message、registry、checkpoint 四类改动。Qwen3.8 Max 独立复算 packet/dedup/subject/result、claim/fence/host、formal/control 父链和 24 条 evidence refs，结论 `PASS`，必须修复项 0。
-- 当前结论：项目验收结论为 `PASS / 97`；control 候选已获独立放行，下一步仅允许普通提交后执行 expected-old=`dcf3e933...` 的 control-only CAS。CAS 成功前不得宣称 control 已固化；用户会签前不得宣称 M1.1 完成或启动 S1.4。
+- 提交与 CAS：项目普通提交 `3e9ae52...` 成功；control-only 提交 `380e4ba...` 的唯一父为 `dcf3e933...`，expected-old CAS 成功，`refs/nextstep/control=380e4ba...`。formal 前后均为 F13 `84c051f...`，pending dispatch=0，registry=`awaiting-user-signoff`，checkpoint signoff=`pending`。
+- CAS 后复核：control result/message/registry/checkpoint 的 result digest 一致；历史 attempt 1 保持 `generation-invalidated`；outbox、gate request、dispatch ack 和 formal 未修改；S1.4 未出现。
+- 当前结论：收口技术步骤通过。M1.1 attempt 2 验收为 `PASS / 97`，现在正式等待用户会签；用户会签前不得宣称 M1.1、V1、P5 完成，不得启动 S1.4。

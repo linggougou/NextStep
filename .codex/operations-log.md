@@ -1985,4 +1985,8 @@
 - 修正：已补齐 `.codex/context-summary-s1.3-generation-4.md`、`.codex/exec-plan-s1.3-generation-4.md` 和 Qwen 指出的 3 处状态文案；没有修改生产代码、测试、schema 或依赖。
 - 本地主验证：scorecard 维度 100/100、P2 扣分 3、最终 97，严重度 `0/0/3`，`required_fixes=[]`；JSON、范围、formal/control/main 身份、`git diff --check`、`git fsck --strict` 通过；主工作树 `pnpm check` 148/148，覆盖率 `90.74% / 82.75% / 98.40%`。该覆盖率属于 main 当前工作树；验收报告中的 `90.90% / 82.94% / 98.40%` 属 formal F13 隔离副本，两者不得混写。
 - Control 候选：在隔离 worktree `/private/tmp/nextstep-control-s1-3-g4-l3-prepare-f65-20260813` 新增不可变 result envelope 与 user-signoff request，并仅更新 registry/checkpoint 到 `awaiting-user-signoff`；候选 digest `sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea`。Qwen3.8 Max 最终只读复核为 `PASS`、必须修复项 0；允许在项目侧状态普通提交后执行一次 expected-old=`dcf3e933...` 的 control-only CAS。
+- 项目提交：`3e9ae52c2d865e4da2ec320b0e06f9cd56ef2cff`（`docs: 记录 M1.1 attempt 2 验收通过`），仅包含验收产物、状态入口和 `.codex` 留痕，不包含生产代码、测试、schema 或依赖变化。
+- Control CAS：隔离 worktree 创建单父提交 `380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad`（父 `dcf3e933f454fe0a6d3f486f540b36bff62eb53a`），并以 expected-old=`dcf3e933...` 原子推进 `refs/nextstep/control` 成功。result digest 为 `sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea`；registry=`awaiting-user-signoff`、checkpoint signoff=`pending`、pending dispatch=0。
+- Formal 边界：CAS 前后 `refs/nextstep/formal` 均保持 F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`；未创建 S1.4 packet、outbox、host task、candidate、Anchor 或 promotion。
+- 日期：本轮恢复、审计、提交和 CAS 均发生于 Thursday, August 13, 2026；任何 2026-08-14 及以后日期仍只表示未来边界。
 - 工具替代：用户提到的 `deepseek-v4-flash` 不在当前可调用模型清单，因此未冒充使用；使用可用的 GPT-5.6 Luna 与 Qwen3.8 Max。Orca UI 命令仍缺失，恢复上下文采用 Codex 本地 session JSONL 与 `navigate_to_codex_page`。
