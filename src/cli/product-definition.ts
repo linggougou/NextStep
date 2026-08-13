@@ -28,7 +28,7 @@ export async function runProductDefinition(io: ProcessIoAdapter): Promise<void> 
       canonical_json: canonicalizeJson(record),
       digest: digestJson(record),
       product_definition: record,
-      schema_version: "1.0",
+      schema_version: "2.0",
     })));
   } catch (error) {
     const code = error instanceof ProductDefinitionError && error.code === "SENSITIVE_CONTENT_DETECTED"

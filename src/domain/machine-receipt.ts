@@ -128,6 +128,9 @@ export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
       }
       if (snapshot.code === "PRODUCT_DEFINITION_ACCEPTED") {
         const productDefinition = parseProductDefinitionCandidate(snapshot.data.product_definition);
+        if (snapshot.data.schema_version !== "2.0" || productDefinition.schema_version !== "2.0") {
+          throw new TypeError("Product definition receipt subject version must be 2.0");
+        }
         const { status: _status, ...record } = productDefinition;
         if (canonicalJson !== canonicalizeJson(record)) {
           throw new TypeError("Product definition receipt payload does not match canonical JSON");

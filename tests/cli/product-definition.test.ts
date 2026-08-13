@@ -5,6 +5,7 @@ import test from "node:test";
 
 import { canonicalizeJson, parseCanonicalJsonBytes } from "../../src/domain/canonical-json.ts";
 import { runProductDefinition } from "../../src/cli/product-definition.ts";
+import { parseMachineReceipt } from "../../src/domain/machine-receipt.ts";
 import type { ProcessIoAdapter } from "../../src/adapters/node/process-io.ts";
 
 function fakeIo(input: string, args: readonly string[] = []) {
@@ -49,4 +50,23 @@ test("产品定义 CLI 回放磁盘 fixture 并返回完整候选的 JCS 回执"
   const receipt = parseCanonicalJsonBytes(Buffer.from(output[0]!, "utf8")) as Record<string, unknown>;
   assert.equal(receipt.ok, true);
   assert.equal(receipt.code, "PRODUCT_DEFINITION_ACCEPTED");
+  assert.equal(receipt.schema_version, "1.0");
+  const data = receipt.data as Record<string, unknown>;
+  assert.equal(data.schema_version, "2.0");
+  assert.equal((data.product_definition as Record<string, unknown>).schema_version, "2.0");
+  assert.equal(parseMachineReceipt(receipt).code, "PRODUCT_DEFINITION_ACCEPTED");
+});
+
+test("产品定义 CLI 明确拒绝 legacy 1.0 candidate", async () => {
+  const fixture = JSON.parse(await readFile(resolve(process.cwd(), "tests/fixtures/product-definition/legacy-1.0-candidate.json"), "utf8")) as Record<string, unknown>;
+  const { io, output, diagnostics, exitCodes } = fakeIo(canonicalizeJson(fixture.product_definition));
+
+  await runProductDefinition(io);
+
+  assert.equal(output.length, 1);
+  const receipt = parseCanonicalJsonBytes(Buffer.from(output[0]!, "utf8")) as Record<string, unknown>;
+  assert.equal(receipt.ok, false);
+  assert.equal(receipt.code, "PRODUCT_DEFINITION_REJECTED");
+  assert.deepEqual(exitCodes, [1]);
+  assert.equal(diagnostics.length, 1);
 });

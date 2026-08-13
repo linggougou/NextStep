@@ -22,6 +22,8 @@ import {
 } from "../../src/domain/requirement-confirmation.ts";
 import { freezeRequirementSet } from "../../src/domain/requirement-freeze.ts";
 import { buildRequirementSet } from "../../src/domain/requirement-set.ts";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 
 const successfulSubject = { status: "accepted" };
 
@@ -141,6 +143,35 @@ test("successful machine receipts verify canonical payload semantics", () => {
       () => parseMachineReceipt({ ...successfulReceipt, data }),
       /canonical|digest|mismatch|sensitive|token|json/i,
     );
+  }
+});
+
+test("产品定义回执区分 1.0 信封与 2.0 subject，并绑定 canonical、digest 与对象", () => {
+  const fixture = JSON.parse(readFileSync(resolve(process.cwd(), "tests/fixtures/product-definition/community-workshop.json"), "utf8")) as {
+    product_definition: Record<string, unknown>;
+  };
+  const candidate = fixture.product_definition;
+  const receipt = {
+    schema_version: "1.0",
+    receipt_id: "receipt-product-definition-v2",
+    ok: true,
+    code: "PRODUCT_DEFINITION_ACCEPTED",
+    data: {
+      canonical_json: canonicalizeJson(candidate),
+      digest: digestJson(candidate),
+      product_definition: candidate,
+      schema_version: "2.0",
+    },
+  };
+
+  assert.equal(parseMachineReceipt(receipt).code, "PRODUCT_DEFINITION_ACCEPTED");
+  for (const invalid of [
+    { ...receipt, data: { ...receipt.data, schema_version: "1.0" } },
+    { ...receipt, data: { ...receipt.data, product_definition: { ...candidate, schema_version: "1.0" } } },
+    { ...receipt, data: { ...receipt.data, canonical_json: canonicalizeJson({ ...candidate, product_definition_id: "tampered" }) } },
+    { ...receipt, data: { ...receipt.data, digest: `sha256:${"0".repeat(64)}` } },
+  ]) {
+    assert.throws(() => parseMachineReceipt(invalid), /version|schema|canonical|digest|product definition|invalid/i);
   }
 });
 
