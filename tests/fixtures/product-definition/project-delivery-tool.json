@@ -812,16 +812,14 @@
           "value": "做一个 AI 项目推进工具"
         }
       ],
-      "non_goals": [
-        {
-          "kind": "direct",
-          "source": {
-            "pointer": "/requirement_set/items/3/values/0",
-            "value_digest": "sha256:6c82d62b5c3dfc8ec6e525ddc89c0a914b7c0dc493eac7585db9950480ad4da0"
-          },
-          "value": "不连接外部服务"
-        }
-      ],
+      "non_goals": {
+        "items": [],
+        "source": {
+          "item_digest": "sha256:31a009502bd398bcc5b6d53ab01eb0a52611521e57c594b335ce724f2df613ae",
+          "pointer": "/requirement_set/items/5"
+        },
+        "status": "none"
+      },
       "problem": {
         "derivation_summary": "role:problem; derived from the Frozen Requirement source",
         "kind": "derived",
@@ -895,7 +893,7 @@
     },
     "product_definition_id": "pd-7913f81f17e361f716c1377f2eaf6c9e623da2e32acaf27b81ed25f04acece06",
     "record_type": "product-definition-candidate",
-    "schema_version": "1.0",
+    "schema_version": "2.0",
     "user_journey": {
       "product_definition_id": "pd-7913f81f17e361f716c1377f2eaf6c9e623da2e32acaf27b81ed25f04acece06",
       "steps": [

@@ -3,13 +3,13 @@
   "fixture_type": "complete-product-definition",
   "frozen_requirement": {
     "schema_version": "1.0",
-    "frozen_requirement_id": "frozen-418bb88feb15113abbf8a2bd92a12148f26c55429996a3123b2269e3a3153259",
+    "frozen_requirement_id": "frozen-f82db8218126937141e1d621d9301be4f1740241a4693626a0099cd25a9107d7",
     "status": "frozen",
     "project": {
       "repository_id": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
       "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
     },
-    "requirement_set_version": 1,
+    "requirement_set_version": 2,
     "requirement_set": {
       "schema_version": "1.0",
       "requirement_set_id": "req-expense-reminder",
@@ -17,7 +17,7 @@
         "repository_id": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
         "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
       },
-      "version": 1,
+      "version": 2,
       "status": "ready-for-confirmation",
       "source_candidate_digest": "sha256:fada7279dbcd27ed40212051e9590cb57fef924d89ca2d51e36904337eecdd29",
       "items": [
@@ -49,7 +49,8 @@
           "field": "constraints",
           "status": "identified",
           "values": [
-            "仅保存本地数据"
+            "仅保存本地数据",
+            "工作日早上提醒"
           ],
           "source": "user"
         },
@@ -69,17 +70,15 @@
         },
         {
           "field": "clarification_gaps",
-          "status": "identified",
-          "values": [
-            "工作日早上提醒"
-          ],
+          "status": "none",
+          "values": [],
           "source": "user"
         }
       ],
-      "summary": "intent_summary|identified|用提醒工具减少忘记报销的情况\ngoals|identified|忘记报销\nscenarios|identified|忘记报销\nconstraints|identified|仅保存本地数据\nexpected_outputs|identified|提醒工具\nnon_goal_gaps|none|\nclarification_gaps|identified|工作日早上提醒",
-      "content_digest": "sha256:fa92f693c497115cc1f49bb48c5765b3a173d4b49999af745150ebff72c9c0ac"
+      "summary": "intent_summary|identified|用提醒工具减少忘记报销的情况\ngoals|identified|忘记报销\nscenarios|identified|忘记报销\nconstraints|identified|仅保存本地数据\u001f工作日早上提醒\nexpected_outputs|identified|提醒工具\nnon_goal_gaps|none|\nclarification_gaps|none|",
+      "content_digest": "sha256:687902c6ac061eaffcc8a53a53b362cf6d53ed3c1e1f979e3468c3551f2aef5a"
     },
-    "requirement_content_digest": "sha256:fa92f693c497115cc1f49bb48c5765b3a173d4b49999af745150ebff72c9c0ac",
+    "requirement_content_digest": "sha256:687902c6ac061eaffcc8a53a53b362cf6d53ed3c1e1f979e3468c3551f2aef5a",
     "confirmation": {
       "schema_version": "1.0",
       "record_type": "confirmation-envelope",
@@ -89,11 +88,11 @@
       },
       "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
       "requirement_set_id": "req-expense-reminder",
-      "requirement_set_version": 1,
-      "requirement_set_generation": 1,
-      "requirement_set_digest": "sha256:fa92f693c497115cc1f49bb48c5765b3a173d4b49999af745150ebff72c9c0ac",
-      "confirmation_view_digest": "sha256:fc6d615880393cfc8f3279b8895c95846093d9432f5cc690f0992c1d16dcaa5d",
-      "confirmation_id": "confirm-expense-reminder",
+      "requirement_set_version": 2,
+      "requirement_set_generation": 2,
+      "requirement_set_digest": "sha256:687902c6ac061eaffcc8a53a53b362cf6d53ed3c1e1f979e3468c3551f2aef5a",
+      "confirmation_view_digest": "sha256:305e028513f2aa5f356a6269920cc437a3145dd8e25f954ff421682495a368dc",
+      "confirmation_id": "confirm-expense-reminder-v2",
       "challenge": {
         "schema_version": "1.0",
         "record_type": "confirmation-challenge",
@@ -103,9 +102,9 @@
         },
         "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
         "requirement_set_id": "req-expense-reminder",
-        "requirement_set_version": 1,
-        "requirement_set_generation": 1,
-        "requirement_set_digest": "sha256:fa92f693c497115cc1f49bb48c5765b3a173d4b49999af745150ebff72c9c0ac",
+        "requirement_set_version": 2,
+        "requirement_set_generation": 2,
+        "requirement_set_digest": "sha256:687902c6ac061eaffcc8a53a53b362cf6d53ed3c1e1f979e3468c3551f2aef5a",
         "confirmation_view": {
           "schema_version": "1.0",
           "record_type": "confirmation-view",
@@ -115,10 +114,10 @@
           },
           "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
           "requirement_set_id": "req-expense-reminder",
-          "requirement_set_version": 1,
-          "requirement_set_generation": 1,
-          "requirement_set_digest": "sha256:fa92f693c497115cc1f49bb48c5765b3a173d4b49999af745150ebff72c9c0ac",
-          "summary": "intent_summary|identified|用提醒工具减少忘记报销的情况\ngoals|identified|忘记报销\nscenarios|identified|忘记报销\nconstraints|identified|仅保存本地数据\nexpected_outputs|identified|提醒工具\nnon_goal_gaps|none|\nclarification_gaps|identified|工作日早上提醒",
+          "requirement_set_version": 2,
+          "requirement_set_generation": 2,
+          "requirement_set_digest": "sha256:687902c6ac061eaffcc8a53a53b362cf6d53ed3c1e1f979e3468c3551f2aef5a",
+          "summary": "intent_summary|identified|用提醒工具减少忘记报销的情况\ngoals|identified|忘记报销\nscenarios|identified|忘记报销\nconstraints|identified|仅保存本地数据\u001f工作日早上提醒\nexpected_outputs|identified|提醒工具\nnon_goal_gaps|none|\nclarification_gaps|none|",
           "items": [
             {
               "field": "intent_summary",
@@ -148,7 +147,8 @@
               "field": "constraints",
               "status": "identified",
               "values": [
-                "仅保存本地数据"
+                "仅保存本地数据",
+                "工作日早上提醒"
               ],
               "source": "user"
             },
@@ -168,23 +168,21 @@
             },
             {
               "field": "clarification_gaps",
-              "status": "identified",
-              "values": [
-                "工作日早上提醒"
-              ],
+              "status": "none",
+              "values": [],
               "source": "user"
             }
           ],
-          "confirmation_id": "confirm-expense-reminder",
+          "confirmation_id": "confirm-expense-reminder-v2",
           "challenge_created_at": "2026-08-10T00:59:00.000Z",
           "expires_at": "2026-08-10T01:07:00.000Z"
         },
-        "confirmation_view_digest": "sha256:fc6d615880393cfc8f3279b8895c95846093d9432f5cc690f0992c1d16dcaa5d",
-        "confirmation_id": "confirm-expense-reminder",
+        "confirmation_view_digest": "sha256:305e028513f2aa5f356a6269920cc437a3145dd8e25f954ff421682495a368dc",
+        "confirmation_id": "confirm-expense-reminder-v2",
         "created_at": "2026-08-10T00:59:00.000Z",
         "expires_at": "2026-08-10T01:07:00.000Z"
       },
-      "challenge_digest": "sha256:b318ea7940dd855babfc2552d5e1ef2175e3e379ea5df0f5758881896ef00774",
+      "challenge_digest": "sha256:5fbc669a8bc11c4848fb49a57f2ba1a2ebcb719f56e49d5dd54d5824402534b6",
       "display": {
         "schema_version": "1.0",
         "record_type": "confirmation-view-display",
@@ -194,11 +192,11 @@
         },
         "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
         "requirement_set_id": "req-expense-reminder",
-        "requirement_set_version": 1,
-        "requirement_set_generation": 1,
-        "requirement_set_digest": "sha256:fa92f693c497115cc1f49bb48c5765b3a173d4b49999af745150ebff72c9c0ac",
-        "confirmation_view_digest": "sha256:fc6d615880393cfc8f3279b8895c95846093d9432f5cc690f0992c1d16dcaa5d",
-        "confirmation_id": "confirm-expense-reminder",
+        "requirement_set_version": 2,
+        "requirement_set_generation": 2,
+        "requirement_set_digest": "sha256:687902c6ac061eaffcc8a53a53b362cf6d53ed3c1e1f979e3468c3551f2aef5a",
+        "confirmation_view_digest": "sha256:305e028513f2aa5f356a6269920cc437a3145dd8e25f954ff421682495a368dc",
+        "confirmation_id": "confirm-expense-reminder-v2",
         "confirmation_view": {
           "schema_version": "1.0",
           "record_type": "confirmation-view",
@@ -208,10 +206,10 @@
           },
           "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
           "requirement_set_id": "req-expense-reminder",
-          "requirement_set_version": 1,
-          "requirement_set_generation": 1,
-          "requirement_set_digest": "sha256:fa92f693c497115cc1f49bb48c5765b3a173d4b49999af745150ebff72c9c0ac",
-          "summary": "intent_summary|identified|用提醒工具减少忘记报销的情况\ngoals|identified|忘记报销\nscenarios|identified|忘记报销\nconstraints|identified|仅保存本地数据\nexpected_outputs|identified|提醒工具\nnon_goal_gaps|none|\nclarification_gaps|identified|工作日早上提醒",
+          "requirement_set_version": 2,
+          "requirement_set_generation": 2,
+          "requirement_set_digest": "sha256:687902c6ac061eaffcc8a53a53b362cf6d53ed3c1e1f979e3468c3551f2aef5a",
+          "summary": "intent_summary|identified|用提醒工具减少忘记报销的情况\ngoals|identified|忘记报销\nscenarios|identified|忘记报销\nconstraints|identified|仅保存本地数据\u001f工作日早上提醒\nexpected_outputs|identified|提醒工具\nnon_goal_gaps|none|\nclarification_gaps|none|",
           "items": [
             {
               "field": "intent_summary",
@@ -241,7 +239,8 @@
               "field": "constraints",
               "status": "identified",
               "values": [
-                "仅保存本地数据"
+                "仅保存本地数据",
+                "工作日早上提醒"
               ],
               "source": "user"
             },
@@ -261,14 +260,12 @@
             },
             {
               "field": "clarification_gaps",
-              "status": "identified",
-              "values": [
-                "工作日早上提醒"
-              ],
+              "status": "none",
+              "values": [],
               "source": "user"
             }
           ],
-          "confirmation_id": "confirm-expense-reminder",
+          "confirmation_id": "confirm-expense-reminder-v2",
           "challenge_created_at": "2026-08-10T00:59:00.000Z",
           "expires_at": "2026-08-10T01:07:00.000Z"
         },
@@ -281,9 +278,9 @@
           },
           "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
           "requirement_set_id": "req-expense-reminder",
-          "requirement_set_version": 1,
-          "requirement_set_generation": 1,
-          "requirement_set_digest": "sha256:fa92f693c497115cc1f49bb48c5765b3a173d4b49999af745150ebff72c9c0ac",
+          "requirement_set_version": 2,
+          "requirement_set_generation": 2,
+          "requirement_set_digest": "sha256:687902c6ac061eaffcc8a53a53b362cf6d53ed3c1e1f979e3468c3551f2aef5a",
           "confirmation_view": {
             "schema_version": "1.0",
             "record_type": "confirmation-view",
@@ -293,10 +290,10 @@
             },
             "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
             "requirement_set_id": "req-expense-reminder",
-            "requirement_set_version": 1,
-            "requirement_set_generation": 1,
-            "requirement_set_digest": "sha256:fa92f693c497115cc1f49bb48c5765b3a173d4b49999af745150ebff72c9c0ac",
-            "summary": "intent_summary|identified|用提醒工具减少忘记报销的情况\ngoals|identified|忘记报销\nscenarios|identified|忘记报销\nconstraints|identified|仅保存本地数据\nexpected_outputs|identified|提醒工具\nnon_goal_gaps|none|\nclarification_gaps|identified|工作日早上提醒",
+            "requirement_set_version": 2,
+            "requirement_set_generation": 2,
+            "requirement_set_digest": "sha256:687902c6ac061eaffcc8a53a53b362cf6d53ed3c1e1f979e3468c3551f2aef5a",
+            "summary": "intent_summary|identified|用提醒工具减少忘记报销的情况\ngoals|identified|忘记报销\nscenarios|identified|忘记报销\nconstraints|identified|仅保存本地数据\u001f工作日早上提醒\nexpected_outputs|identified|提醒工具\nnon_goal_gaps|none|\nclarification_gaps|none|",
             "items": [
               {
                 "field": "intent_summary",
@@ -326,7 +323,8 @@
                 "field": "constraints",
                 "status": "identified",
                 "values": [
-                  "仅保存本地数据"
+                  "仅保存本地数据",
+                  "工作日早上提醒"
                 ],
                 "source": "user"
               },
@@ -346,27 +344,25 @@
               },
               {
                 "field": "clarification_gaps",
-                "status": "identified",
-                "values": [
-                  "工作日早上提醒"
-                ],
+                "status": "none",
+                "values": [],
                 "source": "user"
               }
             ],
-            "confirmation_id": "confirm-expense-reminder",
+            "confirmation_id": "confirm-expense-reminder-v2",
             "challenge_created_at": "2026-08-10T00:59:00.000Z",
             "expires_at": "2026-08-10T01:07:00.000Z"
           },
-          "confirmation_view_digest": "sha256:fc6d615880393cfc8f3279b8895c95846093d9432f5cc690f0992c1d16dcaa5d",
-          "confirmation_id": "confirm-expense-reminder",
+          "confirmation_view_digest": "sha256:305e028513f2aa5f356a6269920cc437a3145dd8e25f954ff421682495a368dc",
+          "confirmation_id": "confirm-expense-reminder-v2",
           "created_at": "2026-08-10T00:59:00.000Z",
           "expires_at": "2026-08-10T01:07:00.000Z"
         },
-        "challenge_digest": "sha256:b318ea7940dd855babfc2552d5e1ef2175e3e379ea5df0f5758881896ef00774",
-        "display_id": "display-expense-reminder",
+        "challenge_digest": "sha256:5fbc669a8bc11c4848fb49a57f2ba1a2ebcb719f56e49d5dd54d5824402534b6",
+        "display_id": "display-expense-reminder-v2",
         "displayed_at": "2026-08-10T01:00:00.000Z"
       },
-      "display_digest": "sha256:7889f6093428155a843cc2400942b890c28e578422d928866080c99e4ea88d9f",
+      "display_digest": "sha256:b729371f03724e7675ecacc4ad744053c955bd5b6bf39cc409dd5593988355e1",
       "user_action": {
         "schema_version": "1.0",
         "record_type": "user-confirmation-action",
@@ -376,28 +372,28 @@
         },
         "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
         "requirement_set_id": "req-expense-reminder",
-        "requirement_set_version": 1,
-        "requirement_set_generation": 1,
-        "requirement_set_digest": "sha256:fa92f693c497115cc1f49bb48c5765b3a173d4b49999af745150ebff72c9c0ac",
-        "confirmation_view_digest": "sha256:fc6d615880393cfc8f3279b8895c95846093d9432f5cc690f0992c1d16dcaa5d",
-        "confirmation_id": "confirm-expense-reminder",
-        "challenge_digest": "sha256:b318ea7940dd855babfc2552d5e1ef2175e3e379ea5df0f5758881896ef00774",
+        "requirement_set_version": 2,
+        "requirement_set_generation": 2,
+        "requirement_set_digest": "sha256:687902c6ac061eaffcc8a53a53b362cf6d53ed3c1e1f979e3468c3551f2aef5a",
+        "confirmation_view_digest": "sha256:305e028513f2aa5f356a6269920cc437a3145dd8e25f954ff421682495a368dc",
+        "confirmation_id": "confirm-expense-reminder-v2",
+        "challenge_digest": "sha256:5fbc669a8bc11c4848fb49a57f2ba1a2ebcb719f56e49d5dd54d5824402534b6",
         "challenge_created_at": "2026-08-10T00:59:00.000Z",
         "expires_at": "2026-08-10T01:07:00.000Z",
-        "display_id": "display-expense-reminder",
-        "display_digest": "sha256:7889f6093428155a843cc2400942b890c28e578422d928866080c99e4ea88d9f",
+        "display_id": "display-expense-reminder-v2",
+        "display_digest": "sha256:b729371f03724e7675ecacc4ad744053c955bd5b6bf39cc409dd5593988355e1",
         "displayed_at": "2026-08-10T01:00:00.000Z",
-        "user_action_id": "user-action-expense-reminder",
+        "user_action_id": "user-action-expense-reminder-v2",
         "event_source": "independent-user-action",
         "user_action": "confirm",
         "occurred_at": "2026-08-10T01:02:00.000Z"
       },
-      "user_action_digest": "sha256:955f0c0e1f290e1512aaf7a4117e71b61ffd4015f63b6b430c69b555af2790ac",
+      "user_action_digest": "sha256:b24377bfc3bdb23a5a6d8790cc41a272affc448cce28e73a9120f89b96cf66ef",
       "confirmation_kind": "explicit-user-confirmation",
       "confirmed_at": "2026-08-10T01:02:00.000Z"
     },
-    "confirmation_binding_digest": "sha256:f704b45ffd6b3246ab68a0acf35d5e5a9e44ef0f64ce33f7d94471b86a066c79",
-    "confirmation_view_digest": "sha256:fc6d615880393cfc8f3279b8895c95846093d9432f5cc690f0992c1d16dcaa5d",
+    "confirmation_binding_digest": "sha256:5cc644bf3232734a990ee97c4effa75c5ef56934ac0fdad033b2f1c60ac72ebb",
+    "confirmation_view_digest": "sha256:305e028513f2aa5f356a6269920cc437a3145dd8e25f954ff421682495a368dc",
     "next_step": "S1.3.product-definition"
   },
   "product_definition": {
@@ -415,17 +411,17 @@
           "value": "Provides an offline expense reminder"
         }
       ],
-      "product_definition_id": "pd-b7849f86063e3d4df42010e07dbe76128c09926cb3aea74120580267c6e5fadf"
+      "product_definition_id": "pd-365ef97ff58d06dedf780c5887445fc70c196dfa356be76d4f6fd93b31a95271"
     },
     "frozen_requirement": {
       "schema_version": "1.0",
-      "frozen_requirement_id": "frozen-418bb88feb15113abbf8a2bd92a12148f26c55429996a3123b2269e3a3153259",
+      "frozen_requirement_id": "frozen-f82db8218126937141e1d621d9301be4f1740241a4693626a0099cd25a9107d7",
       "status": "frozen",
       "project": {
         "repository_id": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
         "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
       },
-      "requirement_set_version": 1,
+      "requirement_set_version": 2,
       "requirement_set": {
         "schema_version": "1.0",
         "requirement_set_id": "req-expense-reminder",
@@ -433,7 +429,7 @@
           "repository_id": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
           "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
         },
-        "version": 1,
+        "version": 2,
         "status": "ready-for-confirmation",
         "source_candidate_digest": "sha256:fada7279dbcd27ed40212051e9590cb57fef924d89ca2d51e36904337eecdd29",
         "items": [
@@ -465,7 +461,8 @@
             "field": "constraints",
             "status": "identified",
             "values": [
-              "仅保存本地数据"
+              "仅保存本地数据",
+              "工作日早上提醒"
             ],
             "source": "user"
           },
@@ -485,17 +482,15 @@
           },
           {
             "field": "clarification_gaps",
-            "status": "identified",
-            "values": [
-              "工作日早上提醒"
-            ],
+            "status": "none",
+            "values": [],
             "source": "user"
           }
         ],
-        "summary": "intent_summary|identified|用提醒工具减少忘记报销的情况\ngoals|identified|忘记报销\nscenarios|identified|忘记报销\nconstraints|identified|仅保存本地数据\nexpected_outputs|identified|提醒工具\nnon_goal_gaps|none|\nclarification_gaps|identified|工作日早上提醒",
-        "content_digest": "sha256:fa92f693c497115cc1f49bb48c5765b3a173d4b49999af745150ebff72c9c0ac"
+        "summary": "intent_summary|identified|用提醒工具减少忘记报销的情况\ngoals|identified|忘记报销\nscenarios|identified|忘记报销\nconstraints|identified|仅保存本地数据\u001f工作日早上提醒\nexpected_outputs|identified|提醒工具\nnon_goal_gaps|none|\nclarification_gaps|none|",
+        "content_digest": "sha256:687902c6ac061eaffcc8a53a53b362cf6d53ed3c1e1f979e3468c3551f2aef5a"
       },
-      "requirement_content_digest": "sha256:fa92f693c497115cc1f49bb48c5765b3a173d4b49999af745150ebff72c9c0ac",
+      "requirement_content_digest": "sha256:687902c6ac061eaffcc8a53a53b362cf6d53ed3c1e1f979e3468c3551f2aef5a",
       "confirmation": {
         "schema_version": "1.0",
         "record_type": "confirmation-envelope",
@@ -505,11 +500,11 @@
         },
         "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
         "requirement_set_id": "req-expense-reminder",
-        "requirement_set_version": 1,
-        "requirement_set_generation": 1,
-        "requirement_set_digest": "sha256:fa92f693c497115cc1f49bb48c5765b3a173d4b49999af745150ebff72c9c0ac",
-        "confirmation_view_digest": "sha256:fc6d615880393cfc8f3279b8895c95846093d9432f5cc690f0992c1d16dcaa5d",
-        "confirmation_id": "confirm-expense-reminder",
+        "requirement_set_version": 2,
+        "requirement_set_generation": 2,
+        "requirement_set_digest": "sha256:687902c6ac061eaffcc8a53a53b362cf6d53ed3c1e1f979e3468c3551f2aef5a",
+        "confirmation_view_digest": "sha256:305e028513f2aa5f356a6269920cc437a3145dd8e25f954ff421682495a368dc",
+        "confirmation_id": "confirm-expense-reminder-v2",
         "challenge": {
           "schema_version": "1.0",
           "record_type": "confirmation-challenge",
@@ -519,9 +514,9 @@
           },
           "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
           "requirement_set_id": "req-expense-reminder",
-          "requirement_set_version": 1,
-          "requirement_set_generation": 1,
-          "requirement_set_digest": "sha256:fa92f693c497115cc1f49bb48c5765b3a173d4b49999af745150ebff72c9c0ac",
+          "requirement_set_version": 2,
+          "requirement_set_generation": 2,
+          "requirement_set_digest": "sha256:687902c6ac061eaffcc8a53a53b362cf6d53ed3c1e1f979e3468c3551f2aef5a",
           "confirmation_view": {
             "schema_version": "1.0",
             "record_type": "confirmation-view",
@@ -531,10 +526,10 @@
             },
             "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
             "requirement_set_id": "req-expense-reminder",
-            "requirement_set_version": 1,
-            "requirement_set_generation": 1,
-            "requirement_set_digest": "sha256:fa92f693c497115cc1f49bb48c5765b3a173d4b49999af745150ebff72c9c0ac",
-            "summary": "intent_summary|identified|用提醒工具减少忘记报销的情况\ngoals|identified|忘记报销\nscenarios|identified|忘记报销\nconstraints|identified|仅保存本地数据\nexpected_outputs|identified|提醒工具\nnon_goal_gaps|none|\nclarification_gaps|identified|工作日早上提醒",
+            "requirement_set_version": 2,
+            "requirement_set_generation": 2,
+            "requirement_set_digest": "sha256:687902c6ac061eaffcc8a53a53b362cf6d53ed3c1e1f979e3468c3551f2aef5a",
+            "summary": "intent_summary|identified|用提醒工具减少忘记报销的情况\ngoals|identified|忘记报销\nscenarios|identified|忘记报销\nconstraints|identified|仅保存本地数据\u001f工作日早上提醒\nexpected_outputs|identified|提醒工具\nnon_goal_gaps|none|\nclarification_gaps|none|",
             "items": [
               {
                 "field": "intent_summary",
@@ -564,7 +559,8 @@
                 "field": "constraints",
                 "status": "identified",
                 "values": [
-                  "仅保存本地数据"
+                  "仅保存本地数据",
+                  "工作日早上提醒"
                 ],
                 "source": "user"
               },
@@ -584,23 +580,21 @@
               },
               {
                 "field": "clarification_gaps",
-                "status": "identified",
-                "values": [
-                  "工作日早上提醒"
-                ],
+                "status": "none",
+                "values": [],
                 "source": "user"
               }
             ],
-            "confirmation_id": "confirm-expense-reminder",
+            "confirmation_id": "confirm-expense-reminder-v2",
             "challenge_created_at": "2026-08-10T00:59:00.000Z",
             "expires_at": "2026-08-10T01:07:00.000Z"
           },
-          "confirmation_view_digest": "sha256:fc6d615880393cfc8f3279b8895c95846093d9432f5cc690f0992c1d16dcaa5d",
-          "confirmation_id": "confirm-expense-reminder",
+          "confirmation_view_digest": "sha256:305e028513f2aa5f356a6269920cc437a3145dd8e25f954ff421682495a368dc",
+          "confirmation_id": "confirm-expense-reminder-v2",
           "created_at": "2026-08-10T00:59:00.000Z",
           "expires_at": "2026-08-10T01:07:00.000Z"
         },
-        "challenge_digest": "sha256:b318ea7940dd855babfc2552d5e1ef2175e3e379ea5df0f5758881896ef00774",
+        "challenge_digest": "sha256:5fbc669a8bc11c4848fb49a57f2ba1a2ebcb719f56e49d5dd54d5824402534b6",
         "display": {
           "schema_version": "1.0",
           "record_type": "confirmation-view-display",
@@ -610,11 +604,11 @@
           },
           "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
           "requirement_set_id": "req-expense-reminder",
-          "requirement_set_version": 1,
-          "requirement_set_generation": 1,
-          "requirement_set_digest": "sha256:fa92f693c497115cc1f49bb48c5765b3a173d4b49999af745150ebff72c9c0ac",
-          "confirmation_view_digest": "sha256:fc6d615880393cfc8f3279b8895c95846093d9432f5cc690f0992c1d16dcaa5d",
-          "confirmation_id": "confirm-expense-reminder",
+          "requirement_set_version": 2,
+          "requirement_set_generation": 2,
+          "requirement_set_digest": "sha256:687902c6ac061eaffcc8a53a53b362cf6d53ed3c1e1f979e3468c3551f2aef5a",
+          "confirmation_view_digest": "sha256:305e028513f2aa5f356a6269920cc437a3145dd8e25f954ff421682495a368dc",
+          "confirmation_id": "confirm-expense-reminder-v2",
           "confirmation_view": {
             "schema_version": "1.0",
             "record_type": "confirmation-view",
@@ -624,10 +618,10 @@
             },
             "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
             "requirement_set_id": "req-expense-reminder",
-            "requirement_set_version": 1,
-            "requirement_set_generation": 1,
-            "requirement_set_digest": "sha256:fa92f693c497115cc1f49bb48c5765b3a173d4b49999af745150ebff72c9c0ac",
-            "summary": "intent_summary|identified|用提醒工具减少忘记报销的情况\ngoals|identified|忘记报销\nscenarios|identified|忘记报销\nconstraints|identified|仅保存本地数据\nexpected_outputs|identified|提醒工具\nnon_goal_gaps|none|\nclarification_gaps|identified|工作日早上提醒",
+            "requirement_set_version": 2,
+            "requirement_set_generation": 2,
+            "requirement_set_digest": "sha256:687902c6ac061eaffcc8a53a53b362cf6d53ed3c1e1f979e3468c3551f2aef5a",
+            "summary": "intent_summary|identified|用提醒工具减少忘记报销的情况\ngoals|identified|忘记报销\nscenarios|identified|忘记报销\nconstraints|identified|仅保存本地数据\u001f工作日早上提醒\nexpected_outputs|identified|提醒工具\nnon_goal_gaps|none|\nclarification_gaps|none|",
             "items": [
               {
                 "field": "intent_summary",
@@ -657,7 +651,8 @@
                 "field": "constraints",
                 "status": "identified",
                 "values": [
-                  "仅保存本地数据"
+                  "仅保存本地数据",
+                  "工作日早上提醒"
                 ],
                 "source": "user"
               },
@@ -677,14 +672,12 @@
               },
               {
                 "field": "clarification_gaps",
-                "status": "identified",
-                "values": [
-                  "工作日早上提醒"
-                ],
+                "status": "none",
+                "values": [],
                 "source": "user"
               }
             ],
-            "confirmation_id": "confirm-expense-reminder",
+            "confirmation_id": "confirm-expense-reminder-v2",
             "challenge_created_at": "2026-08-10T00:59:00.000Z",
             "expires_at": "2026-08-10T01:07:00.000Z"
           },
@@ -697,9 +690,9 @@
             },
             "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
             "requirement_set_id": "req-expense-reminder",
-            "requirement_set_version": 1,
-            "requirement_set_generation": 1,
-            "requirement_set_digest": "sha256:fa92f693c497115cc1f49bb48c5765b3a173d4b49999af745150ebff72c9c0ac",
+            "requirement_set_version": 2,
+            "requirement_set_generation": 2,
+            "requirement_set_digest": "sha256:687902c6ac061eaffcc8a53a53b362cf6d53ed3c1e1f979e3468c3551f2aef5a",
             "confirmation_view": {
               "schema_version": "1.0",
               "record_type": "confirmation-view",
@@ -709,10 +702,10 @@
               },
               "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
               "requirement_set_id": "req-expense-reminder",
-              "requirement_set_version": 1,
-              "requirement_set_generation": 1,
-              "requirement_set_digest": "sha256:fa92f693c497115cc1f49bb48c5765b3a173d4b49999af745150ebff72c9c0ac",
-              "summary": "intent_summary|identified|用提醒工具减少忘记报销的情况\ngoals|identified|忘记报销\nscenarios|identified|忘记报销\nconstraints|identified|仅保存本地数据\nexpected_outputs|identified|提醒工具\nnon_goal_gaps|none|\nclarification_gaps|identified|工作日早上提醒",
+              "requirement_set_version": 2,
+              "requirement_set_generation": 2,
+              "requirement_set_digest": "sha256:687902c6ac061eaffcc8a53a53b362cf6d53ed3c1e1f979e3468c3551f2aef5a",
+              "summary": "intent_summary|identified|用提醒工具减少忘记报销的情况\ngoals|identified|忘记报销\nscenarios|identified|忘记报销\nconstraints|identified|仅保存本地数据\u001f工作日早上提醒\nexpected_outputs|identified|提醒工具\nnon_goal_gaps|none|\nclarification_gaps|none|",
               "items": [
                 {
                   "field": "intent_summary",
@@ -742,7 +735,8 @@
                   "field": "constraints",
                   "status": "identified",
                   "values": [
-                    "仅保存本地数据"
+                    "仅保存本地数据",
+                    "工作日早上提醒"
                   ],
                   "source": "user"
                 },
@@ -762,27 +756,25 @@
                 },
                 {
                   "field": "clarification_gaps",
-                  "status": "identified",
-                  "values": [
-                    "工作日早上提醒"
-                  ],
+                  "status": "none",
+                  "values": [],
                   "source": "user"
                 }
               ],
-              "confirmation_id": "confirm-expense-reminder",
+              "confirmation_id": "confirm-expense-reminder-v2",
               "challenge_created_at": "2026-08-10T00:59:00.000Z",
               "expires_at": "2026-08-10T01:07:00.000Z"
             },
-            "confirmation_view_digest": "sha256:fc6d615880393cfc8f3279b8895c95846093d9432f5cc690f0992c1d16dcaa5d",
-            "confirmation_id": "confirm-expense-reminder",
+            "confirmation_view_digest": "sha256:305e028513f2aa5f356a6269920cc437a3145dd8e25f954ff421682495a368dc",
+            "confirmation_id": "confirm-expense-reminder-v2",
             "created_at": "2026-08-10T00:59:00.000Z",
             "expires_at": "2026-08-10T01:07:00.000Z"
           },
-          "challenge_digest": "sha256:b318ea7940dd855babfc2552d5e1ef2175e3e379ea5df0f5758881896ef00774",
-          "display_id": "display-expense-reminder",
+          "challenge_digest": "sha256:5fbc669a8bc11c4848fb49a57f2ba1a2ebcb719f56e49d5dd54d5824402534b6",
+          "display_id": "display-expense-reminder-v2",
           "displayed_at": "2026-08-10T01:00:00.000Z"
         },
-        "display_digest": "sha256:7889f6093428155a843cc2400942b890c28e578422d928866080c99e4ea88d9f",
+        "display_digest": "sha256:b729371f03724e7675ecacc4ad744053c955bd5b6bf39cc409dd5593988355e1",
         "user_action": {
           "schema_version": "1.0",
           "record_type": "user-confirmation-action",
@@ -792,31 +784,31 @@
           },
           "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
           "requirement_set_id": "req-expense-reminder",
-          "requirement_set_version": 1,
-          "requirement_set_generation": 1,
-          "requirement_set_digest": "sha256:fa92f693c497115cc1f49bb48c5765b3a173d4b49999af745150ebff72c9c0ac",
-          "confirmation_view_digest": "sha256:fc6d615880393cfc8f3279b8895c95846093d9432f5cc690f0992c1d16dcaa5d",
-          "confirmation_id": "confirm-expense-reminder",
-          "challenge_digest": "sha256:b318ea7940dd855babfc2552d5e1ef2175e3e379ea5df0f5758881896ef00774",
+          "requirement_set_version": 2,
+          "requirement_set_generation": 2,
+          "requirement_set_digest": "sha256:687902c6ac061eaffcc8a53a53b362cf6d53ed3c1e1f979e3468c3551f2aef5a",
+          "confirmation_view_digest": "sha256:305e028513f2aa5f356a6269920cc437a3145dd8e25f954ff421682495a368dc",
+          "confirmation_id": "confirm-expense-reminder-v2",
+          "challenge_digest": "sha256:5fbc669a8bc11c4848fb49a57f2ba1a2ebcb719f56e49d5dd54d5824402534b6",
           "challenge_created_at": "2026-08-10T00:59:00.000Z",
           "expires_at": "2026-08-10T01:07:00.000Z",
-          "display_id": "display-expense-reminder",
-          "display_digest": "sha256:7889f6093428155a843cc2400942b890c28e578422d928866080c99e4ea88d9f",
+          "display_id": "display-expense-reminder-v2",
+          "display_digest": "sha256:b729371f03724e7675ecacc4ad744053c955bd5b6bf39cc409dd5593988355e1",
           "displayed_at": "2026-08-10T01:00:00.000Z",
-          "user_action_id": "user-action-expense-reminder",
+          "user_action_id": "user-action-expense-reminder-v2",
           "event_source": "independent-user-action",
           "user_action": "confirm",
           "occurred_at": "2026-08-10T01:02:00.000Z"
         },
-        "user_action_digest": "sha256:955f0c0e1f290e1512aaf7a4117e71b61ffd4015f63b6b430c69b555af2790ac",
+        "user_action_digest": "sha256:b24377bfc3bdb23a5a6d8790cc41a272affc448cce28e73a9120f89b96cf66ef",
         "confirmation_kind": "explicit-user-confirmation",
         "confirmed_at": "2026-08-10T01:02:00.000Z"
       },
-      "confirmation_binding_digest": "sha256:f704b45ffd6b3246ab68a0acf35d5e5a9e44ef0f64ce33f7d94471b86a066c79",
-      "confirmation_view_digest": "sha256:fc6d615880393cfc8f3279b8895c95846093d9432f5cc690f0992c1d16dcaa5d",
+      "confirmation_binding_digest": "sha256:5cc644bf3232734a990ee97c4effa75c5ef56934ac0fdad033b2f1c60ac72ebb",
+      "confirmation_view_digest": "sha256:305e028513f2aa5f356a6269920cc437a3145dd8e25f954ff421682495a368dc",
       "next_step": "S1.3.product-definition"
     },
-    "frozen_requirement_digest": "sha256:1a22546c7a2d6db5b1a822d625c06ef17d785be641279e264185ba159fc9c15d",
+    "frozen_requirement_digest": "sha256:8d29ee80488487bad9630691ac7446c58b920f3320b2d620a5a392d74e92c03d",
     "prd": {
       "goals": [
         {
@@ -828,16 +820,14 @@
           "value": "忘记报销"
         }
       ],
-      "non_goals": [
-        {
-          "kind": "direct",
-          "source": {
-            "pointer": "/requirement_set/items/3/values/0",
-            "value_digest": "sha256:d944b0041442b837be16ed60e5692538fa1bfe0a0c85522c2fcf9062d3f16e5e"
-          },
-          "value": "仅保存本地数据"
-        }
-      ],
+      "non_goals": {
+        "items": [],
+        "source": {
+          "item_digest": "sha256:31a009502bd398bcc5b6d53ab01eb0a52611521e57c594b335ce724f2df613ae",
+          "pointer": "/requirement_set/items/5"
+        },
+        "status": "none"
+      },
       "problem": {
         "derivation_summary": "role:problem; derived from the Frozen Requirement source",
         "kind": "derived",
@@ -878,13 +868,29 @@
             "value_digest": "sha256:6d1cc3d09d9f13bb7c51e7bb1b7a84d50243c8374cd757c31a77dfdfec3bd862"
           },
           "value": "提醒工具"
+        },
+        {
+          "kind": "direct",
+          "source": {
+            "pointer": "/requirement_set/items/3/values/0",
+            "value_digest": "sha256:d944b0041442b837be16ed60e5692538fa1bfe0a0c85522c2fcf9062d3f16e5e"
+          },
+          "value": "仅保存本地数据"
+        },
+        {
+          "kind": "direct",
+          "source": {
+            "pointer": "/requirement_set/items/3/values/1",
+            "value_digest": "sha256:4225ab11dfed990bb0668d45abfda7a6ed566e82b95f401c0e1ed02ad90deb35"
+          },
+          "value": "工作日早上提醒"
         }
       ],
       "success_metrics": [
         {
           "evidence": {
             "journey_sequence": 2,
-            "transition_digest": "sha256:81e821971bcfb76667cb76a2b581e2308f9fd5b161c6de1b8b1251ebec43a1cc"
+            "transition_digest": "sha256:a9b8afe293e270842935c7c3f0eac4b7110b4b558a182a6338599df80ec1dc07"
           },
           "measurement": {
             "kind": "completion-transition"
@@ -909,11 +915,11 @@
         }
       ]
     },
-    "product_definition_id": "pd-b7849f86063e3d4df42010e07dbe76128c09926cb3aea74120580267c6e5fadf",
+    "product_definition_id": "pd-365ef97ff58d06dedf780c5887445fc70c196dfa356be76d4f6fd93b31a95271",
     "record_type": "product-definition-candidate",
-    "schema_version": "1.0",
+    "schema_version": "2.0",
     "user_journey": {
-      "product_definition_id": "pd-b7849f86063e3d4df42010e07dbe76128c09926cb3aea74120580267c6e5fadf",
+      "product_definition_id": "pd-365ef97ff58d06dedf780c5887445fc70c196dfa356be76d4f6fd93b31a95271",
       "steps": [
         {
           "action": "start",
