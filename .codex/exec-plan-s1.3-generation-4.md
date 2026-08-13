@@ -1,6 +1,6 @@
 # S1.3 Generation 4 执行计划
 
-状态：generation 4 attempt 3 候选已通过 CV、I/X/P 与 L3 `PASS / 98`；当前进入 Final Content Snapshot，formal 仍为 F12。
+状态：generation 4 attempt 3 已通过完整正式证据链并提升到 F13；下一步为 M1.1 attempt 2。
 
 ## 0. 当前恢复点
 
@@ -8,7 +8,7 @@
 - attempt 1：仅控制范围声明不完整，不代表产品实现失败；保留 blocked Result 与 tombstone，不包装为 candidate-ready。
 - attempt 2：corrected packet 已关闭 allowlist 缺口并形成旧候选；L3 `REVISE / 82` 发现 readiness/source-state P1。
 - attempt 3：只修改 `src/domain/product-definition.ts` 与 `tests/domain/product-definition-v2.test.ts` 关闭该 P1；CV 与 I/X/P 均通过，L3 attempt 2 为 `PASS / 98`。
-- formal 在 Final Snapshot、Final Verification、Credential、Anchor、Proof 与 F12→F13 CAS 全部通过前保持 F12；M1.1 用户会签前不启动 S1.4。
+- Final Snapshot、Final Verification、Credential、Anchor、Proof 与 F12→F13 CAS 已全部通过；formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。M1.1 用户会签前不启动 S1.4。
 
 ## 1. 控制面
 

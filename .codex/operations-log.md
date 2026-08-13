@@ -1957,3 +1957,13 @@
 - 控制链：packet `sha256:80a0d263...`、dedup `sha256:123c060d...`、claim/fence=`claim-s1.3-fv-g4-a1-f70-20260813 / 70`；control 已以 expected-old CAS 推进至 `46c7cbded6b81c829f15a03df85f05dab60880b7`，pending dispatch=0，formal 保持 F12。
 - 时间与非阻塞风险：早先手工时间字段存在 wall-clock skew，只用 control Git 父链裁决因果顺序；manual-isolated/headless 不证明 trusted-host、真实用户动作或 full 支持；当前 FV dedup 派生字段集与 S1.2 旧包不同，但五处身份一致，无冲突。
 - 当前门禁：允许生成单父 Audit Anchor；Anchor 只允许追加本日志、verification-report 与本次专属 `final-verification.json`。状态入口的 Snapshot/FV 滞后待 F12→F13 CAS 后独立同步，不得污染 Anchor。F13、M1.1、V1、P5 未完成，S1.4 未启动，不 push。
+
+## 2026-08-13 S1.3 Generation 4 Audit Anchor、Proof 与 F13 正式提升
+
+- Audit Anchor：main 提交 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`，tree `badae8e7c235219fefe9721f32b7a5b172321092`，唯一父为 Snapshot `484e634e...`；Anchor digest `sha256:7300bba5e4770f8639910a4a4b73195a005a208d9e92d473fdfb1785f1ac1b55`。
+- 白名单与清单：Anchor 相对 Snapshot 仅修改 `.codex/operations-log.md`、专属 `final-verification.json` 与 `.codex/verification-report.md`；排除三条白名单后两侧各 235 条 `{mode,type,oid,path}` 完全一致，RFC8785 摘要为 `sha256:f519d98eaa5e73a035ffc8a43aa24346b70a38720160047e0f435088afa3eea2`。
+- Anchor Verification：Luna high Agent `019ffa87-2508-7901-9ecb-35cf97eda78d` 全部 hard gates 通过；AV Result digest `sha256:ae2f8b46489ea446535599f8d86d4887fa9adb9c37507fbc263299bc6a91f3a6`。
+- Anchor Proof：`evidence:anchor-proof-fe1b465f7fe84e97f22e5f30f807d4146a6af56e707e8a732eb9910526ab5b6c.json`，4792 bytes；raw SHA-256/JCS/文件名/0700/0600/create-once/no-replace/fsync 及 Anchor/Credential/FV/packet/claim/fence/host/control/F12 绑定经 Agent 与主控复核通过。
+- 正式提升：CAS 前 17 项身份检查通过；`refs/nextstep/formal` 以 expected-old F12 `8540763a...` 原子推进到 F13 `84c051f7...`，实际时间为 `2026-08-13T10:06:44Z`。Promotion digest `sha256:ed3bb8807e53c91cb532dc98d77f77d92aefe7a149668afd03baccbc81734d59`；control=`f56c1bfc42ede3fc31f9a910497160750f43f9fc`，pending=0。
+- 日期边界：当前日期为 Thursday, August 13, 2026；本轮所有实际完成时间均为 `2026-08-13`，`2026-08-14` 仅出现在未来 packet 过期边界，不作为执行完成时间。
+- 当前边界：main 包含 F13 Anchor；状态入口以独立普通提交同步。下一步只允许 M1.1 attempt 2 与用户会签；S1.4 未启动，V1/P5 未完成，不 push。

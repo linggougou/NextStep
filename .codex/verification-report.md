@@ -1943,3 +1943,13 @@
 - Credential：`sha256:f1fe4b79ce3b731600740f365cb28b8004f848c1a19c035453cbf9afce6a9b9b`，5855 bytes；原始字节等于 JCS，内容寻址文件名、目录 0700、文件 0600、exclusive temp、hard-link no-replace、文件与父目录 fsync 全部通过。
 - Final Verification Result：`sha256:ad676f6594f3e2d4065f2a41e259f06a3f5e4ba526e83fbf2240a4db3886d290`；packet/dedup/claim/fence/host/control/F12/Snapshot/Transaction/Execution/CV/I-X-P/L3 身份匹配，pending dispatch=0，formal 未移动。
 - 结论：通过，仅允许创建 Audit Anchor。Anchor Verification、Anchor Proof 与 expected-old=F12 的 F12→F13 CAS 尚未执行；M1.1 attempt 2 与用户会签未完成，S1.4 不得启动。
+
+## 2026-08-13 S1.3 Generation 4 Audit Anchor / Anchor Proof / F13 CAS
+
+- Anchor 身份：commit `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`，tree `badae8e7c235219fefe9721f32b7a5b172321092`，parent `484e634e3a94a289e03cdab92b61d9d78f7de922`；Anchor object digest `sha256:7300bba5e4770f8639910a4a4b73195a005a208d9e92d473fdfb1785f1ac1b55`。
+- 受保护清单：S1.2 历史样本算法回归精确复现 `219 / sha256:9bc7b3c2...`；当前 Snapshot 与 Anchor 排除三条白名单后均为 `235 / sha256:f519d98e...`，逐项一致。
+- Anchor Verification：packet `sha256:2578b0b0...`、dedup `sha256:53a17bb8...`、claim/fence=`claim-s1.3-av-g4-a1-f71-20260813 / 71`、Luna high host `019ffa87...`；AV Result `sha256:ae2f8b46...`，pending=0，formal 在验证期间保持 F12。
+- Proof：`sha256:fe1b465f7fe84e97f22e5f30f807d4146a6af56e707e8a732eb9910526ab5b6c`，4792 bytes；原始字节等于 JCS，内容寻址文件名、目录 0700、文件 0600、create-once/no-replace/fsync 与全部身份绑定通过。
+- Formal CAS：17 项前置检查通过后，以 expected-old=`8540763a...` 将 formal 原子推进到 `84c051f7...`；CAS 时间 `2026-08-13T10:06:44Z`，Promotion digest `sha256:ed3bb8807e53c91cb532dc98d77f77d92aefe7a149668afd03baccbc81734d59`，control=`f56c1bfc...`。
+- 日期验证：当前是 Thursday, August 13, 2026；AV Result、Proof、CAS 与 promotion 日期均为 `2026-08-13`。任何 `2026-08-14` 日期只作为未来过期边界。
+- 结论：S1.3 generation 4 已正式提升到 F13。下一门禁为 M1.1 attempt 2；用户会签前不得启动 S1.4，V1/P5 未完成。
