@@ -1,6 +1,6 @@
 # QA
 
-当前阶段为 `P5 / V1 / M1.1` 缺口处理。S1.2 与 S1.3 generation 4 已完成 F12/F13 正式提升，formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。下一步为 M1.1 attempt 2；S1.4 未启动，M1.1、V1、P5 尚未完成。旧代际结果仅作墓碑历史。
+当前阶段为 `P5 / V1 / M1.1` 缺口处理。S1.2 与 S1.3 generation 4 已完成 F12/F13 正式提升，formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。M1.1 attempt 2 独立验收为 `PASS / 97`，当前等待用户会签；S1.4 未启动，M1.1、V1、P5 尚未完成。旧代际结果仅作墓碑历史。
 
 ## 当前质量状态
 
@@ -10,7 +10,8 @@
 - [当前项目状态偏移第三轮复审](../../.codex/reviews/current-project-state-drift-rereview-2-2026-08-12/verdict.md)：`REVISE / 92`。
 - [当前项目状态偏移第四轮复审](../../.codex/reviews/current-project-state-drift-rereview-3-2026-08-12/verdict.md)：`PASS / 98`，P0=0、P1=0、`required_fixes=[]`。
 - CR-004 已恢复三类 Frozen Requirement 身份、完整内容和 digest 连续性 `3/3`，但产品语义链尚未正式闭环。
-- CR-005 已通过独立审查并获用户批准；generation 4 新链已完成 F12/F13 正式提升。当前质量工作是 M1.1 attempt 2 累积验收与用户会签。
+- CR-005 generation 4 新链已完成 F12/F13 正式提升；M1.1 attempt 2 已通过独立累积验收，当前质量工作仅为用户会签。
+- [M1.1 attempt 2 累积验收](./p5-v1-m1.1-acceptance-attempt-2-2026-08-13.md)：`PASS / 97`，I/X/P 全部通过，P0=0、P1=0、`required_fixes=[]`。
 - [S1.3 generation 4 L3 attempt 1](../../.codex/reviews/p5-v1-m1.1-s1.3-generation-4-l3-2026-08-13/verdict.md)：`REVISE / 82`，历史问题已由 attempt 3 修复。
 - [S1.3 generation 4 L3 attempt 2](../../.codex/reviews/p5-v1-m1.1-s1.3-generation-4-l3-a2-2026-08-13/verdict.md)：`PASS / 98`，P0=0、P1=0、`required_fixes=[]`。
 

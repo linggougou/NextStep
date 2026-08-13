@@ -1953,3 +1953,22 @@
 - Formal CAS：17 项前置检查通过后，以 expected-old=`8540763a...` 将 formal 原子推进到 `84c051f7...`；CAS 时间 `2026-08-13T10:06:44Z`，Promotion digest `sha256:ed3bb8807e53c91cb532dc98d77f77d92aefe7a149668afd03baccbc81734d59`，control=`f56c1bfc...`。
 - 日期验证：当前是 Thursday, August 13, 2026；AV Result、Proof、CAS 与 promotion 日期均为 `2026-08-13`。任何 `2026-08-14` 日期只作为未来过期边界。
 - 结论：S1.3 generation 4 已正式提升到 F13。下一门禁为 M1.1 attempt 2；用户会签前不得启动 S1.4，V1/P5 未完成。
+
+## 2026-08-13 M1.1 Attempt 2 Cumulative I/X/P Acceptance
+
+- 结论：`PASS / 97`，I/X/P 全部通过，P0/P1/P2=`0/0/3`，`required_fixes=[]`；仅允许提交用户会签，不构成 M1.1 完成。
+- 身份：formal F13 `84c051f...`，packet `sha256:97fec135...`，dedup `sha256:a8ccbc55...`，claim/fence=`claim-m1.1-g4-a2-ixp-f72-20260813 / 72`，Qwen host `019ffaa6...`，control ack=`dcf3e933...`，pending=0。
+- 累积回放：三类项目 39/39 独立断言通过，Frozen Requirement ID、完整 canonical JSON、digest、repository/formal baseline、签署链和产品语义连续率均为 `3/3`。
+- 拒绝边界：20 项独立负例全部 fail closed，覆盖 legacy 1.0、跨项目互换、摘要替换、同步篡改、非法 non-goal/clarification 状态、未确认/未冻结、终态复活和 capability 复制。
+- 工程：唯一 F13 隔离副本 `pnpm check 148/148`；覆盖率 `90.90% / 82.94% / 98.40%`；JSON、`git fsck --strict`、`git diff --check`、秘密/调试、上游保护和 npm high audit 通过。
+- 日期：完成时间为 `2026-08-13T10:43:44Z`，符合当前 Thursday, August 13, 2026；`2026-08-14` 仅是未来过期边界。
+- 状态：等待用户会签；S1.4 未启动，M1.2/V1/P5 未完成。
+
+## 2026-08-13 卡住任务恢复与收口复验
+
+- 会话恢复：成功读取原会话日志并恢复到“补齐状态、范围验证、普通提交、control Result Envelope 固化”的精确中断点。
+- 独立产物审计：Qwen3.8 Max 对 scorecard 算术、packet/dedup/subject/source refs、formal F0→F12→F13 链和状态文档执行只读复核；证据全部通过，3 处 P2 文案滞后已修正。
+- Control 方案审计：GPT-5.6 Luna 确认只有 control-only CAS 合法；expected-old 必须实时读取为 `dcf3e933...`，formal 必须保持 F13，registry/checkpoint 必须处于 `awaiting-user-signoff / pending`，不得启动 S1.4 或标记 M1.1 完成。
+- 本地主验证：`jq empty` 通过；scorecard `100 - 3 = 97`；P0/P1/P2=`0/0/3`；`git diff --check`、`git fsck --strict`、无生产/测试/依赖变更检查通过；`pnpm check` 148/148，main 工作树覆盖率 Lines `90.74%`、Branches `82.75%`、Functions `98.40%`。
+- Control 候选验证：result envelope 采用 RFC8785 JCS + SHA-256、仅排除 `result_digest`，候选 digest `sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea`；候选只含 result、signoff message、registry、checkpoint 四类改动。Qwen3.8 Max 独立复算 packet/dedup/subject/result、claim/fence/host、formal/control 父链和 24 条 evidence refs，结论 `PASS`，必须修复项 0。
+- 当前结论：项目验收结论为 `PASS / 97`；control 候选已获独立放行，下一步仅允许普通提交后执行 expected-old=`dcf3e933...` 的 control-only CAS。CAS 成功前不得宣称 control 已固化；用户会签前不得宣称 M1.1 完成或启动 S1.4。

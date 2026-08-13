@@ -2,7 +2,7 @@
 
 NextStep 是以 Skill 为主交互入口、以项目文档和 Git 为正式真源的 AI 项目闭环落地系统。
 
-当前处于 `P5 / V1 / M1.1` 缺口修复。S1.2 与 S1.3 generation 4 已完成两段式正式提升，formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。下一步是 M1.1 attempt 2 累积验收与用户会签。
+当前处于 `P5 / V1 / M1.1` 缺口修复。S1.2 与 S1.3 generation 4 已完成两段式正式提升，formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。M1.1 attempt 2 独立验收为 `PASS / 97`，当前等待用户会签。
 
 ## 环境
 
@@ -33,7 +33,7 @@ pnpm check
 
 - S1.3 generation 4 已通过完整正式证据链并提升到 F13。
 - 当前 formal 为 F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`；main 包含 F13。
-- 不启动 S1.4；M1.1 attempt 2、用户会签、V1 和 P5 均未完成。
+- 不启动 S1.4；M1.1 用户会签、V1 和 P5 均未完成。
 - 不接入 Codex SDK/App Server，不声明宿主 `full` 支持。
 - 不恢复 Web/UI 分支，不引入常驻服务或数据库。
 

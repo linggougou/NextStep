@@ -1,6 +1,6 @@
 # S1.3 Generation 4 执行计划
 
-状态：generation 4 attempt 3 已通过完整正式证据链并提升到 F13；下一步为 M1.1 attempt 2。
+状态：generation 4 attempt 3 已通过完整正式证据链并提升到 F13；M1.1 attempt 2 独立验收为 `PASS / 97`，当前等待用户会签。
 
 ## 0. 当前恢复点
 

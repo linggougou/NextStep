@@ -1967,3 +1967,22 @@
 - 正式提升：CAS 前 17 项身份检查通过；`refs/nextstep/formal` 以 expected-old F12 `8540763a...` 原子推进到 F13 `84c051f7...`，实际时间为 `2026-08-13T10:06:44Z`。Promotion digest `sha256:ed3bb8807e53c91cb532dc98d77f77d92aefe7a149668afd03baccbc81734d59`；control=`f56c1bfc42ede3fc31f9a910497160750f43f9fc`，pending=0。
 - 日期边界：当前日期为 Thursday, August 13, 2026；本轮所有实际完成时间均为 `2026-08-13`，`2026-08-14` 仅出现在未来 packet 过期边界，不作为执行完成时间。
 - 当前边界：main 包含 F13 Anchor；状态入口以独立普通提交同步。下一步只允许 M1.1 attempt 2 与用户会签；S1.4 未启动，V1/P5 未完成，不 push。
+
+## 2026-08-13 M1.1 Attempt 2 独立累积验收
+
+- 独立验收：qwen3.8-max high Agent `019ffaa6-9af8-7ad1-8aa5-f3f9e9a2277d` 在 formal F13 的唯一 `--no-local` clone 中执行，结论 `PASS / 97`，I/X/P 全部通过，P0/P1/P2=`0/0/3`，`required_fixes=[]`。
+- 产品证据：三项目真实回放 `S1.1 -> S1.2 -> JCS 恢复 -> S1.3 -> 签署 -> 签署恢复`，39/39 断言通过；身份、完整内容、digest、产品语义连续率均为 `3/3`，attempt 1 的 `0/3` 断链已关闭。
+- 安全与 DoD：20 项独立负例全部 fail closed；PC-01..03 与 TG-02/03/15/16 满足 M1.1 DoD。formal F0→F12→F13、三份 promotion、Credential、Anchor、Proof 和 CAS 可追溯。
+- 工程验证：`pnpm check` 为 `148/148`，覆盖率 Lines `90.90%`、Branches `82.94%`、Functions `98.40%`；JSON、Git、秘密/调试、上游保护与官方 npm high audit 通过。
+- 日期：当前日期为 Thursday, August 13, 2026；验收完成时间 `2026-08-13T10:43:44Z`。`2026-08-14` 只作为 packet 未来过期边界。
+- 当前边界：验收 PASS 不等于用户会签。M1.1 状态为“等待用户会签”；会签前不得启动 S1.4，M1.2/V1/P5 未完成，不 push。
+
+## 2026-08-13 卡住任务恢复、并行审计与 Control 候选
+
+- 恢复来源：从 Codex 会话 `019fa443-0225-7282-b6ce-a4f82584bf4c` 的本地 JSONL 日志恢复中断点；原任务在补齐两处状态、范围验证、普通提交和 control Result Envelope 固化前因工具参数未闭合并连续空结束而卡住。
+- 路线判断：当前仍是 `P5 / V1 / M1.1`，唯一允许动作是固化 attempt 2 独立验收并提交用户会签；不构成 M1.1 完成，不允许移动 formal 或启动 S1.4。
+- 并行审计：Qwen3.8 Max 只读复核 scorecard、验收报告和状态入口，确认验收证据/算术通过，仅发现 3 处 P2 文案滞后；GPT-5.6 Luna 只读复核 control 固化协议，要求以实时 `refs/nextstep/control=dcf3e933...` 做 expected-old CAS，并持久化 `awaiting-user-signoff`，不得使用过时 `checkpoint.control_parent_oid=152efa...` 作为 CAS 父。
+- 修正：已补齐 `.codex/context-summary-s1.3-generation-4.md`、`.codex/exec-plan-s1.3-generation-4.md` 和 Qwen 指出的 3 处状态文案；没有修改生产代码、测试、schema 或依赖。
+- 本地主验证：scorecard 维度 100/100、P2 扣分 3、最终 97，严重度 `0/0/3`，`required_fixes=[]`；JSON、范围、formal/control/main 身份、`git diff --check`、`git fsck --strict` 通过；主工作树 `pnpm check` 148/148，覆盖率 `90.74% / 82.75% / 98.40%`。该覆盖率属于 main 当前工作树；验收报告中的 `90.90% / 82.94% / 98.40%` 属 formal F13 隔离副本，两者不得混写。
+- Control 候选：在隔离 worktree `/private/tmp/nextstep-control-s1-3-g4-l3-prepare-f65-20260813` 新增不可变 result envelope 与 user-signoff request，并仅更新 registry/checkpoint 到 `awaiting-user-signoff`；候选 digest `sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea`。Qwen3.8 Max 最终只读复核为 `PASS`、必须修复项 0；允许在项目侧状态普通提交后执行一次 expected-old=`dcf3e933...` 的 control-only CAS。
+- 工具替代：用户提到的 `deepseek-v4-flash` 不在当前可调用模型清单，因此未冒充使用；使用可用的 GPT-5.6 Luna 与 Qwen3.8 Max。Orca UI 命令仍缺失，恢复上下文采用 Codex 本地 session JSONL 与 `navigate_to_codex_page`。

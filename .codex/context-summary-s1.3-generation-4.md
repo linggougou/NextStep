@@ -52,4 +52,4 @@
 
 用户最初要求使用第三方 Claude Code 或 OpenCode；后续明确改为所有正式子 Agent 使用 `gpt-5.6-luna / xhigh`。正式 CV、I/X/P 与 L3 均按新要求执行并在完成后回收。
 
-2026-08-13 复核时，Orca 编排 CLI 不存在；第三方异常仅作历史诊断，不进入正式门禁结果。Final Snapshot、Final Verification、Credential、Audit Anchor、Anchor Proof 与 F12→F13 CAS 已完成；当前唯一下一门禁是 M1.1 attempt 2，用户会签前不启动 S1.4。
+2026-08-13 复核时，Orca 编排 CLI 不存在；第三方异常仅作历史诊断，不进入正式门禁结果。Final Snapshot、Final Verification、Credential、Audit Anchor、Anchor Proof 与 F12→F13 CAS 已完成；M1.1 attempt 2 独立验收为 `PASS / 97`，当前唯一下一门禁是用户会签，会签前不启动 S1.4。
