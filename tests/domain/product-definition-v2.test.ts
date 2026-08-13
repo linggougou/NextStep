@@ -111,6 +111,85 @@ function nonGoalSource(frozen: FrozenRequirement, pointer = NON_GOAL_ITEM_POINTE
   return { pointer, item_digest: digestJson(frozen.requirement_set.items[itemIndex]) };
 }
 
+function historicalFrozenWithItem(
+  frozen: FrozenRequirement,
+  itemIndex: number,
+  status: "identified" | "none" | "unresolved" | "rejected" | "deferred",
+): FrozenRequirement {
+  const originalItems = frozen.requirement_set.items;
+  const updatedItems = originalItems.map((item, index) => {
+    if (index !== itemIndex) return item;
+    return {
+      ...item,
+      status,
+      values: status === "identified" ? ["历史待澄清事项"] : [],
+      source: status === "unresolved" ? "unresolved" as const : status === "identified" ? item.source : "user" as const,
+    };
+  });
+  const { content_digest: _contentDigest, ...requirementSetWithoutDigest } = frozen.requirement_set;
+  const requirementSetBase = {
+    ...requirementSetWithoutDigest,
+    status: "ready-for-confirmation" as const,
+    items: updatedItems,
+    summary: updatedItems.map((item) => `${item.field}|${item.status}|${item.values.join("\u001f")}`).join("\n"),
+  };
+  const requirementSet = { ...requirementSetBase, content_digest: digestJson(requirementSetBase) };
+  const oldEnvelope = frozen.confirmation;
+  const oldChallenge = oldEnvelope.challenge;
+  const oldView = oldChallenge.confirmation_view;
+  const view = {
+    ...oldView,
+    requirement_set_digest: requirementSet.content_digest,
+    summary: requirementSet.summary,
+    items: requirementSet.items,
+  };
+  const viewDigest = digestJson(view);
+  const challenge = {
+    ...oldChallenge,
+    requirement_set_digest: requirementSet.content_digest,
+    confirmation_view: view,
+    confirmation_view_digest: viewDigest,
+  };
+  const challengeDigest = digestJson(challenge);
+  const display = {
+    ...oldEnvelope.display,
+    requirement_set_digest: requirementSet.content_digest,
+    confirmation_view_digest: viewDigest,
+    confirmation_view: view,
+    challenge,
+    challenge_digest: challengeDigest,
+  };
+  const displayDigest = digestJson(display);
+  const userAction = {
+    ...oldEnvelope.user_action,
+    requirement_set_digest: requirementSet.content_digest,
+    confirmation_view_digest: viewDigest,
+    challenge_digest: challengeDigest,
+    display_digest: displayDigest,
+  };
+  const envelope = {
+    ...oldEnvelope,
+    requirement_set_digest: requirementSet.content_digest,
+    confirmation_view_digest: viewDigest,
+    challenge,
+    challenge_digest: challengeDigest,
+    display,
+    display_digest: displayDigest,
+    user_action: userAction,
+    user_action_digest: digestJson(userAction),
+  };
+  const confirmationDigest = digestJson(envelope);
+  return {
+    ...frozen,
+    frozen_requirement_id: `frozen-${digestJson({ content_digest: requirementSet.content_digest, confirmation_digest: confirmationDigest }).slice("sha256:".length)}`,
+    requirement_set: requirementSet,
+    requirement_content_digest: requirementSet.content_digest,
+    confirmation: envelope,
+    confirmation_binding_digest: confirmationDigest,
+    confirmation_view_digest: viewDigest,
+  };
+}
+
 function candidate(frozen: FrozenRequirement = frozenRequirement()) {
   const intent = "/requirement_set/items/0/values/0";
   const goals = "/requirement_set/items/1/values/0";
@@ -261,6 +340,52 @@ test("identified/none 条件结构严格，状态与条目数量必须一致且�
   assertProductDefinitionRejected({ ...value, prd: { ...value.prd, non_goals: { ...value.prd.non_goals, note: "补充说明" } } });
   assertProductDefinitionRejected({ ...value, prd: { ...value.prd, non_goals: { status: "identified", items: value.prd.non_goals.items } } });
   assertProductDefinitionRejected({ ...value, prd: { ...value.prd, non_goals: { status: "identified", source: value.prd.non_goals.source } } });
+});
+
+test("S1.3 在历史 Frozen Requirement 恢复后重新执行当前 readiness", () => {
+  const base = frozenRequirement("identified");
+  const baseCandidate = candidate(base);
+  for (const status of ["rejected", "deferred", "unresolved"] as const) {
+    const historical = historicalFrozenWithItem(base, 5, status);
+    assertProductDefinitionRejected({ ...baseCandidate, frozen_requirement: historical, frozen_requirement_digest: digestJson(historical) }, "REQUIREMENT_NOT_FROZEN");
+  }
+  for (const status of ["identified", "rejected", "deferred", "unresolved"] as const) {
+    const historical = historicalFrozenWithItem(base, 6, status);
+    assertProductDefinitionRejected({ ...baseCandidate, frozen_requirement: historical, frozen_requirement_digest: digestJson(historical) }, "REQUIREMENT_NOT_FROZEN");
+  }
+});
+
+test("S1.3 非目标产品状态必须与完整 non_goal_gaps 源条目状态精确一致", () => {
+  const identified = frozenRequirement("identified");
+  const none = frozenRequirement("none");
+  const identifiedCandidate = candidate(identified);
+  const noneCandidate = candidate(none);
+  assertProductDefinitionRejected({
+    ...identifiedCandidate,
+    prd: {
+      ...identifiedCandidate.prd,
+      non_goals: {
+        status: "none",
+        items: [],
+        source: nonGoalSource(identified),
+      },
+    },
+  }, "SOURCE_BINDING_MISMATCH");
+  assertProductDefinitionRejected({
+    ...noneCandidate,
+    prd: {
+      ...noneCandidate.prd,
+      non_goals: {
+        status: "identified",
+        items: [{
+          kind: "direct",
+          value: "伪造的非目标",
+          source: { pointer: `${NON_GOAL_ITEM_POINTER}/values/0`, value_digest: digestJson("伪造的非目标") },
+        }],
+        source: nonGoalSource(none),
+      },
+    },
+  }, "SOURCE_BINDING_MISMATCH");
 });
 
 test("字段级来源必须精确指向完整 non_goal_gaps item，摘要绑定整个 item", () => {

@@ -5,6 +5,7 @@ import productDefinitionSchema from "../../schemas/v2/product-definition.schema.
 import { canonicalizeJson, snapshotJsonValue } from "./canonical-json.ts";
 import { assertDigestMatches, digestJson, type Sha256Digest } from "./content-digest.ts";
 import { recoverFrozenRequirement, type FrozenRequirement } from "./requirement-freeze.ts";
+import { isRequirementItemReady } from "./requirement-set.ts";
 import { assertNoSensitiveContent, assertNoSensitiveFields } from "./sensitive-fields.ts";
 import { isPlainRecord } from "./value-guards.ts";
 
@@ -355,6 +356,9 @@ function assertNonGoals(
   if (digestJson(item) !== source.item_digest) {
     fail("SOURCE_BINDING_MISMATCH", "Product non-goals source digest must bind the complete Requirement Set item");
   }
+  if (item.status !== status) {
+    fail("SOURCE_BINDING_MISMATCH", "Product non-goals status must match its complete Requirement Set source item");
+  }
   if (status === "none") {
     if (items.length !== 0) fail("INVALID_PRODUCT_DEFINITION", "Explicit none cannot carry fabricated non-goal facts");
     return;
@@ -362,6 +366,12 @@ function assertNonGoals(
   if (items.length === 0) fail("INVALID_PRODUCT_DEFINITION", "Identified non-goals require at least one user-confirmed fact");
   // constraints 永远不能充当非目标来源；条目只允许绑定 non_goal_gaps item 下的值。
   for (const fact of items) assertFact(frozen, fact, ["non_goal_gaps"], "non_goals", directFactRoles);
+}
+
+function assertCurrentRequirementReadiness(frozen: FrozenRequirement): void {
+  if (frozen.requirement_set.items.some((item) => !isRequirementItemReady(item))) {
+    fail("REQUIREMENT_NOT_FROZEN", "Frozen Requirement is not ready for Product Definition");
+  }
 }
 
 function sourceRefsMatch(left: ProductSourceRef, right: ProductSourceRef): boolean {
@@ -507,6 +517,7 @@ export function parseProductDefinitionCandidate(value: unknown): ProductDefiniti
   } catch {
     fail("REQUIREMENT_NOT_FROZEN", "Product definition requires a valid Frozen Requirement");
   }
+  assertCurrentRequirementReadiness(frozen);
   if (candidateInput.frozen_requirement_digest !== digestJson(frozen)) fail("REQUIREMENT_NOT_FROZEN", "Frozen Requirement identity does not match");
   const prd = candidateInput.prd as Record<string, unknown>;
   if (candidateInput.product_definition_id !== deriveProductDefinitionId(frozen)) fail("INVALID_PRODUCT_DEFINITION", "Product definition ID does not match Frozen Requirement identity");
