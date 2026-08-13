@@ -19,7 +19,11 @@
 
 无阻塞修改项。
 
-P2 风险不阻塞 M1.1 会签：本证据不证明 trusted-host/full 或真实用户动作；长驻 session registry 的容量与生命周期上界留待后续宿主里程碑。
+以下三个 P2 风险均不阻塞 M1.1 会签，后续由宿主相关里程碑承接：
+
+1. 本验收只证明 manual-isolated/headless consumer contract，不证明 trusted-host、真实用户动作或 full 支持。
+2. dispatch-ack 在验证窗口内发生，但 control Git 父链连续；因果顺序以 control Git 父链为准。
+3. 长驻 trusted-host session registry 的容量与生命周期上界尚未证明。
 
 ## 证据
 
@@ -28,7 +32,7 @@ P2 风险不阻塞 M1.1 会签：本证据不证明 trusted-host/full 或真实�
 - Dedup：`sha256:a8ccbc555cb37b95349bd3f6d15523546b4fee2819b32e6f60e61e2a8b6be3b9`。
 - Claim/fence：`claim-m1.1-g4-a2-ixp-f72-20260813 / 72`。
 - Qwen Agent：`019ffaa6-9af8-7ad1-8aa5-f3f9e9a2277d`。
-- 测试：`148/148`；Lines `90.90%`、Branches `82.94%`、Functions `98.40%`。
+- 当前 HEAD `9aef41a78842cfd045ed0a2e2dbb98844e021bf9` 独立复跑 `pnpm check`：`148/148`；Lines `90.90%`、Branches `82.94%`、Functions `98.40%`。
 - 日期：`2026-08-13T10:43:44Z`。
 
 验收只读，未修改项目或 refs，S1.4 未启动。

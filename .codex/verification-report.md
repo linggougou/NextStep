@@ -1969,8 +1969,19 @@
 - 会话恢复：成功读取原会话日志并恢复到“补齐状态、范围验证、普通提交、control Result Envelope 固化”的精确中断点。
 - 独立产物审计：Qwen3.8 Max 对 scorecard 算术、packet/dedup/subject/source refs、formal F0→F12→F13 链和状态文档执行只读复核；证据全部通过，3 处 P2 文案滞后已修正。
 - Control 方案审计：GPT-5.6 Luna 确认只有 control-only CAS 合法；expected-old 必须实时读取为 `dcf3e933...`，formal 必须保持 F13，registry/checkpoint 必须处于 `awaiting-user-signoff / pending`，不得启动 S1.4 或标记 M1.1 完成。
-- 本地主验证：`jq empty` 通过；scorecard `100 - 3 = 97`；P0/P1/P2=`0/0/3`；`git diff --check`、`git fsck --strict`、无生产/测试/依赖变更检查通过；`pnpm check` 148/148，main 工作树覆盖率 Lines `90.74%`、Branches `82.75%`、Functions `98.40%`。
+- 本地主验证：`jq empty` 通过；scorecard `100 - 3 = 97`；P0/P1/P2=`0/0/3`；`git diff --check`、`git fsck --strict`、无生产/测试/依赖变更检查通过。收口复验时点输出过 `pnpm check` 148/148、Lines `90.74%`、Branches `82.75%`、Functions `98.40%`，但无法定位到任何现存工作树或当前可重复运行上下文，因此该数值不再作为当前 main 口径；HEAD `9aef41a...` 独立复跑的当前可重复结果为 `148/148`、Lines `90.90%`、Branches `82.94%`、Functions `98.40%`。
 - Control 候选验证：result envelope 采用 RFC8785 JCS + SHA-256、仅排除 `result_digest`，候选 digest `sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea`；候选只含 result、signoff message、registry、checkpoint 四类改动。Qwen3.8 Max 独立复算 packet/dedup/subject/result、claim/fence/host、formal/control 父链和 24 条 evidence refs，结论 `PASS`，必须修复项 0。
 - 提交与 CAS：项目普通提交 `3e9ae52...` 成功；control-only 提交 `380e4ba...` 的唯一父为 `dcf3e933...`，expected-old CAS 成功，`refs/nextstep/control=380e4ba...`。formal 前后均为 F13 `84c051f...`，pending dispatch=0，registry=`awaiting-user-signoff`，checkpoint signoff=`pending`。
 - CAS 后复核：control result/message/registry/checkpoint 的 result digest 一致；历史 attempt 1 保持 `generation-invalidated`；outbox、gate request、dispatch ack 和 formal 未修改；S1.4 未出现。
 - 当前结论：收口技术步骤通过。M1.1 attempt 2 验收为 `PASS / 97`，现在正式等待用户会签；用户会签前不得宣称 M1.1、V1、P5 完成，不得启动 S1.4。
+
+## 2026-08-13 M1.1 Attempt 2 Sign-off Package Review
+
+- 正式裁决：`REVISE / 94`，仅针对会签包；M1.1 `PASS / 97` 验收本体保持有效。
+- 复算：packet（同时排除 `packet_digest`、`dedup_key`）=`sha256:97fec135...`，dedup=`sha256:a8ccbc55...`，Result（仅排除 `result_digest`）=`sha256:341d36aa...`，均匹配；scorecard `100-3=97`。
+- 本地验证：当前 main `9aef41a...` 的 `pnpm check` 为 `148/148`，覆盖率 `90.90% / 82.94% / 98.40%`；`git diff --check` 通过，生产/测试/Schema/依赖相对 F13 无变更。
+- 修订项：补全第三个 P2 风险；修正当前 main 覆盖率口径。两项均为文档级，不重建 Result/control/formal，也不授权 S1.4。
+- 修订后验证：验收报告 §8 与 §9、独立 verdict 均完整列出三个 P2，并声明均不阻塞 M1.1 会签、由宿主相关里程碑承接；S1.4 仅出现在禁止/未启动语境，M1.1/V1/P5 未误报完成。
+- 覆盖率归属：formal F13 隔离副本与 HEAD `9aef41a...` 独立复跑分别列示，二者均为 `148/148`、Lines `90.90%`、Branches `82.94%`、Functions `98.40%`；旧 `90.74% / 82.75% / 98.40%` 已明确为不可映射到现存工作树的旧运行上下文数据。
+- 最终独立终审：Qwen3.8 Max 只读核验 6/6 项通过，结论 `PASS`、必须修复项 0。未重跑 `pnpm check`，采用用户提供的 HEAD 独立复跑结果；formal/control 保持 `84c051f... / 380e4ba...`。
+- 最终结论：会签包修订完成，可重新提交用户会签；本结论不重建 M1.1 Result，不移动 control/formal，不授权或启动 S1.4。
