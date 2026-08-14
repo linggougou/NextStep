@@ -1,0 +1,135 @@
+{
+  "review_id": "p5-v1-m1.2-s1.4-l3-2026-08-14",
+  "task_id": "S1.4-L3",
+  "lane": "P5/V1/M1.2/S1.4/independent-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-s1.4-l3-v1",
+  "artifact_refs": [
+    "git:c2894cd25cf8b466d41df68ff99cdbf4193ba0d3",
+    "refs/nextstep/control:gate-requests/gate-independent-review-s1.4-g4-a1-20260814.json",
+    "refs/nextstep/control:results/result-execution-s1.4-g4-a2-f76-20260814.json",
+    "refs/nextstep/control:results/result-candidate-verification-s1.4-g4-a2-f77-20260814.json",
+    "refs/nextstep/control:results/result-product-interaction-s1.4-g4-a2-f78-20260814.json",
+    "git:bf8bb263adc0899c54a97f7a65f2f53f2cccba8f:.codex/reviews/p5-v1-m1.2-s1.4-candidate-verification-r2-2026-08-14/scorecard.json",
+    "git:099729a38fb145875df282d080e5a6745de734bd:.codex/reviews/p5-v1-m1.2-s1.4-independent-ixp-r2-2026-08-14/scorecard.json"
+  ],
+  "hard_gates": [
+    {
+      "id": "HG1",
+      "name": "CV attempt 2 PASS、I/X/P attempt 2 PASS，身份与 subject 精确一致",
+      "result": "pass",
+      "evidence": "自研 RFC8785 JCS 独立复算 13/13 MATCH：L3 packet=284bca84…（未过期）、CV packet=37e24c60…、IXP packet=fc29b1b2…、execution packet=75edb261…、Result f76/f77/f78=c10272b0…/6e8e1d9a…/9c922f64…、subject=3e93a4ad…、两份 scorecard=e7584ac1…/b979edec…；三份 Result 信封的 subject_ref 均为 git:c2894cd…、subject_digest 均为 3e93a4ad…、tree=e9c22fb6… 恒等。上游 I/X/P r2 verdict 叙述中引用的 self-profile 绑定 ID（pd-01e7fcb1…/cd10e72a…）与 fixture 实际值（pd-7913f81f…/096428a4…/2a582889…，与 CV r2 叙述一致）不符，属上游叙述转写误差，不影响 subject 身份一致性，记入 PEN-1。"
+    },
+    {
+      "id": "HG2",
+      "name": "self-profile 唯一必修项闭环，完整 Profile 矩阵 17/17，Q6=100%",
+      "result": "pass",
+      "evidence": "独立回放：self-profile-headless 端到端 ACCEPTANCE_PROFILE_ACCEPTED，二次回放 digest 恒定（sha256:1b31eed0…）；三重绑定独立复算 MATCH——PD id/digest 与 tests/fixtures/product-definition/project-delivery-tool.json 已签记录 RFC8785 摘要 096428a4… 相等，carrier_decision_digest 与 tests/fixtures/carrier-decision/project-delivery-tool.json 候选摘要 2a582889… 相等，profile_id 经域层 deriveAcceptanceProfileId 独立重派 ap-66c5db77… 相等；acceptance-profile 17/17 fixture 回执码全部符合期望，三个冲突 fixture 均 PROFILE_CONFLICT_REJECTED 且 data 恰为 {dry_run:false}（零降级）。"
+    },
+    {
+      "id": "HG3",
+      "name": "代码与测试无明显 slop、重复模板、虚假实现、宽松放行或证据冒领",
+      "result": "pass",
+      "evidence": "三个域模块全文审查：acceptance-profile.ts 六段 fail-closed 裁决链（敏感→结构→证据职责→内核路线守卫→身份→路线语义）；carrier-decision.ts 封闭词汇表+双摘要校验+时序约束+覆盖链治理；interaction-prototype.ts 完整状态机（恰一初始/至少一终态/禁自环/终态不可离开/可达性/确认节点/恢复入口/不变量证据指针解析）。slop 标记扫描仅命中负例 fixture 的合法 dummy 敏感值。schemas 全对象节点 additionalProperties:false（原型 schema 中内嵌 product_definition 节点有意放开，由 S1.3 专用解析器全量封闭重验，product-definition schema 0 缺口）。测试以 digestJson 从 fixture 链运行时复算摘要而非手抄常量；skill 测试为语义级断言。52 份 fixture 全部 manual-isolated，无 full 冒领。"
+    },
+    {
+      "id": "HG4",
+      "name": "pnpm check 206/206 与覆盖率门禁可独立复现",
+      "result": "pass",
+      "evidence": "git clone --no-hardlinks 隔离 clone detached 于 subject（tree 恒等、工作区干净）：corepack pnpm install --frozen-lockfile + pnpm check exit 0，206/206 测试，覆盖率 Lines 91.07% / Branches 83.80% / Functions 98.36%，typecheck 干净；另独立 spawn 回放 60/60（52 fixture + 8 活体探针）与零落盘审计（运行目录 0 文件）。"
+    },
+    {
+      "id": "HG5",
+      "name": "formal F13、control 单父链、范围仅 S1.4，未提前启动 S1.5",
+      "result": "pass",
+      "evidence": "formal=84c051f7…（F13）评审前后不变；control 链 rev-list --parents 零合并提交（单父），顶点 fb53ca1 为 L3 dispatch-ack；修复区间 d60e625..c2894cd 恰 13 路径（12 治理/评审 + 1 fixture），src/schemas 命中 0，d60e625 为 subject 祖先；F13..subject 中 S1.1–S1.3 域（domain/CLI/schema/fixture/测试共 15 条路径抽样）diff 为空；路线锁与 PLANS 修复区间 diff 仅状态行更新，活动里程碑仍为 V1/M1.2/S1.4，S1.5 未启动。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "D1",
+      "name": "功能正确性与行为回放",
+      "score": 25,
+      "max": 25,
+      "reason": "三域 CLI 端到端回放 52/52 fixture 回执码精确匹配，正例 canonical_json/digest 独立复算相等，冲突零降级，活体探针 8/8 fail closed。",
+      "evidence": ["/tmp/l3-s14-a1/replay.mjs（独立 harness，自研 JCS，TOTAL=60 FAILURES=0）", "隔离 clone pnpm check 206/206"]
+    },
+    {
+      "id": "D2",
+      "name": "身份与证据链",
+      "score": 25,
+      "max": 25,
+      "reason": "13 份摘要独立复算全部 MATCH；self-profile 三重绑定与 profile_id 派生闭环；上游信封 subject 身份跨信封恒等。",
+      "evidence": ["/tmp/l3-s14-a1/verify-digests.mjs（ALL DIGEST CHECKS PASS）", "tests/fixtures/product-definition/project-delivery-tool.json", "tests/fixtures/carrier-decision/project-delivery-tool.json"]
+    },
+    {
+      "id": "D3",
+      "name": "反粗制滥造与代码质量",
+      "score": 25,
+      "max": 25,
+      "reason": "域模块为真实状态机/摘要/策略实现，fail-closed 路径穷尽；schema 封闭；测试运行时复算摘要；无 TODO/stub/占位实现。",
+      "evidence": ["src/domain/acceptance-profile.ts 全文", "src/domain/carrier-decision.ts 全文", "src/domain/interaction-prototype.ts 全文", "grep slop 标记扫描仅 1 处合法负例 dummy 值"]
+    },
+    {
+      "id": "D4",
+      "name": "范围边界与治理纪律",
+      "score": 25,
+      "max": 25,
+      "reason": "修复区间零业务漂移；S1.1–S1.3 真源 blob 级未改写；formal/control 纪律保持；无 M1.2/V1/P5 冒领，SKILL.md 明示 S1.4 回执仅为证据。",
+      "evidence": ["git diff --name-only d60e625..c2894cd（13 路径）", "skills/nextstep/SKILL.md S1.4 专节边界声明", "git diff 84c051f7..c2894cd -- S1.1–S1.3 域（空）"]
+    }
+  ],
+  "penalties": [
+    {
+      "id": "PEN-1",
+      "severity": "minor",
+      "deduction": 1,
+      "reason": "上游 I/X/P attempt 2 verdict 叙述引用 self-profile 绑定 ID（pd-01e7fcb1…/cd10e72a…）与 fixture 实际值（pd-7913f81f…/096428a4…/2a582889…，与 CV r2 一致）不符，属证据叙述转写误差；候选行为与 subject 身份不受影响。",
+      "evidence": ["tests/fixtures/acceptance-profile/self-profile-headless.json bindings 实际值", ".codex/reviews/p5-v1-m1.2-s1.4-independent-ixp-r2-2026-08-14/verdict.md Profile 段"]
+    },
+    {
+      "id": "PEN-2",
+      "severity": "minor",
+      "deduction": 1,
+      "reason": "IDENTITY_CONFLICT 与路线冲突共用 PROFILE_CONFLICT_REJECTED 回执码（延续 I/X/P r2 PEN-1 记录）；fail-closed 方向安全，非阻塞改进项。",
+      "evidence": ["src/cli/acceptance-profile.ts classifyFailure isConflictFailure 分支", "tests/fixtures/acceptance-profile/profile-id-mismatch.json 回放结果"]
+    }
+  ],
+  "totals": {
+    "raw": 100,
+    "penalties": 2,
+    "final": 98
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "增设独立身份冲突回执码并同步 TS/Schema 双真源。",
+    "CLI 主入口守卫在符号链接路径下静默 no-op（继承自 S1.1–S1.3 既有 CLI，非 S1.4 回归）。",
+    "acceptance-profile.ts 中 kernel 仓库身份常量硬编码，仓库身份治理变更时需同步。",
+    "I/X/P r2 verdict 叙述转写误差建议在下一次控制面收口时附更正说明，不重写已固化评审件。",
+    "路线锁状态行 control= 字段滞后于 control ref 顶点（既有收口模式，集成节点同步即可）。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "pass",
+      "summary": "五条硬门禁全部通过；13 份摘要独立复算 MATCH；隔离 clone 复现 206/206 与覆盖率门禁；60/60 行为回放；formal/control/范围不变量保持。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "pass",
+      "summary": "四维度 100/100，按证据罚 2 分（上游叙述转写误差 1 分、共用冲突回执码 1 分），final 98；无必须修改项。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "pass",
+      "summary": "未发现模板化粗制、虚假实现、宽松放行或证据冒领；三个 CLI 的结构同构属仓库既有纪律（S1.1–S1.3 同型），非复制粘贴 slop；唯一 slop 标记命中为负例 fixture 的合法 dummy 敏感值。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "pass",
+      "summary": "综合四角色信号：硬门禁全过、证据链完整、代码真实、范围受控。裁决 PASS，候选可进入 Final Snapshot；本裁决不批准 Final Verification、Anchor Proof 或 formal promotion，formal 在 expected-old=F13 的 CAS 完成前保持 F13。"
+    }
+  ],
+  "reviewed_at": "2026-08-14T09:55:31Z"
+}
