@@ -1,0 +1,119 @@
+{
+  "review_id": "p5-v1-m1.1-attempt-2-signoff-package-final-confirmation-2026-08-14",
+  "task_id": "M1.1-ATTEMPT-2-USER-SIGNOFF-PACKAGE-FINAL-CONFIRMATION",
+  "lane": "independent-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-milestone-acceptance-signoff-readiness-v1",
+  "artifact_refs": [
+    "git:12c85d5c7d8e32a631268eeacba20c9edaf4ccb6",
+    "formal:84c051f7426ec5d2a9bed70aa02a1f321bd81e11",
+    "control:380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad",
+    "control:results/result-milestone-acceptance-m1.1-g4-a2-f72-20260813.json",
+    "docs/qa/p5-v1-m1.1-acceptance-attempt-2-2026-08-13.md",
+    ".codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-final-review-2026-08-13/scorecard.json",
+    ".codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-final-review-2026-08-13/verdict.md"
+  ],
+  "hard_gates": [
+    {
+      "id": "final_review_artifact",
+      "status": "pass",
+      "evidence": "独立终审 scorecard/verdict 已真实落盘，verdict=PASS、final_score=100、required_fixes=[]、P0/P1/P2=0/0/0，四个 reviewer signal 全部 PASS。"
+    },
+    {
+      "id": "previous_revision_closure",
+      "status": "pass",
+      "evidence": "验收报告与 verdict 已完整披露三个 P2；当前可重复覆盖率统一为 148/148、90.90%/82.94%/98.40%，旧覆盖率仅作为不可映射历史记录。"
+    },
+    {
+      "id": "signoff_state_transition",
+      "status": "pass",
+      "evidence": "批准前 awaiting-user-signoff；批准后实时重读 formal/control/Result/plan_generation 并以 expected-old control CAS 固化；CAS 成功后 M1.1 完成，V1/P5 仍未完成。"
+    },
+    {
+      "id": "s1_4_authorization_boundary",
+      "status": "pass",
+      "evidence": "会签请求明确不授权启动 S1.4；固化后仅允许单独评估入口，packet、编码、派发仍需后续明确动作；control 无 S1.4 对象。"
+    },
+    {
+      "id": "formal_control_result_immutability",
+      "status": "pass",
+      "evidence": "当前 formal=84c051f...、control=380e4ba...、Result digest=341d36aa...，Result 未重建，pending dispatch=0。"
+    },
+    {
+      "id": "change_scope_and_clean_tree",
+      "status": "pass",
+      "evidence": "12c85d5... 仅修改文档与 .codex 留痕；工作树干净；相对 F13 的 src/tests/schemas/skills/package.json/pnpm-lock.yaml 无差异；git diff --check 与 git fsck --strict 通过。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "acceptance_package_correctness",
+      "score": 30,
+      "max_score": 30,
+      "reason": "M1.1 PASS / 97 验收本体未被改变，三类累计连续性和三个 P2 披露完整。",
+      "evidence_refs": ["control:results/result-milestone-acceptance-m1.1-g4-a2-f72-20260813.json", "docs/qa/p5-v1-m1.1-acceptance-attempt-2-2026-08-13.md"]
+    },
+    {
+      "id": "state_transition_safety",
+      "score": 25,
+      "max_score": 25,
+      "reason": "会签前后状态、CAS 条件、失败路径和 S1.4 隔离均明确且与 CR/路线锁一致。",
+      "evidence_refs": ["PROJECT_ROUTE_LOCK.md", "docs/change-requests/004-m1-1-cross-stage-fixture-continuity-gap.md", "docs/change-requests/005-product-definition-semantic-contract-gap.md"]
+    },
+    {
+      "id": "evidence_traceability",
+      "score": 25,
+      "max_score": 25,
+      "reason": "新 PASS 终审产物真实存在，formal/control/Result 与提交身份均可复核。",
+      "evidence_refs": ["git:12c85d5c7d8e32a631268eeacba20c9edaf4ccb6", ".codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-final-review-2026-08-13/scorecard.json"]
+    },
+    {
+      "id": "scope_honesty",
+      "score": 20,
+      "max_score": 20,
+      "reason": "未把用户会签伪装成自动启动 S1.4，未宣称 V1/P5 完成，也未声称已执行 CAS。",
+      "evidence_refs": ["docs/qa/p5-v1-m1.1-acceptance-attempt-2-2026-08-13.md", "control:checkpoint.json"]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100
+  },
+  "severity_summary": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "signal": "PASS",
+      "conclusion": "提交范围、refs、Result、状态转移和 S1.4 边界均通过。"
+    },
+    {
+      "role": "Strict Judge",
+      "signal": "PASS",
+      "score": 100,
+      "conclusion": "上轮 REVISE 项已全部关闭，当前会签包具备签署资格。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "signal": "PASS",
+      "conclusion": "未发现旧错误语义、遗漏 P2 或无证据的终审声明。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "signal": "PASS",
+      "score": 100,
+      "conclusion": "建议提交用户会签；不执行 CAS，不启动 S1.4。"
+    }
+  ],
+  "reviewed_at": "2026-08-14T00:00:00+08:00",
+  "verdict_scope": "PASS 仅表示 M1.1 attempt 2 用户会签包已通过终审；不表示用户已经会签，不表示 M1.1 已正式关闭，不执行 user-signoff CAS，不移动 control/formal，不启动 S1.4。"
+}

@@ -1989,6 +1989,13 @@
 - 阻塞会签项：会签后 M1.1 状态与 S1.4 授权语义冲突。正确边界为“固化会签后 M1.1 完成；不自动授权 S1.4，只单独评估入口”。
 - 披露项：未发现所称最终 PASS 终审产物；新的 PASS 结论实际落盘前不得作为既成证据报告。
 - 不运行 `pnpm check`：本轮仅审查文档状态语义，前一轮在相同生产内容上的 `148/148` 证据有效。
+
+## 2026-08-14 M1.1 Attempt 2 Sign-off Package Final Confirmation
+
+- 结论：`PASS / 100`，P0/P1/P2=`0/0/0`；提交 `12c85d5...` 后的新终审产物真实存在，且已独立核对。
+- 通过项：三个 P2 完整披露；覆盖率统一为 `148/148`、`90.90% / 82.94% / 98.40%`；会签后“实时重读 + expected-old CAS + 成功后 M1.1 完成”的语义正确；本次会签不授权 S1.4。
+- refs：formal=`84c051f...`、control=`380e4ba...`、Result digest=`341d36aa...`；pending dispatch=0，registry=`awaiting-user-signoff`，无 S1.4 对象；工作树干净，`git diff --check` 与 `git fsck --strict` 通过。
+- 当前动作：仅建议提交用户会签；不执行 user-signoff CAS、不移动 formal/control、不启动 S1.4。
 - 修订后验证：验收报告 §8 与 §9、独立 verdict 均完整列出三个 P2，并声明均不阻塞 M1.1 会签、由宿主相关里程碑承接；S1.4 仅出现在禁止/未启动语境，M1.1/V1/P5 未误报完成。
 - 覆盖率归属：formal F13 隔离副本与 HEAD `9aef41a...` 独立复跑分别列示，二者均为 `148/148`、Lines `90.90%`、Branches `82.94%`、Functions `98.40%`；旧 `90.74% / 82.75% / 98.40%` 已明确为不可映射到现存工作树的旧运行上下文数据。
 - 终审声明状态：此前“最终独立文档终审 PASS、必须修复项 0”的声明无对应产物，已撤回，等待新的独立终审。
@@ -2010,3 +2017,11 @@
 - 终审完整性：主控对 scorecard 一处自指时间表述作消歧，不改变硬门、评分、证据或 verdict；原 Reviewer 只读复核后返回 `CONFIRMED`，维持 `PASS / 100`。
 - 验证范围：`jq empty`、scorecard 算术/字段/角色、verdict 四节、`git diff --check` 和文档范围检查通过；按用户指令未运行测试，未修改 Result/control/formal，未启动 S1.4。
 - 最终结论：新的 PASS 终审证据已真实落盘，会签包可以重新提交用户会签；用户批准及会签 CAS 尚未发生。
+
+## 2026-08-14 M1.1 User Sign-off CAS 前身份核验
+
+- 用户批准已收到：批准范围仅为 M1.1 user-signoff CAS；不自动授权 S1.4，不标记 V1/P5 完成。
+- 全新 Qwen3.8 Max Agent `019ffe0b-1f99-7be3-a4e9-66968599ced1` 实时核验八项 CAS 前硬门，结果 `PASS / CAS_ALLOWED=true`；scorecard/verdict 已写入 `.codex/reviews/p5-v1-m1.1-attempt-2-signoff-identity-verification-2026-08-14/`。
+- formal/control/Result/plan_generation 四项分别为 `84c051f...`、`380e4ba...`、`sha256:341d36aa...`、`4`，Result digest 用独立 RFC8785/JCS 复算匹配；checkpoint/registry、pending dispatch、单父 control 链、final-review/final-confirmation 产物和 S1.4 零对象均通过。
+- CAS 约束：实时 expected-old=`380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad`；CAS 失败不得标记完成，formal 必须保持 F13，CAS 成功后才可关闭 M1.1 会签缺口。
+- 工具替代：`deepseek-v4-flash` 在当前 spawn runtime 返回 Unknown model；误试 `openai-deepseek-v4-pro` 因代理工具 schema 兼容错误 HTTP 400 失败；二者均未执行核验。按用户授权的可用模型改派全新 Qwen3.8 Max，未运行测试。

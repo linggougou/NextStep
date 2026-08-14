@@ -1,0 +1,144 @@
+{
+  "review_id": "p5-v1-m1.1-attempt-2-signoff-identity-verification-2026-08-14",
+  "task_id": "M1.1-I-X-P",
+  "lane": "independent-identity-verification",
+  "review_level": "L3",
+  "rubric_id": "nextstep-signoff-cas-identity-verification-v1",
+  "artifact_refs": [
+    "git:refs/nextstep/formal=84c051f7426ec5d2a9bed70aa02a1f321bd81e11",
+    "git:refs/nextstep/control=380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad",
+    "control:checkpoint.json",
+    "control:registry.json",
+    "control:results/result-milestone-acceptance-m1.1-g4-a2-f72-20260813.json",
+    "control:messages/msg-user-signoff-request-m1.1-g4-a2-20260813.json",
+    "control:messages/msg-user-decision-cr005-approved-20260812.json",
+    "control:promotions/formal-promotion-s1.3-g4-a3.json",
+    ".codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-final-review-2026-08-13/scorecard.json",
+    ".codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-final-review-2026-08-13/verdict.md",
+    ".codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-final-confirmation-2026-08-14/scorecard.json",
+    ".codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-final-confirmation-2026-08-14/verdict.md"
+  ],
+  "hard_gates": [
+    {
+      "id": "formal_ref_identity",
+      "status": "pass",
+      "evidence": "实时 git rev-parse refs/nextstep/formal = 84c051f7426ec5d2a9bed70aa02a1f321bd81e11，与期望精确相等；该 OID 即 F12->F13 提升后的 formal 身份（promotions/formal-promotion-s1.3-g4-a3.json 的 new_formal_oid 与 observed_formal_oid_after_cas 均为该值）。"
+    },
+    {
+      "id": "control_ref_identity",
+      "status": "pass",
+      "evidence": "实时 git rev-parse refs/nextstep/control = 380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad，与期望精确相等。"
+    },
+    {
+      "id": "result_digest_identity_and_independent_recompute",
+      "status": "pass",
+      "evidence": "control:results/result-milestone-acceptance-m1.1-g4-a2-f72-20260813.json 顶层 result_digest = sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea；本核验以独立 RFC 8785/JCS 实现（键按 UTF-16 code unit 排序、无空白、ES number/string 序列化）仅剔除 result_digest 后复算，canonical 长度 4707 字节，结果 sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea，与存储值和期望值三方一致。"
+    },
+    {
+      "id": "checkpoint_state_consistency",
+      "status": "pass",
+      "evidence": "control:checkpoint.json：plan_generation=4；formal_oid=84c051f7426ec5d2a9bed70aa02a1f321bd81e11 与实时 formal 一致；user_signoff.required=true、status=pending、request_message_id=msg-user-signoff-request-m1.1-g4-a2-20260813（该消息实际存在于 control:messages/）；pending_dispatch_messages=[]；checkpoint.user_signoff.result_digest 与 result 文件、registry、signoff 请求消息及独立复算值全部一致。registry.json：task_id=M1.1-I-X-P、task_attempt=2、status=awaiting-user-signoff、result_ref 与 result_digest=sha256:341d36aa... 一致；全 registry 仅此一条 awaiting 条目，attempt 1 为 generation-invalidated。"
+    },
+    {
+      "id": "control_single_parent_chain_and_expected_old",
+      "status": "pass",
+      "evidence": "control 全链无合并提交（逐提交检查父数均为 1，唯一根 eff8cd691d80e80de6570b7850150da31f7f9244）；当前 control 提交 380e4ba... 单父 dcf3e933f454fe0a6d3f486f540b36bff62eb53a，与 checkpoint.control_parent_oid 吻合但不作为 expected-old。CAS 的 expected-old 必须使用实时 control OID：expected_old_control=380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad。"
+    },
+    {
+      "id": "final_review_and_confirmation_artifacts",
+      "status": "pass",
+      "evidence": "final-review（p5-v1-m1.1-attempt-2-signoff-package-final-review-2026-08-13）与 final-confirmation（p5-v1-m1.1-attempt-2-signoff-package-final-confirmation-2026-08-14）的 scorecard.json 均存在且 jq 可解析，verdict=PASS、final_score=100、required_fixes=[]；两份 verdict.md 均落盘并声明 PASS / 100。"
+    },
+    {
+      "id": "worktree_change_scope",
+      "status": "pass",
+      "evidence": "git status --porcelain 仅：M .codex/operations-log.md（+6 行会签最终确认留痕）、M .codex/verification-report.md（+7 行同主题留痕）、?? .codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-final-confirmation-2026-08-14/（scorecard.json+verdict.md），以及本核验包新目录；无暂存内容（NOTHING_STAGED），git diff --check 通过；无生产代码、测试、Schema 或依赖变更。"
+    },
+    {
+      "id": "no_s1_4_objects_and_scope_limit",
+      "status": "pass",
+      "evidence": "control 的 packets/ 与 outbox/ 无任何 s1.4 文件；registry 无任何 S1.4 任务条目；全部 S1.4 文本出现均为禁止/非目标语境（signoff 请求的 forbidden_before_signoff 含“启动 S1.4”，CR-005 forbidden_before_f12 含 start S1.4，各 packet 非目标与 result 未完成项均为“不启动/不实现 S1.4”）。用户批准仅授权 user sign-off CAS，不授权 S1.4；signoff 请求的 next_allowed_action 为会签后重读 control/formal 并按路线锁决定下一步。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "refs_identity",
+      "score": 30,
+      "max_score": 30,
+      "reason": "formal 与 control 实时 OID 与期望身份逐项精确相等，formal 保持 F13（84c051f...），无任何 ref 移动迹象。",
+      "evidence_refs": [
+        "git:refs/nextstep/formal=84c051f7426ec5d2a9bed70aa02a1f321bd81e11",
+        "git:refs/nextstep/control=380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad",
+        "control:promotions/formal-promotion-s1.3-g4-a3.json"
+      ]
+    },
+    {
+      "id": "digest_independence",
+      "score": 25,
+      "max_score": 25,
+      "reason": "不信任存储值，独立实现 RFC 8785/JCS 复算 result_digest 并精确匹配；Result 文件的 subject_digest 与 registry candidate_digest 亦同为 e083981e...，身份链闭合。",
+      "evidence_refs": [
+        "control:results/result-milestone-acceptance-m1.1-g4-a2-f72-20260813.json",
+        "control:registry.json"
+      ]
+    },
+    {
+      "id": "state_machine_consistency",
+      "score": 25,
+      "max_score": 25,
+      "reason": "checkpoint、registry、signoff 请求消息三方状态一致：signoff pending、M1.1 attempt 2 awaiting-user-signoff、无待发派消息、plan_generation=4、fence 72 与 claim 一致。",
+      "evidence_refs": [
+        "control:checkpoint.json",
+        "control:registry.json",
+        "control:messages/msg-user-signoff-request-m1.1-g4-a2-20260813.json"
+      ]
+    },
+    {
+      "id": "boundary_and_scope_integrity",
+      "score": 20,
+      "max_score": 20,
+      "reason": "control 单父链合法、终审/终确认产物真实且全 PASS 零必修、工作树变更仅限 .codex 会签留痕与评审包、无任何 S1.4 packet/outbox/task/candidate。",
+      "evidence_refs": [
+        ".codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-final-review-2026-08-13/scorecard.json",
+        ".codex/reviews/p5-v1-m1.1-attempt-2-signoff-package-final-confirmation-2026-08-14/scorecard.json"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100
+  },
+  "severity_summary": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "执行 CAS 时应再次实时重读 refs/nextstep/control 作为 expected-old；若与本核验记录不符，必须中止并重新身份核验。",
+    "CAS 成功后建议在 control 留痕中显式记录 observed_old_control=380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad 与 formal 未移动证明。"
+  ],
+  "reviewers": [
+    {
+      "role": "Independent Identity Verifier",
+      "identity": "全新独立身份核验 Agent；非此前验收（M1.1-I-X-P attempt 2）、终审（final-review）或会签确认（final-confirmation）Agent，未参与任何上游产物生成。",
+      "signal": "PASS",
+      "score": 100,
+      "conclusion": "八项硬门全部通过。CAS_ALLOWED=true；expected_old_control=380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad；formal 必须保持 F13（84c051f7426ec5d2a9bed70aa02a1f321bd81e11）；用户批准仅授权 user sign-off CAS，不授权 S1.4；CAS 失败不得标记 M1.1 完成，须保持 pending 并重新核验。"
+    }
+  ],
+  "reviewed_at": "2026-08-14T10:18:16+08:00",
+  "verdict_scope": "本 PASS 仅表示 CAS 前身份与状态硬门复核通过，授权以 expected_old_control=380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad 执行一次 user sign-off CAS。不表示用户已经完成会签，不表示 M1.1/V1/P5 已完成，不授权启动 S1.4，不授权移动 formal ref（必须保持 F13=84c051f7426ec5d2a9bed70aa02a1f321bd81e11），不授权修改 Result/control 历史。CAS 若失败：不得标记完成，不得以旧 expected-old 盲目重试，必须重新执行身份核验。",
+  "cas_directive": {
+    "CAS_ALLOWED": true,
+    "expected_old_control": "380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad",
+    "formal_must_remain": "F13=84c051f7426ec5d2a9bed70aa02a1f321bd81e11",
+    "authorized_scope": "user sign-off CAS only",
+    "s1_4_authorized": false,
+    "on_cas_failure": "must_not_mark_complete; re-verify identities from live refs before any retry"
+  }
+}

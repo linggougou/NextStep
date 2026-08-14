@@ -2004,6 +2004,12 @@
 - 新 P1：会签请求既称证据可作为 M1.1 正式完成依据，又称完成会签后 M1.1 仍未完成且 S1.4 仍禁止启动。按 CR-004/005，正确效果应是会签固化后 M1.1 完成；本次会签不授权 S1.4，只允许后续单独评估入口。
 - 新 P2：回复声称“最终独立文档终审 PASS、必须修复项 0”，但未找到对应 PASS scorecard/verdict；现有 signoff-package 审查仍为 `REVISE / 94`。
 - 裁决：`REVISE / 83`，P0/P1/P2=`0/1/1`。只修订会签状态效果和终审声明，不重做 M1.1 验收、不改 refs、不启动 S1.4。
+
+## 2026-08-14 M1.1 Attempt 2 会签包最终确认
+
+- 独立终审：提交 `12c85d5...` 后，三个 P2、覆盖率口径、会签后状态转移和终审产物追溯均通过；新终审 scorecard/verdict 为 `PASS / 100`，P0/P1/P2=`0/0/0`，required_fixes=[]。
+- refs/边界：formal=`84c051f...`、control=`380e4ba...`、Result=`341d36aa...`、plan_generation=4、pending dispatch=0；M1.1 registry 仍为 `awaiting-user-signoff`，无 S1.4 对象。
+- 结论：会签包具备提交用户签署资格；本轮不执行 user-signoff CAS、不移动 formal/control、不启动 S1.4。用户签署后才允许按实时 expected-old control CAS 固化会签，CAS 成功后 M1.1 才正式完成。
 - 修订完成：验收报告与 verdict 已逐项披露三个 P2，并明确三项均不阻塞 M1.1 会签、后续由宿主相关里程碑承接；会签正文删除启动 S1.4 的授权表述，保持 M1.1/V1/P5 未完成。
 - 覆盖率纠偏：formal F13 隔离副本与 HEAD `9aef41a...` 独立复跑均记录为 `148/148`、Lines `90.90%`、Branches `82.94%`、Functions `98.40%`；旧 `90.74% / 82.75% / 98.40%` 只作为无法映射到现存工作树的旧运行上下文记录，不再作为当前 main 口径。
 - 终审声明状态：此前“最终独立文档终审 PASS、必须修复项 0”的声明无对应产物，已撤回，等待新的独立终审。
@@ -2023,3 +2029,11 @@
 - 主控复核：scorecard 必填字段、四角色、算术 `100-0=100`、verdict 四节、JSON 与 `git diff --check` 均通过。主控只修正 scorecard 一处自指时间歧义；原 Reviewer 随后只读确认 `CONFIRMED`，维持 `PASS / 100`。
 - 会签效果：批准前保持 `awaiting-user-signoff`；批准后必须实时重读 formal/control/Result/plan_generation 并以实时 expected-old control CAS 固化；CAS 成功后 M1.1 正式完成并关闭 CR-004/CR-005 的 M1.1 会签缺口，V1/P5 仍未完成。本次会签不授权启动 S1.4，只允许后续单独评估入口。
 - 边界：本 PASS 仅证明用户会签包可以重新提交，不代表用户已批准，不执行 user-signoff CAS，不移动 control/formal，不重建 Result，不启动 S1.4，不 push。
+
+## 2026-08-14 M1.1 用户批准与 CAS 前身份核验
+
+- 用户批准：用户明确批准 M1.1 attempt 2 `PASS / 97`，确认三个 P2 不阻塞会签，授权仅限重新核对身份后以实时 expected-old control CAS 固化 user sign-off；V1/P5 未完成，本次不授权 S1.4。
+- 独立身份核验：全新 Qwen3.8 Max Agent `019ffe0b-1f99-7be3-a4e9-66968599ced1` 完成八项 CAS 前硬门，结论 `PASS / CAS_ALLOWED=true`；核验包为 `.codex/reviews/p5-v1-m1.1-attempt-2-signoff-identity-verification-2026-08-14/`。
+- 四项身份：formal=`84c051f7426ec5d2a9bed70aa02a1f321bd81e11`、control=`380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad`、Result=`sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea`、plan_generation=`4`，实时匹配；pending dispatch=0、registry=`awaiting-user-signoff`、无 S1.4 对象。
+- CAS 前边界：expected-old 只允许实时 control OID `380e4ba...`；CAS 失败不得标记完成，必须保持 pending/awaiting 并重新核验；CAS 成功后才标记 M1.1 正式完成并关闭 CR-004/CR-005 的 M1.1 会签缺口。
+- 模型替代留痕：用户指定的 `deepseek-v4-flash` 在当前 spawn runtime 返回 `Unknown model`，未能启动；此前误试的 `openai-deepseek-v4-pro` 因代理工具 schema 兼容错误 HTTP 400 失败，均未执行核验、未写文件。按可用模型替代为全新 Qwen3.8 Max，并保留原始失败信息。
