@@ -1,0 +1,79 @@
+{
+  "fixture_type": "carrier-decision-case",
+  "evidence_scope": "manual-isolated consumer contract",
+  "case_id": "project-delivery-tool",
+  "target_project": "project-delivery-tool",
+  "expectation": {
+    "outcome": "accepted"
+  },
+  "candidate": {
+    "schema_version": "1.0",
+    "record_type": "carrier-decision",
+    "carrier_decision_id": "carrier-decision-project-delivery-tool-006-20260814",
+    "status": "adjudicated",
+    "project": {
+      "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
+    },
+    "binding": {
+      "product_definition_id": "pd-7913f81f17e361f716c1377f2eaf6c9e623da2e32acaf27b81ed25f04acece06",
+      "product_definition_digest": "sha256:096428a49069502de8273c5c470516b0493777352c135bc02fa3b6d1365f7164",
+      "source_adjudication": {
+        "adjudication_id": "006-product-carrier-decision",
+        "document": "docs/product-specs/006-product-carrier-decision.md",
+        "signed_at": "2026-07-10T00:00:00.000Z",
+        "conclusions": {
+          "primary_carrier": "skill-chat",
+          "truth_source_carrier": "project-documents-git",
+          "auxiliary_entry_policy": "no-new-mainline-entry",
+          "integration_surface_policy": "future-integration-surface-only",
+          "web_ui_policy": "candidate-not-mainline"
+        },
+        "conclusions_digest": "sha256:7ebe8a69fc53493ca0caa4b3b57904c0d84a38a8afca3cf19bde16135ca87e62"
+      }
+    },
+    "binding_digest": "sha256:33f9b22cb98ef54ef229f0629c4c473bb135f54e82fff3868959c942e0c51045",
+    "decision": {
+      "primary_carrier": "skill-chat",
+      "truth_source_carrier": "project-documents-git",
+      "auxiliary_entry_policy": "no-new-mainline-entry",
+      "integration_surfaces": [
+        {
+          "surface": "mcp-service",
+          "status": "future-integration-surface"
+        },
+        {
+          "surface": "api",
+          "status": "future-integration-surface"
+        }
+      ],
+      "candidate_branches": [
+        {
+          "branch_id": "web-ui-candidate-branch",
+          "carrier_kind": "web-ui",
+          "status": "candidate-not-mainline",
+          "materials": [
+            {
+              "document": "docs/design-docs/p2-product-prototype.md",
+              "role": "candidate-branch-input"
+            },
+            {
+              "document": "docs/design-docs/p2-ui-design-source-requirements.md",
+              "role": "candidate-branch-input"
+            },
+            {
+              "document": "docs/design-docs/s3-ui-design-source.md",
+              "role": "candidate-branch-draft"
+            }
+          ],
+          "recovery_conditions": {
+            "requires_change_request": true,
+            "requires_re_adjudication": true,
+            "trigger_summary": "用户明确要求恢复轻量 Web 工作面时，经 Change Request 与重新载体裁决后从候选材料恢复"
+          }
+        }
+      ]
+    },
+    "decided_at": "2026-08-14T05:00:00.000Z"
+  }
+}

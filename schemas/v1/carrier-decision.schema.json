@@ -1,0 +1,150 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nextstep.local/schemas/v1/carrier-decision.schema.json",
+  "title": "NextStep Carrier Decision 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_type", "carrier_decision_id", "status", "project", "binding", "binding_digest", "decision", "decided_at"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "record_type": { "const": "carrier-decision" },
+    "carrier_decision_id": { "type": "string", "pattern": "^carrier-decision-[a-z0-9-]{1,64}$" },
+    "status": { "const": "adjudicated" },
+    "project": { "$ref": "#/definitions/project" },
+    "binding": { "$ref": "#/definitions/binding" },
+    "binding_digest": { "$ref": "#/definitions/digest" },
+    "decision": { "$ref": "#/definitions/decision" },
+    "supersedes": { "$ref": "#/definitions/supersedes" },
+    "change_request": { "$ref": "#/definitions/changeRequest" },
+    "decided_at": { "type": "string", "minLength": 1 }
+  },
+  "definitions": {
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "baseline": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository_id", "formal_baseline"],
+      "properties": {
+        "repository_id": { "$ref": "#/definitions/digest" },
+        "formal_baseline": { "$ref": "#/definitions/baseline" }
+      }
+    },
+    "primaryCarrier": { "enum": ["skill-chat", "web-cockpit", "app-only", "mcp-only", "headless-only"] },
+    "truthSourceCarrier": { "enum": ["project-documents-git", "chat-history", "none"] },
+    "sourceConclusions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary_carrier", "truth_source_carrier", "auxiliary_entry_policy", "integration_surface_policy", "web_ui_policy"],
+      "properties": {
+        "primary_carrier": { "$ref": "#/definitions/primaryCarrier" },
+        "truth_source_carrier": { "$ref": "#/definitions/truthSourceCarrier" },
+        "auxiliary_entry_policy": { "enum": ["no-new-mainline-entry", "new-mainline-entry"] },
+        "integration_surface_policy": { "enum": ["future-integration-surface-only", "mainline"] },
+        "web_ui_policy": { "enum": ["candidate-not-mainline", "mainline"] }
+      }
+    },
+    "sourceAdjudication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["adjudication_id", "document", "signed_at", "conclusions", "conclusions_digest"],
+      "properties": {
+        "adjudication_id": { "type": "string", "minLength": 1 },
+        "document": { "type": "string", "minLength": 1 },
+        "signed_at": { "type": "string", "minLength": 1 },
+        "conclusions": { "$ref": "#/definitions/sourceConclusions" },
+        "conclusions_digest": { "$ref": "#/definitions/digest" }
+      }
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["product_definition_id", "product_definition_digest", "source_adjudication"],
+      "properties": {
+        "product_definition_id": { "type": "string", "pattern": "^pd-[a-f0-9]{64}$" },
+        "product_definition_digest": { "$ref": "#/definitions/digest" },
+        "source_adjudication": { "$ref": "#/definitions/sourceAdjudication" }
+      }
+    },
+    "integrationSurface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["surface", "status"],
+      "properties": {
+        "surface": { "enum": ["mcp-service", "api"] },
+        "status": { "enum": ["future-integration-surface", "mainline"] }
+      }
+    },
+    "candidateMaterial": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["document", "role"],
+      "properties": {
+        "document": { "type": "string", "minLength": 1 },
+        "role": { "enum": ["candidate-branch-input", "candidate-branch-draft"] }
+      }
+    },
+    "candidateRecoveryConditions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requires_change_request", "requires_re_adjudication", "trigger_summary"],
+      "properties": {
+        "requires_change_request": { "type": "boolean" },
+        "requires_re_adjudication": { "type": "boolean" },
+        "trigger_summary": { "type": "string", "minLength": 1 }
+      }
+    },
+    "candidateBranch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["branch_id", "carrier_kind", "status", "materials", "recovery_conditions"],
+      "properties": {
+        "branch_id": { "type": "string", "minLength": 1 },
+        "carrier_kind": { "enum": ["web-ui", "app", "mcp-service", "api", "headless"] },
+        "status": { "enum": ["candidate-not-mainline", "mainline"] },
+        "materials": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/candidateMaterial" }
+        },
+        "recovery_conditions": { "$ref": "#/definitions/candidateRecoveryConditions" }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary_carrier", "truth_source_carrier", "auxiliary_entry_policy", "integration_surfaces", "candidate_branches"],
+      "properties": {
+        "primary_carrier": { "$ref": "#/definitions/primaryCarrier" },
+        "truth_source_carrier": { "$ref": "#/definitions/truthSourceCarrier" },
+        "auxiliary_entry_policy": { "enum": ["no-new-mainline-entry", "new-mainline-entry"] },
+        "integration_surfaces": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/integrationSurface" }
+        },
+        "candidate_branches": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/candidateBranch" }
+        }
+      }
+    },
+    "supersedes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["carrier_decision_id", "carrier_decision_digest"],
+      "properties": {
+        "carrier_decision_id": { "type": "string", "pattern": "^carrier-decision-[a-z0-9-]{1,64}$" },
+        "carrier_decision_digest": { "$ref": "#/definitions/digest" }
+      }
+    },
+    "changeRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["change_request_id", "change_request_digest"],
+      "properties": {
+        "change_request_id": { "type": "string", "pattern": "^CR-[0-9]{3,}$" },
+        "change_request_digest": { "$ref": "#/definitions/digest" }
+      }
+    }
+  }
+}
