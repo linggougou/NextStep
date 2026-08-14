@@ -1,6 +1,6 @@
 # M1.1 跨阶段 Fixture 连续性缺口
 
-- 状态：generation 3 历史修复已执行并阻塞收口；后续入口已由 CR-005 用户门禁取代
+- 状态：closed（2026-08-14 M1.1 用户会签后；generation 3 历史修复与证据保留）
 - 记录日期：2026-08-12
 - 来源：`P5 / V1 / M1.1` 独立累积验收 attempt 1 退回
 - 所属阶段：P5 / V1 / M1.1
@@ -59,3 +59,10 @@ M1.1 独立累积验收发现，三类目标项目的 S1.3 product-definition fi
 - attempt 2 的测试与 fixture 修订通过本地 `125/125`，但主管和独立评审确认：现有生产契约强制 `non_goals` 非空并允许 constraint 充当 non-goal，且永久语义回归未独立绑定 S1.2 真源。
 - attempt 2 已以 `blocked` Result Envelope 固化并墓碑失效，未创建候选；formal 未移动，S1.4 继续关闭。
 - 唯一后续入口为 [CR-005](./005-product-definition-semantic-contract-gap.md) 用户决定；CR-005 获批后也只能推进 plan_generation 4，先闭合 S1.2 新正式链。不得创建 generation 3 attempt 3，也不得在获批前修改生产 Schema/领域规则。
+
+## 9. 2026-08-14 关闭结论
+
+- M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 通过 control CAS 固化；expected-old=`380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad`，当前 control=`04677ae041443ba9bca740bb70b814b5347d6b26`。
+- CR-004 的 M1.1 会签缺口已关闭；本 CR 的历史修复过程、退回结论、generation 3 证据和后续 CR-005 入口均保留，不回写历史内容。
+- formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`、Result digest=`sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea`、`plan_generation=4` 不变，pending=0。
+- V1、P5 仍未完成；S1.4 未启动且本次会签未授权启动，下一步仅允许独立评估 S1.4 入口。

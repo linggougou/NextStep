@@ -2025,3 +2025,19 @@
 - formal/control/Result/plan_generation 四项分别为 `84c051f...`、`380e4ba...`、`sha256:341d36aa...`、`4`，Result digest 用独立 RFC8785/JCS 复算匹配；checkpoint/registry、pending dispatch、单父 control 链、final-review/final-confirmation 产物和 S1.4 零对象均通过。
 - CAS 约束：实时 expected-old=`380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad`；CAS 失败不得标记完成，formal 必须保持 F13，CAS 成功后才可关闭 M1.1 会签缺口。
 - 工具替代：`deepseek-v4-flash` 在当前 spawn runtime 返回 Unknown model；误试 `openai-deepseek-v4-pro` 因代理工具 schema 兼容错误 HTTP 400 失败；二者均未执行核验。按用户授权的可用模型改派全新 Qwen3.8 Max，未运行测试。
+
+## 2026-08-14 M1.1 用户会签成功后的真源同步验证
+
+- 验证对象：独立 worktree `/private/tmp/nextstep-m1-1-signoff-sync-20260814`，分支 `codex/m1-1-signoff-sync-20260814`。
+- 事实基线：main=`9263c2fa6f1de05aced69ee52f96fae489ffe22e`；formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`；control=`04677ae041443ba9bca740bb70b814b5347d6b26`；Result digest=`sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea`；`plan_generation=4`；pending=0。
+- 目标语义：M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 通过 control CAS 固化并正式完成；CR-004/CR-005 已关闭且历史内容/证据保留；V1、P5 未完成；S1.4 未启动且本次会签未授权启动，下一步仅允许独立评估 S1.4 入口。
+- 变更约束：仅项目文档与 `.codex` 留痕；无生产代码、测试、Schema、依赖、正式 Result/control/formal 对象或 S1.4 packet/编码/派发变更；本轮不运行 `pnpm check`。
+- 本条记录将在本轮 `git diff --check`、JSON 检查（如有）、固定字符串扫描和变更范围核对完成后补充最终结果。
+
+### 本轮最终验证结果
+
+- `git diff --check`：通过。
+- JSON 检查：仓库内 JSON 全部可由 `jq empty` 解析；本轮无 JSON 文件变更。
+- 固定字符串扫描：2026-08-14、M1.1 `PASS / 97`、正式完成、CR-004/CR-005 关闭、formal F13、control=`04677ae041443ba9bca740bb70b814b5347d6b26`、Result digest、`plan_generation=4` 与 pending=0 均存在；新增行未发现 S1.4 已启动/已进入/packet 生成/编码/派发语义。
+- 变更范围：恰好 13 个用户指定文档/留痕文件；无生产代码、测试、Schema、依赖、Result/control/formal 正式对象变更。
+- 按用户指令未运行 `pnpm check`，未生成或派发 S1.4 packet，未编码 S1.4，未 push。

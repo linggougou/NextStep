@@ -2,7 +2,7 @@
 
 NextStep 是以 Skill 为主交互入口、以项目文档和 Git 为正式真源的 AI 项目闭环落地系统。
 
-当前处于 `P5 / V1 / M1.1` 缺口修复。S1.2 与 S1.3 generation 4 已完成两段式正式提升，formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。M1.1 attempt 2 独立验收为 `PASS / 97`，当前等待用户会签。
+当前处于 `P5 / V1` 持续落地。S1.2 与 S1.3 generation 4 已完成两段式正式提升，formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 通过 control CAS 固化并正式完成；CR-004/CR-005 已关闭。
 
 ## 环境
 
@@ -33,7 +33,8 @@ pnpm check
 
 - S1.3 generation 4 已通过完整正式证据链并提升到 F13。
 - 当前 formal 为 F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`；main 包含 F13。
-- 不启动 S1.4；M1.1 用户会签、V1 和 P5 均未完成。
+- M1.1 已正式完成；V1、P5 仍未完成。S1.4 未启动且本次会签未授权启动，下一步仅允许独立评估 S1.4 入口。
+- 当前 control=`04677ae041443ba9bca740bb70b814b5347d6b26`，formal=F13，Result digest=`sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea`，`plan_generation=4`，pending=0。
 - 不接入 Codex SDK/App Server，不声明宿主 `full` 支持。
 - 不恢复 Web/UI 分支，不引入常驻服务或数据库。
 

@@ -3,10 +3,10 @@
 ## 当前阶段
 
 - 生命周期：S5 开发落地。
-- 当前里程碑：P5 / V1 / M1.1 / S1.3。
-- 正式基线：F12 `8540763a9719cda5c5632b68bb770c95f0ceaecf`。
+- 当前里程碑：P5 / V1（M1.1 已完成；S1.4 入口仅允许独立评估，尚未启动）。
+- 正式基线：formal F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`；main 基线为 `9263c2fa6f1de05aced69ee52f96fae489ffe22e`。
 - 当前产品候选：`0dc22758a9138f7d69ad812d7617eda709d0c392`，在 Product Definition 2.0 基础上补齐历史恢复后的当前 readiness 与 non-goals source-state 强绑定。
-- 当前公开控制：`f56c1bfc42ede3fc31f9a910497160750f43f9fc`，`plan_generation=4`，`pending_dispatch_messages=[]`；S1.3 generation 4 已正式提升到 F13。
+- 当前公开控制：`04677ae041443ba9bca740bb70b814b5347d6b26`，由旧 control `380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad` 单父 CAS 推进；`plan_generation=4`，`pending_dispatch_messages=[]`（pending=0）；Result digest=`sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea`。S1.3 generation 4 已正式提升到 F13。
 - 里程碑真源：`PROJECT_ROUTE_LOCK.md`、P3 完成计划、P5 活动计划、CR-005。
 
 ## 本轮目标
@@ -52,4 +52,4 @@
 
 用户最初要求使用第三方 Claude Code 或 OpenCode；后续明确改为所有正式子 Agent 使用 `gpt-5.6-luna / xhigh`。正式 CV、I/X/P 与 L3 均按新要求执行并在完成后回收。
 
-2026-08-13 复核时，Orca 编排 CLI 不存在；第三方异常仅作历史诊断，不进入正式门禁结果。Final Snapshot、Final Verification、Credential、Audit Anchor、Anchor Proof 与 F12→F13 CAS 已完成；M1.1 attempt 2 独立验收为 `PASS / 97`，当前唯一下一门禁是用户会签，会签前不启动 S1.4。
+2026-08-14 状态同步：M1.1 attempt 2 `PASS / 97` 用户会签已通过 control CAS 固化，M1.1 formally-completed；CR-004/CR-005 已关闭，历史内容与证据保留。Final Snapshot、Final Verification、Credential、Audit Anchor、Anchor Proof 与 F12→F13 CAS 已完成；V1、P5 尚未完成。S1.4 未启动且本次会签未授权启动，下一步仅允许独立评估 S1.4 入口。Orca 编排 CLI 缺失及第三方异常仍仅作历史诊断。

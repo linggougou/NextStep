@@ -1,6 +1,6 @@
 # 产品定义非目标与来源角色契约缺口
 
-- 状态：用户已批准；等待推进 plan_generation 4 和 S1.2 新链
+- 状态：closed（2026-08-14 M1.1 用户会签后；generation 4 历史实施与证据保留）
 - 记录日期：2026-08-12
 - 来源：`P5 / V1 / M1.1 / S1.3` generation 3 attempt 2 阻塞
 - 所属阶段：P5 / V1 / M1.1
@@ -252,3 +252,10 @@ project-delivery-tool 仅迁移 2.0 线格式，不改变产品语义。CLI 授�
 - S1.2 generation 4 新版本完成全部独立门禁、最终证据链，并以 expected-old=`F0` 将 formal 单向推进到 `F12`。
 - S1.3 从 `F12` baseline 生成 2.0 candidate，候选前累积硬门通过，完成全部独立门禁、最终证据链，并以 expected-old=`F12` 将 formal 单向推进到 `F13`；失败时停留在 `F12`。
 - M1.1 attempt 2 通过并完成用户会签。
+
+## 14. 2026-08-14 关闭结论
+
+- M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 通过 control CAS 固化；expected-old=`380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad`，当前 control=`04677ae041443ba9bca740bb70b814b5347d6b26`。
+- CR-005 的 M1.1 会签缺口已关闭；本 CR 的用户批准、generation 4 实施、F12/F13 正式提升和全部历史证据保留。
+- formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`、Result digest=`sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea`、`plan_generation=4` 不变，pending=0。
+- V1、P5 仍未完成；S1.4 未启动且本次会签未授权启动，下一步仅允许独立评估 S1.4 入口。

@@ -1,6 +1,6 @@
 # S1.3 Generation 4 执行计划
 
-状态：generation 4 attempt 3 已通过完整正式证据链并提升到 F13；M1.1 attempt 2 独立验收为 `PASS / 97`，当前等待用户会签。
+状态：generation 4 attempt 3 已通过完整正式证据链并提升到 F13；M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 通过 control CAS 固化并正式完成；CR-004/CR-005 已关闭。S1.4 未启动且本次会签未授权启动。
 
 ## 0. 当前恢复点
 
@@ -8,7 +8,7 @@
 - attempt 1：仅控制范围声明不完整，不代表产品实现失败；保留 blocked Result 与 tombstone，不包装为 candidate-ready。
 - attempt 2：corrected packet 已关闭 allowlist 缺口并形成旧候选；L3 `REVISE / 82` 发现 readiness/source-state P1。
 - attempt 3：只修改 `src/domain/product-definition.ts` 与 `tests/domain/product-definition-v2.test.ts` 关闭该 P1；CV 与 I/X/P 均通过，L3 attempt 2 为 `PASS / 98`。
-- Final Snapshot、Final Verification、Credential、Anchor、Proof 与 F12→F13 CAS 已全部通过；formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。M1.1 用户会签前不启动 S1.4。
+- Final Snapshot、Final Verification、Credential、Anchor、Proof 与 F12→F13 CAS 已全部通过；formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`，control=`04677ae041443ba9bca740bb70b814b5347d6b26`，Result digest 与 `plan_generation=4` 不变，pending=0。M1.1 会签已固化；S1.4 未启动且本次会签未授权启动。
 
 ## 1. 控制面
 
@@ -73,5 +73,5 @@
 
 1. F12 -> F13 成功后，以 ff-only 同步 main，并以独立普通提交同步状态入口；不 push。
 2. 生成 M1.1 attempt 2 累积验收任务，验证三类 S1.1 -> S1.2 -> S1.3 连续链及 PC-01..PC-03。
-3. M1.1 通过后停在用户会签门禁，明确报告业务能力、formal/control/main、风险与下一里程碑。
-4. 未获用户会签前不创建 S1.4 packet，不编码 S1.4。
+3. M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 完成，M1.1 formally-completed，并关闭 CR-004/CR-005 的会签缺口。
+4. 会签未授权启动 S1.4；下一步仅允许独立评估 S1.4 入口，不能生成 S1.4 packet、编码或派发。

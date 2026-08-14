@@ -2037,3 +2037,20 @@
 - 四项身份：formal=`84c051f7426ec5d2a9bed70aa02a1f321bd81e11`、control=`380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad`、Result=`sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea`、plan_generation=`4`，实时匹配；pending dispatch=0、registry=`awaiting-user-signoff`、无 S1.4 对象。
 - CAS 前边界：expected-old 只允许实时 control OID `380e4ba...`；CAS 失败不得标记完成，必须保持 pending/awaiting 并重新核验；CAS 成功后才标记 M1.1 正式完成并关闭 CR-004/CR-005 的 M1.1 会签缺口。
 - 模型替代留痕：用户指定的 `deepseek-v4-flash` 在当前 spawn runtime 返回 `Unknown model`，未能启动；此前误试的 `openai-deepseek-v4-pro` 因代理工具 schema 兼容错误 HTTP 400 失败，均未执行核验、未写文件。按可用模型替代为全新 Qwen3.8 Max，并保留原始失败信息。
+
+## 2026-08-14 M1.1 用户会签成功后的项目真源同步
+
+- 工作区：`/private/tmp/nextstep-m1-1-signoff-sync-20260814`；分支：`codex/m1-1-signoff-sync-20260814`；main 基线：`9263c2fa6f1de05aced69ee52f96fae489ffe22e`。
+- 用户会签事实：M1.1 attempt 2 `PASS / 97` 已于 2026-08-14 通过 control CAS 固化；旧 control=`380e4ba63ecbfa69e21bb12301f71d01e8f2d5ad`，新 control=`04677ae041443ba9bca740bb70b814b5347d6b26`，单父链成立。
+- 同步事实：M1.1 formally-completed；CR-004/CR-005 的 M1.1 会签缺口关闭，历史内容与证据保留；V1、P5 仍未完成。
+- 不变事实：formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`；Result digest=`sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea`；`plan_generation=4`；pending=0。
+- 路线边界：S1.4 未启动且本次会签未授权启动；下一步仅允许独立评估 S1.4 入口，不生成 S1.4 packet、不编码、不派发、不 push。
+- 本轮仅同步允许范围内的项目文档与 `.codex` 留痕；未修改生产代码、测试、Schema、依赖或正式 Result/control/formal 对象，未运行 `pnpm check`。
+- 变更文件：`PROJECT_ROUTE_LOCK.md`、`README.md`、`docs/PLANS.md`、`docs/PRODUCT_SENSE.md`、`docs/qa/index.md`、`docs/qa/p5-v1-m1.1-acceptance-attempt-2-2026-08-13.md`、`docs/exec-plans/active/p5-product-implementation-milestones.md`、`docs/change-requests/004-m1-1-cross-stage-fixture-continuity-gap.md`、`docs/change-requests/005-product-definition-semantic-contract-gap.md`、`.codex/context-summary-s1.3-generation-4.md`、`.codex/exec-plan-s1.3-generation-4.md`、`.codex/operations-log.md`、`.codex/verification-report.md`。
+
+### 本轮验证结果
+
+- `git diff --check` 通过；仓库 JSON 解析通过且无 JSON 文件变更。
+- 固定字符串扫描通过：M1.1 `PASS / 97`、2026-08-14 会签、M1.1 formally-completed、CR-004/CR-005 closed、formal/control/Result/plan_generation/pending 语义一致；新增行无 S1.4 已启动语义。
+- 变更范围核对通过：恰好 13 个用户指定文档/留痕文件；无生产代码、测试、Schema、依赖文件变更。
+- `pnpm check` 按用户要求未运行；未生成/派发 S1.4 packet，未编码 S1.4，未 push。

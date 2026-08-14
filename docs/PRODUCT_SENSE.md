@@ -73,7 +73,7 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 
 - 当前里程碑：P5 / V1 / M1.1 需求与产品真源运行锁
 - 当前生命周期阶段：S5 开发落地中的缺口处理与变更门禁
-- 当前状态：S1.2 与 S1.3 generation 4 已正式提升到 F12/F13，formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。M1.1 attempt 2 已通过 `PASS / 97` 独立验收，当前等待用户会签；S1.4 未启动，M1.1、V1、P5 尚未完成。
+- 当前状态：S1.2 与 S1.3 generation 4 已正式提升到 F12/F13，formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 通过 control CAS 固化并正式完成，CR-004/CR-005 已关闭；control=`04677ae041443ba9bca740bb70b814b5347d6b26`，Result digest 与 `plan_generation=4` 不变，pending=0。V1、P5 尚未完成；S1.4 未启动且未获本次会签授权，下一步仅允许独立评估 S1.4 入口。
 - 当前正式状态、边界和下一入口以 `PROJECT_ROUTE_LOCK.md` 与 `docs/PLANS.md` 为准。
 
 ## S3 已会签交付物
@@ -92,6 +92,6 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 
 ## 当前交付物
 
-- P5 活动计划：`docs/exec-plans/active/p5-product-implementation-milestones.md`，M1.1 attempt 2 已通过独立验收，当前等待用户会签
+- P5 活动计划：`docs/exec-plans/active/p5-product-implementation-milestones.md`，M1.1 attempt 2 `PASS / 97` 用户会签已完成，M1.1 正式完成；V1、P5 尚未完成
 - P3 版本与里程碑拆解：`docs/exec-plans/completed/p3-version-and-milestone-breakdown.md`，已会签并归档
-- 当前变更入口：`docs/change-requests/005-product-definition-semantic-contract-gap.md`，已批准并完成 F0→F12→F13 两段式实施；M1.1 attempt 2 已通过独立验收，当前等待用户会签
+- 当前变更入口：`docs/change-requests/005-product-definition-semantic-contract-gap.md`，已完成并关闭；历史 F0→F12→F13 两段式实施、M1.1 attempt 2 `PASS / 97` 验收与会签证据均保留
