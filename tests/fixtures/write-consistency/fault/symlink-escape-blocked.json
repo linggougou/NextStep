@@ -1,0 +1,71 @@
+{
+  "baseline": {
+    "branch": "fixture-main",
+    "commit_message": "S1.5 fixture: expense-reminder 写入一致性基线",
+    "committed_at": "2026-08-14T00:00:00.000Z",
+    "files": [
+      {
+        "content": "# PROJECT_ROUTE_LOCK\n\n- project_id: expense-reminder\n- stage: P5/V1/M1.2/S1.5\n- purpose: 写入一致性 fixture 基线标记\n- evidence_scope: manual-isolated consumer contract\n- note: 仅用于 fixture 物化与解析测试，不是任何真实项目的路线锁真源\n",
+        "path": "PROJECT_ROUTE_LOCK.md"
+      },
+      {
+        "content": "# 报销提醒（expense-reminder）\n\nNextStep S1.5 写入一致性 fixture 的目标项目。\n\n- 场景：按月提醒成员提交报销凭证\n- 本仓库内容全部为确定性 canonical 数据，不包含任何秘密\n",
+        "path": "README.md"
+      },
+      {
+        "content": "# 报销提醒规则\n\n1. 每月最后一个工作日前提醒提交当月报销凭证。\n2. 逾期未提交时升级提醒项目负责人。\n3. 提醒记录只追加，不修改历史条目。\n",
+        "path": "docs/reminder-rules.md"
+      },
+      {
+        "content": "# 报销科目说明\n\n- 交通费：凭票据实报实销。\n- 资料费：单笔不超过预算上限。\n- 场地费：需提前登记。\n",
+        "path": "data/expense-rules.md"
+      }
+    ]
+  },
+  "candidate_change": {
+    "change_id": "wc-change-expense-reminder-symlink-escape-008",
+    "writes": [
+      {
+        "content": "# 外部账本写入尝试\n\n该写入路径是符号链接逃逸点。\n",
+        "path": "data/external-ledger.md"
+      }
+    ]
+  },
+  "evidence_scope": "manual-isolated consumer contract",
+  "expected": {
+    "notes": "写入目标是越过项目根的符号链接；根边界解析必须判定逃逸并阻塞。",
+    "outcome": "WRITE_ACCESS_BLOCKED",
+    "rollback": "none",
+    "unwritten_paths": [],
+    "written_paths": []
+  },
+  "fault": {
+    "kind": "symlink-escape",
+    "outside_file": {
+      "content": "# 项目外账本\n\n该文件位于目标项目根之外，符号链接写入必须被拒绝。\n",
+      "path": "ledger.md"
+    },
+    "target_path": "data/external-ledger.md"
+  },
+  "fixture_type": "write-consistency-fault",
+  "layout": null,
+  "operator_identity": {
+    "acceptance_profile_id": "ap-66c5db777c4a2a28ffb9ea933366f94dc5f1dc1cf8b48716953ab4be490cdc28",
+    "carrier_decision_digest": "sha256:2a58288964d79789f192ec7657bb1dfb78588fd9c98e133aab9d31badcec691f",
+    "product_definition_digest": "sha256:096428a49069502de8273c5c470516b0493777352c135bc02fa3b6d1365f7164",
+    "product_definition_id": "pd-7913f81f17e361f716c1377f2eaf6c9e623da2e32acaf27b81ed25f04acece06",
+    "repository_id": "sha256:d11253328d36050bd559844c64b438e9b84e0c13125184e9b01e1e7cf23a8c56"
+  },
+  "record_type": "write-consistency-scenario",
+  "scenario_id": "wc-expense-reminder-symlink-escape-008",
+  "schema_version": "1.0",
+  "target_project": {
+    "acceptance_profile_id": "ap-b0cd146496b0f85778c7aa84d7c48c9d65f528b9f3df4df30b583acb8008d03c",
+    "carrier_decision_digest": "sha256:de1db579b3d1313b95e51cd5317054435dac93939cf3f59936566b8b005270a1",
+    "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454",
+    "product_definition_digest": "sha256:6a89b9e56d4093a7b032feed62e62d787be6880d7063352fc28674e37d7b550a",
+    "product_definition_id": "pd-365ef97ff58d06dedf780c5887445fc70c196dfa356be76d4f6fd93b31a95271",
+    "project_id": "expense-reminder",
+    "repository_id": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+  }
+}

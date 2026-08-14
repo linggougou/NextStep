@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0",
+  "record_type": "write-consistency-index",
+  "digest_contract": {
+    "algorithm": "sha256",
+    "canonicalization": "RFC8785",
+    "note": "record_digest = digestJson(场景记录原文)；excluded_fields 无；场景记录不得在冻结后修改。"
+  },
+  "scenarios": [
+    {
+      "name": "fault/baseline-drift-conflict.json",
+      "scenario_id": "wc-project-delivery-tool-baseline-drift-007",
+      "record_digest": "sha256:303b343736336b857b8db9ee5308b7002aac6c6be74fd08288031aaa4ce8b470"
+    },
+    {
+      "name": "fault/mid-write-failure-partial.json",
+      "scenario_id": "wc-expense-reminder-mid-write-failure-006",
+      "record_digest": "sha256:bb96ec7198c835191a499e41f28eb4133c04705fbc716c76f865bd37863ef7e3"
+    },
+    {
+      "name": "fault/readonly-directory-blocked.json",
+      "scenario_id": "wc-community-workshop-readonly-directory-004",
+      "record_digest": "sha256:ce614d05a814622326513a54376750159464d9bdf251f514760a6cfbf95d7291"
+    },
+    {
+      "name": "fault/symlink-escape-blocked.json",
+      "scenario_id": "wc-expense-reminder-symlink-escape-008",
+      "record_digest": "sha256:5e4fd045567703eaa210fddc42e888f30f395d5c2942da3a00c1c59b1dea70d8"
+    },
+    {
+      "name": "fault/unsafe-rollback-blocked.json",
+      "scenario_id": "wc-community-workshop-unsafe-rollback-009",
+      "record_digest": "sha256:a10ed0d073159df03d0a98520b5de1d4f57af5700e400db81d164ca282b5477d"
+    },
+    {
+      "name": "fault/unwritable-file-blocked.json",
+      "scenario_id": "wc-project-delivery-tool-unwritable-file-005",
+      "record_digest": "sha256:84db1b944a41ec4c6e57bc1c5fb5d2079032d255dc011a9ecafebda79dbc548c"
+    },
+    {
+      "name": "layout/missing-route-lock.json",
+      "scenario_id": "wc-community-workshop-missing-route-lock-013",
+      "record_digest": "sha256:a01aa99ae8786ebb8310288bd44d4d835fe84cd9ca93bf231ea8c4cd47222924"
+    },
+    {
+      "name": "layout/nested-project-root.json",
+      "scenario_id": "wc-community-workshop-nested-root-010",
+      "record_digest": "sha256:0ddf44613b030bb842cfd8d789f1dbe4afc653a5e0d8a75b866ee085e2d110ff"
+    },
+    {
+      "name": "layout/same-name-projects.json",
+      "scenario_id": "wc-expense-reminder-same-name-roots-011",
+      "record_digest": "sha256:66c4cb843adbc51388a4b68d40e6c5cfe5b71d8b690abbe13dc9cc0112ddc5cd"
+    },
+    {
+      "name": "layout/symlink-project-root.json",
+      "scenario_id": "wc-project-delivery-tool-symlink-root-012",
+      "record_digest": "sha256:a6cf597ce85c066a7384363b48a20af368cfd6db7cb61bc56b209fb4c9706d70"
+    },
+    {
+      "name": "positive/community-workshop-write.json",
+      "scenario_id": "wc-community-workshop-positive-001",
+      "record_digest": "sha256:0f1a2840fe622143155b0485afbab5e91e8c1ac27ab024aa81ecca42e656b61b"
+    },
+    {
+      "name": "positive/expense-reminder-write.json",
+      "scenario_id": "wc-expense-reminder-positive-002",
+      "record_digest": "sha256:0d4620e92f01f4694b9c5bbf4fbbb4e8e883a85f6ed24302c4bb1906f3c9976e"
+    },
+    {
+      "name": "positive/project-delivery-tool-write.json",
+      "scenario_id": "wc-project-delivery-tool-positive-003",
+      "record_digest": "sha256:781b8ecd54b20a8547a10091421f2a1ffae5b157885f94ea704c80566926d82c"
+    }
+  ]
+}
