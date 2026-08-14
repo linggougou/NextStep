@@ -2063,3 +2063,13 @@
 - 命令：`pnpm check`。
 - 结果：typecheck、build、148/148 测试全部通过；覆盖率 Lines `90.90%`、Branches `82.94%`、Functions `98.40%`，均高于 80% 门禁。
 - 范围：S1.4 worker 代码尚未集成；本结果不得冒充 S1.4 验收。
+
+
+## 2026-08-14 S1.4 generation 1 候选集成验证
+
+- 候选：`d60e625c2ce490388d7c7bc8f4beb3d23d501fea`；tree 与单父链已写入 control Execution Result。
+- TDD：四个 worker 均保留 RED→GREEN 证据；主控集成后修复跨切片契约并重跑全量门禁。
+- `pnpm check`：206/206 通过；覆盖率 Lines `91.07%`、Branches `83.80%`、Functions `98.36%`。
+- 关键行为：载体无关原型、载体裁决、headless/含 UI/冲突 Profile、CLI JCS 单回执、信封独立重验、Skill 阶段守卫全部通过；Profile 冲突不降级。
+- 身份连续性：三类 Acceptance Profile fixture 的 product_definition_id/digest 绑定 S1.3，carrier_decision_digest 绑定 W2 真实候选；占位摘要已从三类目标项目链移除。
+- 边界：本结论仅为 `candidate-ready`，不是 CV/I-X-P/L3/Final Verification/formal promotion；formal 仍为 F13。

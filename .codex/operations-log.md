@@ -2080,3 +2080,13 @@
 - 在四个 worker 运行期间，主工作树 `ed84bb951423502cf55a8f7ce304feac06833187` 独立执行 `pnpm check`，确认派发前基线未被 control 更新或文档同步污染。
 - 结果：148/148 通过；覆盖率 Lines `90.90%`、Branches `82.94%`、Functions `98.40%`。
 - 该结果仅证明 S1.1..S1.3 与当前主线基线健康，不构成 S1.4 产品能力或验收通过证据。
+
+
+## 2026-08-14 S1.4 generation 1 四路集成与候选固化
+
+- Worker 结果：W1 `c23bcfa...`、W2 `daae08e...`、W3 `29128b7...`、W4 `ff54f7d...`；主控在独立集成 worktree 按互斥写入范围合入并形成候选 `d60e625c2ce490388d7c7bc8f4beb3d23d501fea`。
+- 集成修复：统一三类 fixture 顶层字段；Acceptance Profile semantic rejection 映射为阻塞回执；新增 decision 独立解析以支持 machine receipt 二次重验；W3 的 carrier_decision_digest 从占位记录替换为 W2 真实载体裁决候选摘要。
+- 全量门禁：`pnpm check` 206/206 通过；覆盖率 Lines `91.07%`、Branches `83.80%`、Functions `98.36%`。
+- Execution Result：control 新增 `results/result-execution-s1.4-g4-a1-f73-20260814.json`；subject digest=`sha256:fc86923851afa390b29b19c26a911c8c43eb5098f9ab80486abe9a6bb175e2d4`，Result digest=`sha256:68c3003f7c69f834cb207789c83e35567987a491a368140c09f1d08675e2ae1b`。
+- Control CAS：从 expected-old=`ceb2330b59c0496fc4815be4aee9f7fb19410e32` 推进到 `c797d40369bbe6a0c602bab25ab9c0bea44a8a79`；registry S1.4=`candidate-ready`，formal 保持 F13。
+- 下一门禁：独立 Candidate Verification 与独立 I/X/P；双门禁通过前不得进入 L3，不得移动 formal，不启动 S1.5。

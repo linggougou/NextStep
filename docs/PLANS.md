@@ -4,8 +4,8 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：V1 / M1.2 / S1.4（入口 `PASS / 100`；四个隔离 worktree 实施中）
-- 当前状态：S1.2 与 S1.3 generation 4 已完成两段式正式提升，formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 通过 control CAS 固化并正式完成，CR-004/CR-005 已关闭；control=`04677ae041443ba9bca740bb70b814b5347d6b26`，Result digest 与 `plan_generation=4` 不变，pending=0。V1、P5 尚未完成；用户于 2026-08-14 授权持续开发，S1.4 入口评估为 `PASS / 100`，S1.4 Execution Packet、dispatch-ready 与 fence 73 dispatch-ack 已通过 control CAS 固化，四个 Qwen3.8 Max 隔离 worktree 正在实施；formal 仍为 F13，成功验收前不得移动 formal。
+- 当前活动里程碑：V1 / M1.2 / S1.4（候选 `d60e625...` 已就绪；等待 CV 与 I/X/P）
+- 当前状态：S1.2 与 S1.3 generation 4 已完成两段式正式提升，formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 通过 control CAS 固化并正式完成，CR-004/CR-005 已关闭；control=`04677ae041443ba9bca740bb70b814b5347d6b26`，Result digest 与 `plan_generation=4` 不变，pending=0。V1、P5 尚未完成；用户于 2026-08-14 授权持续开发，S1.4 入口评估为 `PASS / 100`，S1.4 generation 1 候选 `d60e625...` 已集成并通过 206/206 全量回归；control=`c797d40...` 已固化 execution Result，formal 仍为 F13，下一步为独立 CV 与 I/X/P。
 
 ## 当前活动计划
 
@@ -27,7 +27,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。M1.1 attempt 1 的 `0/3` 身份缺口已由 CR-004/CR-005 新链修复；S1.2/F12 与 S1.3/F13 已正式提升。M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 固化，M1.1 正式完成，CR-004/CR-005 已关闭。用户已授权持续开发；S1.4 入口评估为 `PASS / 100`，S1.4 packet 与 dispatch 已固化，四个隔离 worktree 正在实施；V1、P5 尚未完成。
+P5 已于 2026-08-08 单独启动。M1.1 attempt 1 的 `0/3` 身份缺口已由 CR-004/CR-005 新链修复；S1.2/F12 与 S1.3/F13 已正式提升。M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 固化，M1.1 正式完成，CR-004/CR-005 已关闭。用户已授权持续开发；S1.4 入口评估为 `PASS / 100`，S1.4 候选已就绪并通过全量回归，下一步为 CV 与 I/X/P；V1、P5 尚未完成。
 
 实施顺序保持 P3 已会签结构：
 
