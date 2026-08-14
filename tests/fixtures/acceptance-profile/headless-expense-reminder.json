@@ -10,19 +10,83 @@
   "upstream_references": {
     "product_definition_fixture": "tests/fixtures/product-definition/expense-reminder.json",
     "carrier_decision_reference": {
-      "note": "占位绑定：W2 carrier-decision 集成前以占位记录摘要承载；集成期由主控替换为真实载体裁决记录摘要",
-      "placeholder_record": {
-        "record_type": "carrier-decision-placeholder",
-        "purpose": "S1.4 W3 集成前占位记录；集成期由主控以真实 carrier-decision 记录摘要替换该绑定",
-        "primary_carrier": "skill-chat",
-        "truth_source_carrier": "project-documents-git"
+      "fixture": "tests/fixtures/carrier-decision/expense-reminder.json",
+      "candidate": {
+        "schema_version": "1.0",
+        "record_type": "carrier-decision",
+        "carrier_decision_id": "carrier-decision-expense-reminder-006-20260814",
+        "status": "adjudicated",
+        "project": {
+          "repository_id": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
+        },
+        "binding": {
+          "product_definition_id": "pd-365ef97ff58d06dedf780c5887445fc70c196dfa356be76d4f6fd93b31a95271",
+          "product_definition_digest": "sha256:6a89b9e56d4093a7b032feed62e62d787be6880d7063352fc28674e37d7b550a",
+          "source_adjudication": {
+            "adjudication_id": "006-product-carrier-decision",
+            "document": "docs/product-specs/006-product-carrier-decision.md",
+            "signed_at": "2026-07-10T00:00:00.000Z",
+            "conclusions": {
+              "primary_carrier": "skill-chat",
+              "truth_source_carrier": "project-documents-git",
+              "auxiliary_entry_policy": "no-new-mainline-entry",
+              "integration_surface_policy": "future-integration-surface-only",
+              "web_ui_policy": "candidate-not-mainline"
+            },
+            "conclusions_digest": "sha256:7ebe8a69fc53493ca0caa4b3b57904c0d84a38a8afca3cf19bde16135ca87e62"
+          }
+        },
+        "binding_digest": "sha256:c7777ab1c96cd8049cffe53d20df471e336605668281f83fad6b4317a47682f3",
+        "decision": {
+          "primary_carrier": "skill-chat",
+          "truth_source_carrier": "project-documents-git",
+          "auxiliary_entry_policy": "no-new-mainline-entry",
+          "integration_surfaces": [
+            {
+              "surface": "mcp-service",
+              "status": "future-integration-surface"
+            },
+            {
+              "surface": "api",
+              "status": "future-integration-surface"
+            }
+          ],
+          "candidate_branches": [
+            {
+              "branch_id": "web-ui-candidate-branch",
+              "carrier_kind": "web-ui",
+              "status": "candidate-not-mainline",
+              "materials": [
+                {
+                  "document": "docs/design-docs/p2-product-prototype.md",
+                  "role": "candidate-branch-input"
+                },
+                {
+                  "document": "docs/design-docs/p2-ui-design-source-requirements.md",
+                  "role": "candidate-branch-input"
+                },
+                {
+                  "document": "docs/design-docs/s3-ui-design-source.md",
+                  "role": "candidate-branch-draft"
+                }
+              ],
+              "recovery_conditions": {
+                "requires_change_request": true,
+                "requires_re_adjudication": true,
+                "trigger_summary": "用户明确要求恢复轻量 Web 工作面时，经 Change Request 与重新载体裁决后从候选材料恢复"
+              }
+            }
+          ]
+        },
+        "decided_at": "2026-08-14T05:00:00.000Z"
       }
     }
   },
   "candidate": {
     "schema_version": "1.0",
     "record_type": "acceptance-profile-candidate",
-    "profile_id": "ap-9ab80384f2ddce60267f0e89d32a1315cfa2d3c1fd88b606aa85b0972e5ac4f0",
+    "profile_id": "ap-b0cd146496b0f85778c7aa84d7c48c9d65f528b9f3df4df30b583acb8008d03c",
     "project": {
       "repository_id": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
       "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
@@ -34,7 +98,7 @@
     "bindings": {
       "product_definition_id": "pd-365ef97ff58d06dedf780c5887445fc70c196dfa356be76d4f6fd93b31a95271",
       "product_definition_digest": "sha256:6a89b9e56d4093a7b032feed62e62d787be6880d7063352fc28674e37d7b550a",
-      "carrier_decision_digest": "sha256:57b5e8b5666026c30b00496bfa3b634a907b663510e6091a045502eb7f3aca2c"
+      "carrier_decision_digest": "sha256:de1db579b3d1313b95e51cd5317054435dac93939cf3f59936566b8b005270a1"
     },
     "origin": {
       "task_kind": "host-orchestration"

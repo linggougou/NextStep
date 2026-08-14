@@ -490,13 +490,13 @@ function s14Receipt(code: string, subjectField: string, subject: unknown) {
 
 test("S1.4 三个 ACCEPTED 回执码被信封接受，且主题可被独立重验（canonical/digest 自洽）", async () => {
   const prototype = parseInteractionPrototype(
-    await readFixtureSubject("tests/fixtures/interaction-prototype/community-workshop.json", "interaction_prototype"),
+    await readFixtureSubject("tests/fixtures/interaction-prototype/community-workshop.json", "candidate"),
   );
   const carrierDecision = parseCarrierDecision(
-    await readFixtureSubject("tests/fixtures/carrier-decision/community-workshop.json", "carrier_decision"),
+    await readFixtureSubject("tests/fixtures/carrier-decision/community-workshop.json", "candidate"),
   );
   const acceptanceProfile = evaluateAcceptanceProfile(
-    await readFixtureSubject("tests/fixtures/acceptance-profile/headless-community-workshop.json", "acceptance_profile"),
+    await readFixtureSubject("tests/fixtures/acceptance-profile/headless-community-workshop.json", "candidate"),
   );
 
   assert.equal(parseMachineReceipt(s14Receipt("INTERACTION_PROTOTYPE_ACCEPTED", "interaction_prototype", prototype)).code, "INTERACTION_PROTOTYPE_ACCEPTED");
@@ -506,7 +506,7 @@ test("S1.4 三个 ACCEPTED 回执码被信封接受，且主题可被独立重�
 
 test("S1.4 回执码的 ok/code 错配、未知码与 data 形状违规均 fail closed", async () => {
   const prototype = parseInteractionPrototype(
-    await readFixtureSubject("tests/fixtures/interaction-prototype/community-workshop.json", "interaction_prototype"),
+    await readFixtureSubject("tests/fixtures/interaction-prototype/community-workshop.json", "candidate"),
   );
   const validReceipt = s14Receipt("INTERACTION_PROTOTYPE_ACCEPTED", "interaction_prototype", prototype);
 

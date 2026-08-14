@@ -45,7 +45,7 @@ interface ProfileFixture {
   readonly upstream_references?: {
     readonly product_definition_fixture?: string;
     readonly note?: string;
-    readonly carrier_decision_reference?: { readonly note?: string; readonly placeholder_record?: Record<string, unknown> };
+    readonly carrier_decision_reference?: { readonly fixture?: string; readonly candidate?: Record<string, unknown> };
   };
   readonly candidate: Record<string, unknown>;
 }
@@ -154,15 +154,15 @@ test("上游绑定连续性：product_definition 绑定与 S1.3 fixture 身份�
   }
 });
 
-test("carrier_decision_digest 与占位载体裁决记录摘要一致", async () => {
+test("carrier_decision_digest 与 W2 真实载体裁决记录摘要一致", async () => {
   for (const name of decisionFixtures) {
     const fixture = await loadFixture(name);
-    const reference = fixture.upstream_references?.carrier_decision_reference?.placeholder_record;
+    const reference = fixture.upstream_references?.carrier_decision_reference?.candidate;
     if (reference === undefined) {
       continue;
     }
     const bindings = fixture.candidate.bindings as Record<string, unknown>;
-    assert.equal(bindings.carrier_decision_digest, digestJson(reference), `${name} carrier 绑定摘要不一致`);
+    assert.equal(bindings.carrier_decision_digest, digestJson(reference), `${name} carrier 真实绑定摘要不一致`);
   }
 });
 

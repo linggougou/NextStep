@@ -4,7 +4,7 @@ import acceptanceProfileSchema from "../../schemas/v1/acceptance-profile.schema.
 import { snapshotJsonValue, type JsonValue } from "./canonical-json.ts";
 import { assertSupportedContractVersion } from "./contract-version.ts";
 import { digestJson, type Sha256Digest } from "./content-digest.ts";
-import { GATE_CONCLUSIONS, type GateConclusion } from "./gate-conclusion.ts";
+import { GATE_CONCLUSIONS, parseGateConclusion, type GateConclusion } from "./gate-conclusion.ts";
 import { assertNoSensitiveContent, assertNoSensitiveFields } from "./sensitive-fields.ts";
 import { isPlainRecord } from "./value-guards.ts";
 
@@ -173,6 +173,123 @@ export function deriveAcceptanceProfileId(value: unknown): string {
     projection[field] = (snapshot as Record<string, JsonValue>)[field] as JsonValue;
   }
   return `ap-${digestJson(projection).slice("sha256:".length)}`;
+}
+
+
+const SHA256_PATTERN = /^sha256:[a-f0-9]{64}$/;
+const OID_PATTERN = /^[a-f0-9]{40}$/;
+const PROFILE_ID_PATTERN = /^ap-[a-f0-9]{64}$/;
+
+function assertExactKeys(value: Record<string, unknown>, expected: readonly string[], label: string): void {
+  const actual = Object.keys(value).sort();
+  const wanted = [...expected].sort();
+  if (actual.length !== wanted.length || actual.some((key, index) => key !== wanted[index])) {
+    fail("INVALID_ACCEPTANCE_PROFILE", `${label} fields do not match the decision contract`);
+  }
+}
+
+function requireString(value: unknown, label: string, pattern?: RegExp): string {
+  if (typeof value !== "string" || value.length === 0 || (pattern !== undefined && !pattern.test(value))) {
+    fail("INVALID_ACCEPTANCE_PROFILE", `${label} is invalid`);
+  }
+  return value;
+}
+
+function requireRecord(value: unknown, label: string): Record<string, unknown> {
+  if (!isPlainRecord(value)) {
+    fail("INVALID_ACCEPTANCE_PROFILE", `${label} must be a plain object`);
+  }
+  return value;
+}
+
+function requireEvidenceRef(value: unknown, label: string): void {
+  const ref = requireRecord(value, label);
+  assertExactKeys(ref, ["pointer", "value_digest"], label);
+  requireString(ref.pointer, `${label}.pointer`);
+  requireString(ref.value_digest, `${label}.value_digest`, SHA256_PATTERN);
+}
+
+export function parseAcceptanceProfileDecision(value: unknown): AcceptanceProfileDecision {
+  let snapshot: JsonValue;
+  try {
+    snapshot = snapshotJsonValue(value);
+    assertNoSensitiveFields(snapshot);
+    assertNoSensitiveContent(snapshot);
+  } catch {
+    fail("INVALID_ACCEPTANCE_PROFILE", "Acceptance profile decision is not safe canonical JSON data");
+  }
+  const decision = requireRecord(snapshot, "Acceptance profile decision");
+  assertExactKeys(decision, [
+    "schema_version", "record_type", "status", "conclusion", "profile_id", "project", "route",
+    "bindings", "candidate_digest", "enabled_acceptances", "ui_requirements", "rejection",
+  ], "Acceptance profile decision");
+  if (decision.schema_version !== "1.0" || decision.record_type !== "acceptance-profile-decision") {
+    fail("INVALID_ACCEPTANCE_PROFILE", "Acceptance profile decision version or record type is invalid");
+  }
+  if (decision.status !== "accepted" && decision.status !== "rejected") {
+    fail("INVALID_ACCEPTANCE_PROFILE", "Acceptance profile decision status is invalid");
+  }
+  let conclusion: GateConclusion;
+  try { conclusion = parseGateConclusion(decision.conclusion); }
+  catch { fail("INVALID_ACCEPTANCE_PROFILE", "Acceptance profile decision conclusion is invalid"); }
+  requireString(decision.profile_id, "profile_id", PROFILE_ID_PATTERN);
+  requireString(decision.candidate_digest, "candidate_digest", SHA256_PATTERN);
+
+  const project = requireRecord(decision.project, "project");
+  assertExactKeys(project, ["repository_id", "formal_baseline"], "project");
+  requireString(project.repository_id, "project.repository_id", SHA256_PATTERN);
+  requireString(project.formal_baseline, "project.formal_baseline", OID_PATTERN);
+
+  const route = requireRecord(decision.route, "route");
+  assertExactKeys(route, ["route_id", "kind"], "route");
+  requireString(route.route_id, "route.route_id");
+  if (route.kind !== "headless" && route.kind !== "ui") fail("INVALID_ACCEPTANCE_PROFILE", "route.kind is invalid");
+
+  const bindings = requireRecord(decision.bindings, "bindings");
+  assertExactKeys(bindings, ["product_definition_id", "product_definition_digest", "carrier_decision_digest"], "bindings");
+  requireString(bindings.product_definition_id, "bindings.product_definition_id", /^pd-[a-f0-9]{64}$/);
+  requireString(bindings.product_definition_digest, "bindings.product_definition_digest", SHA256_PATTERN);
+  requireString(bindings.carrier_decision_digest, "bindings.carrier_decision_digest", SHA256_PATTERN);
+
+  if (!Array.isArray(decision.enabled_acceptances)) fail("INVALID_ACCEPTANCE_PROFILE", "enabled_acceptances must be an array");
+  const enabled = decision.enabled_acceptances;
+  if (new Set(enabled).size !== enabled.length || enabled.some((item) => ![...CORE_ACCEPTANCE_TYPES, UI_ACCEPTANCE_TYPE].includes(item as AcceptanceType))) {
+    fail("INVALID_ACCEPTANCE_PROFILE", "enabled_acceptances is invalid");
+  }
+  const uiRequirements = requireRecord(decision.ui_requirements, "ui_requirements");
+  if (uiRequirements.status === "disabled") {
+    assertExactKeys(uiRequirements, ["status"], "ui_requirements");
+  } else if (uiRequirements.status === "required") {
+    assertExactKeys(uiRequirements, ["status", "ui_design_source", "ui_restoration_evidence"], "ui_requirements");
+    requireEvidenceRef(uiRequirements.ui_design_source, "ui_requirements.ui_design_source");
+    if (!Array.isArray(uiRequirements.ui_restoration_evidence) || uiRequirements.ui_restoration_evidence.length === 0) {
+      fail("INVALID_ACCEPTANCE_PROFILE", "ui restoration evidence is required");
+    }
+    uiRequirements.ui_restoration_evidence.forEach((item, index) => requireEvidenceRef(item, `ui_requirements.ui_restoration_evidence[${index}]`));
+  } else {
+    fail("INVALID_ACCEPTANCE_PROFILE", "ui_requirements.status is invalid");
+  }
+
+  const expectedCore = [...CORE_ACCEPTANCE_TYPES];
+  if (decision.status === "accepted") {
+    if (conclusion !== "通过" || decision.rejection !== null) fail("INVALID_ACCEPTANCE_PROFILE", "accepted decision semantics are inconsistent");
+    const expected = route.kind === "ui" ? [...expectedCore, UI_ACCEPTANCE_TYPE] : expectedCore;
+    if (enabled.length !== expected.length || enabled.some((item, index) => item !== expected[index])) fail("INVALID_ACCEPTANCE_PROFILE", "accepted decision acceptance set is inconsistent");
+    if ((route.kind === "ui" && uiRequirements.status !== "required") || (route.kind === "headless" && uiRequirements.status !== "disabled")) {
+      fail("INVALID_ACCEPTANCE_PROFILE", "accepted decision UI requirements conflict with the route");
+    }
+  } else {
+    if (conclusion !== "阻塞" || enabled.length !== 0 || uiRequirements.status !== "disabled") fail("INVALID_ACCEPTANCE_PROFILE", "rejected decision semantics are inconsistent");
+    const rejection = requireRecord(decision.rejection, "rejection");
+    assertExactKeys(rejection, ["code", "reasons"], "rejection");
+    if (!["PROFILE_CONFLICT", "UI_EVIDENCE_MISSING", "EVIDENCE_DUTY_VIOLATION", "KERNEL_ROUTE_UI_FORBIDDEN"].includes(String(rejection.code))) {
+      fail("INVALID_ACCEPTANCE_PROFILE", "rejection.code is invalid");
+    }
+    if (!Array.isArray(rejection.reasons) || rejection.reasons.length === 0 || rejection.reasons.some((reason) => typeof reason !== "string" || reason.length === 0)) {
+      fail("INVALID_ACCEPTANCE_PROFILE", "rejection reasons are invalid");
+    }
+  }
+  return snapshot as unknown as AcceptanceProfileDecision;
 }
 
 function freezeEvidenceRef(ref: AcceptanceEvidenceRef): AcceptanceEvidenceRef {

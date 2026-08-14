@@ -10,7 +10,7 @@
   "candidate": {
     "schema_version": "1.0",
     "record_type": "acceptance-profile-candidate",
-    "profile_id": "ap-484aa26f0f4cb8dac48ec64e449b5a6d0b4a344af1199c4b0e46de747c82e67f",
+    "profile_id": "ap-c4c63574e876b23233ede2e5a749f85f578d61d1f76f7365bcd9ecd90fbd1c6b",
     "project": {
       "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
       "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
@@ -22,7 +22,7 @@
     "bindings": {
       "product_definition_id": "pd-01e7fcb155531b2d26bad2c4ccd816235b8140cada8a740dcf26325458acddf0",
       "product_definition_digest": "sha256:beb239eb765ea06cbcd2e72f77df43abb8627f7aae85e1ced31f64ac0d005c00",
-      "carrier_decision_digest": "sha256:57b5e8b5666026c30b00496bfa3b634a907b663510e6091a045502eb7f3aca2c"
+      "carrier_decision_digest": "sha256:cd10e72a6b703bba1dafd17ff10b033e7e27ecbec91bd48bf7dbdd62c68ae84e"
     },
     "origin": {
       "task_kind": "host-orchestration"
@@ -53,6 +53,81 @@
             "value_digest": "sha256:efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef"
           }
         ]
+      }
+    }
+  },
+  "upstream_references": {
+    "carrier_decision_reference": {
+      "fixture": "tests/fixtures/carrier-decision/community-workshop.json",
+      "candidate": {
+        "schema_version": "1.0",
+        "record_type": "carrier-decision",
+        "carrier_decision_id": "carrier-decision-community-workshop-006-20260814",
+        "status": "adjudicated",
+        "project": {
+          "repository_id": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
+        },
+        "binding": {
+          "product_definition_id": "pd-01e7fcb155531b2d26bad2c4ccd816235b8140cada8a740dcf26325458acddf0",
+          "product_definition_digest": "sha256:beb239eb765ea06cbcd2e72f77df43abb8627f7aae85e1ced31f64ac0d005c00",
+          "source_adjudication": {
+            "adjudication_id": "006-product-carrier-decision",
+            "document": "docs/product-specs/006-product-carrier-decision.md",
+            "signed_at": "2026-07-10T00:00:00.000Z",
+            "conclusions": {
+              "primary_carrier": "skill-chat",
+              "truth_source_carrier": "project-documents-git",
+              "auxiliary_entry_policy": "no-new-mainline-entry",
+              "integration_surface_policy": "future-integration-surface-only",
+              "web_ui_policy": "candidate-not-mainline"
+            },
+            "conclusions_digest": "sha256:7ebe8a69fc53493ca0caa4b3b57904c0d84a38a8afca3cf19bde16135ca87e62"
+          }
+        },
+        "binding_digest": "sha256:d21730b1ea2fcdfe0fdeba51282525586cd942f78a9c771d64f0233e1e2ccc83",
+        "decision": {
+          "primary_carrier": "skill-chat",
+          "truth_source_carrier": "project-documents-git",
+          "auxiliary_entry_policy": "no-new-mainline-entry",
+          "integration_surfaces": [
+            {
+              "surface": "mcp-service",
+              "status": "future-integration-surface"
+            },
+            {
+              "surface": "api",
+              "status": "future-integration-surface"
+            }
+          ],
+          "candidate_branches": [
+            {
+              "branch_id": "web-ui-candidate-branch",
+              "carrier_kind": "web-ui",
+              "status": "candidate-not-mainline",
+              "materials": [
+                {
+                  "document": "docs/design-docs/p2-product-prototype.md",
+                  "role": "candidate-branch-input"
+                },
+                {
+                  "document": "docs/design-docs/p2-ui-design-source-requirements.md",
+                  "role": "candidate-branch-input"
+                },
+                {
+                  "document": "docs/design-docs/s3-ui-design-source.md",
+                  "role": "candidate-branch-draft"
+                }
+              ],
+              "recovery_conditions": {
+                "requires_change_request": true,
+                "requires_re_adjudication": true,
+                "trigger_summary": "用户明确要求恢复轻量 Web 工作面时，经 Change Request 与重新载体裁决后从候选材料恢复"
+              }
+            }
+          ]
+        },
+        "decided_at": "2026-08-14T05:00:00.000Z"
       }
     }
   }

@@ -10,12 +10,12 @@ import { parseMachineReceipt } from "../../src/domain/machine-receipt.ts";
 import type { ProcessIoAdapter } from "../../src/adapters/node/process-io.ts";
 
 // W4 集成契约假设（与 W3 切片对齐，若 fixture 字段命名不同由集成期统一）：
-// acceptance-profile fixture 顶层字段 `acceptance_profile` 为可被
+// acceptance-profile fixture 顶层字段 `candidate` 为可被
 // evaluateAcceptanceProfile 接受的候选；三类 fixture 对应 headless、含 UI、冲突。
 const fixturePaths = {
   headless: "tests/fixtures/acceptance-profile/headless-community-workshop.json",
   uiWithEvidence: "tests/fixtures/acceptance-profile/ui-with-evidence.json",
-  conflict: "tests/fixtures/acceptance-profile/conflict-non-ui-requires-ui.json",
+  conflict: "tests/fixtures/acceptance-profile/conflict-headless-requires-ui.json",
 } as const;
 
 function fakeIo(input: string, args: readonly string[] = []) {
@@ -34,9 +34,9 @@ function fakeIo(input: string, args: readonly string[] = []) {
 
 async function loadCandidate(path: string): Promise<unknown> {
   const fixture = JSON.parse(await readFile(resolve(process.cwd(), path), "utf8")) as {
-    readonly acceptance_profile: unknown;
+    readonly candidate: unknown;
   };
-  return fixture.acceptance_profile;
+  return fixture.candidate;
 }
 
 test("Acceptance Profile CLI 对非 JCS 输入与参数注入只输出一个不含原值的失败回执", async () => {

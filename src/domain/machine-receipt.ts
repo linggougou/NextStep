@@ -10,7 +10,7 @@ import {
 } from "./requirement-intake.ts";
 import { parseInteractionPrototype } from "./interaction-prototype.ts";
 import { parseCarrierDecision } from "./carrier-decision.ts";
-import { evaluateAcceptanceProfile } from "./acceptance-profile.ts";
+import { parseAcceptanceProfileDecision } from "./acceptance-profile.ts";
 import { recoverFrozenRequirement } from "./requirement-freeze.ts";
 import { parseProductDefinitionCandidate } from "./product-definition.ts";
 import { isPlainRecord, type UnknownRecord } from "./value-guards.ts";
@@ -171,7 +171,7 @@ export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
         if (snapshot.data.schema_version !== "1.0") {
           throw new TypeError("Acceptance profile receipt subject version must be 1.0");
         }
-        const profile = evaluateAcceptanceProfile(snapshot.data.acceptance_profile);
+        const profile = parseAcceptanceProfileDecision(snapshot.data.acceptance_profile);
         if (canonicalJson !== canonicalizeJson(profile)) {
           throw new TypeError("Acceptance profile receipt payload does not match canonical JSON");
         }

@@ -11,7 +11,7 @@ import type { ProcessIoAdapter } from "../../src/adapters/node/process-io.ts";
 
 // W4 集成契约假设（与 W2 切片对齐，若 fixture 字段命名不同由集成期统一）：
 // tests/fixtures/carrier-decision/community-workshop.json 顶层字段
-// `carrier_decision` 为可被 parseCarrierDecision 接受的候选。
+// `candidate` 为可被 parseCarrierDecision 接受的候选。
 const positiveFixturePath = "tests/fixtures/carrier-decision/community-workshop.json";
 
 function fakeIo(input: string, args: readonly string[] = []) {
@@ -72,9 +72,9 @@ test("载体裁决 CLI 拒绝 stdin 注入的签认声明（fail closed，不自
 
 test("载体裁决 CLI 回放目标项目 fixture 并返回 JCS 回执，信封与主题摘要自洽", async () => {
   const fixture = JSON.parse(await readFile(resolve(process.cwd(), positiveFixturePath), "utf8")) as {
-    readonly carrier_decision: unknown;
+    readonly candidate: unknown;
   };
-  const { io, output, diagnostics, exitCodes } = fakeIo(canonicalizeJson(fixture.carrier_decision));
+  const { io, output, diagnostics, exitCodes } = fakeIo(canonicalizeJson(fixture.candidate));
 
   await runCarrierDecision(io);
 

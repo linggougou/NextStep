@@ -57,6 +57,11 @@ export async function runAcceptanceProfile(io: ProcessIoAdapter): Promise<void> 
       throw new TypeError("Acceptance profile does not accept command arguments");
     }
     const profile = evaluateAcceptanceProfile(parseInput(await io.readInput()));
+    if (profile.status === "rejected") {
+      const rejection = profile.rejection;
+      if (rejection === null) throw new TypeError("Rejected acceptance profile is missing rejection details");
+      throw new AcceptanceProfileError(rejection.code, rejection.reasons.join("; "));
+    }
     io.writeOutput(canonicalizeJson(receipt(true, "ACCEPTANCE_PROFILE_ACCEPTED", {
       canonical_json: canonicalizeJson(profile),
       digest: digestJson(profile),
