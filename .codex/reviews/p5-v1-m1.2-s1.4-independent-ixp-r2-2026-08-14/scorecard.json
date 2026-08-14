@@ -1,0 +1,152 @@
+{
+  "review_id": "p5-v1-m1.2-s1.4-independent-ixp-r2-2026-08-14",
+  "task_id": "S1.4-I-X-P",
+  "task_attempt": 2,
+  "lane": "independent-ixp",
+  "review_level": "L3",
+  "rubric_id": "nextstep-s1.4-independent-ixp-r2-v1",
+  "stage_id": "P5/V1/M1.2/S1.4/product-interaction",
+  "plan_id": "p5-product-implementation",
+  "plan_generation": 4,
+  "gate_packet_ref": "refs/nextstep/control:gate-requests/gate-product-interaction-s1.4-g4-a2-20260814.json",
+  "subject": {
+    "commit_oid": "c2894cd25cf8b466d41df68ff99cdbf4193ba0d3",
+    "tree_oid": "e9c22fb61e80c877cbda9b284317a740bd56537a",
+    "parent_oid": "dd8e6fcce81e68b11e7badb65069487b9549b928",
+    "subject_digest": "sha256:3e93a4ad0cbc796bcc92b6a427a20e24ca21a9d8daf2c3252179807b9818d5aa",
+    "subject_digest_contract": "sha256(JCS({commit_oid,parent_oid,tree_oid}))",
+    "subject_digest_independently_recomputed": true,
+    "baseline_oid": "84c051f7426ec5d2a9bed70aa02a1f321bd81e11",
+    "gate_packet_digest_verified": "sha256:fc29b1b2282500d3a4d49285b84f371bc25fb98f925a35777c273918ea15c817",
+    "execution_result_digest_verified": "sha256:c10272b0bf48337289811816677d407277c92df98855557b5553d169f1787a4d",
+    "execution_packet_digest_verified": "sha256:75edb2615a603a2384419a017c2f19711812ae608f2f60dc3b8b3cf52643de13"
+  },
+  "artifact_refs": [
+    "git:c2894cd25cf8b466d41df68ff99cdbf4193ba0d3:src/domain/interaction-prototype.ts",
+    "git:c2894cd25cf8b466d41df68ff99cdbf4193ba0d3:src/domain/carrier-decision.ts",
+    "git:c2894cd25cf8b466d41df68ff99cdbf4193ba0d3:src/domain/acceptance-profile.ts",
+    "git:c2894cd25cf8b466d41df68ff99cdbf4193ba0d3:src/domain/machine-receipt.ts",
+    "git:c2894cd25cf8b466d41df68ff99cdbf4193ba0d3:src/cli/interaction-prototype.ts",
+    "git:c2894cd25cf8b466d41df68ff99cdbf4193ba0d3:src/cli/carrier-decision.ts",
+    "git:c2894cd25cf8b466d41df68ff99cdbf4193ba0d3:src/cli/acceptance-profile.ts",
+    "git:c2894cd25cf8b466d41df68ff99cdbf4193ba0d3:skills/nextstep/SKILL.md",
+    "git:c2894cd25cf8b466d41df68ff99cdbf4193ba0d3:tests/fixtures/acceptance-profile/",
+    "git:c2894cd25cf8b466d41df68ff99cdbf4193ba0d3:tests/fixtures/interaction-prototype/",
+    "git:c2894cd25cf8b466d41df68ff99cdbf4193ba0d3:tests/fixtures/carrier-decision/",
+    "refs/nextstep/control:packets/ep-p5-v1-m1.2-s1.4-g4-a2-20260814.json",
+    "refs/nextstep/control:results/result-execution-s1.4-g4-a2-f76-20260814.json"
+  ],
+  "hard_gates": [
+    {
+      "id": "HG1-I-runnable-closed-loop",
+      "statement": "I：完整 fixture/CLI/回执/Skill 回放全部通过。",
+      "status": "pass",
+      "evidence": "隔离 clone /tmp/ixp-s14-r2-a/repo（--no-hardlinks，detached c2894cd）：corepack pnpm install --frozen-lockfile 与 pnpm check exit 0，typecheck 干净；node --test 206/206、0 失败；覆盖率 Lines 91.07% / Branches 83.80% / Functions 98.36%（≥80% 门禁）。自有 JCS 实现 spawn 级回放 52/52 fixture（acceptance-profile 17 + interaction-prototype 16 + carrier-decision 19），正例 data.canonical_json 与 data.digest 独立复算相等，stdout 均为严格 RFC8785 字节。Skill 回放 tests/skill 15/15（s1.4-skill 7、requirement-freeze-skill 1、product-definition-skill 7）。src/cli、src/domain、src/adapters 零文件系统写入调用（grep 全扫）。"
+    },
+    {
+      "id": "HG2-X-user-understandable",
+      "statement": "X：显式确认、四态、阻塞/恢复与主对话零读写成立。",
+      "status": "pass",
+      "evidence": "SKILL.md 第 124/132/146/148 行：S1.4 阶段守卫（仅 V1/M1.2/S1.4 且 S1.3 已正式提升可入）、原型会签/载体裁决/Profile 配置三类显式确认节点、四态门禁记录（通过/退回/需讨论/阻塞）、kernel 只校验/不回写/不签认/不声明 full。阻塞 fixture（ui-missing-evidence、evidence-duty-violation、conflict×3）回执 conclusion=阻塞 且携带拒绝码与 stderr 诊断。评审全程未写入任何项目文件；验证前后 formal=84c051f7（F13）、control=331662b1 不变。"
+    },
+    {
+      "id": "HG3-P-product",
+      "statement": "P：原型和载体裁决不回归，Web/UI 候选不入主线。",
+      "status": "pass",
+      "evidence": "interaction-prototype 16/16：web-mainline-claim 与 codex-script-narrowing 分别以 WEB_UI_MAINLINE_REJECTED、CARRIER_NARROWING_REJECTED fail closed；三类目标项目正例全链 ACCEPTED 且摘要独立复算相等。carrier-decision 19/19：web-cockpit-as-mainline、web-ui-policy-claims-mainline、candidate-branch-claims-mainline、integration-surface-claims-mainline、chat-history-truth-source、supersede-without-change-request 全部拒绝；三份 Web/UI 候选材料仅以 candidate-not-mainline 身份出现。r1→subject 代码零改动（diff 仅 fixture 与治理文档），无产品语义回归。"
+    },
+    {
+      "id": "HG4-Profile-q6",
+      "statement": "Profile：完整矩阵 17/17，self-profile 端到端 ACCEPTED，冲突不降级，Q6=100%。",
+      "status": "pass",
+      "evidence": "独立 spawn 回放完整矩阵 17/17 与 fixture expected 一致（Q6=17/17=100%）。self-profile-headless 端到端输出 ACCEPTANCE_PROFILE_ACCEPTED（exit 0），decision 绑定真实 pd-01e7fcb1… 身份与 W2 载体裁决摘要 cd10e72a…，bindings 与候选 JCS 相等，enabled_acceptances=[integration,interaction,product]、ui_requirements=disabled、conclusion=通过——r1 唯一必修项已闭环。conflict-headless-requires-ui、conflict-ui-route-skips-ui、conflict-ui-route-disables-product 均 PROFILE_CONFLICT_REJECTED（exit 1），失败 data 恰为 {dry_run:false}，stdout/stderr 无 profile 输出、无降级暗示。headless 三类目标项目 I/X/P 必需且 UI 禁用；ui-with-evidence 追加 ui_restoration=required；ui-missing-evidence 阻塞；self-profile-ui-enabled 以 KERNEL_ROUTE_UI_FORBIDDEN 拒绝。"
+    },
+    {
+      "id": "HG5-evidence-duty",
+      "statement": "证据职责与 manual-isolated/full 边界保持。",
+      "status": "pass",
+      "evidence": "52 份 S1.4 fixture 全部声明 evidence_scope=manual-isolated consumer contract（逐份扫描，0 例外）；evidence-duty-violation fixture 端到端拒绝；SKILL.md 声明不冒领 full、回执仅为 S1.5/S1.6/M1.2 证据；CLI 无写能力、无适用性变更路径。fail-closed 活体探针 13/13：非 JCS 字节、参数注入、stdin 会签注入、空输入、尾随垃圾均 exit 1 拒绝；敏感字段注入以 SENSITIVE_FIELD_DETECTED 拒绝且敏感值零回显。"
+    },
+    {
+      "id": "HG6-scope",
+      "statement": "只覆盖 S1.4，不冒领 M1.2/V1/P5。",
+      "status": "pass",
+      "evidence": "subject 提交仅改 tests/fixtures/acceptance-profile/self-profile-headless.json；F13..subject 的 S1.1–S1.3 源码、schema 与 fixture 差异为空（blob 级未改写）。SKILL.md 第 148 行明文 S1.4 不构成 M1.2 完成、不生成任务包、不移动 formal/control；verification-report 与 execution Result 中所有 M1.2/V1/P5 相关表述均为否定式（不宣称/不得宣称）。本评审结论范围亦限于 S1.4 切片。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "I-integration",
+      "score": 25,
+      "max": 25,
+      "reason": "构建、typecheck、206/206 测试、覆盖率门禁全过；52/52 fixture spawn 级回放与独立摘要复算全对；信封双真源 TS 联合与 JSON Schema 枚举 21/21 恒等；三个 ACCEPTED 主题经独立进程 parseMachineReceipt+parseCanonicalJsonBytes 重验通过；CLI/domain/adapters 零写入。r1 所述 evaluate 与信封重验的宽严不一致已核实为同一 /^pd-[a-f0-9]{64}$/ 模式双层同构（schema 层粗于 domain 层为本仓库既定分层），无可观察缺陷。",
+      "evidence_refs": ["pnpm check exit 0（91.07/83.80/98.36）", "replay.mjs TOTAL 52 FAILS 0", "envelope.mjs dual-source equal YES、三份 REVALIDATED", "grep 零写入调用"]
+    },
+    {
+      "id": "X-interaction",
+      "score": 25,
+      "max": 25,
+      "reason": "阶段守卫、三类显式确认节点、四态门禁记录、阻塞原因与恢复入口、主对话零读写全部可验证，与 S1.1–S1.3 交互纪律同构。",
+      "evidence_refs": ["skills/nextstep/SKILL.md L124/L132/L146/L148", "tests/skill 15/15", "formal/control refs 验证前后不变"]
+    },
+    {
+      "id": "P-product",
+      "score": 25,
+      "max": 25,
+      "reason": "原型七类要素完整且证据绑定；载体裁决正式值唯一、候选分支治理与 CR 覆盖规则 fail closed；Web/UI 候选无一路径进入主线；r1→subject 产品语义零回归。",
+      "evidence_refs": ["replay.mjs interaction-prototype 16/16、carrier-decision 19/19", "web-mainline-claim WEB_UI_MAINLINE_REJECTED", "supersede-without-change-request UNAUTHORIZED_OVERRIDE"]
+    },
+    {
+      "id": "Profile-adjudication",
+      "score": 25,
+      "max": 25,
+      "reason": "完整矩阵 17/17、Q6=100%：headless 三类目标项目与 kernel 自身正例 I/X/P 必需且 UI 禁用；含 UI 追加 ui_restoration 且缺证据阻塞；冲突三例独立冲突码拒绝且零降级；self-profile 端到端 ACCEPTED 使 r1 的全矩阵缺口闭环。",
+      "evidence_refs": ["replay.mjs PROFILE_MATRIX 17/17", "SELF_PROFILE pass ACCEPTANCE_PROFILE_ACCEPTED", "CONFLICT 三例 zero-downgrade-ok"]
+    }
+  ],
+  "penalties": [
+    {
+      "id": "PEN-1",
+      "severity": "minor",
+      "deduction": 1,
+      "reason": "profile-id-mismatch（域层 IDENTITY_CONFLICT，expected.mode=error）在回执层仍归入 PROFILE_CONFLICT_REJECTED：身份冲突与路线冲突共用同一回执码。fail-closed 方向正确、data 仅 {dry_run:false}、无降级，且执行 Result 已将其列为非阻塞改进项，本轮 packet 未要求修复，故按轻微罚分延续记录。",
+      "evidence_refs": ["tests/fixtures/acceptance-profile/profile-id-mismatch.json expected.code=IDENTITY_CONFLICT", "src/cli/acceptance-profile.ts classifyFailure isConflictFailure（code.includes(\"CONFLICT\")）", "replay.mjs 该 fixture 回执码 PROFILE_CONFLICT_REJECTED"]
+    }
+  ],
+  "totals": {
+    "raw": 100,
+    "penalty_total": 1,
+    "final": 99
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "为身份冲突增设独立回执码（如 PROFILE_IDENTITY_CONFLICT_REJECTED），与路线冲突 PROFILE_CONFLICT_REJECTED 区分语义粒度；需同步 TS 联合与 JSON Schema 双真源及既有测试。",
+    "CLI 主入口守卫 import.meta.url===pathToFileURL(process.argv[1]).href 在经符号链接路径且 cwd 不一致时会静默 no-op exit 0（macOS /tmp→/private/tmp 实测触发）；建议守卫失败时输出诊断并非零退出。该模式继承自 S1.1–S1.3 全部既有 CLI，非 S1.4 回归，SKILL 规定自仓库根调用时不触发。",
+    "acceptance-profile.schema.json 对 product_definition_id 仅 minLength 1，严格模式由 domain 层强制；如后续 schema 独立消费可考虑同步 pattern，保持与仓库现行分层一致即可。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "六项硬门禁全部客观通过：206/206 测试与覆盖率门禁、52/52 fixture 回放、17/17 Profile 矩阵、13/13 fail-closed 探针、双真源 21/21、零写入与 refs 不变均有一手证据。",
+      "evidence_refs": ["HG1–HG6 evidence"]
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "四维度按 rubric 均给满证据分；唯一罚分为回执码粒度的既定轻微项，方向安全且非本轮必修。",
+      "evidence_refs": ["dimensions", "PEN-1"]
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "无 slop 与模板腐化：fixture 摘要均由上游 S1.3/W2 记录运行时回放派生（self-profile 绑定真实 pd-01e7fcb1… 与 cd10e72a…，非手抄占位）；测试断言具体拒绝码与 data 形状；SKILL.md 新增节与既有 S1.1–S1.3 纪律同构且含可验证守卫。",
+      "evidence_refs": ["tests/fixtures/acceptance-profile/self-profile-headless.json upstream_references", "replay.mjs digest 独立复算"]
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "硬门禁全过、必修项清零、证据链完整且独立复算一致，裁决 PASS。本结论仅为 S1.4 切片的 I/X/P 证据，不构成 L3 批准、formal promotion 或 M1.2/V1/P5 完成；Result 信封由控制面按 fence 规则固化。",
+      "evidence_refs": ["hard_gates", "totals", "verdict"]
+    }
+  ],
+  "independence_declaration": "本评审在隔离 clone（--no-hardlinks）中以自有 JCS 实现与独立 spawn harness 从零复跑，未复用 attempt 1 I/X/P、CV 或实现 Agent 的结论与脚本；评审进程未修改候选、control/formal refs 或评审目录外任何文件。",
+  "reviewed_at": "2026-08-14T09:28:45Z"
+}
