@@ -31,7 +31,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - Change Intake、恢复、Final Acceptance、交付和宿主归档边界通过故障注入和反扫验证。
   - V1..V4 与 Final Acceptance 分别完成本地验证、适用验收和用户会签。
 - 阶段出口：V1..V4 和 Final Acceptance 全部通过；正式 OID、交付清单、风险、回滚和 PC-20.AR 状态可追溯，并由用户明确确认 P5 产品落地完成。
-- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；旧链正式提升仅作历史证据。S1.2/F12 与 S1.3/F13 已正式提升，M1.1 attempt 2 用户会签已完成，CR-004/CR-005 已关闭。S1.4 attempt 2 候选 `c2894cd25cf8b466d41df68ff99cdbf4193ba0d3` 已完成 CV `PASS`、I/X/P `PASS / 99`、L3 `PASS / 98`、Final Verification `PASS / 98`、项目外 Credential、Audit Anchor、Anchor Verification `PASS / 98`、Anchor Proof 与 expected-old=F13 的正式 CAS；formal=F14 `024c1db6d941b6f771746c8d6249fb8a09b816f3`，control=`64f38c7bdf285946ff0d2a58c85259407179a7b3`，promotion digest=`sha256:c313ba63a171124d5e2448499b747684a9e9a3b0e0b345d1a90af162bcd89937`，pending dispatch=0。S1.4 已正式完成；M1.2、V1、P5 尚未完成。下一步仅允许评估 S1.5 入口，未通过入口门禁与新 packet/control CAS 前不得编码或派发 S1.5。
+- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；旧链正式提升仅作历史证据。S1.2/F12 与 S1.3/F13 已正式提升，M1.1 attempt 2 用户会签已完成，CR-004/CR-005 已关闭。S1.4 attempt 2 候选 `c2894cd25cf8b466d41df68ff99cdbf4193ba0d3` 已完成 CV `PASS`、I/X/P `PASS / 99`、L3 `PASS / 98`、Final Verification `PASS / 98`、项目外 Credential、Audit Anchor、Anchor Verification `PASS / 98`、Anchor Proof 与 expected-old=F13 的正式 CAS；formal=F14 `024c1db6d941b6f771746c8d6249fb8a09b816f3`，control=`f3581247189e719370f339b0e061e47d8df5556c`，promotion digest=`sha256:c313ba63a171124d5e2448499b747684a9e9a3b0e0b345d1a90af162bcd89937`，pending dispatch=0。S1.4 已正式完成；M1.2、V1、P5 尚未完成。下一步仅允许评估 S1.5 入口，未通过入口门禁与新 packet/control CAS 前不得编码或派发 S1.5。
 - 明确非目标：
   - 不恢复 NextStep Web/UI 候选分支。
   - 不引入常驻服务、数据库、远程控制面或通用多 Agent 编排平台。
@@ -43,7 +43,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - 不改变已会签产品、交互、S4/P3/P4 或验收边界；需要改变时先进入 Change Request。
 - 禁止提前进入的阶段：S7 最终发布判断和 S8 交付归档；V1..V4 也不得跳过前序门禁并行宣告完成。
 - 允许进入下一阶段的条件：P5 Final Acceptance 通过本地可重复验证、独立验收和用户会签；若实现要求改变已会签产品、交互、技术、版本范围、正式提升或验收边界，必须先完成 Change Request。
-- 当前状态：进行中；formal=F14 `024c1db6d941b6f771746c8d6249fb8a09b816f3`，control=`64f38c7bdf285946ff0d2a58c85259407179a7b3`。M1.1 与 S1.4 已正式完成；M1.2、V1、P5 尚未完成。下一步仅允许独立评估 S1.5 入口，评估与新 packet/control CAS 前 S1.5 不得编码或派发
+- 当前状态：进行中；formal=F14 `024c1db6d941b6f771746c8d6249fb8a09b816f3`，control=`f3581247189e719370f339b0e061e47d8df5556c`。M1.1 与 S1.4 已正式完成；M1.2、V1、P5 尚未完成。下一步仅允许独立评估 S1.5 入口，评估与新 packet/control CAS 前 S1.5 不得编码或派发
 
 ## 2.1 里程碑路线图
 

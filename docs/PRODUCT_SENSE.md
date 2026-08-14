@@ -73,7 +73,7 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 
 - 当前里程碑：P5 / V1 / M1.1 需求与产品真源运行锁
 - 当前生命周期阶段：S5 开发落地中的缺口处理与变更门禁
-- 当前状态：S1.2/F12、S1.3/F13、M1.1 会签与 S1.4/F14 均已完成；formal=F14 `024c1db6d941b6f771746c8d6249fb8a09b816f3`，control=`64f38c7bdf285946ff0d2a58c85259407179a7b3`。S1.4 Final Verification/Anchor Verification 均为 `PASS / 98`；M1.2、V1、P5 尚未完成，下一步为 S1.5 入口评估。
+- 当前状态：S1.2/F12、S1.3/F13、M1.1 会签与 S1.4/F14 均已完成；formal=F14 `024c1db6d941b6f771746c8d6249fb8a09b816f3`，control=`f3581247189e719370f339b0e061e47d8df5556c`。S1.4 Final Verification/Anchor Verification 均为 `PASS / 98`；M1.2、V1、P5 尚未完成，下一步为 S1.5 入口评估。
 - 当前正式状态、边界和下一入口以 `PROJECT_ROUTE_LOCK.md` 与 `docs/PLANS.md` 为准。
 
 ## S3 已会签交付物

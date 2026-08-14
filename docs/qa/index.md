@@ -1,6 +1,6 @@
 # QA
 
-当前阶段为 `P5 / V1` 持续落地。formal=F14 `024c1db6d941b6f771746c8d6249fb8a09b816f3`，control=`64f38c7bdf285946ff0d2a58c85259407179a7b3`。M1.1 与 S1.4 已正式完成；S1.4 Final Verification/Anchor Verification 均为 `PASS / 98`，206/206 全量回归通过。M1.2、V1、P5 尚未完成；下一步为 S1.5 入口评估。旧代际结果仅作墓碑历史。
+当前阶段为 `P5 / V1` 持续落地。formal=F14 `024c1db6d941b6f771746c8d6249fb8a09b816f3`，control=`f3581247189e719370f339b0e061e47d8df5556c`。M1.1 与 S1.4 已正式完成；S1.4 Final Verification/Anchor Verification 均为 `PASS / 98`，206/206 全量回归通过。M1.2、V1、P5 尚未完成；下一步为 S1.5 入口评估。旧代际结果仅作墓碑历史。
 
 ## 当前质量状态
 

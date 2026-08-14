@@ -2099,3 +2099,9 @@
 - CAS：`refs/nextstep/formal` 从 F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11` 原子快进到 F14 `024c1db6d941b6f771746c8d6249fb8a09b816f3`；control promotion CAS 后=`64f38c7bdf285946ff0d2a58c85259407179a7b3`，promotion digest=`sha256:c313ba63a171124d5e2448499b747684a9e9a3b0e0b345d1a90af162bcd89937`。
 - 状态边界：S1.4 formally-completed；M1.2/V1/P5 未完成，S1.5 尚未编码或派发。
 - 正式状态同步最终验证：过期状态扫描无命中；除故意非法 JSON fixture `tests/fixtures/requirement-intake/empty-input.json` 外，仓库 JSON 全量解析通过；`pnpm check` 206/206，覆盖率 Lines 91.07%、Branches 83.80%、Functions 98.36%；`git diff --check`、`git fsck --strict`、formal/control 精确值与 formal→HEAD ancestry 均通过。
+
+## 2026-08-14 S1.5 入口评估与计划冻结准备验证
+
+- 入口综合：三名独立 Qwen3.8 Max Agent 均 `PASS / 96`，8/8 前序硬门通过、P0=0；评估 worktree 均已回收且未写入项目。
+- 计划冻结验证：S1.5 计划明确 PC-06/PC-07、四项 P1 修复、W1→W2/W3→W4 互斥写集、fixture-first、V1/V3 边界、七字段 dedup、回执冲突语义、活跃 source_refs 与 F14→F15 正式链；未生成 packet、未编码或派发。
+- 状态卫生：当前文档 control 已统一为实时 `f3581247189e719370f339b0e061e47d8df5556c`；CR-004/CR-005 索引已改为已关闭；历史 `.codex` 记录中的旧 control OID 保留为历史事实。

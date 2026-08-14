@@ -1,0 +1,23 @@
+{
+  "review_id": "p5-v1-m1.2-s1.5-entry-evaluation-2026-08-14",
+  "review_level": "entry-evaluation",
+  "stage_id": "P5/V1/M1.2/S1.5/entry-evaluation",
+  "plan_generation": 4,
+  "formal_oid": "024c1db6d941b6f771746c8d6249fb8a09b816f3",
+  "control_oid": "f3581247189e719370f339b0e061e47d8df5556c",
+  "independent_agents": [
+    {"agent_id": "01a000e5-e0b0-7e81-94c7-0ed3ae790d8d", "axis": "product-interaction", "verdict": "PASS", "score": 96, "p0": 0, "p1": 3},
+    {"agent_id": "01a000e6-15fd-7533-a4d0-f6ccc1ad9f17", "axis": "implementation-testing", "verdict": "PASS", "score": 96, "p0": 0, "p1": 3},
+    {"agent_id": "01a000e6-c940-7d62-99d2-fe6e9fa130d7", "axis": "governance-control", "verdict": "PASS", "score": 96, "p0": 0, "p1": 4}
+  ],
+  "combined_verdict": "PASS",
+  "combined_score": 96,
+  "hard_gates": {"passed": 8, "total": 8},
+  "required_fixes": [
+    "在执行计划和 packet 中冻结 S1.5 七字段 dedup 投影。",
+    "明确既有 PROFILE_CONFLICT_REJECTED 保持兼容，并为写入/版本冲突使用新结构化回执语义。",
+    "明确 S1.5 只操作目标项目 fixture 工作树，不实现 V2/V3 registry/snapshot/formal 写入。",
+    "使用活跃 S3/007/008/009/S4 真源；将 P3 所称写入 fixture 定义为 W1 首个交付，不等待不存在的外部输入。"
+  ],
+  "next_gate": "冻结 S1.5 Generation 1 执行计划并以实时 control expected-old CAS 固化 Execution Packet；CAS 成功前不得编码或派发。"
+}

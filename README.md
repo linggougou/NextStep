@@ -34,7 +34,7 @@ pnpm check
 - S1.3 generation 4 已提升到 F13；S1.4 attempt 2 已通过完整正式证据链并提升到 F14。
 - 当前 formal 为 F14 `024c1db6d941b6f771746c8d6249fb8a09b816f3`；main 包含 F14。
 - M1.1 与 S1.4 已正式完成；S1.4 Final Verification/Anchor Verification 均为 `PASS / 98`，`pnpm check` 206/206。M1.2、V1、P5 仍未完成；下一步仅为 S1.5 入口评估。
-- 当前 control=`64f38c7bdf285946ff0d2a58c85259407179a7b3`，formal=F14，promotion digest=`sha256:c313ba63a171124d5e2448499b747684a9e9a3b0e0b345d1a90af162bcd89937`，`plan_generation=4`，pending dispatch=0。
+- 当前 control=`f3581247189e719370f339b0e061e47d8df5556c`，formal=F14，promotion digest=`sha256:c313ba63a171124d5e2448499b747684a9e9a3b0e0b345d1a90af162bcd89937`，`plan_generation=4`，pending dispatch=0。
 - 不接入 Codex SDK/App Server，不声明宿主 `full` 支持。
 - 不恢复 Web/UI 分支，不引入常驻服务或数据库。
 

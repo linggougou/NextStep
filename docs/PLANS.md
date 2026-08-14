@@ -5,7 +5,7 @@
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
 - 当前活动里程碑：V1 / M1.2 / S1.5（S1.4 已正式提升到 F14；S1.5 仅进入口评估）
-- 当前状态：formal=F14 `024c1db6d941b6f771746c8d6249fb8a09b816f3`；control=`64f38c7bdf285946ff0d2a58c85259407179a7b3`。M1.1 与 S1.4 已正式完成；S1.4 Final Verification/Anchor Verification 均为 `PASS / 98`，206/206 全量回归通过。M1.2、V1、P5 尚未完成；下一步仅允许 S1.5 入口评估，未形成新 packet/control CAS 前不得编码或派发。
+- 当前状态：formal=F14 `024c1db6d941b6f771746c8d6249fb8a09b816f3`；control=`f3581247189e719370f339b0e061e47d8df5556c`。M1.1 与 S1.4 已正式完成；S1.4 Final Verification/Anchor Verification 均为 `PASS / 98`，206/206 全量回归通过。M1.2、V1、P5 尚未完成；下一步仅允许 S1.5 入口评估，未形成新 packet/control CAS 前不得编码或派发。
 
 ## 当前活动计划
 

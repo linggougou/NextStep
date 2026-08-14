@@ -2118,3 +2118,10 @@
 - 预 CAS：snapshot/transaction/FV/anchor/AV 七类 JCS 投影摘要、Credential/Proof raw SHA 与权限、331/331 protected paths、5 条 anchor 白名单、父链/祖先、pending=0、outbox closed、`git fsck --strict` 全部通过。
 - Formal CAS：以 expected-old F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11` 原子推进到 F14 Anchor `024c1db6d941b6f771746c8d6249fb8a09b816f3`；promotion digest=`sha256:c313ba63a171124d5e2448499b747684a9e9a3b0e0b345d1a90af162bcd89937`，control CAS 后=`64f38c7bdf285946ff0d2a58c85259407179a7b3`。
 - 状态：S1.4 已正式完成；M1.2、V1、P5 仍未完成。下一步只允许 S1.5 入口评估，未形成执行计划与新 packet/control CAS 前不得编码或派发。
+
+## 2026-08-14 S1.5 入口评估与 Generation 1 计划冻结准备
+
+- S1.4 已在 F14 正式完成；实时基线：main=`13b0ef4dcce6d9d90d7f96212b8251600857ed84`，formal=F14 `024c1db6d941b6f771746c8d6249fb8a09b816f3`，control=`f3581247189e719370f339b0e061e47d8df5556c`，pending dispatch=0，工作区 clean。
+- 三名独立 Qwen3.8 Max Agent 入口评估均 `PASS / 96`：产品/交互、实现/测试、治理/control 三轴 8/8 硬门通过，P0=0；综合 required_fixes=4，已写入 `.codex/exec-plan-s1.5-generation-1.md` 与 entry scorecard。
+- 已吸收的范围决策：七字段 dedup 投影冻结；保留 PROFILE_CONFLICT_REJECTED 兼容并新增写入冲突回执语义；S1.5 只验证 fixture 工作树、不实现 V2/V3 正式 refs；活跃 source_refs 使用 S3/007/008/009/S4/P3/P4，W1 先构造不存在的写入 fixture。
+- 本轮只修改计划、状态、Change Request 索引与评估留痕；未修改生产代码、测试、Schema、依赖、formal/control，未生成 S1.5 packet，未编码、未派发、未 push。

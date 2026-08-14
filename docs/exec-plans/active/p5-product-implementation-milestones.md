@@ -1,6 +1,6 @@
 # P5 产品落地实施里程碑
 
-状态：进行中；formal=F14 `024c1db6d941b6f771746c8d6249fb8a09b816f3`，control=`64f38c7bdf285946ff0d2a58c85259407179a7b3`。M1.1 与 S1.4 已正式完成；M1.2、V1、P5 尚未完成。下一步仅允许 S1.5 入口评估，评估与新 packet/control CAS 前不得编码或派发
+状态：进行中；formal=F14 `024c1db6d941b6f771746c8d6249fb8a09b816f3`，control=`f3581247189e719370f339b0e061e47d8df5556c`。M1.1 与 S1.4 已正式完成；M1.2、V1、P5 尚未完成。下一步仅允许 S1.5 入口评估，评估与新 packet/control CAS 前不得编码或派发
 启动日期：2026-08-08
 
 ## 1. 阶段目标
@@ -158,4 +158,4 @@ P5-M0 不是新增产品版本，不改变 P3 的 PC 主版本归属，也不能
 
 P5 的最终阶段出口是：V1..V4 和 Final Acceptance 全部通过本地可重复验证、独立 I/X/P、适用 Profile 验收和用户会签；交付清单、正式 OID、已知风险、回滚与 PC-20.AR 状态可追溯。此前 P5 保持进行中，不得归档本计划或宣告完整产品完成。
 
-当前 M1.1 attempt 1 为历史 `退回 / 73`，attempt 2 已会签并正式完成。formal=F14，control=`64f38c7bdf285946ff0d2a58c85259407179a7b3`，pending dispatch=0；S1.4 已正式完成。M1.2、V1、P5 尚未完成；下一步仅为 S1.5 入口评估。
+当前 M1.1 attempt 1 为历史 `退回 / 73`，attempt 2 已会签并正式完成。formal=F14，control=`f3581247189e719370f339b0e061e47d8df5556c`，pending dispatch=0；S1.4 已正式完成。M1.2、V1、P5 尚未完成；下一步仅为 S1.5 入口评估。
