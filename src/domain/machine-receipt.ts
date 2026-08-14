@@ -8,6 +8,9 @@ import {
   buildRequirementIntakeUserOutput,
   parseRequirementIntake,
 } from "./requirement-intake.ts";
+import { parseInteractionPrototype } from "./interaction-prototype.ts";
+import { parseCarrierDecision } from "./carrier-decision.ts";
+import { evaluateAcceptanceProfile } from "./acceptance-profile.ts";
 import { recoverFrozenRequirement } from "./requirement-freeze.ts";
 import { parseProductDefinitionCandidate } from "./product-definition.ts";
 import { isPlainRecord, type UnknownRecord } from "./value-guards.ts";
@@ -26,7 +29,14 @@ export type MachineReceiptCode =
   | "CONFIRMATION_MISMATCH"
   | "IDENTITY_CONFLICT"
   | "PRODUCT_DEFINITION_ACCEPTED"
-  | "PRODUCT_DEFINITION_REJECTED";
+  | "PRODUCT_DEFINITION_REJECTED"
+  | "INTERACTION_PROTOTYPE_ACCEPTED"
+  | "INTERACTION_PROTOTYPE_REJECTED"
+  | "CARRIER_DECISION_ACCEPTED"
+  | "CARRIER_DECISION_REJECTED"
+  | "ACCEPTANCE_PROFILE_ACCEPTED"
+  | "ACCEPTANCE_PROFILE_REJECTED"
+  | "PROFILE_CONFLICT_REJECTED";
 
 export interface MachineReceipt {
   readonly schema_version: "1.0";
@@ -85,6 +95,9 @@ export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
       REQUIREMENT_INTAKE_ACCEPTED: ["canonical_json", "digest", "requirement_intake", "schema_version", "user_output"],
       REQUIREMENT_FREEZE_ACCEPTED: ["canonical_json", "digest", "frozen_requirement", "requirement_set", "schema_version"],
       PRODUCT_DEFINITION_ACCEPTED: ["canonical_json", "digest", "product_definition", "schema_version"],
+      INTERACTION_PROTOTYPE_ACCEPTED: ["canonical_json", "digest", "interaction_prototype", "schema_version"],
+      CARRIER_DECISION_ACCEPTED: ["canonical_json", "digest", "carrier_decision", "schema_version"],
+      ACCEPTANCE_PROFILE_ACCEPTED: ["canonical_json", "digest", "acceptance_profile", "schema_version"],
     };
     if (snapshot.ok) {
       const fields = successfulFields[snapshot.code as keyof typeof successfulFields];
@@ -134,6 +147,33 @@ export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
         const { status: _status, ...record } = productDefinition;
         if (canonicalJson !== canonicalizeJson(record)) {
           throw new TypeError("Product definition receipt payload does not match canonical JSON");
+        }
+      }
+      if (snapshot.code === "INTERACTION_PROTOTYPE_ACCEPTED") {
+        if (snapshot.data.schema_version !== "1.0") {
+          throw new TypeError("Interaction prototype receipt subject version must be 1.0");
+        }
+        const prototype = parseInteractionPrototype(snapshot.data.interaction_prototype);
+        if (canonicalJson !== canonicalizeJson(prototype)) {
+          throw new TypeError("Interaction prototype receipt payload does not match canonical JSON");
+        }
+      }
+      if (snapshot.code === "CARRIER_DECISION_ACCEPTED") {
+        if (snapshot.data.schema_version !== "1.0") {
+          throw new TypeError("Carrier decision receipt subject version must be 1.0");
+        }
+        const decision = parseCarrierDecision(snapshot.data.carrier_decision);
+        if (canonicalJson !== canonicalizeJson(decision)) {
+          throw new TypeError("Carrier decision receipt payload does not match canonical JSON");
+        }
+      }
+      if (snapshot.code === "ACCEPTANCE_PROFILE_ACCEPTED") {
+        if (snapshot.data.schema_version !== "1.0") {
+          throw new TypeError("Acceptance profile receipt subject version must be 1.0");
+        }
+        const profile = evaluateAcceptanceProfile(snapshot.data.acceptance_profile);
+        if (canonicalJson !== canonicalizeJson(profile)) {
+          throw new TypeError("Acceptance profile receipt payload does not match canonical JSON");
         }
       }
     }

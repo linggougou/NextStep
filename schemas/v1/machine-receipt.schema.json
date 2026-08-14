@@ -37,7 +37,14 @@
         "CONFIRMATION_MISMATCH",
         "IDENTITY_CONFLICT",
         "PRODUCT_DEFINITION_ACCEPTED",
-        "PRODUCT_DEFINITION_REJECTED"
+        "PRODUCT_DEFINITION_REJECTED",
+        "INTERACTION_PROTOTYPE_ACCEPTED",
+        "INTERACTION_PROTOTYPE_REJECTED",
+        "CARRIER_DECISION_ACCEPTED",
+        "CARRIER_DECISION_REJECTED",
+        "ACCEPTANCE_PROFILE_ACCEPTED",
+        "ACCEPTANCE_PROFILE_REJECTED",
+        "PROFILE_CONFLICT_REJECTED"
       ]
     },
     "data": {
@@ -185,6 +192,102 @@
                 }
               }
             }
+          },
+          {
+            "properties": {
+              "code": {
+                "const": "INTERACTION_PROTOTYPE_ACCEPTED"
+              },
+              "data": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "canonical_json",
+                  "digest",
+                  "interaction_prototype",
+                  "schema_version"
+                ],
+                "properties": {
+                  "canonical_json": {
+                    "type": "string"
+                  },
+                  "digest": {
+                    "type": "string",
+                    "pattern": "^sha256:[a-f0-9]{64}$"
+                  },
+                  "interaction_prototype": {
+                    "type": "object"
+                  },
+                  "schema_version": {
+                    "const": "1.0"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "properties": {
+              "code": {
+                "const": "CARRIER_DECISION_ACCEPTED"
+              },
+              "data": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "canonical_json",
+                  "digest",
+                  "carrier_decision",
+                  "schema_version"
+                ],
+                "properties": {
+                  "canonical_json": {
+                    "type": "string"
+                  },
+                  "digest": {
+                    "type": "string",
+                    "pattern": "^sha256:[a-f0-9]{64}$"
+                  },
+                  "carrier_decision": {
+                    "type": "object"
+                  },
+                  "schema_version": {
+                    "const": "1.0"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "properties": {
+              "code": {
+                "const": "ACCEPTANCE_PROFILE_ACCEPTED"
+              },
+              "data": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "canonical_json",
+                  "digest",
+                  "acceptance_profile",
+                  "schema_version"
+                ],
+                "properties": {
+                  "canonical_json": {
+                    "type": "string"
+                  },
+                  "digest": {
+                    "type": "string",
+                    "pattern": "^sha256:[a-f0-9]{64}$"
+                  },
+                  "acceptance_profile": {
+                    "type": "object"
+                  },
+                  "schema_version": {
+                    "const": "1.0"
+                  }
+                }
+              }
+            }
           }
         ]
       },
@@ -201,7 +304,11 @@
               "REQUIREMENT_NOT_FROZEN",
               "CONFIRMATION_MISMATCH",
               "IDENTITY_CONFLICT",
-              "PRODUCT_DEFINITION_REJECTED"
+              "PRODUCT_DEFINITION_REJECTED",
+              "INTERACTION_PROTOTYPE_REJECTED",
+              "CARRIER_DECISION_REJECTED",
+              "ACCEPTANCE_PROFILE_REJECTED",
+              "PROFILE_CONFLICT_REJECTED"
             ]
           },
           "data": {

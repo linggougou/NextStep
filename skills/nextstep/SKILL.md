@@ -1,17 +1,17 @@
 ---
 name: nextstep
-description: Validate a NextStep requirement candidate, create an explicitly confirmed immutable freeze record at S1.2, or generate and validate an S1.3 Product Definition 2.0 candidate from a Frozen Requirement. This Skill permits Product Definition 2.0 validation within V1 / M1.1 / S1.3 only after stage inspection, and rejects legacy 1.0 product candidates. Use only for requirement intake, requirement freeze, or product-definition validation; do not use it for source writing, task dispatch, signoff approval, or stage approval.
+description: Validate a NextStep requirement candidate, create an explicitly confirmed immutable freeze record at S1.2, or generate and validate an S1.3 Product Definition 2.0 candidate from a Frozen Requirement. This Skill permits Product Definition 2.0 validation within V1 / M1.1 / S1.3 only after stage inspection, and rejects legacy 1.0 product candidates. It also validates S1.4 carrier-free interaction prototype, carrier decision, and Acceptance Profile candidates within V1 / M1.2 / S1.4 only after stage inspection. Use only for requirement intake, requirement freeze, product-definition validation, or S1.4 prototype/carrier/profile validation; do not use it for source writing, task dispatch, signoff approval, or stage approval.
 ---
 
 # NextStep
 
-Operate only within the current `V1 / M1.1 / S1.1`, `V1 / M1.1 / S1.2`, or `V1 / M1.1 / S1.3` boundary shown by project truth.
+Operate only within the current `V1 / M1.1 / S1.1`, `V1 / M1.1 / S1.2`, `V1 / M1.1 / S1.3`, or `V1 / M1.2 / S1.4` boundary shown by project truth.
 
 ## Inspect The Stage
 
 1. Resolve the project root explicitly.
 2. Read `PROJECT_ROUTE_LOCK.md` and `docs/PLANS.md`.
-3. Confirm the active milestone is `V1 / M1.1 / S1.1` before running requirement intake, `V1 / M1.1 / S1.2` before preparing a freeze record, or `V1 / M1.1 / S1.3` before validating a product-definition candidate.
+3. Confirm the active milestone is `V1 / M1.1 / S1.1` before running requirement intake, `V1 / M1.1 / S1.2` before preparing a freeze record, `V1 / M1.1 / S1.3` before validating a product-definition candidate, or `V1 / M1.2 / S1.4` before validating a carrier-free prototype, carrier decision, or Acceptance Profile candidate.
 4. Report the current stage, active gate, blocking reason, and permitted next action from those sources.
 
 Do not infer stage state from chat history or task titles.
@@ -94,7 +94,7 @@ Run `pnpm test` to replay it. Requirement-freeze fixtures use only the `manual-i
 - Do not modify project sources through requirement intake.
 - Do not claim any `PC-01..PC-20` capability, gate, version, or project is complete.
 - Do not claim host mode is `full`, `manual-isolated`, or supported.
-- Do not enter S1.2 until the required independent gates are complete, do not enter S1.3 until a valid frozen record exists, and do not enter S1.4 from this Skill.
+- Do not enter S1.2 until the required independent gates are complete, do not enter S1.3 until a valid frozen record exists, and do not enter S1.4 until S1.3 has been formally promoted and the active milestone is `V1 / M1.2 / S1.4`.
 
 ## S1.3 Product Definition Signoff
 
@@ -118,3 +118,31 @@ node dist/src/cli/product-definition.js
 ```
 
 The stdin command only validates and receipts the candidate. It cannot receive a verifier, session, state, or clock and therefore cannot sign. A host holding the in-process verifier and current session may use the exported domain boundary for the manual-isolated consumer contract; this does not implement a real host adapter, a real user-action probe, or `full` support.
+
+## S1.4 Prototype And Profile Adjudication
+
+At S1.4, enter only after Inspect The Stage confirms `V1 / M1.2 / S1.4`, S1.3 has been formally promoted, and the signed Product Definition 2.0 is replayable. The host AI organizes every candidate; the deterministic kernel only validates it (kernel 只校验候选). The kernel never parses natural language, never writes truth sources back (不回写真源), never signs (不签认), and never declares `full` host support.
+
+A carrier-free interaction prototype (载体无关原型) candidate carries inputs, responses, confirmation nodes, stage transitions, exceptions, recovery entries, and the items that must never be deviated from, each bound to evidence. It must not be narrowed into a Codex chat script and must not carry any Web/UI mainline claim. Validate one RFC 8785 canonical JSON candidate through stdin:
+
+```bash
+node dist/src/cli/interaction-prototype.js
+```
+
+A carrier decision (载体裁决) candidate fixes the main carrier (`skill-chat`), the truth-source carrier (project documents plus `PROJECT_ROUTE_LOCK.md` plus stage truth sources), auxiliary entries, and candidate branch conditions. Web/UI materials stay candidate branches (候选分支) with checkable recovery conditions; they must not be treated as the current mainline or as formal truth sources. A carrier decision requires an explicit user confirmation (显式确认) before any S3 write-back mapping records it; without that write-back it is not a formal truth source. Validate the candidate with:
+
+```bash
+node dist/src/cli/carrier-decision.js
+```
+
+An Acceptance Profile candidate is derived from the target project route. A headless route requires integration, interaction, and product acceptance and disables UI restoration (UI 还原); a missing UI report on a headless route must not fail the project. A route with UI additionally requires a signed UI design source and UI restoration evidence references. A route/Profile conflict must fail closed with `PROFILE_CONFLICT_REJECTED`: the configuration is rejected and progress is blocked; there is no downgrade to headless and no degraded Profile output. Independent tasks only provide evidence (只提供证据); they never change Profile applicability. For NextStep itself the route is Skill-only; any candidate Profile that enables UI acceptance for this repository is rejected. Validate with:
+
+```bash
+node dist/src/cli/acceptance-profile.js
+```
+
+Every S1.4 stdin command follows the existing discipline: one RFC 8785 canonical JSON candidate in, one JCS machine receipt out (`INTERACTION_PROTOTYPE_ACCEPTED`, `CARRIER_DECISION_ACCEPTED`, or `ACCEPTANCE_PROFILE_ACCEPTED` on success), stderr diagnostics only, and exit code 1 on failure. Missing fields, unknown fields, unknown versions, non-canonical bytes, sensitive fields, mismatched digests, and stdin-injected signoff claims fail closed.
+
+Prototype signoff, carrier decision, and Profile configuration each require an explicit user confirmation node recorded in the four-state gate record: 通过 (passed), 退回 (returned), 需讨论 (needs discussion), or 阻塞 (blocked).
+
+The S1.4 receipts are evidence for S1.5, S1.6, and the M1.2 I/X/P gates. S1.4 does not complete M1.2, does not generate execution packets, does not dispatch tasks, and does not move `refs/nextstep/formal` or `refs/nextstep/control`.

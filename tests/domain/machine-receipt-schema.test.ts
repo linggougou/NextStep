@@ -459,3 +459,110 @@ test("machine receipt validates frozen requirement semantics independently for i
     /frozen|requirement set|identity|receipt/i,
   );
 });
+
+// ---- S1.4（M1.2）新增回执码：TS 联合与 JSON Schema 枚举双真源同步验证 ----
+// 依赖 W1/W2/W3 切片的 domain 模块与 fixture；集成前该依赖在 W4 分支上显式缺失。
+
+import { parseInteractionPrototype } from "../../src/domain/interaction-prototype.ts";
+import { parseCarrierDecision } from "../../src/domain/carrier-decision.ts";
+import { evaluateAcceptanceProfile } from "../../src/domain/acceptance-profile.ts";
+
+async function readFixtureSubject(path: string, field: string): Promise<unknown> {
+  const { readFile } = await import("node:fs/promises");
+  const fixture = JSON.parse(await readFile(resolve(process.cwd(), path), "utf8")) as Record<string, unknown>;
+  return fixture[field];
+}
+
+function s14Receipt(code: string, subjectField: string, subject: unknown) {
+  return {
+    schema_version: "1.0",
+    receipt_id: `receipt-s14-${subjectField}`,
+    ok: true,
+    code,
+    data: {
+      canonical_json: canonicalizeJson(subject),
+      digest: digestJson(subject),
+      [subjectField]: subject,
+      schema_version: "1.0",
+    },
+  };
+}
+
+test("S1.4 三个 ACCEPTED 回执码被信封接受，且主题可被独立重验（canonical/digest 自洽）", async () => {
+  const prototype = parseInteractionPrototype(
+    await readFixtureSubject("tests/fixtures/interaction-prototype/community-workshop.json", "interaction_prototype"),
+  );
+  const carrierDecision = parseCarrierDecision(
+    await readFixtureSubject("tests/fixtures/carrier-decision/community-workshop.json", "carrier_decision"),
+  );
+  const acceptanceProfile = evaluateAcceptanceProfile(
+    await readFixtureSubject("tests/fixtures/acceptance-profile/headless-community-workshop.json", "acceptance_profile"),
+  );
+
+  assert.equal(parseMachineReceipt(s14Receipt("INTERACTION_PROTOTYPE_ACCEPTED", "interaction_prototype", prototype)).code, "INTERACTION_PROTOTYPE_ACCEPTED");
+  assert.equal(parseMachineReceipt(s14Receipt("CARRIER_DECISION_ACCEPTED", "carrier_decision", carrierDecision)).code, "CARRIER_DECISION_ACCEPTED");
+  assert.equal(parseMachineReceipt(s14Receipt("ACCEPTANCE_PROFILE_ACCEPTED", "acceptance_profile", acceptanceProfile)).code, "ACCEPTANCE_PROFILE_ACCEPTED");
+});
+
+test("S1.4 回执码的 ok/code 错配、未知码与 data 形状违规均 fail closed", async () => {
+  const prototype = parseInteractionPrototype(
+    await readFixtureSubject("tests/fixtures/interaction-prototype/community-workshop.json", "interaction_prototype"),
+  );
+  const validReceipt = s14Receipt("INTERACTION_PROTOTYPE_ACCEPTED", "interaction_prototype", prototype);
+
+  for (const receipt of [
+    // ok=true 搭配 REJECTED 码：oneOf 无匹配分支。
+    { ...validReceipt, code: "INTERACTION_PROTOTYPE_REJECTED" },
+    // ok=false 搭配 ACCEPTED 码：else 分支码枚举不包含它。
+    { ...validReceipt, ok: false, code: "CARRIER_DECISION_ACCEPTED", data: { dry_run: false } },
+    { ...validReceipt, ok: false, code: "PROFILE_CONFLICT_REJECTED", data: { dry_run: false, acceptance_profile: prototype } },
+    // 未列入双真源枚举的码。
+    { ...validReceipt, code: "PROFILE_CONFLICT_ACCEPTED" },
+    { ...validReceipt, code: "S14_UNKNOWN_CODE" },
+    // data 缺字段 / 多字段。
+    { ...validReceipt, data: { canonical_json: validReceipt.data.canonical_json, digest: validReceipt.data.digest, schema_version: "1.0" } },
+    { ...validReceipt, data: { ...validReceipt.data, unexpected: true } },
+    // 主题被篡改：canonical/digest 与对象不再一致。
+    { ...validReceipt, data: { ...validReceipt.data, interaction_prototype: { ...prototype, tampered: true } } },
+  ]) {
+    assert.throws(() => parseMachineReceipt(receipt), /code|receipt|schema|data|digest|canonical|invalid|mismatch/i);
+  }
+});
+
+test("S1.4 成功回执的 data 含敏感字段时拒绝且不落盘原值", () => {
+  assert.throws(
+    () =>
+      parseMachineReceipt({
+        schema_version: "1.0",
+        receipt_id: "receipt-s14-sensitive",
+        ok: true,
+        code: "ACCEPTANCE_PROFILE_ACCEPTED",
+        data: { authorization: "Bearer value-that-must-not-be-persisted" },
+      }),
+    /sensitive|secret|token|authorization/i,
+  );
+});
+
+test("PROFILE_CONFLICT_REJECTED 是独立的失败码：只允许 dry_run data，不得携带 Profile 输出", () => {
+  assert.equal(
+    parseMachineReceipt({
+      schema_version: "1.0",
+      receipt_id: "receipt-s14-conflict",
+      ok: false,
+      code: "PROFILE_CONFLICT_REJECTED",
+      data: { dry_run: false },
+    }).code,
+    "PROFILE_CONFLICT_REJECTED",
+  );
+  assert.throws(
+    () =>
+      parseMachineReceipt({
+        schema_version: "1.0",
+        receipt_id: "receipt-s14-conflict-leak",
+        ok: false,
+        code: "PROFILE_CONFLICT_REJECTED",
+        data: { dry_run: false, acceptance_profile: { downgraded: true } },
+      }),
+    /data|receipt|schema|invalid/i,
+  );
+});
