@@ -1,0 +1,150 @@
+{
+  "review_id": "p5-v1-m1.2-s1.4-independent-ixp-2026-08-14",
+  "task_id": "S1.4-I-X-P",
+  "task_attempt": 1,
+  "lane": "independent-ixp",
+  "review_level": "L3",
+  "rubric_id": "nextstep-s1.4-independent-ixp-v1",
+  "stage_id": "P5/V1/M1.2/S1.4/product-interaction",
+  "plan_generation": 4,
+  "gate_packet_ref": "refs/nextstep/control:gate-requests/gate-product-interaction-s1.4-g4-a1-20260814.json",
+  "subject": {
+    "commit_oid": "d60e625c2ce490388d7c7bc8f4beb3d23d501fea",
+    "tree_oid": "b40546c49296e34719c5d9b0ee189d00a5a30e7e",
+    "parent_oid": "ece351399d810998549ade0d5f76065d1cd3d52d",
+    "subject_digest": "sha256:fc86923851afa390b29b19c26a911c8c43eb5098f9ab80486abe9a6bb175e2d4",
+    "subject_digest_independently_recomputed": true,
+    "baseline_oid": "84c051f7426ec5d2a9bed70aa02a1f321bd81e11",
+    "packet_digest_verified": "sha256:5c41dd07df858db64b2098e92bd122a135131777a175c515563d29ff20eb1499"
+  },
+  "artifact_refs": [
+    "git:d60e625c2ce490388d7c7bc8f4beb3d23d501fea:src/domain/interaction-prototype.ts",
+    "git:d60e625c2ce490388d7c7bc8f4beb3d23d501fea:src/domain/carrier-decision.ts",
+    "git:d60e625c2ce490388d7c7bc8f4beb3d23d501fea:src/domain/acceptance-profile.ts",
+    "git:d60e625c2ce490388d7c7bc8f4beb3d23d501fea:src/domain/machine-receipt.ts",
+    "git:d60e625c2ce490388d7c7bc8f4beb3d23d501fea:src/cli/interaction-prototype.ts",
+    "git:d60e625c2ce490388d7c7bc8f4beb3d23d501fea:src/cli/carrier-decision.ts",
+    "git:d60e625c2ce490388d7c7bc8f4beb3d23d501fea:src/cli/acceptance-profile.ts",
+    "git:d60e625c2ce490388d7c7bc8f4beb3d23d501fea:skills/nextstep/SKILL.md",
+    "git:d60e625c2ce490388d7c7bc8f4beb3d23d501fea:tests/fixtures/interaction-prototype/",
+    "git:d60e625c2ce490388d7c7bc8f4beb3d23d501fea:tests/fixtures/carrier-decision/",
+    "git:d60e625c2ce490388d7c7bc8f4beb3d23d501fea:tests/fixtures/acceptance-profile/",
+    "refs/nextstep/control:packets/ep-p5-v1-m1.2-s1.4-g4-a1-20260814.json",
+    "refs/nextstep/control:results/result-execution-s1.4-g4-a1-f73-20260814.json"
+  ],
+  "hard_gates": [
+    {
+      "id": "HG1-I-runnable-closed-loop",
+      "statement": "I：三类领域契约、CLI、机器回执和 Skill 在目标项目 fixture 中形成可运行闭环。",
+      "status": "pass",
+      "evidence": "隔离 worktree /tmp/ixp-s14-wt/repo（detached d60e625）：corepack pnpm install --frozen-lockfile && pnpm check 通过；node --test 206/206；独立 spawn 回放 52 份 fixture + 9 项探针，三类目标项目正例全链 ACCEPTED 且 data.digest/canonical_json 独立复算相等；回执双真源 TS 联合与 schema 枚举各 21 码一致；src/cli+src/domain+src/adapters 零文件写入调用。"
+    },
+    {
+      "id": "HG2-X-user-understandable",
+      "statement": "X：用户能理解当前路线、确认节点、冲突/阻塞原因与恢复入口；主对话不读写项目。",
+      "status": "pass",
+      "evidence": "SKILL.md S1.4 节：阶段守卫 V1/M1.2/S1.4 + S1.3 已提升 + PD 2.0 可回放；kernel 只校验/不回写/不签认/不声明 full；原型会签、载体裁决、Profile 配置均需显式确认并以通过/退回/需讨论/阻塞四态记录；冲突以 PROFILE_CONFLICT_REJECTED 阻塞并给 stderr 诊断；kernel 侧零 fs 写入，git-fixture 测试保证回放不动 refs；本次验证全程 formal=F13、control=20e774c 未变。"
+    },
+    {
+      "id": "HG3-P-prototype-and-carrier",
+      "statement": "P：载体无关原型覆盖输入/回应/确认/转换/异常/恢复/不可偏离项；Web/UI 候选不误入主线。",
+      "status": "pass",
+      "evidence": "interaction-prototype 16 份 fixture（3 正 13 负）：正例含 inputs/responses/confirmation_nodes/stages/stage_transitions/exceptions/invariants 并绑定上游 PD 2.0 摘要；web-mainline-claim、codex-script-narrowing、terminal-confirmation-missing、unrecoverable-exception 等负例全部拒绝；carrier-decision 19 份：正式值唯一 skill-chat + project-documents-git，web-cockpit-as-mainline、web-ui-policy-claims-mainline、candidate-branch-claims-mainline、supersede-without-change-request 全部 fail closed。"
+    },
+    {
+      "id": "HG4-Profile-q6",
+      "statement": "Profile：headless 必需 I/X/P；含 UI 追加 UI 设计真源与还原证据；冲突裁决正确率 Q6=100% 且不降级。",
+      "status": "fail",
+      "evidence": "冲突子集满足：conflict-headless-requires-ui、conflict-ui-route-skips-ui、conflict-ui-route-disables-product 均 PROFILE_CONFLICT_REJECTED，回执 data 仅 {dry_run:false}，零降级输出；headless 三类目标项目启用 I/X/P 且 ui_requirements=disabled；ui-with-evidence 追加 ui_restoration、ui-missing-evidence 阻塞。但 self-profile-headless.json 声明 expected.status=accepted，独立 CLI 回放实际输出 ACCEPTANCE_PROFILE_REJECTED（bindings.product_definition_id=pd-nextstep-self 不符合 /^pd-[a-f0-9]{64}$/，product_definition_digest=sha256:5e5e…、carrier_decision_digest=sha256:57b5e8b5… 均为占位），fixture 矩阵端到端 16/17，Q6=100% 未在整个 fixture 矩阵上成立。"
+    },
+    {
+      "id": "HG5-evidence-duty",
+      "statement": "独立证据任务只提供证据，不声明/改变 Profile 适用性，不冒领 full 宿主支持。",
+      "status": "pass",
+      "evidence": "52 份 S1.4 fixture 全部声明 evidence_scope=manual-isolated consumer contract，无 full 声明；拒绝回执 data 仅 dry_run，CLI 无写能力、无适用性变更路径；SKILL.md 明文 independent tasks only provide evidence；S1.4 回执仅声明为 S1.5/S1.6/M1.2 证据。"
+    },
+    {
+      "id": "HG6-scope",
+      "statement": "本结论只覆盖 S1.4，不宣称 PC-04..08、M1.2、V1 或 P5 完成。",
+      "status": "pass",
+      "evidence": "execution Result、SKILL.md、gate packet 均声明 S1.4 不构成 M1.2/V1/P5 完成；本评审结论范围限于 S1.4 切片，PC-04/05 仅记录 S1.4 承接证据。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "I-integration",
+      "score": 24,
+      "max": 25,
+      "reason": "构建、测试、回放、双真源与零写入全部通过；扣 1 分因 evaluateAcceptanceProfile 与 parseAcceptanceProfileDecision 对 bindings.product_definition_id 的格式校验宽严不一致（评估层放行、信封重验层拒绝），fail-closed 方向安全但属契约不对称。",
+      "evidence_refs": ["pnpm check 206/206（91.07/83.80/98.36）", "harness 回放 61 项检查", "src/domain/acceptance-profile.ts:250 与 evaluate 路径对比"]
+    },
+    {
+      "id": "X-interaction",
+      "score": 25,
+      "max": 25,
+      "reason": "阶段守卫、显式确认、四态记录、阻塞原因与恢复入口、主对话零读写全部可验证。",
+      "evidence_refs": ["skills/nextstep/SKILL.md S1.4 节", "tests/skill/s1.4-skill.test.ts（7/7）", "formal/control refs 验证前后不变"]
+    },
+    {
+      "id": "P-product",
+      "score": 25,
+      "max": 25,
+      "reason": "原型七类要素完整且证据绑定；载体裁决正式值唯一、候选分支治理与 CR 覆盖规则 fail closed；Web/UI 候选无一路径进入主线。",
+      "evidence_refs": ["tests/fixtures/interaction-prototype/community-workshop.json", "tests/fixtures/carrier-decision/ 19 份回放结果", "回放 harness byDomain carrier-decision 22/22"]
+    },
+    {
+      "id": "Profile-adjudication",
+      "score": 21,
+      "max": 25,
+      "reason": "headless/含 UI/冲突三类语义正确、冲突零降级；扣 4 分因 kernel 自身 headless 正例 fixture 声明与实际行为矛盾，Q6 全矩阵证据链存在一处未闭环。",
+      "evidence_refs": ["tests/fixtures/acceptance-profile/self-profile-headless.json expected 字段", "独立 CLI 回放拒绝输出", "W3 交付报告 remaining_risks #2（占位绑定集成期替换）"]
+    }
+  ],
+  "penalties": [
+    {
+      "id": "PEN-1",
+      "severity": "moderate",
+      "deduction": 3,
+      "reason": "self-profile-headless 占位绑定未按 W3 交接风险清单在集成期替换，导致 fixture 声明 expected=accepted 与候选实际行为（ACCEPTANCE_PROFILE_REJECTED）直接矛盾；该缺口使 Q6=100% 不能在整个 S1.4 fixture 矩阵上成立。",
+      "evidence_refs": ["replay 输出 failures=1/61", "result-execution-s1.4 validation_summary 未提及该占位替换", "parseAcceptanceProfileDecision: bindings.product_definition_id is invalid"]
+    },
+    {
+      "id": "PEN-2",
+      "severity": "minor",
+      "deduction": 1,
+      "reason": "profile-id-mismatch（域层 IDENTITY_CONFLICT，expected.mode=error）在回执层被归入 PROFILE_CONFLICT_REJECTED，身份冲突与路线冲突共用同一回执码；fail-closed 方向正确、无降级，但回执码语义粒度可更精确。",
+      "evidence_refs": ["tests/fixtures/acceptance-profile/profile-id-mismatch.json expected.code=IDENTITY_CONFLICT", "src/cli/acceptance-profile.ts classifyFailure isConflictFailure"]
+    }
+  ],
+  "totals": {
+    "raw": 95,
+    "penalties": 4,
+    "final": 91
+  },
+  "q6_metrics": {
+    "conflict_subset_accuracy": "100%（3/3 冲突 fixture + self-profile-ui-enabled + evidence-duty-violation 全部阻塞/拒绝，零降级）",
+    "fixture_matrix_end_to_end": "16/17（self-profile-headless 声明与实际不一致）",
+    "independent_replay_checks": "60/61 通过（52 fixture + 9 探针）"
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "将 tests/fixtures/acceptance-profile/self-profile-headless.json 的 candidate.bindings 替换为真实已签身份：product_definition_id 必须为 kernel 自身已签 Product Definition 2.0 的派生 ID（格式 pd-<64hex>），product_definition_digest 为该记录 RFC8785 回放摘要，carrier_decision_digest 为真实 W2 载体裁决记录摘要（与三份 headless 目标项目 fixture 同一派生方式，禁止手抄）；随后重新派生 profile_id 并复跑 domain 与 CLI 回放，使该 fixture 端到端 ACCEPTANCE_PROFILE_ACCEPTED。",
+    "若 kernel 自身已签 PD 2.0 身份尚不在 fixture 链内，先按 S1.3 回放模式从已会签记录派生该身份，再替换占位；不得以新的占位摘要顶替。",
+    "修复前 Q6 证据口径必须记为 fixture 矩阵 16/17 + 1 项阻塞待修复，不得按 17/17 申报。"
+  ],
+  "nice_to_have": [
+    "统一 evaluateAcceptanceProfile 与 parseAcceptanceProfileDecision 对 bindings.product_definition_id/digest 的格式校验，使绑定格式违规在评估层即 fail closed。",
+    "为 IDENTITY_CONFLICT 增加独立回执码或在 SKILL/契约文档中显式声明回执码映射表，避免与路线冲突语义混叠。"
+  ],
+  "reviewers": {
+    "verifier": "六项硬门禁：HG1/HG2/HG3/HG5/HG6 通过，HG4 未通过（冲突子集通过、全矩阵未闭环）；身份链（commit/tree/subject digest/packet digest/祖先链/实现范围零禁入路径）全部独立复核一致。",
+    "strict_judge": "91/100；全部扣分绑定具体证据，无情绪化扣分；I/X/P 三维达到门禁，Profile 维度因一处 fixture 矛盾扣 4 分，另计 moderate/minor 罚分各一。",
+    "anti_slop_judge": "未发现 slop 或模板衰变：52 份 fixture 为实质内容（单份 700+ 行、摘要由回放派生非手抄），负例覆盖真实攻击面；唯一实质缺口是集成期遗漏占位替换，属证据链遗漏而非空洞产出。",
+    "chief_reviewer": "REVISE。候选整体质量高且 fail-closed 方向正确，缺陷小、定位精确、可恢复；按契约 HG4 未通过不得 PASS，修复后仅需针对 self-profile-headless 一项复验。"
+  },
+  "observations_outside_gate": [
+    "对 execution Result 记录做朴素 JCS 全字段摘要复算得 sha256:76364d18…，与 gate packet 声明的 sha256:68c3003f… 不一致；result 信封适用何种字段排除的摘要契约不在本评审可见范围，属 CV/FV 职责，建议后续门禁按 result 信封摘要契约核对，本评审不据此扣分。",
+    "S1.4-CV 结果信封在本评审读取时尚未固化至 control（checkpoint.gate_results 无 S1.4-CV 条目）；CV 与本任务并行，不影响本 I/X/P 结论。"
+  ],
+  "reviewed_at": "2026-08-14T07:58:20Z"
+}
