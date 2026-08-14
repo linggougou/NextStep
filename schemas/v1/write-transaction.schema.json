@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nextstep.local/schemas/v1/write-transaction.schema.json",
+  "title": "NextStep Write Transaction 1.0",
+  "type": "object",
+  "oneOf": [
+    { "$ref": "#/definitions/writePlan" },
+    { "$ref": "#/definitions/writeTransactionResult" }
+  ],
+  "definitions": {
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "oid": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository_id"],
+      "properties": { "repository_id": { "$ref": "#/definitions/digest" } }
+    },
+    "relativePath": { "type": "string", "minLength": 1, "pattern": "^[^/\\\\\u0000][^\u0000\\\\]*$" },
+    "planTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "mode", "before_digest", "after_digest", "content"],
+      "properties": {
+        "path": { "$ref": "#/definitions/relativePath" },
+        "mode": { "enum": ["create", "update"] },
+        "before_digest": {
+          "oneOf": [ { "type": "null" }, { "$ref": "#/definitions/digest" } ]
+        },
+        "after_digest": { "$ref": "#/definitions/digest" },
+        "content": { "type": "string" }
+      }
+    },
+    "writePlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "record_type", "plan_id", "project", "project_context_digest", "formal_baseline", "working_baseline_digest", "targets", "created_at"],
+      "properties": {
+        "schema_version": { "const": "1.0" },
+        "record_type": { "const": "write-plan" },
+        "plan_id": { "type": "string", "minLength": 1 },
+        "project": { "$ref": "#/definitions/project" },
+        "project_context_digest": { "$ref": "#/definitions/digest" },
+        "formal_baseline": { "$ref": "#/definitions/oid" },
+        "working_baseline_digest": { "$ref": "#/definitions/digest" },
+        "targets": { "type": "array", "minItems": 1, "items": { "$ref": "#/definitions/planTarget" } },
+        "created_at": { "type": "string", "minLength": 1 }
+      }
+    },
+    "resultTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "mode", "status", "before_digest", "after_digest"],
+      "properties": {
+        "path": { "$ref": "#/definitions/relativePath" },
+        "mode": { "enum": ["create", "update"] },
+        "status": { "enum": ["previewed", "verified", "conflict", "access-blocked", "error", "rolled-back", "rollback-blocked", "skipped"] },
+        "before_digest": {
+          "oneOf": [ { "type": "null" }, { "$ref": "#/definitions/digest" } ]
+        },
+        "after_digest": { "$ref": "#/definitions/digest" },
+        "detail": { "type": "string", "minLength": 1 }
+      }
+    },
+    "writeTransactionResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "record_type", "transaction_id", "plan_digest", "confirmation_envelope_digest", "code", "status", "dry_run", "state_promotion", "targets", "executed_at"],
+      "properties": {
+        "schema_version": { "const": "1.0" },
+        "record_type": { "const": "write-transaction-result" },
+        "transaction_id": { "type": "string", "minLength": 1 },
+        "plan_digest": { "$ref": "#/definitions/digest" },
+        "confirmation_envelope_digest": { "$ref": "#/definitions/digest" },
+        "code": {
+          "enum": [
+            "WRITE_COMMITTED",
+            "WRITE_PREVIEWED",
+            "WRITE_CONFLICT_REJECTED",
+            "WRITE_PARTIAL_BLOCKED",
+            "WRITE_ACCESS_BLOCKED",
+            "WRITE_CONFIRMATION_REJECTED"
+          ]
+        },
+        "status": { "enum": ["committed", "previewed", "rejected", "blocked"] },
+        "dry_run": { "type": "boolean" },
+        "state_promotion": { "const": "none" },
+        "targets": { "type": "array", "items": { "$ref": "#/definitions/resultTarget" } },
+        "executed_at": { "type": "string", "minLength": 1 },
+        "detail": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
