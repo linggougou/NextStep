@@ -2054,3 +2054,13 @@
 - 固定字符串扫描通过：M1.1 `PASS / 97`、2026-08-14 会签、M1.1 formally-completed、CR-004/CR-005 closed、formal/control/Result/plan_generation/pending 语义一致；新增行无 S1.4 已启动语义。
 - 变更范围核对通过：恰好 13 个用户指定文档/留痕文件；无生产代码、测试、Schema、依赖文件变更。
 - `pnpm check` 按用户要求未运行；未生成/派发 S1.4 packet，未编码 S1.4，未 push。
+
+
+## 2026-08-14 S1.4 全权授权、入口评估与计划冻结
+
+- 用户明确授权：后续由主控自主规划、持续开发，无需等待指示；各功能依托隔离 worktree 分派 Qwen3.8 Max 子 Agent 并行实现，验收合格即回收。
+- 路线判断：该指令是 M1.1 会签之后新的明确启动授权；不改变产品路线、技术栈、版本范围或验收门禁，因此不构成 Change Request，但必须先更新路线锁与留痕。
+- 独立评估：Qwen3.8 Max Agent `019ffe61-ba04-7a52-b6c7-71df440ec818`、`019ffe62-1d36-70f0-99b1-5aa29a96754f`、`019ffe62-4426-71e1-be5c-7fe745c59322` 分别核对真源、代码扩展点、测试/fixture/Skill 证据；三者均确认技术依赖满足且可拆成互斥切片。
+- 主控裁决：`.codex/reviews/p5-v1-m1.2-s1.4-entry-evaluation-2026-08-14/` 为 `PASS / 100`；S1.4 允许进入 packet 准备，但 packet/control CAS 成功前禁止编码或派发。
+- 执行计划：`.codex/exec-plan-s1.4-generation-1.md`；切片为 interaction prototype、carrier decision、acceptance profile、CLI/receipt/Skill integration。
+- 当前身份：main=`035b8e1e04177c7cb7e58ada002389d42d6320ca`、formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`、control=`04677ae041443ba9bca740bb70b814b5347d6b26`、plan_generation=`4`、pending=`0`。

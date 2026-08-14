@@ -4,8 +4,8 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：V1（M1.1 已完成；S1.4 入口仅允许独立评估，尚未启动）
-- 当前状态：S1.2 与 S1.3 generation 4 已完成两段式正式提升，formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 通过 control CAS 固化并正式完成，CR-004/CR-005 已关闭；control=`04677ae041443ba9bca740bb70b814b5347d6b26`，Result digest 与 `plan_generation=4` 不变，pending=0。V1、P5 尚未完成；S1.4 未启动且本次会签未授权启动，下一步仅允许独立评估 S1.4 入口。
+- 当前活动里程碑：V1 / M1.2 / S1.4（入口 `PASS / 100`；Execution Packet 与 dispatch-ready 准备中）
+- 当前状态：S1.2 与 S1.3 generation 4 已完成两段式正式提升，formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 通过 control CAS 固化并正式完成，CR-004/CR-005 已关闭；control=`04677ae041443ba9bca740bb70b814b5347d6b26`，Result digest 与 `plan_generation=4` 不变，pending=0。V1、P5 尚未完成；用户于 2026-08-14 授权持续开发，S1.4 入口评估为 `PASS / 100`，当前只准备 Execution Packet 与 dispatch-ready，成功固化前不得编码或派发。
 
 ## 当前活动计划
 
@@ -27,7 +27,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。M1.1 attempt 1 的 `0/3` 身份缺口已由 CR-004/CR-005 新链修复；S1.2/F12 与 S1.3/F13 已正式提升。M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 固化，M1.1 正式完成，CR-004/CR-005 已关闭。S1.4 未启动且未获本次会签授权，下一步仅允许独立评估 S1.4 入口；V1、P5 尚未完成。
+P5 已于 2026-08-08 单独启动。M1.1 attempt 1 的 `0/3` 身份缺口已由 CR-004/CR-005 新链修复；S1.2/F12 与 S1.3/F13 已正式提升。M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 固化，M1.1 正式完成，CR-004/CR-005 已关闭。用户已授权持续开发；S1.4 入口评估为 `PASS / 100`，当前准备 Execution Packet 与 dispatch-ready；V1、P5 尚未完成。
 
 实施顺序保持 P3 已会签结构：
 

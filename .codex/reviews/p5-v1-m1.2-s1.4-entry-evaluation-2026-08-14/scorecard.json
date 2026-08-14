@@ -1,0 +1,129 @@
+{
+  "review_id": "p5-v1-m1.2-s1.4-entry-evaluation-2026-08-14",
+  "review_type": "small-milestone-entry-readiness",
+  "reviewed_scope": "P5/V1/M1.2/S1.4 entry only",
+  "baseline": {
+    "main_oid": "035b8e1e04177c7cb7e58ada002389d42d6320ca",
+    "formal_oid": "84c051f7426ec5d2a9bed70aa02a1f321bd81e11",
+    "control_oid": "04677ae041443ba9bca740bb70b814b5347d6b26",
+    "plan_generation": 4,
+    "pending_dispatches": 0
+  },
+  "authorization": {
+    "status": "approved",
+    "source": "conversation:user-full-autonomy-2026-08-14",
+    "scope": "持续规划、分派子 Agent、开发、验证与按既定路线推进；不得绕过路线锁、Execution Packet、独立验收或正式提升门禁",
+    "preferred_worker_model": "openai-qwen3.8-max"
+  },
+  "hard_gates": [
+    {
+      "id": "m1_1_completed",
+      "status": "pass",
+      "evidence": "control checkpoint 标记 M1.1 formally-completed；会签、CR-004/CR-005 关闭已固化"
+    },
+    {
+      "id": "s1_3_formal",
+      "status": "pass",
+      "evidence": "formal=F13 84c051f...，S1.3 完整正式证据链可追溯"
+    },
+    {
+      "id": "control_idle",
+      "status": "pass",
+      "evidence": "control=04677ae...，pending dispatch=0，无 S1.4 packet/outbox/task/candidate"
+    },
+    {
+      "id": "upstream_sources_signed",
+      "status": "pass",
+      "evidence": "006/007/008、S3、S4、P3 均为已会签真源"
+    },
+    {
+      "id": "route_dependency",
+      "status": "pass",
+      "evidence": "依赖链 S1.3→S1.4→S1.5→S1.6 无环，S1.4 为唯一顺序后继"
+    },
+    {
+      "id": "user_authorization",
+      "status": "pass",
+      "evidence": "用户于 2026-08-14 明确要求全权规划、持续开发、无需后续指示，并指定 Qwen3.8 Max 子 Agent"
+    },
+    {
+      "id": "scope_decomposition",
+      "status": "pass",
+      "evidence": "原型、载体裁决、Acceptance Profile、CLI/Skill 四个互斥写入切片已明确"
+    },
+    {
+      "id": "pre_dispatch_boundary",
+      "status": "pass",
+      "evidence": "先固化 Execution Packet 与 dispatch-ready；成功前不编码、不派发"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "dependency_readiness",
+      "score": 25,
+      "max_score": 25
+    },
+    {
+      "id": "route_and_scope_integrity",
+      "score": 25,
+      "max_score": 25
+    },
+    {
+      "id": "test_and_fixture_readiness",
+      "score": 20,
+      "max_score": 20
+    },
+    {
+      "id": "parallelization_safety",
+      "score": 15,
+      "max_score": 15
+    },
+    {
+      "id": "authorization_and_traceability",
+      "score": 15,
+      "max_score": 15
+    }
+  ],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100
+  },
+  "severity_summary": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "reviewers": [
+    {
+      "role": "Source-of-Truth Reviewer",
+      "agent_id": "019ffe61-ba04-7a52-b6c7-71df440ec818",
+      "model": "openai-qwen3.8-max",
+      "signal": "PASS"
+    },
+    {
+      "role": "Code Extension Reviewer",
+      "agent_id": "019ffe62-1d36-70f0-99b1-5aa29a96754f",
+      "model": "openai-qwen3.8-max",
+      "signal": "PASS"
+    },
+    {
+      "role": "Test and Evidence Reviewer",
+      "agent_id": "019ffe62-4426-71e1-be5c-7fe745c59322",
+      "model": "openai-qwen3.8-max",
+      "signal": "PASS"
+    }
+  ],
+  "reviewed_at": "2026-08-14T12:00:00+08:00",
+  "next_allowed_action": "生成并以 expected-old control CAS 固化 S1.4 Execution Packet、dispatch-ready 和并行切片 allowlist；CAS 成功后才可派发编码任务",
+  "forbidden_until_packet_cas": [
+    "修改生产代码",
+    "派发 S1.4 编码任务",
+    "创建 S1.5/S1.6 对象",
+    "移动 formal ref",
+    "宣称 S1.4/M1.2/V1/P5 完成"
+  ]
+}

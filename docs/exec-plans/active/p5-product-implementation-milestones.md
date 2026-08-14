@@ -1,6 +1,6 @@
 # P5 产品落地实施里程碑
 
-状态：进行中；S1.2 与 S1.3 generation 4 已完成 F12/F13 正式提升，formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 通过 control CAS 固化并正式完成，CR-004/CR-005 已关闭；control=`04677ae041443ba9bca740bb70b814b5347d6b26`，Result digest 与 `plan_generation=4` 不变，pending=0。V1、P5 尚未完成；S1.4 未启动且本次会签未授权启动，下一步仅允许独立评估 S1.4 入口
+状态：进行中；S1.2 与 S1.3 generation 4 已完成 F12/F13 正式提升，formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 通过 control CAS 固化并正式完成，CR-004/CR-005 已关闭；control=`04677ae041443ba9bca740bb70b814b5347d6b26`，Result digest 与 `plan_generation=4` 不变，pending=0。V1、P5 尚未完成；用户于 2026-08-14 授权持续开发，S1.4 入口评估为 `PASS / 100`，当前准备 Execution Packet 与 dispatch-ready，尚未编码或派发
 启动日期：2026-08-08
 
 ## 1. 阶段目标
@@ -11,9 +11,9 @@
 
 - 生命周期阶段：`S5 开发落地`。
 - 项目里程碑：`P5 产品落地`。
-- 当前活动里程碑：`V1`（M1.1 已完成；S1.4 入口仅允许独立评估，尚未启动）。
+- 当前活动里程碑：`V1 / M1.2 / S1.4`（入口 `PASS / 100`；Execution Packet 与 dispatch-ready 准备中）。
 - 本轮启动授权：用户于 2026-08-08 在 P4 会签归档后明确要求继续，授权单独启动 P5 并建立实施里程碑。
-- 路线性质：沿用已会签路线，不改变产品定位、主交互载体、技术栈、版本范围或验收门禁。CR-005 的 `F0→F12→F13` 两段式推进已完成并关闭；M1.1 会签已固化，S1.4 仍未启动且未获本次会签授权，下一步仅允许独立评估入口。
+- 路线性质：沿用已会签路线，不改变产品定位、主交互载体、技术栈、版本范围或验收门禁。CR-005 的 `F0→F12→F13` 两段式推进已完成并关闭；M1.1 会签已固化；用户已授权持续开发，S1.4 入口评估通过。生成并 CAS 固化真实 Execution Packet 与 dispatch-ready 前不得编码或派发。
 
 ## 3. 正式上游
 
@@ -158,4 +158,4 @@ P5-M0 不是新增产品版本，不改变 P3 的 PC 主版本归属，也不能
 
 P5 的最终阶段出口是：V1..V4 和 Final Acceptance 全部通过本地可重复验证、独立 I/X/P、适用 Profile 验收和用户会签；交付清单、正式 OID、已知风险、回滚与 PC-20.AR 状态可追溯。此前 P5 保持进行中，不得归档本计划或宣告完整产品完成。
 
-当前 M1.1 attempt 1 的正式结论为 `退回 / 73`（历史结果）。CR-004/CR-005 已关闭 M1.1 会签缺口；M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 固化并正式完成。formal=F13，control=`04677ae041443ba9bca740bb70b814b5347d6b26`，Result digest 与 `plan_generation=4` 不变，pending=0。S1.4 未启动且未获本次会签授权，下一步仅允许独立评估入口；V1、P5 尚未完成。
+当前 M1.1 attempt 1 的正式结论为 `退回 / 73`（历史结果）。CR-004/CR-005 已关闭 M1.1 会签缺口；M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 固化并正式完成。formal=F13，control=`04677ae041443ba9bca740bb70b814b5347d6b26`，Result digest 与 `plan_generation=4` 不变，pending=0。用户已授权持续开发；S1.4 入口评估为 `PASS / 100`，当前准备 Execution Packet 与 dispatch-ready；V1、P5 尚未完成。

@@ -2041,3 +2041,11 @@
 - 固定字符串扫描：2026-08-14、M1.1 `PASS / 97`、正式完成、CR-004/CR-005 关闭、formal F13、control=`04677ae041443ba9bca740bb70b814b5347d6b26`、Result digest、`plan_generation=4` 与 pending=0 均存在；新增行未发现 S1.4 已启动/已进入/packet 生成/编码/派发语义。
 - 变更范围：恰好 13 个用户指定文档/留痕文件；无生产代码、测试、Schema、依赖、Result/control/formal 正式对象变更。
 - 按用户指令未运行 `pnpm check`，未生成或派发 S1.4 packet，未编码 S1.4，未 push。
+
+
+## 2026-08-14 S1.4 入口评估与计划冻结验证
+
+- 入口硬门：M1.1 formally-completed、S1.3 formal=F13、control 单父链且 pending=0、上游真源齐全、用户持续开发授权、并行写入范围互斥，全部通过。
+- 评估结论：`PASS / 100`，P0/P1/P2=`0/0/0`，`required_fixes=[]`。
+- 范围：仅路线锁、活动计划、状态入口、S1.4 入口评估、执行计划和 `.codex` 留痕；无生产代码、测试、Schema、依赖、control/formal/Result 修改。
+- 下一验证：先对本次文档/JSON 执行 `jq empty`、`git diff --check`、固定状态扫描；通过并提交后，再生成 control-only S1.4 packet 候选并执行 expected-old CAS。
