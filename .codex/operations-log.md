@@ -2074,3 +2074,9 @@
 - 四个 Qwen3.8 Max 隔离 worktree：W1 `019ffe74-3d16-7dd1-bfda-f08cdfced064`（interaction-prototype）、W2 `019ffe76-3e6f-7f13-8e7a-015fb34dfab1`（carrier-decision）、W3 `019ffe76-6dcd-71e3-b8f0-83958b9cde8c`（acceptance-profile）、W4 `019ffe77-1ec2-7611-8909-99e0200c954a`（CLI/receipt/Skill）。
 - 并行边界：W1/W2/W3 只写各自 domain/schema/fixture/test；W4 独占 CLI、machine receipt、Skill 共享文件；任何 Agent 不修改 control/formal/Result、路线锁或历史 S1.1-S1.3 文件。
 - 当前状态：S1.4 正式实现进行中；尚未开始 CV/I-X-P/L3/Final Verification，不移动 formal，不宣称 S1.4/M1.2/V1/P5 完成。
+
+## 2026-08-14 S1.4 派发后基线全量回归
+
+- 在四个 worker 运行期间，主工作树 `ed84bb951423502cf55a8f7ce304feac06833187` 独立执行 `pnpm check`，确认派发前基线未被 control 更新或文档同步污染。
+- 结果：148/148 通过；覆盖率 Lines `90.90%`、Branches `82.94%`、Functions `98.40%`。
+- 该结果仅证明 S1.1..S1.3 与当前主线基线健康，不构成 S1.4 产品能力或验收通过证据。

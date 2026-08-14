@@ -2057,3 +2057,9 @@
 - CAS 顺序：`04677ae`（M1.1 完成）→ packet `d44dee3` → dispatch intent `c8b3fd4` → fence 73 claim `ef51064` → dispatch-ack `ceb2330`；每次均以实时 expected-old 原子推进。
 - formal 仍为 F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`；control 单父链，pending dispatch=0，outbox closed，S1.4 registry=`in-progress`。
 - 四个 worker 只写互斥 allowlist；dispatch 后主工作树无生产代码变更，S1.4 尚未进入独立验收或正式提升。
+
+## 2026-08-14 S1.4 派发后主线基线回归
+
+- 命令：`pnpm check`。
+- 结果：typecheck、build、148/148 测试全部通过；覆盖率 Lines `90.90%`、Branches `82.94%`、Functions `98.40%`，均高于 80% 门禁。
+- 范围：S1.4 worker 代码尚未集成；本结果不得冒充 S1.4 验收。
