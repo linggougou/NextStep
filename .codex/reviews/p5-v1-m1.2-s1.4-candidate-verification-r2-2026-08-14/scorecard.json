@@ -1,0 +1,122 @@
+{
+  "review_id": "p5-v1-m1.2-s1.4-candidate-verification-r2-2026-08-14",
+  "task_id": "S1.4-CV",
+  "task_attempt": 2,
+  "lane": "candidate-verification",
+  "review_level": "L2",
+  "rubric_id": "nextstep-s1.4-candidate-verification-r2-v1",
+  "reviewed_scope": "P5/V1/M1.2/S1.4 修复候选 c2894cd（attempt 2 修复区间 d60e625..c2894cd，共 4 个提交、13 条变更路径：12 治理/评审 + 1 fixture）",
+  "stage_id": "P5/V1/M1.2/S1.4/candidate-verification",
+  "claim_id": "claim-s1.4-cv-g4-a2-f77-20260814",
+  "fence_token": 77,
+  "host_task_id": "019fff8b-e696-7583-a4ef-c3909b3411c9",
+  "reviewed_at": "2026-08-14T09:26:08Z",
+  "subject": {
+    "commit_oid": "c2894cd25cf8b466d41df68ff99cdbf4193ba0d3",
+    "parent_oid": "dd8e6fcce81e68b11e7badb65069487b9549b928",
+    "tree_oid": "e9c22fb61e80c877cbda9b284317a740bd56537a",
+    "subject_digest_contract": "sha256(JCS({commit_oid,parent_oid,tree_oid}))",
+    "subject_digest": "sha256:3e93a4ad0cbc796bcc92b6a427a20e24ca21a9d8daf2c3252179807b9818d5aa",
+    "implementation_range_start_oid": "d60e625c2ce490388d7c7bc8f4beb3d23d501fea",
+    "formal_baseline_oid": "84c051f7426ec5d2a9bed70aa02a1f321bd81e11"
+  },
+  "baseline": {
+    "main_oid_before": "c2894cd25cf8b466d41df68ff99cdbf4193ba0d3",
+    "formal_oid_before": "84c051f7426ec5d2a9bed70aa02a1f321bd81e11",
+    "control_oid_before": "f032f984cf422865cefcba6d07b609f3613b984b",
+    "main_oid_after": "c2894cd25cf8b466d41df68ff99cdbf4193ba0d3",
+    "formal_oid_after": "84c051f7426ec5d2a9bed70aa02a1f321bd81e11",
+    "control_oid_after": "331662b11ea25c6cb001ecedb0d0e00b72dacea8",
+    "subject_tree_after": "e9c22fb61e80c877cbda9b284317a740bd56537a",
+    "project_worktree_dirty_after": 0,
+    "control_commits_during_verification_window": 1,
+    "control_commit_note": "f032f98→331662b 为单父 dispatch-ack CAS（control: acknowledge S1.4 attempt 2 CV and IXP），仅新增本 CV fence 77 与并行 I/X-P fence 78 的认领消息及 checkpoint/registry/outbox 更新，由控制面在认领时刻固化，非验证者写入；formal 与 subject tree 全程未动。"
+  },
+  "artifact_refs": [
+    "git:c2894cd25cf8b466d41df68ff99cdbf4193ba0d3",
+    "refs/nextstep/control:gate-requests/gate-candidate-verification-s1.4-g4-a2-20260814.json",
+    "refs/nextstep/control:results/result-execution-s1.4-g4-a2-f76-20260814.json",
+    "refs/nextstep/control:packets/ep-p5-v1-m1.2-s1.4-g4-a2-20260814.json",
+    "refs/nextstep/control:messages/msg-dispatch-ack-s1.4-cv-g4-a2-f77-20260814.json",
+    ".codex/reviews/p5-v1-m1.2-s1.4-candidate-verification-2026-08-14/verdict.md",
+    ".codex/reviews/p5-v1-m1.2-s1.4-independent-ixp-2026-08-14/verdict.md"
+  ],
+  "isolated_environment": {
+    "clone_path": "/tmp/ns-cv-r2-a2-20260814",
+    "clone_flags": "git clone --no-hardlinks，detached checkout 至 subject",
+    "tree_verified_in_clone": "e9c22fb61e80c877cbda9b284317a740bd56537a",
+    "install_command": "corepack pnpm install --frozen-lockfile",
+    "check_command": "corepack pnpm check",
+    "typecheck": "tsc -p tsconfig.json --noEmit 通过",
+    "tests_total": 206,
+    "tests_pass": 206,
+    "tests_fail": 0,
+    "coverage_lines_percent": 91.07,
+    "coverage_branches_percent": 83.8,
+    "coverage_functions_percent": 98.36,
+    "coverage_gate": "三项均 >=80%，且不低于 M1.1 基线 90.90/82.94/98.40 口径",
+    "independent_replay_harness": "/tmp/ns-cv-r2-a2-20260814/harness-r2/replay.mjs（spawn 真实 dist CLI，不复用仓库测试代码）",
+    "independent_replay_result": "253/253 检查通过（52 fixture 矩阵 + 信封复验 + 冲突零降级断言 + 7 项活体探针 + 确定性回放）"
+  },
+  "hard_gates": [
+    {
+      "id": "subject_identity_match_attempt2_result",
+      "status": "pass",
+      "evidence": "隔离 clone 内 git rev-parse 确认 commit=c2894cd/tree=e9c22fb/parent=dd8e6fc 与 gate packet、attempt 2 execution Result 完全一致；subject digest 按 sha256(JCS({commit_oid,parent_oid,tree_oid})) 独立重算=3e93a4ad… 精确匹配；gate packet_digest（排除 packet_digest/dedup_key）重算=37e24c60… 匹配；execution Result 摘要（排除 result_digest）重算=c10272b0… 匹配；execution packet ep-p5-v1-m1.2-s1.4-g4-a2 digest 重算=75edb261… 匹配；packet expires_at=2026-08-15T09:09:09Z，验证时点 09:24Z 未过期。"
+    },
+    {
+      "id": "remediation_scope_no_business_drift",
+      "status": "pass",
+      "evidence": "git diff --name-only d60e625..c2894cd=13 路径：12 条治理/评审（.codex operations-log、verification-report、首轮 CV 与 I/X-P 评审包各 2 文件、PROJECT_ROUTE_LOCK、README、PLANS、PRODUCT_SENSE、p5 里程碑、qa/index）+ 恰 1 条 tests/fixtures/acceptance-profile/self-profile-headless.json；src/** 与 schemas/** 命中 0；治理文档逐行核查仅状态行更新（实施中→候选已就绪/等待 CV 与 I-X-P），无规则、门禁或路线变更；与 Result changed_paths 集合恒等。"
+    },
+    {
+      "id": "self_profile_real_identity_recomputation",
+      "status": "pass",
+      "evidence": "三重独立复算全部精确匹配：(1) product_definition_id=pd-7913f81f… 与 tests/fixtures/product-definition/project-delivery-tool.json 的已签 PD 2.0 记录一致，该记录 RFC8785 摘要重算=sha256:096428a4… 与绑定声明相等；(2) carrier_decision_digest 重算 tests/fixtures/carrier-decision/project-delivery-tool.json 候选=sha256:2a582889… 与绑定声明相等，且 fixture 内嵌 W2 记录副本与真实 fixture 记录规范化字节恒等；(3) profile_id 以域层 deriveAcceptanceProfileId（project/route/bindings/origin/acceptances 五字段投影）对修复后候选重派=ap-66c5db77… 与声明相等。占位 pd-nextstep-self / sha256:5e5e… / sha256:57b5e8b5… 已全部移除。"
+    },
+    {
+      "id": "full_check_and_coverage",
+      "status": "pass",
+      "evidence": "隔离 clone：corepack pnpm install --frozen-lockfile 成功；pnpm check exit 0；node --test dist/tests/**=206 pass / 0 fail；tsc --noEmit 干净；覆盖率 Lines 91.07% / Branches 83.80% / Functions 98.36%，均 >=80% 且不低于基线。"
+    },
+    {
+      "id": "profile_three_classes_and_fail_closed_no_regression",
+      "status": "pass",
+      "evidence": "独立 spawn 回放 253/253：三类 headless 目标项目 I/X/P 启用且 UI 还原禁用；ui-with-evidence 追加 ui_restoration；ui-missing-evidence 阻塞；三份冲突 fixture 全部 PROFILE_CONFLICT_REJECTED 且 data 键恰为 {dry_run:false}（零降级输出）；self-profile-headless 端到端 ACCEPTANCE_PROFILE_ACCEPTED（attempt 1 唯一失败项已闭环）且二次回放 decision digest 恒定；self-profile-ui-enabled/evidence-duty-violation/profile-id-mismatch/unknown-*/missing-*/sensitive-* 全部拒绝；活体探针：非 JCS 字节、参数注入、空 stdin、未知字段自我签认注入、敏感字段注入（stdout/stderr 零泄漏）均 exit 1；ACCEPTED 回执 data.digest 独立复算一致、canonical_json 往返恒等。"
+    },
+    {
+      "id": "refs_invariance_and_verifier_discipline",
+      "status": "pass",
+      "evidence": "验证前后 formal=F13 84c051f7…、subject tree=e9c22fb、main=c2894cd 均不变，主仓工作区 0 脏文件；验证窗口内 control 唯一迁移 f032f98→331662b 为控制面对本 CV 与并行 I/X-P 的 dispatch-ack CAS（单父、仅认领消息），非验证者写入；本评审只写 .codex/reviews/p5-v1-m1.2-s1.4-candidate-verification-r2-2026-08-14/{scorecard.json,verdict.md}；F13..subject 全树审计：src/schemas/tests/skills 仅 S1.4 新增文件 + 4 处 S1.4 范围内修改（machine-receipt 双真源、信封测试、SKILL.md 追加节），S1.1–S1.3 真源抽样 blob 级 IDENTICAL；CLI 空目录运行探针零落盘。"
+    }
+  ],
+  "totals": {
+    "hard_gates_pass": 6,
+    "hard_gates_total": 6,
+    "independent_checks": "253/253",
+    "tests": "206/206"
+  },
+  "severity_summary": {
+    "blocker": 0,
+    "major": 0,
+    "minor": 0,
+    "observation": 4
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "IDENTITY_CONFLICT 与路线冲突共用 PROFILE_CONFLICT_REJECTED 回执码（fail-closed 方向正确，建议未来设独立码或显式映射表；attempt 1 I/X/P 已列为非阻塞）。",
+    "evaluateAcceptanceProfile 与信封重验对 bindings.product_definition_id 格式校验时机不对称（方向安全；attempt 1 I/X/P 已列为非阻塞）。",
+    "self-profile 绑定的是 fixture 链内已签 project-delivery-tool PD 2.0（NextStep 自身已签 PD 摘要不在 fixture 链内），fixture note 已声明证据范围；M1.2 集成验收前如需 kernel 自身 PD 链，应按 S1.3 回放模式另行派生。",
+    "acceptance-profile.ts 中 kernel 仓库身份常量为硬编码（W3 已预告），仓库身份治理变更时需同步。"
+  ],
+  "evidence_scope_declaration": "本验证仅证明 manual-isolated / headless consumer contract 下的候选正确性，不证明 trusted-host、真实用户动作或 full 宿主支持；不构成 I/X/P、L3、Final Verification 批准，不构成 S1.4 完成、M1.2/V1/P5 完成，不移动 formal/control。",
+  "gate_disclaimer": "CV attempt 2 结论为证据输入；正式门禁结论由后续独立 I/X/P、L3、Final Verification 与 control CAS 分别产生。",
+  "reviewers": [
+    {
+      "role": "independent-candidate-verifier",
+      "model": "codex-independent-lane",
+      "claim_id": "claim-s1.4-cv-g4-a2-f77-20260814"
+    }
+  ]
+}
