@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nextstep.local/schemas/v1/acceptance-profile.schema.json",
+  "title": "NextStep Acceptance Profile Candidate 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_type", "profile_id", "project", "route", "bindings", "origin", "acceptances"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "record_type": { "const": "acceptance-profile-candidate" },
+    "profile_id": { "type": "string", "pattern": "^ap-[a-f0-9]{64}$" },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository_id", "formal_baseline"],
+      "properties": {
+        "repository_id": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "formal_baseline": { "type": "string", "pattern": "^[a-f0-9]{40}$" }
+      }
+    },
+    "route": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["route_id", "kind"],
+      "properties": {
+        "route_id": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["headless", "ui"] }
+      }
+    },
+    "bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["product_definition_id", "product_definition_digest", "carrier_decision_digest"],
+      "properties": {
+        "product_definition_id": { "type": "string", "minLength": 1 },
+        "product_definition_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "carrier_decision_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+      }
+    },
+    "origin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_kind"],
+      "properties": {
+        "task_kind": {
+          "enum": [
+            "host-orchestration",
+            "execution",
+            "verification",
+            "evaluation",
+            "review",
+            "final-verification",
+            "anchor-verification"
+          ]
+        }
+      }
+    },
+    "acceptances": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["integration", "interaction", "product", "ui_restoration"],
+      "properties": {
+        "integration": { "$ref": "#/definitions/coreAcceptance" },
+        "interaction": { "$ref": "#/definitions/coreAcceptance" },
+        "product": { "$ref": "#/definitions/coreAcceptance" },
+        "ui_restoration": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["enabled"],
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "ui_design_source": { "$ref": "#/definitions/evidenceRef" },
+            "ui_restoration_evidence": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/evidenceRef" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "coreAcceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled"],
+      "properties": {
+        "enabled": { "type": "boolean" }
+      }
+    },
+    "evidenceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pointer", "value_digest"],
+      "properties": {
+        "pointer": { "type": "string", "minLength": 1 },
+        "value_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+      }
+    }
+  }
+}

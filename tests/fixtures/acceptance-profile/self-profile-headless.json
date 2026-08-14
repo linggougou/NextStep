@@ -1,0 +1,57 @@
+{
+  "evidence_scope": "manual-isolated consumer contract",
+  "fixture_type": "acceptance-profile-positive-self-headless",
+  "expected": {
+    "mode": "decision",
+    "status": "accepted",
+    "conclusion": "通过",
+    "rejection_code": null
+  },
+  "upstream_references": {
+    "note": "kernel 自身绑定：product_definition 引用宿主已签 Product Definition 2.0，摘要由宿主在集成期提供；W3 仅校验格式与回显",
+    "carrier_decision_reference": {
+      "note": "占位绑定：同其它正例 fixture",
+      "placeholder_record": {
+        "record_type": "carrier-decision-placeholder",
+        "purpose": "S1.4 W3 集成前占位记录；集成期由主控以真实 carrier-decision 记录摘要替换该绑定",
+        "primary_carrier": "skill-chat",
+        "truth_source_carrier": "project-documents-git"
+      }
+    }
+  },
+  "candidate": {
+    "schema_version": "1.0",
+    "record_type": "acceptance-profile-candidate",
+    "profile_id": "ap-fd7740312e7fac421e2e1329614ef860e0e207e2f38e6e99b6a2b31d3f260418",
+    "project": {
+      "repository_id": "sha256:d11253328d36050bd559844c64b438e9b84e0c13125184e9b01e1e7cf23a8c56",
+      "formal_baseline": "84c051f7426ec5d2a9bed70aa02a1f321bd81e11"
+    },
+    "route": {
+      "route_id": "route-nextstep-kernel-headless",
+      "kind": "headless"
+    },
+    "bindings": {
+      "product_definition_id": "pd-nextstep-self",
+      "product_definition_digest": "sha256:5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e",
+      "carrier_decision_digest": "sha256:57b5e8b5666026c30b00496bfa3b634a907b663510e6091a045502eb7f3aca2c"
+    },
+    "origin": {
+      "task_kind": "host-orchestration"
+    },
+    "acceptances": {
+      "integration": {
+        "enabled": true
+      },
+      "interaction": {
+        "enabled": true
+      },
+      "product": {
+        "enabled": true
+      },
+      "ui_restoration": {
+        "enabled": false
+      }
+    }
+  }
+}

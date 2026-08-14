@@ -1,0 +1,43 @@
+{
+  "evidence_scope": "manual-isolated consumer contract",
+  "fixture_type": "acceptance-profile-negative-identity",
+  "expected": {
+    "mode": "error",
+    "code": "IDENTITY_CONFLICT"
+  },
+  "candidate": {
+    "schema_version": "1.0",
+    "record_type": "acceptance-profile-candidate",
+    "profile_id": "ap-0000000000000000000000000000000000000000000000000000000000000000",
+    "project": {
+      "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
+    },
+    "route": {
+      "route_id": "route-project-delivery-tool-headless",
+      "kind": "headless"
+    },
+    "bindings": {
+      "product_definition_id": "pd-7913f81f17e361f716c1377f2eaf6c9e623da2e32acaf27b81ed25f04acece06",
+      "product_definition_digest": "sha256:096428a49069502de8273c5c470516b0493777352c135bc02fa3b6d1365f7164",
+      "carrier_decision_digest": "sha256:57b5e8b5666026c30b00496bfa3b634a907b663510e6091a045502eb7f3aca2c"
+    },
+    "origin": {
+      "task_kind": "host-orchestration"
+    },
+    "acceptances": {
+      "integration": {
+        "enabled": true
+      },
+      "interaction": {
+        "enabled": true
+      },
+      "product": {
+        "enabled": true
+      },
+      "ui_restoration": {
+        "enabled": false
+      }
+    }
+  }
+}
