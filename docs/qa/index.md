@@ -1,6 +1,6 @@
 # QA
 
-当前阶段为 `P5 / V1` 持续落地。S1.2 与 S1.3 generation 4 已完成 F12/F13 正式提升，formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 通过 control CAS 固化并正式完成，CR-004/CR-005 已关闭；V1、P5 尚未完成。用户于 2026-08-14 授权持续开发；S1.4 入口评估为 `PASS / 100`，当前只准备 Execution Packet 与 dispatch-ready，尚未编码或派发。旧代际结果仅作墓碑历史。
+当前阶段为 `P5 / V1` 持续落地。S1.2 与 S1.3 generation 4 已完成 F12/F13 正式提升，formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 通过 control CAS 固化并正式完成，CR-004/CR-005 已关闭；V1、P5 尚未完成。用户于 2026-08-14 授权持续开发；S1.4 入口评估为 `PASS / 100`，S1.4 packet、dispatch-ready 与 fence 73 dispatch-ack 已固化，四个 Qwen3.8 Max 隔离 worktree 正在实施。旧代际结果仅作墓碑历史。
 
 ## 当前质量状态
 

@@ -2049,3 +2049,11 @@
 - 评估结论：`PASS / 100`，P0/P1/P2=`0/0/0`，`required_fixes=[]`。
 - 范围：仅路线锁、活动计划、状态入口、S1.4 入口评估、执行计划和 `.codex` 留痕；无生产代码、测试、Schema、依赖、control/formal/Result 修改。
 - 下一验证：先对本次文档/JSON 执行 `jq empty`、`git diff --check`、固定状态扫描；通过并提交后，再生成 control-only S1.4 packet 候选并执行 expected-old CAS。
+
+
+## 2026-08-14 S1.4 packet/control/dispatch 验证
+
+- Packet、用户授权消息、dispatch-ready、outbox、checkpoint、registry、dispatch-ack 全部 `jq empty` 通过；packet/dedup/payload 摘要已记录。
+- CAS 顺序：`04677ae`（M1.1 完成）→ packet `d44dee3` → dispatch intent `c8b3fd4` → fence 73 claim `ef51064` → dispatch-ack `ceb2330`；每次均以实时 expected-old 原子推进。
+- formal 仍为 F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`；control 单父链，pending dispatch=0，outbox closed，S1.4 registry=`in-progress`。
+- 四个 worker 只写互斥 allowlist；dispatch 后主工作树无生产代码变更，S1.4 尚未进入独立验收或正式提升。

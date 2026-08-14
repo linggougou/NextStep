@@ -31,7 +31,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - Change Intake、恢复、Final Acceptance、交付和宿主归档边界通过故障注入和反扫验证。
   - V1..V4 与 Final Acceptance 分别完成本地验证、适用验收和用户会签。
 - 阶段出口：V1..V4 和 Final Acceptance 全部通过；正式 OID、交付清单、风险、回滚和 PC-20.AR 状态可追溯，并由用户明确确认 P5 产品落地完成。
-- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；旧链正式提升仅作历史证据。CR-004 与 CR-005 的 M1.1 会签缺口已于 2026-08-14 关闭，历史内容与证据保留。S1.2 generation 4 已正式提升到 F12；S1.3 generation 4 attempt 3 已完成 Product Definition 2.0、CV、I/X/P、L3 `PASS / 98`、Final Verification、Credential、Audit Anchor、Anchor Proof 与 expected-old=F12 的正式 CAS。formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`，control=`04677ae041443ba9bca740bb70b814b5347d6b26`，Result digest=`sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea`，`plan_generation=4`，pending=0。M1.1 attempt 2 用户会签已通过 control CAS 固化并正式完成；V1、P5 仍未完成。用户于 2026-08-14 明确授予后续规划与持续开发权限；S1.4 入口经三名独立 Qwen3.8 Max Agent 只读评估并由主控综合裁决为 `PASS / 100`。当前只进入 Execution Packet 与 dispatch-ready 准备，尚未编码、派发或移动 formal/control；V1、P5 仍未完成。
+- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；旧链正式提升仅作历史证据。CR-004 与 CR-005 的 M1.1 会签缺口已于 2026-08-14 关闭，历史内容与证据保留。S1.2 generation 4 已正式提升到 F12；S1.3 generation 4 attempt 3 已完成 Product Definition 2.0、CV、I/X/P、L3 `PASS / 98`、Final Verification、Credential、Audit Anchor、Anchor Proof 与 expected-old=F12 的正式 CAS。formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`，control=`04677ae041443ba9bca740bb70b814b5347d6b26`，Result digest=`sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea`，`plan_generation=4`，pending=0。M1.1 attempt 2 用户会签已通过 control CAS 固化并正式完成；V1、P5 仍未完成。用户于 2026-08-14 明确授予后续规划与持续开发权限；S1.4 入口经三名独立 Qwen3.8 Max Agent 只读评估并由主控综合裁决为 `PASS / 100`。S1.4 Execution Packet、dispatch-ready 与 fence 73 dispatch-ack 已通过 control CAS 固化；四个 Qwen3.8 Max 隔离 worktree 正在实现，formal 仍为 F13，V1、P5 仍未完成。
 - 明确非目标：
   - 不恢复 NextStep Web/UI 候选分支。
   - 不引入常驻服务、数据库、远程控制面或通用多 Agent 编排平台。
@@ -43,7 +43,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - 不改变已会签产品、交互、S4/P3/P4 或验收边界；需要改变时先进入 Change Request。
 - 禁止提前进入的阶段：S7 最终发布判断和 S8 交付归档；V1..V4 也不得跳过前序门禁并行宣告完成。
 - 允许进入下一阶段的条件：P5 Final Acceptance 通过本地可重复验证、独立验收和用户会签；若实现要求改变已会签产品、交互、技术、版本范围、正式提升或验收边界，必须先完成 Change Request。
-- 当前状态：进行中；S1.3 generation 4 已于 2026-08-13 正式提升到 F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。M1.1 attempt 2 `PASS / 97` 的用户会签已于 2026-08-14 通过 control CAS 固化，M1.1 formally-completed，CR-004/CR-005 已关闭。control=`04677ae041443ba9bca740bb70b814b5347d6b26`，Result digest 与 `plan_generation=4` 不变，pending=0。用户于 2026-08-14 已明确授权持续开发；S1.4 入口评估为 `PASS / 100`，当前处于 Execution Packet 与 dispatch-ready 准备，尚未编码、派发或移动 formal/control；V1、P5 尚未完成
+- 当前状态：进行中；S1.3 generation 4 已于 2026-08-13 正式提升到 F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。M1.1 attempt 2 `PASS / 97` 的用户会签已于 2026-08-14 通过 control CAS 固化，M1.1 formally-completed，CR-004/CR-005 已关闭。control=`04677ae041443ba9bca740bb70b814b5347d6b26`，Result digest 与 `plan_generation=4` 不变，pending=0。用户于 2026-08-14 已明确授权持续开发；S1.4 入口评估为 `PASS / 100`，S1.4 Execution Packet、dispatch-ready 与 fence 73 dispatch-ack 已固化，四个 Qwen3.8 Max 隔离 worktree 正在实现；formal 仍为 F13，V1、P5 尚未完成
 
 ## 2.1 里程碑路线图
 
@@ -59,7 +59,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
 | S4 技术架构 | 基于已会签的 Skill 交互真源和 S4 技术输入补充契约明确怎么实现 | 架构、技术栈、Interaction Source 模型、数据模型、风险与回滚 | 技术路线、高风险点和真源写入一致性可验证 | 独立技术审查与用户确认 | 门禁通过 |
 | P3 版本与里程碑拆解 | 把完整项目拆成版本路线、大里程碑和小里程碑 | 版本路线图、大里程碑计划、小里程碑清单、验收矩阵 | 每个小里程碑有输入、输出、DoD、测试方式、非目标和验收方式 | 用户确认 | 门禁通过 |
 | P4 执行机制设计 | 定义执行任务包、测试验收、合入、交互验收、产品验收和变更管理机制 | 设计文档、流程图、状态机、数据模型 | 执行、测试、交互验收、合入、变更可闭环 | 独立规划审查与用户确认 | 门禁通过 |
-| P5 产品落地 | 按已确认小里程碑逐步实现并合入大里程碑 | 可运行产品、测试报告、交互验收报告、产品验收报告、交付清单 | 本地验证、交互验收和产品验收通过；含 UI 分支额外通过 UI 还原验收 | 版本与阶段会签 | 进行中（S1.3 generation 4 已正式提升到 F13；M1.1 attempt 2 `PASS / 97` 用户会签已完成，V1/P5 尚未完成；S1.4 入口 PASS，packet 准备中） |
+| P5 产品落地 | 按已确认小里程碑逐步实现并合入大里程碑 | 可运行产品、测试报告、交互验收报告、产品验收报告、交付清单 | 本地验证、交互验收和产品验收通过；含 UI 分支额外通过 UI 还原验收 | 版本与阶段会签 | 进行中（S1.3 generation 4 已正式提升到 F13；M1.1 attempt 2 `PASS / 97` 用户会签已完成，V1/P5 尚未完成；S1.4 入口 PASS，四个隔离 worktree 实施中） |
 
 ## 3. 产品真源
 

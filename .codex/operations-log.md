@@ -2064,3 +2064,13 @@
 - 主控裁决：`.codex/reviews/p5-v1-m1.2-s1.4-entry-evaluation-2026-08-14/` 为 `PASS / 100`；S1.4 允许进入 packet 准备，但 packet/control CAS 成功前禁止编码或派发。
 - 执行计划：`.codex/exec-plan-s1.4-generation-1.md`；切片为 interaction prototype、carrier decision、acceptance profile、CLI/receipt/Skill integration。
 - 当前身份：main=`035b8e1e04177c7cb7e58ada002389d42d6320ca`、formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`、control=`04677ae041443ba9bca740bb70b814b5347d6b26`、plan_generation=`4`、pending=`0`。
+
+
+## 2026-08-14 S1.4 generation 1 Execution Packet 与四路派发
+
+- Control packet：`ep-p5-v1-m1.2-s1.4-g4-a1-20260814`，packet digest=`sha256:5c41dd07df858db64b2098e92bd122a135131777a175c515563d29ff20eb1499`，dedup=`sha256:6a1920081d5400643fc067c9da3bfcd987021b75b23b54cb1f0e11653a6a0adf`。
+- Control CAS：从 expected-old=`04677ae041443ba9bca740bb70b814b5347d6b26` 经过 packet、dispatch intent、fence 73 claim 与 dispatch-ack 连续推进到 `ceb2330b59c0496fc4815be4aee9f7fb19410e32`；formal 保持 F13。
+- Dispatch：`msg-dispatch-ready-s1.4-g4-a1-20260814`、`outbox-dispatch-s1.4-g4-a1-20260814`、`msg-dispatch-ack-s1.4-g4-a1-f73-20260814` 已持久化；pending dispatch=0，outbox 已关闭，registry S1.4=`in-progress`。
+- 四个 Qwen3.8 Max 隔离 worktree：W1 `019ffe74-3d16-7dd1-bfda-f08cdfced064`（interaction-prototype）、W2 `019ffe76-3e6f-7f13-8e7a-015fb34dfab1`（carrier-decision）、W3 `019ffe76-6dcd-71e3-b8f0-83958b9cde8c`（acceptance-profile）、W4 `019ffe77-1ec2-7611-8909-99e0200c954a`（CLI/receipt/Skill）。
+- 并行边界：W1/W2/W3 只写各自 domain/schema/fixture/test；W4 独占 CLI、machine receipt、Skill 共享文件；任何 Agent 不修改 control/formal/Result、路线锁或历史 S1.1-S1.3 文件。
+- 当前状态：S1.4 正式实现进行中；尚未开始 CV/I-X-P/L3/Final Verification，不移动 formal，不宣称 S1.4/M1.2/V1/P5 完成。
