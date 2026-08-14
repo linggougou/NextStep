@@ -4,8 +4,8 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：V1 / M1.2 / S1.4（attempt 2 已通过 CV、I/X/P、L3；等待 Final Snapshot 与正式提升）
-- 当前状态：formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`；control=`b006667d8c81bad3ff3ba5d022063e420c7097e2`。M1.1 已正式完成。S1.4 attempt 2 候选 `c2894cd...` 已通过 CV `PASS`、I/X/P `PASS / 99`、L3 `PASS / 98` 与 206/206 全量回归；下一步仅为 Final Content Snapshot → Final Verification → Credential → Audit Anchor → Anchor Proof → F13→F14 CAS。S1.4、M1.2、V1、P5 尚未完成，S1.5 不得启动。
+- 当前活动里程碑：V1 / M1.2 / S1.5（S1.4 已正式提升到 F14；S1.5 仅进入口评估）
+- 当前状态：formal=F14 `024c1db6d941b6f771746c8d6249fb8a09b816f3`；control=`64f38c7bdf285946ff0d2a58c85259407179a7b3`。M1.1 与 S1.4 已正式完成；S1.4 Final Verification/Anchor Verification 均为 `PASS / 98`，206/206 全量回归通过。M1.2、V1、P5 尚未完成；下一步仅允许 S1.5 入口评估，未形成新 packet/control CAS 前不得编码或派发。
 
 ## 当前活动计划
 
@@ -27,7 +27,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。M1.1 已正式完成，CR-004/CR-005 已关闭。S1.4 attempt 2 已通过 CV、I/X/P、L3 与全量回归；当前仅进入 Final Snapshot 与正式提升链，尚不得宣称 S1.4、M1.2、V1 或 P5 完成。
+P5 已于 2026-08-08 单独启动。M1.1 与 S1.4 已正式完成，CR-004/CR-005 已关闭。M1.2 仍需完成 S1.5、S1.6 与累积验收；V1、P5 尚未完成。
 
 实施顺序保持 P3 已会签结构：
 

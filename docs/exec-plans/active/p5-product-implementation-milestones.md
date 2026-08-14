@@ -1,6 +1,6 @@
 # P5 产品落地实施里程碑
 
-状态：进行中；formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`，control=`b006667d8c81bad3ff3ba5d022063e420c7097e2`。M1.1 已正式完成；S1.4 attempt 2 候选 `c2894cd...` 已通过 CV `PASS`、I/X/P `PASS / 99`、L3 `PASS / 98` 与 206/206 全量回归。下一步仅为 Final Snapshot 与正式提升链；S1.4、M1.2、V1、P5 均未完成，S1.5 不得启动
+状态：进行中；formal=F14 `024c1db6d941b6f771746c8d6249fb8a09b816f3`，control=`64f38c7bdf285946ff0d2a58c85259407179a7b3`。M1.1 与 S1.4 已正式完成；M1.2、V1、P5 尚未完成。下一步仅允许 S1.5 入口评估，评估与新 packet/control CAS 前不得编码或派发
 启动日期：2026-08-08
 
 ## 1. 阶段目标
@@ -11,9 +11,9 @@
 
 - 生命周期阶段：`S5 开发落地`。
 - 项目里程碑：`P5 产品落地`。
-- 当前活动里程碑：`V1 / M1.2 / S1.4`（attempt 2 已通过 CV、I/X/P、L3；等待 Final Snapshot 与正式提升）。
+- 当前活动里程碑：`V1 / M1.2 / S1.5`（S1.4 已正式提升到 F14；S1.5 仅进入口评估）。
 - 本轮启动授权：用户于 2026-08-08 在 P4 会签归档后明确要求继续，授权单独启动 P5 并建立实施里程碑。
-- 路线性质：沿用已会签路线，不改变产品定位、主交互载体、技术栈、版本范围或验收门禁。CR-005 的 `F0→F12→F13` 两段式推进与 M1.1 会签已完成。S1.4 attempt 2 已通过 CV/I-X-P/L3；Final Verification、Credential、Anchor Proof 与 formal CAS 完成前不得移动 formal，不得启动 S1.5。
+- 路线性质：沿用已会签路线，不改变产品定位、主交互载体、技术栈、版本范围或验收门禁。CR-005、M1.1 与 S1.4/F14 正式链已完成；S1.5 仅能按入口评估 → 计划冻结 → 新 packet/control CAS 顺序启动。
 
 ## 3. 正式上游
 
@@ -158,4 +158,4 @@ P5-M0 不是新增产品版本，不改变 P3 的 PC 主版本归属，也不能
 
 P5 的最终阶段出口是：V1..V4 和 Final Acceptance 全部通过本地可重复验证、独立 I/X/P、适用 Profile 验收和用户会签；交付清单、正式 OID、已知风险、回滚与 PC-20.AR 状态可追溯。此前 P5 保持进行中，不得归档本计划或宣告完整产品完成。
 
-当前 M1.1 attempt 1 的正式结论为 `退回 / 73`（历史结果）；attempt 2 已会签并正式完成。formal=F13，control=`b006667d8c81bad3ff3ba5d022063e420c7097e2`，pending dispatch=0。S1.4 attempt 2 已通过 CV `PASS`、I/X/P `PASS / 99`、L3 `PASS / 98` 和全量回归；下一步仅为 Final Content Snapshot 与正式提升链。S1.4、M1.2、V1、P5 尚未完成。
+当前 M1.1 attempt 1 为历史 `退回 / 73`，attempt 2 已会签并正式完成。formal=F14，control=`64f38c7bdf285946ff0d2a58c85259407179a7b3`，pending dispatch=0；S1.4 已正式完成。M1.2、V1、P5 尚未完成；下一步仅为 S1.5 入口评估。

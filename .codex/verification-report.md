@@ -2090,3 +2090,12 @@
 - 身份复核：FV packet=`sha256:fe0034d9...`、dedup=`sha256:7fa52650...`、snapshot=`sha256:231190be...`、transaction=`sha256:fc6b887a...`、protected manifest=`sha256:56ce146b...` / 331、FV Result=`sha256:ae0ec8c7...` 与 Credential=`sha256:c49fb216...` 均匹配；formal 仍为 F13。
 - Credential：项目外路径原始 SHA-256 与内容寻址文件名一致，7750 bytes，目录 0700、文件 0600；create-once/no-replace/fsync 证据通过。
 - Audit Anchor 构建约束：唯一父必须精确为 snapshot `37d37e1...`；差异仅允许 `.codex/operations-log.md`、`.codex/verification-report.md` 与 `.codex/reviews/p5-v1-m1.2-s1.4-final-verification-2026-08-14/`；331 条 snapshot 受保护路径必须逐项不变。
+
+## 2026-08-14 S1.4 F14 正式提升验证
+
+- AV Result：`sha256:a8dea39a2edd30d8476d243cac196225f804285faadaadd60639b5c7e81f049b`，`PASS / 98`；proof=`sha256:8f1ca64045e7c2e8900b7455db86f3503a61473b5fc8652d38a5036e6e0d7475`，9666 bytes，0600/0700，raw SHA、JCS、内容寻址文件名、no-replace/fsync 与重读复核通过。
+- Anchor：`024c1db6d941b6f771746c8d6249fb8a09b816f3`，tree=`6f722b973d7b7ee72a607498d8027d9df615ef4b`，唯一父=`37d37e1b51369113378f4b68de16beea12d3400f`；F13 为祖先；snapshot→anchor 恰 5 条允许路径，331/331 protected manifest 恒等。
+- Pre-CAS：snapshot、transaction、FV packet/result、anchor、AV packet/result 的 RFC8785/JCS 投影摘要全部匹配；Credential/Proof raw SHA 与权限匹配；pending dispatch=0，FV/AV outbox closed，`git fsck --strict` 通过。
+- CAS：`refs/nextstep/formal` 从 F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11` 原子快进到 F14 `024c1db6d941b6f771746c8d6249fb8a09b816f3`；control promotion CAS 后=`64f38c7bdf285946ff0d2a58c85259407179a7b3`，promotion digest=`sha256:c313ba63a171124d5e2448499b747684a9e9a3b0e0b345d1a90af162bcd89937`。
+- 状态边界：S1.4 formally-completed；M1.2/V1/P5 未完成，S1.5 尚未编码或派发。
+- 正式状态同步最终验证：过期状态扫描无命中；除故意非法 JSON fixture `tests/fixtures/requirement-intake/empty-input.json` 外，仓库 JSON 全量解析通过；`pnpm check` 206/206，覆盖率 Lines 91.07%、Branches 83.80%、Functions 98.36%；`git diff --check`、`git fsck --strict`、formal/control 精确值与 formal→HEAD ancestry 均通过。

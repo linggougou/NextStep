@@ -2109,3 +2109,12 @@
 - 身份与边界：packet/dedup、Snapshot、Transaction、331/331 manifest、Execution/CV/I-X-P/L3、claim/fence/host/control/F13 全部独立复算匹配；Acceptance Profile 17/17、Q6=100%，self-profile 双跑 ACCEPTED 且 digest 恒定；S1.5 未启动。
 - 项目外凭证：`evidence:verification-credential-c49fb216746a2a51734b2cd171b9c3ea24ce5edf619b3f5f128a8382d4c15e02.json`，raw SHA-256=`sha256:c49fb216746a2a51734b2cd171b9c3ea24ce5edf619b3f5f128a8382d4c15e02`，7750 bytes，目录 0700、文件 0600，exclusive temp + hard-link no-replace + 文件/父目录 fsync create-once 安装与重读复核通过。
 - 边界：当前仅允许生成 Audit Anchor；Anchor Verification、Anchor Proof 与 expected-old=F13 的 F13→F14 CAS 尚未执行，S1.4/M1.2/V1/P5 仍未完成。
+
+## 2026-08-14 S1.4 Anchor Verification / F14 Formal CAS
+
+- Anchor Verification：Qwen3.8 Max Agent `01a000c5-e578-7d10-9cf9-b217158dcbd5`，packet=`sha256:7efd334d952b161eb95775ab54865f68480559a2c0133a5021149299fe23d961`，dedup=`sha256:5e16250059804362fe978b118ff0d3d9c00fa1af7f76ed917f7c7e797178ee32`，claim/fence=`claim-s1.4-av-g4-a1-f81-20260814 / 81`，结果 `PASS / 98`。
+- Anchor Proof：`evidence:anchor-proof-8f1ca64045e7c2e8900b7455db86f3503a61473b5fc8652d38a5036e6e0d7475.json`，raw SHA-256=`sha256:8f1ca64045e7c2e8900b7455db86f3503a61473b5fc8652d38a5036e6e0d7475`，9666 bytes，目录 0700、文件 0600，accepted proof 的 no-replace/fsync/重读复核通过。
+- 执行异常透明记录：同一 AV 运行曾创建一枚未被 control 或任何正式记录引用的错误摘要 proof，验证器在自查后删除，并在 accepted proof 中记录其文件名、原因和删除事实；accepted proof 使用不同内容寻址路径。该异常未改变项目、formal/control 或 accepted proof 身份，作为非阻塞审计风险保留。
+- 预 CAS：snapshot/transaction/FV/anchor/AV 七类 JCS 投影摘要、Credential/Proof raw SHA 与权限、331/331 protected paths、5 条 anchor 白名单、父链/祖先、pending=0、outbox closed、`git fsck --strict` 全部通过。
+- Formal CAS：以 expected-old F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11` 原子推进到 F14 Anchor `024c1db6d941b6f771746c8d6249fb8a09b816f3`；promotion digest=`sha256:c313ba63a171124d5e2448499b747684a9e9a3b0e0b345d1a90af162bcd89937`，control CAS 后=`64f38c7bdf285946ff0d2a58c85259407179a7b3`。
+- 状态：S1.4 已正式完成；M1.2、V1、P5 仍未完成。下一步只允许 S1.5 入口评估，未形成执行计划与新 packet/control CAS 前不得编码或派发。
