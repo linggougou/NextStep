@@ -2090,3 +2090,12 @@
 - Execution Result：control 新增 `results/result-execution-s1.4-g4-a1-f73-20260814.json`；subject digest=`sha256:fc86923851afa390b29b19c26a911c8c43eb5098f9ab80486abe9a6bb175e2d4`，Result digest=`sha256:68c3003f7c69f834cb207789c83e35567987a491a368140c09f1d08675e2ae1b`。
 - Control CAS：从 expected-old=`ceb2330b59c0496fc4815be4aee9f7fb19410e32` 推进到 `c797d40369bbe6a0c602bab25ab9c0bea44a8a79`；registry S1.4=`candidate-ready`，formal 保持 F13。
 - 下一门禁：独立 Candidate Verification 与独立 I/X/P；双门禁通过前不得进入 L3，不得移动 formal，不启动 S1.5。
+
+## 2026-08-14 S1.4 attempt 2 CV / I-X-P / L3 状态同步
+
+- 路线与阶段：继续 `P5 / V1 / M1.2 / S1.4`，不改变技术栈、主交互载体、验收门禁或正式提升协议；S1.5 仍被阻塞。
+- 实时基线：main=`0166158800efe8f95557fedd6bb7417343bed7b1`；formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`；control=`b006667d8c81bad3ff3ba5d022063e420c7097e2`；工作区在本轮编辑前干净，main 领先 origin 80 个提交，未 push。
+- attempt 2 候选：`c2894cd25cf8b466d41df68ff99cdbf4193ba0d3`，tree=`e9c22fb61e80c877cbda9b284317a740bd56537a`，subject digest=`sha256:3e93a4ad0cbc796bcc92b6a427a20e24ca21a9d8daf2c3252179807b9818d5aa`。
+- 正式门禁：CV=`PASS`，Result digest=`sha256:6e8e1d9aabb0ff9a888d35e1c7620485d18f1645e8d489918d555e7ec6e67d4a`；I/X/P=`PASS / 99`，Result digest=`sha256:9c922f641d6b2f667bd39a0c2bdbcdb9237664a2dc100d67764b35370df8f19d`；L3=`PASS / 98`，Result digest=`sha256:e67c155b22a917fa2d89887c4b370a50eea15c63aa85c10308050b6cfa567eb7`。
+- 更正说明：I/X/P r2 verdict 对 self-profile 绑定身份的一处叙述发生转写错误；正确值以 fixture、CV r2 与 L3 独立复算为准：Product Definition ID=`pd-7913f81f17e361f716c1377f2eaf6c9e623da2e32acaf27b81ed25f04acece06`，Product Definition digest=`sha256:096428a49069502de8273c5c470516b0493777352c135bc02fa3b6d1365f7164`，carrier decision digest=`sha256:2a58288964d79789f192ec7657bb1dfb78588fd9c98e133aab9d31badcec691f`。该错误仅位于评审叙述，不影响候选、Result 信封、fixture 或运行行为。
+- 下一步：仅允许冻结 Final Content Snapshot，再依次执行独立 Final Verification、项目外 Verification Credential、Audit Anchor、独立 Anchor Verification / Anchor Proof 和 expected-old=F13 的 formal CAS；链闭环前不得宣称 S1.4、M1.2、V1 或 P5 完成。

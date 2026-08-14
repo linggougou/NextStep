@@ -4,8 +4,8 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：V1 / M1.2 / S1.4（候选 `d60e625...` 已就绪；等待 CV 与 I/X/P）
-- 当前状态：S1.2 与 S1.3 generation 4 已完成两段式正式提升，formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`。M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 通过 control CAS 固化并正式完成，CR-004/CR-005 已关闭；control=`04677ae041443ba9bca740bb70b814b5347d6b26`，Result digest 与 `plan_generation=4` 不变，pending=0。V1、P5 尚未完成；用户于 2026-08-14 授权持续开发，S1.4 入口评估为 `PASS / 100`，S1.4 generation 1 候选 `d60e625...` 已集成并通过 206/206 全量回归；control=`c797d40...` 已固化 execution Result，formal 仍为 F13，下一步为独立 CV 与 I/X/P。
+- 当前活动里程碑：V1 / M1.2 / S1.4（attempt 2 已通过 CV、I/X/P、L3；等待 Final Snapshot 与正式提升）
+- 当前状态：formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`；control=`b006667d8c81bad3ff3ba5d022063e420c7097e2`。M1.1 已正式完成。S1.4 attempt 2 候选 `c2894cd...` 已通过 CV `PASS`、I/X/P `PASS / 99`、L3 `PASS / 98` 与 206/206 全量回归；下一步仅为 Final Content Snapshot → Final Verification → Credential → Audit Anchor → Anchor Proof → F13→F14 CAS。S1.4、M1.2、V1、P5 尚未完成，S1.5 不得启动。
 
 ## 当前活动计划
 
@@ -27,7 +27,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。M1.1 attempt 1 的 `0/3` 身份缺口已由 CR-004/CR-005 新链修复；S1.2/F12 与 S1.3/F13 已正式提升。M1.1 attempt 2 `PASS / 97` 用户会签已于 2026-08-14 固化，M1.1 正式完成，CR-004/CR-005 已关闭。用户已授权持续开发；S1.4 入口评估为 `PASS / 100`，S1.4 候选已就绪并通过全量回归，下一步为 CV 与 I/X/P；V1、P5 尚未完成。
+P5 已于 2026-08-08 单独启动。M1.1 已正式完成，CR-004/CR-005 已关闭。S1.4 attempt 2 已通过 CV、I/X/P、L3 与全量回归；当前仅进入 Final Snapshot 与正式提升链，尚不得宣称 S1.4、M1.2、V1 或 P5 完成。
 
 实施顺序保持 P3 已会签结构：
 

@@ -2073,3 +2073,12 @@
 - 关键行为：载体无关原型、载体裁决、headless/含 UI/冲突 Profile、CLI JCS 单回执、信封独立重验、Skill 阶段守卫全部通过；Profile 冲突不降级。
 - 身份连续性：三类 Acceptance Profile fixture 的 product_definition_id/digest 绑定 S1.3，carrier_decision_digest 绑定 W2 真实候选；占位摘要已从三类目标项目链移除。
 - 边界：本结论仅为 `candidate-ready`，不是 CV/I-X-P/L3/Final Verification/formal promotion；formal 仍为 F13。
+
+## 2026-08-14 S1.4 attempt 2 CV / I-X-P / L3 状态同步验证
+
+- Git/refs：main=`0166158800efe8f95557fedd6bb7417343bed7b1`，formal=F13 `84c051f7426ec5d2a9bed70aa02a1f321bd81e11`，control=`b006667d8c81bad3ff3ba5d022063e420c7097e2`；L3 review commit 可达 main，control 为单父治理链，六份 S1.4 outbox 均为 `closed`。
+- 候选与结论：attempt 2 subject=`c2894cd25cf8b466d41df68ff99cdbf4193ba0d3`，tree=`e9c22fb61e80c877cbda9b284317a740bd56537a`；CV `PASS`、I/X/P `PASS / 99`、L3 `PASS / 98`，对应 Result digest 与 control registry 完全一致。
+- 运行证据：独立验证已复现 `pnpm check` 206/206，覆盖率 Lines 91.07%、Branches 83.80%、Functions 98.36%；Acceptance Profile 矩阵 17/17，Q6=100%，self-profile 二次回放 digest 恒定。
+- 状态边界：本轮仅同步项目真源与 `.codex` 留痕，不修改生产代码、测试、Schema、依赖、formal/control 或正式 Result。S1.4 仍未正式提升，M1.2/V1/P5 未完成，S1.5 未启动。
+- 后续验证：本轮文档提交前执行 `git diff --check`、JSON 解析、固定字符串和变更范围检查；Final Content Snapshot 必须冻结本轮状态同步提交后的精确内容。
+- 状态同步提交前验证结果：`git diff --check` 通过；仓库内 JSON 全量 `jq empty` 通过；变更范围恰为 6 个状态真源/索引文件与 2 个 `.codex` 留痕文件；未发现“等待 CV/I-X-P”或旧 control/candidate 的当前状态残留；未运行 `pnpm check`，因为本轮无生产代码、测试、Schema 或依赖变更，并沿用刚完成的独立 L3 206/206 复现证据。
