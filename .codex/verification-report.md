@@ -2082,3 +2082,11 @@
 - 状态边界：本轮仅同步项目真源与 `.codex` 留痕，不修改生产代码、测试、Schema、依赖、formal/control 或正式 Result。S1.4 仍未正式提升，M1.2/V1/P5 未完成，S1.5 未启动。
 - 后续验证：本轮文档提交前执行 `git diff --check`、JSON 解析、固定字符串和变更范围检查；Final Content Snapshot 必须冻结本轮状态同步提交后的精确内容。
 - 状态同步提交前验证结果：`git diff --check` 通过；仓库内 JSON 全量 `jq empty` 通过；变更范围恰为 6 个状态真源/索引文件与 2 个 `.codex` 留痕文件；未发现“等待 CV/I-X-P”或旧 control/candidate 的当前状态残留；未运行 `pnpm check`，因为本轮无生产代码、测试、Schema 或依赖变更，并沿用刚完成的独立 L3 206/206 复现证据。
+
+## 2026-08-14 S1.4 Final Verification 与 Audit Anchor 准备验证
+
+- Final Verification：`PASS / 98`；review commit=`6c81e47facaf06c28440fab0b951bfcb230c2713`，三份 review 文件已逐字提取到专属允许目录。
+- 隔离复现：detached snapshot `37d37e1...` / tree `ec05462...`；`pnpm install --offline --frozen-lockfile --ignore-scripts` 与 `pnpm check` 通过，206/206，覆盖率 Lines 91.07% / Branches 83.80% / Functions 98.36%。
+- 身份复核：FV packet=`sha256:fe0034d9...`、dedup=`sha256:7fa52650...`、snapshot=`sha256:231190be...`、transaction=`sha256:fc6b887a...`、protected manifest=`sha256:56ce146b...` / 331、FV Result=`sha256:ae0ec8c7...` 与 Credential=`sha256:c49fb216...` 均匹配；formal 仍为 F13。
+- Credential：项目外路径原始 SHA-256 与内容寻址文件名一致，7750 bytes，目录 0700、文件 0600；create-once/no-replace/fsync 证据通过。
+- Audit Anchor 构建约束：唯一父必须精确为 snapshot `37d37e1...`；差异仅允许 `.codex/operations-log.md`、`.codex/verification-report.md` 与 `.codex/reviews/p5-v1-m1.2-s1.4-final-verification-2026-08-14/`；331 条 snapshot 受保护路径必须逐项不变。

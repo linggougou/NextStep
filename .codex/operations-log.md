@@ -2099,3 +2099,13 @@
 - 正式门禁：CV=`PASS`，Result digest=`sha256:6e8e1d9aabb0ff9a888d35e1c7620485d18f1645e8d489918d555e7ec6e67d4a`；I/X/P=`PASS / 99`，Result digest=`sha256:9c922f641d6b2f667bd39a0c2bdbcdb9237664a2dc100d67764b35370df8f19d`；L3=`PASS / 98`，Result digest=`sha256:e67c155b22a917fa2d89887c4b370a50eea15c63aa85c10308050b6cfa567eb7`。
 - 更正说明：I/X/P r2 verdict 对 self-profile 绑定身份的一处叙述发生转写错误；正确值以 fixture、CV r2 与 L3 独立复算为准：Product Definition ID=`pd-7913f81f17e361f716c1377f2eaf6c9e623da2e32acaf27b81ed25f04acece06`，Product Definition digest=`sha256:096428a49069502de8273c5c470516b0493777352c135bc02fa3b6d1365f7164`，carrier decision digest=`sha256:2a58288964d79789f192ec7657bb1dfb78588fd9c98e133aab9d31badcec691f`。该错误仅位于评审叙述，不影响候选、Result 信封、fixture 或运行行为。
 - 下一步：仅允许冻结 Final Content Snapshot，再依次执行独立 Final Verification、项目外 Verification Credential、Audit Anchor、独立 Anchor Verification / Anchor Proof 和 expected-old=F13 的 formal CAS；链闭环前不得宣称 S1.4、M1.2、V1 或 P5 完成。
+
+## 2026-08-14 S1.4 Final Content Snapshot / Final Verification / Credential
+
+- Final Content Snapshot：main snapshot=`37d37e1b51369113378f4b68de16beea12d3400f`，tree=`ec05462dd8f8c935ba43aa1bcc7789035246999d`，snapshot digest=`sha256:231190beddb4ed292bdf4c3d0d471ccf002a9cea5b1ee846626ac30c4ce65472`，Write Transaction digest=`sha256:fc6b887a67d0bda01ce2004538839999957c68d909074a879de5d3dfc4ab4e68`。
+- 受保护清单：331 条 `{mode,type,oid,path}`，RFC8785/JCS digest=`sha256:56ce146b56466fe979f14436d8fe2b7d611b088ca42102a0ba86a4612b8d3366`；仅 `.codex/operations-log.md`、`.codex/verification-report.md` 与本轮专属 Final Verification review 目录允许进入 Audit Anchor。
+- control 链：snapshot CAS `8265f5bd...` → FV packet `882c214f...` → intent `8a011ba7...` → claim fence 80 `3b0f6689...` → dispatch-ack `f0e16b77...` → Final Verification Result `27f76574...`；formal 全程保持 F13。
+- 独立复验：Qwen3.8 Max Agent `01a000a9-396c-73d2-a5ba-26ec970b558d` 在唯一 `git clone --no-local` 隔离副本执行 frozen/offline install 与 `pnpm check`，206/206 通过，覆盖率 Lines 91.07%、Branches 83.80%、Functions 98.36%；Final Verification=`PASS / 98`。
+- 身份与边界：packet/dedup、Snapshot、Transaction、331/331 manifest、Execution/CV/I-X-P/L3、claim/fence/host/control/F13 全部独立复算匹配；Acceptance Profile 17/17、Q6=100%，self-profile 双跑 ACCEPTED 且 digest 恒定；S1.5 未启动。
+- 项目外凭证：`evidence:verification-credential-c49fb216746a2a51734b2cd171b9c3ea24ce5edf619b3f5f128a8382d4c15e02.json`，raw SHA-256=`sha256:c49fb216746a2a51734b2cd171b9c3ea24ce5edf619b3f5f128a8382d4c15e02`，7750 bytes，目录 0700、文件 0600，exclusive temp + hard-link no-replace + 文件/父目录 fsync create-once 安装与重读复核通过。
+- 边界：当前仅允许生成 Audit Anchor；Anchor Verification、Anchor Proof 与 expected-old=F13 的 F13→F14 CAS 尚未执行，S1.4/M1.2/V1/P5 仍未完成。

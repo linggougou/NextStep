@@ -1,0 +1,161 @@
+{
+  "review_id": "p5-v1-m1.2-s1.4-final-verification-2026-08-14",
+  "task_id": "S1.4-FV",
+  "task_attempt": 1,
+  "lane": "final-verification",
+  "review_level": "L4",
+  "rubric_id": "nextstep-s1.4-final-verification-v1",
+  "stage_id": "P5/V1/M1.2/S1.4/final-verification",
+  "plan_id": "p5-product-implementation",
+  "plan_generation": 4,
+  "route_generation": 1,
+  "repository_id": "sha256:d11253328d36050bd559844c64b438e9b84e0c13125184e9b01e1e7cf23a8c56",
+  "claim_id": "claim-s1.4-fv-g4-a1-f80-20260814",
+  "fence_token": 80,
+  "host_task_id": "01a000a9-396c-73d2-a5ba-26ec970b558d",
+  "verification_run_id": "verification-run-s1.4-g4-a2-20260814",
+  "reviewed_at": "2026-08-14T14:45:00Z",
+  "subject": {
+    "snapshot_ref": "git:37d37e1b51369113378f4b68de16beea12d3400f",
+    "snapshot_tree": "ec05462dd8f8c935ba43aa1bcc7789035246999d",
+    "snapshot_digest": "sha256:231190beddb4ed292bdf4c3d0d471ccf002a9cea5b1ee846626ac30c4ce65472",
+    "baseline_formal": "84c051f7426ec5d2a9bed70aa02a1f321bd81e11",
+    "baseline_formal_tree": "badae8e7c235219fefe9721f32b7a5b172321092",
+    "candidate_ref": "git:c2894cd25cf8b466d41df68ff99cdbf4193ba0d3",
+    "candidate_digest": "sha256:3e93a4ad0cbc796bcc92b6a427a20e24ca21a9d8daf2c3252179807b9818d5aa"
+  },
+  "isolated_environment": {
+    "clone_command": "git clone --no-local /Volumes/2T/CODE/A_Mine/NextStep <mktemp>/clone",
+    "clone_path": "/private/tmp/nextstep-fv-s1.4-g4-a1-f80-Oz1nOX/clone",
+    "head": "37d37e1b51369113378f4b68de16beea12d3400f (detached)",
+    "tree": "ec05462dd8f8c935ba43aa1bcc7789035246999d",
+    "install": "pnpm install --offline --frozen-lockfile --ignore-scripts",
+    "check": "pnpm check (typecheck + node --test coverage, 三维 80% 门禁内置)",
+    "evidence_scope": "manual-isolated consumer contract"
+  },
+  "artifact_refs": [
+    "refs/nextstep/control:gate-requests/gate-final-verification-s1.4-g4-a1-20260814.json",
+    "refs/nextstep/control:snapshots/final-content-snapshot-s1.4-g4-a2-20260814.json",
+    "refs/nextstep/control:transactions/write-transaction-s1.4-g4-a2-20260814.json",
+    "refs/nextstep/control:manifests/protected-manifest-s1.4-g4-a2-20260814.json",
+    "refs/nextstep/control:packets/ep-p5-v1-m1.2-s1.4-g4-a2-20260814.json",
+    "refs/nextstep/control:results/result-execution-s1.4-g4-a2-f76-20260814.json",
+    "refs/nextstep/control:results/result-candidate-verification-s1.4-g4-a2-f77-20260814.json",
+    "refs/nextstep/control:results/result-product-interaction-s1.4-g4-a2-f78-20260814.json",
+    "refs/nextstep/control:results/result-independent-review-s1.4-g4-a1-f79-20260814.json",
+    "refs/nextstep/control:messages/msg-dispatch-ready-s1.4-fv-g4-a1-20260814.json",
+    "refs/nextstep/control:messages/msg-dispatch-ack-s1.4-fv-g4-a1-f80-20260814.json",
+    "git:bf8bb263adc0899c54a97f7a65f2f53f2cccba8f:.codex/reviews/p5-v1-m1.2-s1.4-candidate-verification-r2-2026-08-14/scorecard.json",
+    "git:099729a38fb145875df282d080e5a6745de734bd:.codex/reviews/p5-v1-m1.2-s1.4-independent-ixp-r2-2026-08-14/scorecard.json",
+    "git:0166158800efe8f95557fedd6bb7417343bed7b1:.codex/reviews/p5-v1-m1.2-s1.4-l3-2026-08-14/scorecard.json",
+    "git:37d37e1b51369113378f4b68de16beea12d3400f"
+  ],
+  "hard_gates": [
+    {
+      "id": "HG1",
+      "name": "packet/dedup/dispatch/claim/fence/host、F13、Snapshot、Transaction、manifest、Execution/CV/I-X-P/L3 摘要与 Git 父链精确匹配",
+      "result": "pass",
+      "evidence": "自研 RFC8785 JCS 独立复算：FV packet=fe0034d9…、FV dedup 派生集 {repository_id,plan_id,plan_generation,task_id,task_attempt,packet_digest,route_generation}=7fa52650…、execution packet=75edb261…、CV packet=37e24c60…、IXP packet=fc29b1b2…、L3 packet=284bca84…、snapshot=231190be…、transaction=fc6b887a…、manifest(entries)=56ce146b…、四份 result=c10272b0…/6e8e1d9a…/9c922f64…/e67c155b…、三份 scorecard=e7584ac1…/b979edec…/63fa9479…、subject {commit,parent,tree}=3e93a4ad…，全部 MATCH。dedup 五处一致（packet/dispatch-ready/ack/outbox effect_key=7fa52650…，registry packet_digest 一致）。control 父链 8265f5bd(冻结)→882c214f(备包)→8a011ba7(意图)→3b0f6689(claim f80，与主控指定 claim control 一致)→f0e16b77(ack=CAS 后 control HEAD)。ack host_task_id=01a000a9…=本 Agent；claim/fence/baseline/working_parent 精确一致。F13=84c051f7… 为 snapshot 祖先且验证全程未移动；F13 tree=badae8e7…=snapshot parent_formal_tree；候选 c2894cd2 父=dd8e6fcc…、tree=e9c22fb6…，F13..snapshot 23 个提交均为已批准的 M1.1 会签同步与 S1.4 工作。上游 S1.4 时代四份 packet 的 dedup 派生集与 S1.3 时代集合不同（项目先例允许，ops-log 已记录），已按 packet↔dispatch-ready↔outbox↔ack/registry 跨位置一致性校验通过（IXP=8b526bfb…、L3=321b58d1…、CV=84c76185…）。"
+    },
+    {
+      "id": "HG2",
+      "name": "唯一 --no-local 隔离副本 detached snapshot，frozen offline install 与 pnpm check 206/206、覆盖率三维≥80%",
+      "result": "pass",
+      "evidence": "唯一克隆 /private/tmp/nextstep-fv-s1.4-g4-a1-f80-Oz1nOX/clone，detached 37d37e1…，tree=ec05462… 精确匹配，工作区干净；pnpm install --offline --frozen-lockfile --ignore-scripts 成功；pnpm check exit 0：tests 206 / pass 206 / fail 0；覆盖率 Lines 91.07% / Branches 83.80% / Functions 98.36%，三维均≥80% 且与 snapshot integration_checks 声明逐位一致。"
+    },
+    {
+      "id": "HG3",
+      "name": "Acceptance Profile 17/17、Q6=100%，self-profile headless ACCEPTED 且二次回放 digest 恒定，三重身份独立复算匹配",
+      "result": "pass",
+      "evidence": "域模块回放全部 17 份 fixture 与 expected 精确一致（17/17），Q6 身份一致性=17/17=100%；self-profile-headless 端到端 CLI 双跑 exit 0、ACCEPTANCE_PROFILE_ACCEPTED、decision digest 恒为 sha256:1b31eed0…；profile_id 派生复算=声明=ap-66c5db77…；PD id/digest 复算=pd-7913f81f…/sha256:096428a4…；carrier digest 复算（内嵌候选与 carrier fixture 文件候选逐字节相等）=sha256:2a582889…；carrier binding 回指 PD id/digest 一致。I/X/P r2 verdict 的 self-profile 叙述转写误差（pd-01e7fcb1…/cd10e72a…）为已知非阻塞事实，本门禁按 fixture/CV/L3 正确值复算。"
+    },
+    {
+      "id": "HG4",
+      "name": "331 条 protected manifest 与 snapshot 精确一致；F13 与 S1.5 未启动边界不变",
+      "result": "pass",
+      "evidence": "manifest 331/331 条 mode/type/oid/path 与 snapshot 树逐条精确匹配（0 错误、0 重复）；snapshot 共 333 路径=331 受保护+恰好 2 条 excluded_mutable_paths（operations-log/verification-report），零意外路径。PROJECT_ROUTE_LOCK.md 与里程碑文档保持『F13→F14 链闭环前不得启动 S1.5』边界；src/schemas/tests 无任何 S1.5 代码；formal 全程=F13；F13..snapshot 差异仅覆盖已批准的 M1.1 会签与 S1.4 范围，候选 c2894cd2 自身变更 13 路径均在 transaction integration/changed 口径内。"
+    },
+    {
+      "id": "HG5",
+      "name": "Credential 门禁与 JSON/Git/secret/debug/audit 检查",
+      "result": "pass",
+      "evidence": "全部前置门禁通过后才创建凭证：verification-credential-c49fb216….json，JCS 原文 SHA-256=c49fb216746a2a51734b2cd171b9c3ea24ce5edf619b3f5f128a8382d4c15e02 与文件名一致（复算确认），7750 字节，目录 0700/文件 0600，exclusive temp + hard-link no-replace 原子安装，文件与父目录 fsync，绑定 claim/fence/host/ack/control/F13/snapshot/tree/transaction/manifest/四类 gate result/测试与风险。JSON 解析 143/144（唯一例外 empty-input.json 为单换行字节的故意负例 fixture，tests/cli/requirement-intake.test.ts:77 引用）；git fsck --strict 干净；git diff --check 干净；secret 扫描仅命中 sensitive-fields.ts 扫描器自身模式与测试合成 dummy 值；src/ 无 console.log/debugger；pnpm audit（registry.npmjs.org）No known vulnerabilities found。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "identity-chain",
+      "score": 25,
+      "max": 25,
+      "reason": "13+ 份控制面摘要 RFC8785 独立复算全匹配，dedup 五处一致，control 父链与 claim/fence/host 精确对应，F13 祖先关系与候选父链闭环。"
+    },
+    {
+      "id": "isolated-build-test",
+      "score": 25,
+      "max": 25,
+      "reason": "唯一 --no-local 副本 frozen offline install 与 pnpm check 206/206，覆盖率三维精确复现声明值且全部≥80%。"
+    },
+    {
+      "id": "profile-identity-replay",
+      "score": 25,
+      "max": 25,
+      "reason": "矩阵 17/17、Q6=100%、self-profile 端到端 ACCEPTED、回放 digest 恒定、三重身份独立复算匹配。"
+    },
+    {
+      "id": "manifest-boundary-audit",
+      "score": 25,
+      "max": 25,
+      "reason": "331 条逐条精确一致、S1.5 未启动边界保持、JSON/fsck/diff/secret/debug/audit 全过。"
+    }
+  ],
+  "penalties": [
+    {
+      "id": "PEN-1",
+      "deduction": 1,
+      "reason": "S1.4 时代上游四份 packet 的 dedup 派生字段集未冻结文档化且与 S1.3 时代集合不同，只能以跨位置一致性替代派生复算（透明度风险，方向安全，项目先例允许）。"
+    },
+    {
+      "id": "PEN-2",
+      "deduction": 1,
+      "reason": "IDENTITY_CONFLICT 与路线冲突在 CLI 回执层仍共用 PROFILE_CONFLICT_REJECTED（L3 已记录的非阻塞改进项，继承标记）。"
+    }
+  ],
+  "totals": {
+    "raw": 100,
+    "penalties": 2,
+    "final": 98
+  },
+  "verdict": "PASS",
+  "gate_conclusion": "通过",
+  "required_fixes": [],
+  "nice_to_have": [
+    "将 dedup 派生字段集冻结为文档化契约（区分执行包/门禁包/FV 包各自集合），使后续 FV 可做全量派生复算。",
+    "为 IDENTITY_CONFLICT 与路线冲突分配独立 CLI 回执码。"
+  ],
+  "known_non_blocking_facts": [
+    "I/X/P r2 verdict 中 self-profile 身份的一次叙述转写误差（pd-01e7fcb1…/cd10e72a…）：已由 L3 判定为叙述误差并以 fixture/CV/L3 正确值（pd-7913f81f…/096428a4…/2a582889…）复算，更正记录于 docs/qa/index.md 第 18 条与留痕；本评审全部复算采用正确值。",
+    "evidence root 中存在一枚 2026-08-11 的历史遗留 temp 文件（.verification-credential-6732….tmp-89920-…，与既有凭证 6732… 对应的旧安装残留），非本次产生，未触碰。"
+  ],
+  "credential": {
+    "ref": "/Users/ling/.codex/nextstep/evidence/sha256-d11253328d36050bd559844c64b438e9b84e0c13125184e9b01e1e7cf23a8c56/verification-credential-c49fb216746a2a51734b2cd171b9c3ea24ce5edf619b3f5f128a8382d4c15e02.json",
+    "sha256": "c49fb216746a2a51734b2cd171b9c3ea24ce5edf619b3f5f128a8382d4c15e02",
+    "size_bytes": 7750,
+    "permissions": {
+      "directory": "0700",
+      "file": "0600"
+    },
+    "install": "exclusive temp + hard-link no-replace + file/dir fsync，create-once"
+  },
+  "next_allowed_action": "Audit Anchor 准备与独立 Anchor Verification 链；expected-old=F13 的 F13→F14 CAS 只能在 Anchor Proof 后执行；S1.5 仍不得启动。",
+  "independence_declaration": "本评审在唯一 git clone --no-local 一次性副本中完成安装与复验，身份摘要全部由自研 RFC8785 实现独立复算，未复用主控结论；评审写盘仅限本隔离分支评审目录与项目外 evidence root 一枚 create-once 凭证。",
+  "gate_disclaimer": "本裁决仅覆盖 manual-isolated headless consumer contract 证据范围，不证明 trusted-host 适配器、真实用户动作探针或 full 支持；不批准 formal promotion。",
+  "reviewers": [
+    {
+      "role": "Final Verifier",
+      "agent": "01a000a9-396c-73d2-a5ba-26ec970b558d",
+      "model": "qwen3.8-max",
+      "conclusion": "pass",
+      "summary": "五条硬门禁全部通过；控制面/快照/事务/manifest/四类 gate result 摘要独立复算全匹配；唯一隔离副本 206/206 与覆盖率三维复现；矩阵 17/17、Q6=100%、三重身份复算匹配、回放 digest 恒定；331 条 manifest 逐条一致；凭证 create-once 原子安装并复验。"
+    }
+  ]
+}
