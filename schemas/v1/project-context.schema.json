@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nextstep.local/schemas/v1/project-context.schema.json",
+  "title": "NextStep Project Context 1.0",
+  "description": "S3 §5 项目/阶段唯一解析结果：规范项目根、路线锁证据、阶段识别、留痕标志与 §5.3 确认视图。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "project_name",
+    "project_root",
+    "workspace_root",
+    "project_identity_digest",
+    "route_lock",
+    "stage",
+    "trace",
+    "confirmation_view"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "record_type": { "const": "project-context" },
+    "project_name": { "type": "string", "minLength": 1 },
+    "project_root": { "type": "string", "pattern": "^/" },
+    "workspace_root": { "type": "string", "pattern": "^/" },
+    "project_identity_digest": { "$ref": "#/definitions/digest" },
+    "route_lock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "digest"],
+      "properties": {
+        "path": { "type": "string", "pattern": "^/.*PROJECT_ROUTE_LOCK\\.md$" },
+        "digest": { "$ref": "#/definitions/digest" }
+      }
+    },
+    "stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lifecycle_stage", "stage_name", "milestone_number", "stage_source"],
+      "properties": {
+        "lifecycle_stage": { "type": "string", "minLength": 1 },
+        "stage_name": { "type": "string", "minLength": 1 },
+        "milestone_number": {
+          "oneOf": [{ "type": "null" }, { "type": "string", "minLength": 1 }]
+        },
+        "stage_source": { "const": "PROJECT_ROUTE_LOCK.md" }
+      }
+    },
+    "trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operations_log_present", "verification_report_present"],
+      "properties": {
+        "operations_log_present": { "type": "boolean" },
+        "verification_report_present": { "type": "boolean" }
+      }
+    },
+    "confirmation_view": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["project", "project_root", "current_stage", "action"],
+      "properties": {
+        "project": { "type": "string", "minLength": 1 },
+        "project_root": { "type": "string", "pattern": "^/" },
+        "current_stage": { "type": "string", "minLength": 1 },
+        "action": { "type": "string", "minLength": 1 }
+      }
+    }
+  },
+  "definitions": {
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+  }
+}
