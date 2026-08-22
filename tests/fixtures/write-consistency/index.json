@@ -10,32 +10,32 @@
     {
       "name": "fault/baseline-drift-conflict.json",
       "scenario_id": "wc-project-delivery-tool-baseline-drift-007",
-      "record_digest": "sha256:303b343736336b857b8db9ee5308b7002aac6c6be74fd08288031aaa4ce8b470"
+      "record_digest": "sha256:8c8eee3845b92aebd2f579912a6c30751f9d6e1d0a4b01977ba90689423584fc"
     },
     {
       "name": "fault/mid-write-failure-partial.json",
       "scenario_id": "wc-expense-reminder-mid-write-failure-006",
-      "record_digest": "sha256:bb96ec7198c835191a499e41f28eb4133c04705fbc716c76f865bd37863ef7e3"
+      "record_digest": "sha256:094686b4695ff1f7d8b6d54f60277abd16579d3d28c2a200a341619d2e2cba1a"
     },
     {
       "name": "fault/readonly-directory-blocked.json",
       "scenario_id": "wc-community-workshop-readonly-directory-004",
-      "record_digest": "sha256:ce614d05a814622326513a54376750159464d9bdf251f514760a6cfbf95d7291"
+      "record_digest": "sha256:c0e7c491cefa9a0ae39d5de345a32811dfb490cb4a80bd1d4b579b1bf5794a75"
     },
     {
       "name": "fault/symlink-escape-blocked.json",
       "scenario_id": "wc-expense-reminder-symlink-escape-008",
-      "record_digest": "sha256:5e4fd045567703eaa210fddc42e888f30f395d5c2942da3a00c1c59b1dea70d8"
+      "record_digest": "sha256:de59dfde6ec09b4d74d42e67cd35c72889ea55948e288391e35693381330b810"
     },
     {
       "name": "fault/unsafe-rollback-blocked.json",
       "scenario_id": "wc-community-workshop-unsafe-rollback-009",
-      "record_digest": "sha256:a10ed0d073159df03d0a98520b5de1d4f57af5700e400db81d164ca282b5477d"
+      "record_digest": "sha256:ca48e51a48748e68bb59908f51be432bfc9d3e02cfcf4e678f39886779cd9edb"
     },
     {
       "name": "fault/unwritable-file-blocked.json",
       "scenario_id": "wc-project-delivery-tool-unwritable-file-005",
-      "record_digest": "sha256:84db1b944a41ec4c6e57bc1c5fb5d2079032d255dc011a9ecafebda79dbc548c"
+      "record_digest": "sha256:f0434c85ce1632cd18ea4b83194ed20a2690439c446057b7d8ba88bd46527f27"
     },
     {
       "name": "layout/missing-route-lock.json",

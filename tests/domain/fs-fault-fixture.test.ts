@@ -12,6 +12,10 @@ import {
   assertNoSensitiveFields,
 } from "../../src/domain/sensitive-fields.ts";
 import {
+  resolveProjectContext,
+  type ProjectRootProbe,
+} from "../../src/domain/project-context.ts";
+import {
   FaultNotActiveError,
   InjectedWriteFailureError,
   listWriteConsistencyScenarioNames,
@@ -22,7 +26,7 @@ import {
   type FaultSetupReport,
   type WriteConsistencyScenario,
   type WriteExecutionReport,
-} from "./fs-fault-fixture.ts";
+} from "../support/fs-fault-fixture.ts";
 
 const execFile = promisify(execFileCallback);
 
@@ -77,6 +81,39 @@ const POSITIVE_SCENARIO_NAMES = [
   "positive/expense-reminder-write.json",
   "positive/project-delivery-tool-write.json",
 ] as const;
+
+const S1_5_ROUTE_LOCK_SCENARIO_NAMES = [
+  ...POSITIVE_SCENARIO_NAMES,
+  "fault/baseline-drift-conflict.json",
+  "fault/mid-write-failure-partial.json",
+  "fault/readonly-directory-blocked.json",
+  "fault/symlink-escape-blocked.json",
+  "fault/unsafe-rollback-blocked.json",
+  "fault/unwritable-file-blocked.json",
+] as const;
+
+interface PositiveRouteLockFixture {
+  readonly baseline: {
+    readonly files: readonly { readonly path: string; readonly content: string }[];
+  };
+  readonly target_project: { readonly project_id: string };
+}
+
+function routeLockProjectProbe(root: string, routeLock: string): ProjectRootProbe {
+  const routeLockPath = `${root}/PROJECT_ROUTE_LOCK.md`;
+  return {
+    exists: (path) => path === root || path === routeLockPath,
+    isDirectory: (path) => path === root,
+    isSymbolicLink: () => false,
+    isReadable: (path) => path === root || path === routeLockPath,
+    isWritable: (path) => path === root || path === routeLockPath,
+    realpath: (path) => path,
+    readFileUtf8: (path) => {
+      if (path !== routeLockPath) throw Object.assign(new Error("missing"), { code: "ENOENT" });
+      return routeLock;
+    },
+  };
+}
 
 function sha256Hex(content: string): string {
   return createHash("sha256").update(Buffer.from(content, "utf8")).digest("hex");
@@ -238,6 +275,33 @@ test("index.json 以 RFC8785 摘要冻结每个场景记录", async () => {
     const scenario = validateWriteConsistencyScenario(raw);
     assert.equal(scenario.scenario_id, entry.scenario_id, `${entry.name} scenario_id 与 index 不一致`);
     assert.equal(digestJson(raw), entry.record_digest, `${entry.name} 记录摘要与 index 冻结值不一致`);
+  }
+});
+
+test("正例与故障 fixture 的路线锁原文可直接解析为 S1.5，不依赖 synthetic 替换", async (t) => {
+  for (const name of S1_5_ROUTE_LOCK_SCENARIO_NAMES) {
+    await t.test(name, async () => {
+      const fixture = JSON.parse(await readFile(
+        join(FIXTURE_DIRECTORY, name),
+        "utf8",
+      )) as PositiveRouteLockFixture;
+      const routeLock = fixture.baseline.files.find((entry) => entry.path === "PROJECT_ROUTE_LOCK.md");
+      assert.ok(routeLock, `${name} 必须包含 PROJECT_ROUTE_LOCK.md`);
+
+      const root = `/fixtures/${fixture.target_project.project_id}`;
+      const context = resolveProjectContext({
+        workspace_roots: [root],
+        requested_project: fixture.target_project.project_id,
+        explicit_canonical_root: root,
+      }, routeLockProjectProbe(root, routeLock.content));
+
+      assert.deepEqual(context.stage, {
+        lifecycle_stage: "S5 / P5",
+        stage_name: "V1 / M1.2 / S1.5",
+        milestone_number: "M1.2",
+        stage_source: "PROJECT_ROUTE_LOCK.md",
+      });
+    });
   }
 });
 

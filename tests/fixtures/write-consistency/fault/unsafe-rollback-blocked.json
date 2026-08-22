@@ -5,7 +5,7 @@
     "committed_at": "2026-08-14T00:00:00.000Z",
     "files": [
       {
-        "content": "# PROJECT_ROUTE_LOCK\n\n- project_id: community-workshop\n- stage: P5/V1/M1.2/S1.5\n- purpose: 写入一致性 fixture 基线标记\n- evidence_scope: manual-isolated consumer contract\n- note: 仅用于 fixture 物化与解析测试，不是任何真实项目的路线锁真源\n",
+        "content": "# PROJECT_ROUTE_LOCK\n\n- 生命周期阶段: S5 / P5\n- 阶段名称: V1 / M1.2 / S1.5\n- 里程碑编号: M1.2\n- project_id: community-workshop\n- purpose: 写入一致性 fixture 基线标记\n- evidence_scope: manual-isolated consumer contract\n- note: 仅用于 fixture 物化与解析测试，不是任何真实项目的路线锁真源\n",
         "path": "PROJECT_ROUTE_LOCK.md"
       },
       {
