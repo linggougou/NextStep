@@ -49,3 +49,33 @@ test("domain modules do not import adapters, CLI, or Codex integrations", async 
     );
   }
 });
+
+test("adapters do not import CLI and production source never imports tests, fixtures, or support", async () => {
+  await init;
+  for (const root of [resolve(projectRoot, "src/adapters"), resolve(projectRoot, "src")]) {
+    const files = await listTypeScriptFiles(root);
+    for (const file of files) {
+      const source = await readFile(file, "utf8");
+      const [records] = parse(source);
+      const imports = records.map(({ s: start, e: end }) => source.slice(start, end));
+      if (file.startsWith(resolve(projectRoot, "src/adapters"))) {
+        assert.equal(
+          imports.some((specifier) => /(?:^|\/)cli(?:\/|$)/i.test(specifier)),
+          false,
+          `${relative(projectRoot, file)} imports a CLI composition root`,
+        );
+      }
+      assert.equal(
+        imports.some((specifier) => /(?:^|\/)(?:tests?|fixtures?|support)(?:\/|$)/i.test(specifier)),
+        false,
+        `${relative(projectRoot, file)} imports test-only material`,
+      );
+    }
+  }
+});
+
+test("S1.5 write consistency entry remains a CLI composition root", async () => {
+  const source = await readFile(resolve(projectRoot, "src/cli/write-consistency.ts"), "utf8");
+  assert.match(source, /\.\.\/domain\//);
+  assert.match(source, /\.\.\/adapters\//);
+});

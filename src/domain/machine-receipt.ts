@@ -2,7 +2,7 @@ import { Ajv, type ValidateFunction } from "ajv";
 
 import machineReceiptSchema from "../../schemas/v1/machine-receipt.schema.json" with { type: "json" };
 import { canonicalizeJson, parseCanonicalJsonBytes } from "./canonical-json.ts";
-import { assertDigestMatches } from "./content-digest.ts";
+import { assertDigestMatches, digestJson } from "./content-digest.ts";
 import { assertNoSensitiveFields } from "./sensitive-fields.ts";
 import {
   buildRequirementIntakeUserOutput,
@@ -11,9 +11,11 @@ import {
 import { parseInteractionPrototype } from "./interaction-prototype.ts";
 import { parseCarrierDecision } from "./carrier-decision.ts";
 import { parseAcceptanceProfileDecision } from "./acceptance-profile.ts";
+import { parseCandidateChangeDecision } from "./candidate-change.ts";
 import { recoverFrozenRequirement } from "./requirement-freeze.ts";
 import { parseProductDefinitionCandidate } from "./product-definition.ts";
 import { isPlainRecord, type UnknownRecord } from "./value-guards.ts";
+import { parseWriteTransactionResult } from "./write-transaction.ts";
 
 export type MachineReceiptCode =
   | "CONTRACT_PROBE_SUCCEEDED"
@@ -36,7 +38,15 @@ export type MachineReceiptCode =
   | "CARRIER_DECISION_REJECTED"
   | "ACCEPTANCE_PROFILE_ACCEPTED"
   | "ACCEPTANCE_PROFILE_REJECTED"
-  | "PROFILE_CONFLICT_REJECTED";
+  | "PROFILE_CONFLICT_REJECTED"
+  | "CANDIDATE_CHANGE_PREVIEWED"
+  | "CANDIDATE_CHANGE_REJECTED"
+  | "WRITE_PREVIEWED"
+  | "WRITE_COMMITTED"
+  | "WRITE_CONFIRMATION_REJECTED"
+  | "WRITE_CONFLICT_REJECTED"
+  | "WRITE_PARTIAL_BLOCKED"
+  | "WRITE_ACCESS_BLOCKED";
 
 export interface MachineReceipt {
   readonly schema_version: "1.0";
@@ -90,7 +100,7 @@ export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
       throw new TypeError(`Invalid machine receipt schema: ${formatSchemaErrors(validateMachineReceipt)}`);
     }
 
-    const successfulFields: Record<Extract<MachineReceiptCode, `${string}_ACCEPTED` | "CONTRACT_PROBE_SUCCEEDED">, readonly string[]> = {
+    const successfulFields: Partial<Record<MachineReceiptCode, readonly string[]>> = {
       CONTRACT_PROBE_SUCCEEDED: ["canonical_json", "digest", "dry_run", "schema_version"],
       REQUIREMENT_INTAKE_ACCEPTED: ["canonical_json", "digest", "requirement_intake", "schema_version", "user_output"],
       REQUIREMENT_FREEZE_ACCEPTED: ["canonical_json", "digest", "frozen_requirement", "requirement_set", "schema_version"],
@@ -98,6 +108,9 @@ export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
       INTERACTION_PROTOTYPE_ACCEPTED: ["canonical_json", "digest", "interaction_prototype", "schema_version"],
       CARRIER_DECISION_ACCEPTED: ["canonical_json", "digest", "carrier_decision", "schema_version"],
       ACCEPTANCE_PROFILE_ACCEPTED: ["canonical_json", "digest", "acceptance_profile", "schema_version"],
+      CANDIDATE_CHANGE_PREVIEWED: ["canonical_json", "digest", "candidate_change_decision", "dry_run", "schema_version"],
+      WRITE_PREVIEWED: ["canonical_json", "digest", "dry_run", "schema_version", "write_transaction_result"],
+      WRITE_COMMITTED: ["canonical_json", "digest", "dry_run", "schema_version", "write_transaction_result"],
     };
     if (snapshot.ok) {
       const fields = successfulFields[snapshot.code as keyof typeof successfulFields];
@@ -105,6 +118,8 @@ export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
         throw new TypeError("Invalid successful machine receipt code");
       }
       assertOwnFields(snapshot.data, fields, "data field");
+    } else if (Object.hasOwn(snapshot.data, "write_transaction_result")) {
+      assertOwnFields(snapshot.data, ["canonical_json", "digest", "dry_run", "schema_version", "write_transaction_result"], "data field");
     } else {
       assertOwnFields(snapshot.data, ["dry_run"], "data field");
     }
@@ -175,6 +190,37 @@ export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
         if (canonicalJson !== canonicalizeJson(profile)) {
           throw new TypeError("Acceptance profile receipt payload does not match canonical JSON");
         }
+      }
+      if (snapshot.code === "CANDIDATE_CHANGE_PREVIEWED") {
+        if (snapshot.data.schema_version !== "1.0" || snapshot.data.dry_run !== true) {
+          throw new TypeError("Candidate change preview receipt must be a 1.0 dry-run");
+        }
+        const decision = parseCandidateChangeDecision(snapshot.data.candidate_change_decision);
+        if (decision.status !== "ready-for-confirmation" || canonicalJson !== canonicalizeJson(decision)) {
+          throw new TypeError("Candidate change preview receipt payload does not match decision");
+        }
+      }
+      if (snapshot.code === "WRITE_PREVIEWED" || snapshot.code === "WRITE_COMMITTED") {
+        const result = parseWriteTransactionResult(snapshot.data.write_transaction_result);
+        if (
+          snapshot.data.schema_version !== "1.0" ||
+          result.code !== snapshot.code ||
+          result.dry_run !== snapshot.data.dry_run ||
+          canonicalJson !== canonicalizeJson(result)
+        ) {
+          throw new TypeError("Write transaction receipt payload does not match result");
+        }
+      }
+    } else if (Object.hasOwn(snapshot.data, "write_transaction_result")) {
+      const result = parseWriteTransactionResult(snapshot.data.write_transaction_result);
+      if (
+        snapshot.data.schema_version !== "1.0" ||
+        result.code !== snapshot.code ||
+        result.dry_run !== snapshot.data.dry_run ||
+        snapshot.data.canonical_json !== canonicalizeJson(result) ||
+        snapshot.data.digest !== digestJson(result)
+      ) {
+        throw new TypeError("Failed write transaction receipt payload does not match result");
       }
     }
 

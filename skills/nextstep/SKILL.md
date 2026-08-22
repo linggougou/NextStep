@@ -1,17 +1,17 @@
 ---
 name: nextstep
-description: Validate a NextStep requirement candidate, create an explicitly confirmed immutable freeze record at S1.2, or generate and validate an S1.3 Product Definition 2.0 candidate from a Frozen Requirement. This Skill permits Product Definition 2.0 validation within V1 / M1.1 / S1.3 only after stage inspection, and rejects legacy 1.0 product candidates. It also validates S1.4 carrier-free interaction prototype, carrier decision, and Acceptance Profile candidates within V1 / M1.2 / S1.4 only after stage inspection. Use only for requirement intake, requirement freeze, product-definition validation, or S1.4 prototype/carrier/profile validation; do not use it for source writing, task dispatch, signoff approval, or stage approval.
+description: Validate NextStep requirement, freeze, Product Definition 2.0 in `V1 / M1.1 / S1.3`, S1.4 prototype/profile in `V1 / M1.2 / S1.4`, and S1.5 candidate-write contracts in `V1 / M1.2 / S1.5` after explicit project/stage inspection. S1.5 permits dry-run preview and a narrowly injected integration-agent write transaction only after explicit confirmation; the main conversation never reads or writes project files.
 ---
 
 # NextStep
 
-Operate only within the current `V1 / M1.1 / S1.1`, `V1 / M1.1 / S1.2`, `V1 / M1.1 / S1.3`, or `V1 / M1.2 / S1.4` boundary shown by project truth.
+Operate only within the current `V1 / M1.1 / S1.1`, `V1 / M1.1 / S1.2`, `V1 / M1.1 / S1.3`, `V1 / M1.2 / S1.4`, or `V1 / M1.2 / S1.5` boundary shown by project truth.
 
 ## Inspect The Stage
 
 1. Resolve the project root explicitly.
 2. Read `PROJECT_ROUTE_LOCK.md` and `docs/PLANS.md`.
-3. Confirm the active milestone is `V1 / M1.1 / S1.1` before running requirement intake, `V1 / M1.1 / S1.2` before preparing a freeze record, `V1 / M1.1 / S1.3` before validating a product-definition candidate, or `V1 / M1.2 / S1.4` before validating a carrier-free prototype, carrier decision, or Acceptance Profile candidate.
+3. Confirm the active milestone is `V1 / M1.1 / S1.1` before running requirement intake, `V1 / M1.1 / S1.2` before preparing a freeze record, `V1 / M1.1 / S1.3` before validating a product-definition candidate, `V1 / M1.2 / S1.4` before validating a carrier-free prototype, carrier decision, or Acceptance Profile candidate, or `V1 / M1.2 / S1.5` before previewing or applying a candidate write.
 4. Report the current stage, active gate, blocking reason, and permitted next action from those sources.
 
 Do not infer stage state from chat history or task titles.
@@ -146,3 +146,25 @@ Every S1.4 stdin command follows the existing discipline: one RFC 8785 canonical
 Prototype signoff, carrier decision, and Profile configuration each require an explicit user confirmation node recorded in the four-state gate record: 通过 (passed), 退回 (returned), 需讨论 (needs discussion), or 阻塞 (blocked).
 
 The S1.4 receipts are evidence for S1.5, S1.6, and the M1.2 I/X/P gates. S1.4 does not complete M1.2, does not generate execution packets, does not dispatch tasks, and does not move `refs/nextstep/formal` or `refs/nextstep/control`.
+
+## S1.5 Candidate Write Consistency
+
+Enter only after project truth explicitly reports `V1 / M1.2 / S1.5`. Resolve one canonical absolute project root and read its `PROJECT_ROUTE_LOCK.md`; same-name roots, nested roots, symlinks, path escape, missing stage sources, and inaccessible paths fail closed. Never infer the project or stage from the main conversation.
+
+The main conversation Agent is only the user communication, decision, and flat-dispatch entry. It must not read or modify project files and cannot obtain the write capability by placing `actor_role`, a confirmation envelope, or an approval claim in stdin, arguments, or environment variables. An execution Agent may produce a dry-run preview. Only an integration Agent holding the in-process file-system port, trusted clock, and explicit confirmation envelope may request `--commit`.
+
+Preview the candidate through one RFC 8785 canonical JSON command:
+
+```bash
+node dist/src/cli/write-consistency.js
+```
+
+The exported `runCandidateChangePreview` composition root resolves the project/stage and calls the deterministic candidate evaluator with `dry_run: true`. A preview never calls `atomicWrite` or `removeCreated`, never creates a commit, and never changes the target worktree or its formal/control refs.
+
+After the complete challenge/view/display/independent-user-action chain has been verified and an explicit confirmation envelope exists, the integration Agent may call exported `runWriteTransaction` in process. `--dry-run` rechecks every baseline and returns `WRITE_PREVIEWED` without writing. `--commit` rechecks the same project, stage, project-context digest, confirmation view, expiry, formal/working baseline, target paths, before/after digests, and permissions before returning `WRITE_COMMITTED`.
+
+Direct shell execution has no integration capability and must fail closed. stdout contains exactly one JCS machine receipt; diagnostics use stderr only; every failure sets exit code 1. `WRITE_CONFLICT_REJECTED` means the confirmed baseline or target changed and must never overwrite newer work. `WRITE_ACCESS_BLOCKED` covers access, project, stage, path, or symlink refusal. `WRITE_PARTIAL_BLOCKED` means a write or safe rollback could not complete and requires recovery. `WRITE_CONFIRMATION_REJECTED` means the explicit confirmation is absent, expired, changed, or mismatched. These codes do not replace or downgrade the existing `PROFILE_CONFLICT_REJECTED` route/Profile code.
+
+On any failed target, readback mismatch, unsafe rollback, or validation failure, keep state promotion at `none`: do not update signoff, stage, `refs/nextstep/formal`, `refs/nextstep/control`, registry, Final Snapshot, or Audit Anchor. Never use destructive Git recovery. The three write-consistency fixture replays prove only a `manual-isolated consumer contract`; they do not prove a real host adapter, real user event, `full` support, S1.5 completion, M1.2 completion, or permission to enter S1.6.
+
+不得推进 formal/control；候选写入成功也不等于阶段正式提升。

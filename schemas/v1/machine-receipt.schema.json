@@ -44,7 +44,15 @@
         "CARRIER_DECISION_REJECTED",
         "ACCEPTANCE_PROFILE_ACCEPTED",
         "ACCEPTANCE_PROFILE_REJECTED",
-        "PROFILE_CONFLICT_REJECTED"
+        "PROFILE_CONFLICT_REJECTED",
+        "CANDIDATE_CHANGE_PREVIEWED",
+        "CANDIDATE_CHANGE_REJECTED",
+        "WRITE_PREVIEWED",
+        "WRITE_COMMITTED",
+        "WRITE_CONFIRMATION_REJECTED",
+        "WRITE_CONFLICT_REJECTED",
+        "WRITE_PARTIAL_BLOCKED",
+        "WRITE_ACCESS_BLOCKED"
       ]
     },
     "data": {
@@ -152,6 +160,52 @@
                   "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
                   "product_definition": { "type": "object" },
                   "schema_version": { "const": "2.0" }
+                }
+              }
+            }
+          },
+          {
+            "properties": {
+              "code": { "const": "CANDIDATE_CHANGE_PREVIEWED" },
+              "data": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "canonical_json",
+                  "digest",
+                  "candidate_change_decision",
+                  "dry_run",
+                  "schema_version"
+                ],
+                "properties": {
+                  "canonical_json": { "type": "string" },
+                  "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+                  "candidate_change_decision": { "type": "object" },
+                  "dry_run": { "const": true },
+                  "schema_version": { "const": "1.0" }
+                }
+              }
+            }
+          },
+          {
+            "properties": {
+              "code": { "enum": ["WRITE_PREVIEWED", "WRITE_COMMITTED"] },
+              "data": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "canonical_json",
+                  "digest",
+                  "dry_run",
+                  "schema_version",
+                  "write_transaction_result"
+                ],
+                "properties": {
+                  "canonical_json": { "type": "string" },
+                  "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+                  "dry_run": { "type": "boolean" },
+                  "schema_version": { "const": "1.0" },
+                  "write_transaction_result": { "type": "object" }
                 }
               }
             }
@@ -292,38 +346,71 @@
         ]
       },
       "else": {
-        "properties": {
-          "code": {
-            "enum": [
-              "CONTRACT_PROBE_REJECTED",
-              "INVALID_JSON",
-              "SENSITIVE_FIELD_DETECTED",
-              "REQUIREMENT_INTAKE_REJECTED",
-              "DEVELOPMENT_TASK_EMBEDDED",
-              "REQUIREMENT_FREEZE_REJECTED",
-              "REQUIREMENT_NOT_FROZEN",
-              "CONFIRMATION_MISMATCH",
-              "IDENTITY_CONFLICT",
-              "PRODUCT_DEFINITION_REJECTED",
-              "INTERACTION_PROTOTYPE_REJECTED",
-              "CARRIER_DECISION_REJECTED",
-              "ACCEPTANCE_PROFILE_REJECTED",
-              "PROFILE_CONFLICT_REJECTED"
-            ]
-          },
-          "data": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "dry_run"
-            ],
+        "oneOf": [
+          {
             "properties": {
-              "dry_run": {
-                "type": "boolean"
+              "code": {
+                "enum": [
+                  "CONTRACT_PROBE_REJECTED",
+                  "INVALID_JSON",
+                  "SENSITIVE_FIELD_DETECTED",
+                  "REQUIREMENT_INTAKE_REJECTED",
+                  "DEVELOPMENT_TASK_EMBEDDED",
+                  "REQUIREMENT_FREEZE_REJECTED",
+                  "REQUIREMENT_NOT_FROZEN",
+                  "CONFIRMATION_MISMATCH",
+                  "IDENTITY_CONFLICT",
+                  "PRODUCT_DEFINITION_REJECTED",
+                  "INTERACTION_PROTOTYPE_REJECTED",
+                  "CARRIER_DECISION_REJECTED",
+                  "ACCEPTANCE_PROFILE_REJECTED",
+                  "PROFILE_CONFLICT_REJECTED",
+                  "CANDIDATE_CHANGE_REJECTED",
+                  "WRITE_CONFIRMATION_REJECTED",
+                  "WRITE_CONFLICT_REJECTED",
+                  "WRITE_PARTIAL_BLOCKED",
+                  "WRITE_ACCESS_BLOCKED"
+                ]
+              },
+              "data": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["dry_run"],
+                "properties": { "dry_run": { "type": "boolean" } }
+              }
+            }
+          },
+          {
+            "properties": {
+              "code": {
+                "enum": [
+                  "WRITE_CONFIRMATION_REJECTED",
+                  "WRITE_CONFLICT_REJECTED",
+                  "WRITE_PARTIAL_BLOCKED",
+                  "WRITE_ACCESS_BLOCKED"
+                ]
+              },
+              "data": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "canonical_json",
+                  "digest",
+                  "dry_run",
+                  "schema_version",
+                  "write_transaction_result"
+                ],
+                "properties": {
+                  "canonical_json": { "type": "string" },
+                  "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+                  "dry_run": { "type": "boolean" },
+                  "schema_version": { "const": "1.0" },
+                  "write_transaction_result": { "type": "object" }
+                }
               }
             }
           }
-        }
+        ]
       }
     }
   ]
