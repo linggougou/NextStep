@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { execFile } from "node:child_process";
+import { execFile, spawn } from "node:child_process";
 import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
@@ -21,6 +21,7 @@ import {
   deriveWorkingBaselineDigest,
   digestFileContent,
   type CandidateChange,
+  type CandidateChangeDecision,
 } from "../../src/domain/candidate-change.ts";
 import { assertWriteCommandPolicy } from "../../src/domain/command-policy.ts";
 import {
@@ -40,10 +41,35 @@ import {
 import { parseMachineReceipt } from "../../src/domain/machine-receipt.ts";
 import {
   digestUtf8Content,
+  type WriteFileSystemPort,
   type WritePlan,
+  type WriteTransactionResult,
 } from "../../src/domain/write-transaction.ts";
+import {
+  loadWriteConsistencyScenario,
+  materializeWriteConsistencyScenario,
+} from "../support/fs-fault-fixture.ts";
 
 const execFileAsync = promisify(execFile);
+
+function runCompiledCli(args: readonly string[], input: string): Promise<{ readonly code: number | null; readonly stdout: string; readonly stderr: string }> {
+  return new Promise((resolveResult, reject) => {
+    const child = spawn(process.execPath, [resolve(process.cwd(), "dist/src/cli/write-consistency.js"), ...args], {
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+    const stdout: Buffer[] = [];
+    const stderr: Buffer[] = [];
+    child.stdout.on("data", (chunk: Buffer) => stdout.push(chunk));
+    child.stderr.on("data", (chunk: Buffer) => stderr.push(chunk));
+    child.once("error", reject);
+    child.once("close", (code) => resolveResult({
+      code,
+      stdout: Buffer.concat(stdout).toString("utf8"),
+      stderr: Buffer.concat(stderr).toString("utf8"),
+    }));
+    child.stdin.end(input);
+  });
+}
 
 async function runGit(root: string, args: readonly string[]): Promise<string> {
   const result = await execFileAsync("git", ["-c", "user.name=NextStep Fixture", "-c", "user.email=fixture@nextstep.invalid", ...args], { cwd: root });
@@ -113,7 +139,7 @@ function candidateProbe(root: string, files: ReadonlyMap<string, string>) {
   };
 }
 
-function normalizedRouteLock(projectId: string): string {
+function validRouteLock(projectId: string): string {
   return [
     "# PROJECT_ROUTE_LOCK",
     "",
@@ -194,7 +220,7 @@ function buildCandidate(fixture: WriteFixture, context: ProjectContext, plan: Wr
   };
 }
 
-function buildEnvelope(plan: WritePlan) {
+function buildEnvelope(plan: WritePlan, expiresAt = "2026-08-14T00:09:00.000Z") {
   const challenge = createWriteConfirmationChallenge({
     project: plan.project,
     project_context_digest: plan.project_context_digest,
@@ -205,7 +231,7 @@ function buildEnvelope(plan: WritePlan) {
     confirmation_id: `confirmation-${plan.plan_id}`,
     proposer_id: "integration-proposer",
     created_at: "2026-08-14T00:01:00.000Z",
-    expires_at: "2026-08-14T00:09:00.000Z",
+    expires_at: expiresAt,
   });
   const display = createUnverifiedWriteConfirmationViewDisplay(challenge, {
     display_id: `display-${plan.plan_id}`,
@@ -223,6 +249,95 @@ function buildEnvelope(plan: WritePlan) {
   ));
 }
 
+function buildReadyDecision(candidate: CandidateChange): CandidateChangeDecision {
+  return {
+    schema_version: "1.0",
+    record_type: "candidate-change-decision",
+    status: "ready-for-confirmation",
+    candidate_change_id: candidate.candidate_change_id,
+    candidate_change_digest: digestJson(candidate),
+    project_context_digest: candidate.project_context_digest,
+    dry_run: true,
+    evaluated_at: "2026-08-14T00:04:00Z",
+    rejection: null,
+  };
+}
+
+function buildWriteCommand(
+  context: ProjectContext,
+  candidate: CandidateChange,
+  decision: CandidateChangeDecision,
+  plan: WritePlan,
+) {
+  return canonicalizeJson({
+    transaction_id: `tx-${plan.plan_id}`,
+    project_context: context,
+    candidate_change: candidate,
+    candidate_change_decision: decision,
+    write_plan: plan,
+  });
+}
+
+function memoryWriteFileSystem(root: string, files: Map<string, string>) {
+  const counts = { probes: 0, reads: 0, writes: 0, removals: 0 };
+  return {
+    counts,
+    port: {
+      async probe(relativePath: string) {
+        counts.probes += 1;
+        const exists = files.has(join(root, relativePath));
+        return exists
+          ? { exists: true, kind: "file" as const, symlink: false, readable: true, writable: true }
+          : { exists: false, kind: "missing" as const, symlink: false, readable: false, writable: false };
+      },
+      async readContent(relativePath: string) {
+        counts.reads += 1;
+        const content = files.get(join(root, relativePath));
+        if (content === undefined) throw Object.assign(new Error("missing"), { code: "ENOENT" });
+        return Buffer.from(content, "utf8");
+      },
+      async atomicWrite(relativePath: string, content: Uint8Array) {
+        counts.writes += 1;
+        files.set(join(root, relativePath), Buffer.from(content).toString("utf8"));
+      },
+      async removeCreated(relativePath: string) {
+        counts.removals += 1;
+        files.delete(join(root, relativePath));
+      },
+    },
+  };
+}
+
+function boundScenario(root = "/workspace/bound-project", targetPath = "docs/a.md") {
+  const fixture: WriteFixture = {
+    baseline: { files: [] },
+    candidate_change: { writes: [{ path: targetPath, content: "new\n" }] },
+    target_project: {
+      project_id: "bound-project",
+      repository_id: `sha256:${"4".repeat(64)}`,
+      formal_baseline: "5".repeat(40),
+    },
+  };
+  const files = new Map<string, string>([
+    [join(root, "PROJECT_ROUTE_LOCK.md"), validRouteLock(fixture.target_project.project_id)],
+    ...(targetPath.startsWith(".git/") ? [] : [[join(root, targetPath), "old\n"]] as const),
+  ]);
+  const context = buildContext(root, fixture, files);
+  const plan = buildPlan(fixture, context, files);
+  const candidate = buildCandidate(fixture, context, plan);
+  const decision = buildReadyDecision(candidate);
+  const fileSystem = memoryWriteFileSystem(root, files);
+  const integration: WriteTransactionCliContext = {
+    actor_role: "integration-agent",
+    confirmation_envelope: buildEnvelope(plan),
+    file_system: fileSystem.port,
+    project_probe: memoryProjectProbe(root, files),
+    canonical_project_root: root,
+    now: () => new Date("2026-08-14T00:05:00.000Z"),
+  };
+  return { root, files, context, plan, candidate, decision, fileSystem, integration };
+}
+
 test("S1.5 主对话和无集成能力的直接 CLI 均不得写目标项目", async () => {
   const input = canonicalizeJson({ transaction_id: "tx-denied", project_context: {}, write_plan: {} });
   for (const context of [undefined, { actor_role: "main-conversation-agent" } as unknown as WriteTransactionCliContext]) {
@@ -235,6 +350,94 @@ test("S1.5 主对话和无集成能力的直接 CLI 均不得写目标项目", a
     assert.deepEqual(exitCodes, [1]);
     assert.equal(diagnostics.length, 1);
   }
+});
+
+test("S1.5 真实入口无参数分派 candidate preview，write 参数仍在无可信能力时 fail closed", async () => {
+  const preview = await runCompiledCli([], canonicalizeJson({}));
+  assert.equal(parseMachineReceipt(parseCanonicalJsonBytes(Buffer.from(preview.stdout, "utf8"))).code, "CANDIDATE_CHANGE_REJECTED");
+  assert.equal(preview.stdout.split("\n").length, 1);
+  assert.equal(preview.code, 1);
+
+  const write = await runCompiledCli(["--dry-run"], canonicalizeJson({}));
+  assert.equal(parseMachineReceipt(parseCanonicalJsonBytes(Buffer.from(write.stdout, "utf8"))).code, "WRITE_ACCESS_BLOCKED");
+  assert.equal(write.code, 1);
+});
+
+test("S1.5 集成职责缺失或畸形确认映射 WRITE_CONFIRMATION_REJECTED，且不触盘", async () => {
+  const scenario = boundScenario();
+  const input = buildWriteCommand(scenario.context, scenario.candidate, scenario.decision, scenario.plan);
+  for (const confirmation of [undefined, null, {}]) {
+    const run = fakeIo(input, ["--commit"]);
+    await runWriteTransaction(run.io, {
+      ...scenario.integration,
+      confirmation_envelope: confirmation,
+    });
+    assert.equal(parseMachineReceipt(parseCanonicalJsonBytes(Buffer.from(run.output[0]!, "utf8"))).code, "WRITE_CONFIRMATION_REJECTED");
+    assert.deepEqual(run.exitCodes, [1]);
+  }
+  assert.deepEqual(scenario.fileSystem.counts, { probes: 0, reads: 0, writes: 0, removals: 0 });
+});
+
+test("S1.5 write 组合边界拒绝 .git 受保护目标，含 formal/control refs，且零触盘", async () => {
+  for (const path of [".git/config", ".git/refs/nextstep/formal", ".git/refs/nextstep/control", ".GIT/refs/nextstep/formal"]) {
+    const scenario = boundScenario(`/workspace/protected-${path.split("/").at(-1)}`, path);
+    const run = fakeIo(buildWriteCommand(scenario.context, scenario.candidate, scenario.decision, scenario.plan), ["--commit"]);
+    await runWriteTransaction(run.io, scenario.integration);
+    assert.equal(parseMachineReceipt(parseCanonicalJsonBytes(Buffer.from(run.output[0]!, "utf8"))).code, "WRITE_ACCESS_BLOCKED");
+    assert.deepEqual(scenario.fileSystem.counts, { probes: 0, reads: 0, writes: 0, removals: 0 });
+  }
+});
+
+test("S1.5 commit 实时重读路线锁并核对 canonical root，漂移或根错配均零触盘", async () => {
+  for (const mutate of [
+    (scenario: ReturnType<typeof boundScenario>) => scenario.files.set(join(scenario.root, "PROJECT_ROUTE_LOCK.md"), validRouteLock("bound-project").replace("S1.5", "S1.6")),
+    (scenario: ReturnType<typeof boundScenario>) => Object.assign(scenario.integration, { canonical_project_root: "/workspace/wrong-root" }),
+  ]) {
+    const scenario = boundScenario();
+    mutate(scenario);
+    const run = fakeIo(buildWriteCommand(scenario.context, scenario.candidate, scenario.decision, scenario.plan), ["--commit"]);
+    await runWriteTransaction(run.io, scenario.integration);
+    assert.equal(parseMachineReceipt(parseCanonicalJsonBytes(Buffer.from(run.output[0]!, "utf8"))).code, "WRITE_ACCESS_BLOCKED");
+    assert.deepEqual(scenario.fileSystem.counts, { probes: 0, reads: 0, writes: 0, removals: 0 });
+  }
+});
+
+test("S1.5 write 必须消费 ready preview decision，并拒绝跳过预览、篡改 plan 与过期 candidate", async () => {
+  const base = boundScenario();
+  const cases: Array<{ readonly decision: CandidateChangeDecision; readonly candidate: CandidateChange; readonly plan: WritePlan; readonly integration: WriteTransactionCliContext }> = [
+    {
+      ...base,
+      decision: { ...base.decision, status: "rejected", rejection: { code: "CANDIDATE_BINDING_MISMATCH", reasons: ["not-ready"] } },
+    },
+    {
+      ...base,
+      plan: {
+        ...base.plan,
+        targets: base.plan.targets.map((target) => ({ ...target, content: "tampered\n", after_digest: digestUtf8Content("tampered\n") })),
+      },
+      integration: {
+        ...base.integration,
+        confirmation_envelope: buildEnvelope({
+          ...base.plan,
+          targets: base.plan.targets.map((target) => ({ ...target, content: "tampered\n", after_digest: digestUtf8Content("tampered\n") })),
+        }),
+      },
+    },
+    {
+      ...base,
+      integration: {
+        ...base.integration,
+        confirmation_envelope: buildEnvelope(base.plan, "2026-08-14T00:20:00.000Z"),
+        now: () => new Date("2026-08-14T00:11:00.000Z"),
+      },
+    },
+  ];
+  for (const item of cases) {
+    const run = fakeIo(buildWriteCommand(base.context, item.candidate, item.decision, item.plan), ["--commit"]);
+    await runWriteTransaction(run.io, item.integration);
+    assert.equal(parseMachineReceipt(parseCanonicalJsonBytes(Buffer.from(run.output[0]!, "utf8"))).code, "WRITE_CONFIRMATION_REJECTED");
+  }
+  assert.equal(base.fileSystem.counts.writes, 0);
 });
 
 test("S1.5 CLI 的 Node 同步探针覆盖真实目录、文件、缺失路径与读取", async () => {
@@ -290,17 +493,15 @@ test("S1.5 三类 fixture 完成入口预览→显式确认→dry-run→回写�
   for (const name of ["community-workshop", "expense-reminder", "project-delivery-tool"]) {
     await t.test(name, async () => {
       const fixture = await loadFixture(name);
-      const root = await mkdtemp(join(tmpdir(), `nextstep-${name}-`));
+      const temporaryRoot = await mkdtemp(join(tmpdir(), `nextstep-${name}-`));
+      const root = createNodeProjectRootProbe().realpath(temporaryRoot);
       try {
         const files = new Map<string, string>();
         for (const entry of fixture.baseline.files) {
-          const content = entry.path === "PROJECT_ROUTE_LOCK.md"
-            ? normalizedRouteLock(fixture.target_project.project_id)
-            : entry.content;
           const path = join(root, entry.path);
           await mkdir(dirname(path), { recursive: true });
-          await writeFile(path, content, "utf8");
-          files.set(path, content);
+          await writeFile(path, entry.content, "utf8");
+          files.set(path, entry.content);
         }
         await runGit(root, ["init", "-q"]);
         await runGit(root, ["add", "."]);
@@ -330,7 +531,9 @@ test("S1.5 三类 fixture 完成入口预览→显式确认→dry-run→回写�
         assert.deepEqual(previewIo.diagnostics, []);
         assert.deepEqual(previewIo.exitCodes, []);
         assert.equal(previewIo.output.length, 1);
-        assert.equal(parseMachineReceipt(parseCanonicalJsonBytes(Buffer.from(previewIo.output[0]!, "utf8"))).code, "CANDIDATE_CHANGE_PREVIEWED");
+        const previewReceipt = parseMachineReceipt(parseCanonicalJsonBytes(Buffer.from(previewIo.output[0]!, "utf8")));
+        assert.equal(previewReceipt.code, "CANDIDATE_CHANGE_PREVIEWED");
+        const decision = previewReceipt.data.candidate_change_decision as unknown as CandidateChangeDecision;
 
         const envelope = buildEnvelope(plan);
         const nodeFileSystem = createNodeWriteFileSystem({ project_root: root });
@@ -352,9 +555,17 @@ test("S1.5 三类 fixture 完成入口预览→显式确认→dry-run→回写�
           actor_role: "integration-agent",
           confirmation_envelope: envelope,
           file_system: fileSystem,
+          project_probe: createNodeProjectRootProbe(),
+          canonical_project_root: root,
           now: () => new Date("2026-08-14T00:05:00.000Z"),
         };
-        const input = canonicalizeJson({ transaction_id: `tx-${name}`, project_context: context, write_plan: plan });
+        const input = canonicalizeJson({
+          transaction_id: `tx-${name}`,
+          project_context: context,
+          candidate_change: candidate,
+          candidate_change_decision: decision,
+          write_plan: plan,
+        });
         const dryRun = fakeIo(input, ["--dry-run"]);
         await runWriteTransaction(dryRun.io, runnerContext);
         assert.deepEqual(dryRun.diagnostics, []);
@@ -416,7 +627,7 @@ test("S1.5 三类 fixture 完成入口预览→显式确认→dry-run→回写�
           assert.equal(await runGit(root, ["show", `HEAD:${target.path}`]), target.content.trim());
         }
       } finally {
-        await rm(root, { recursive: true, force: true });
+        await rm(temporaryRoot, { recursive: true, force: true });
       }
     });
   }
@@ -424,7 +635,7 @@ test("S1.5 三类 fixture 完成入口预览→显式确认→dry-run→回写�
 
 test("S1.5 candidate preview 对领域可表达但 write-plan 不支持的 delete 目标 fail closed", async () => {
   const root = "/workspace/delete-target";
-  const routeLock = normalizedRouteLock("delete-target");
+  const routeLock = validRouteLock("delete-target");
   const targetContent = "保留我\n";
   const files = new Map([
     [join(root, "PROJECT_ROUTE_LOCK.md"), routeLock],
@@ -475,7 +686,7 @@ test("S1.5 candidate preview 对领域可表达但 write-plan 不支持的 delet
 
 test("S1.5 阶段守卫拒绝非 S1.5 路线锁且失败仅写一个回执", async () => {
   const root = "/workspace/off-stage";
-  const routeLock = normalizedRouteLock("off-stage").replace("S1.5", "S1.6");
+  const routeLock = validRouteLock("off-stage").replace("S1.5", "S1.6");
   const files = new Map([[join(root, "PROJECT_ROUTE_LOCK.md"), routeLock]]);
   const { io, output, diagnostics, exitCodes } = fakeIo(canonicalizeJson({
     project_resolution: {
@@ -498,7 +709,7 @@ test("S1.5 阶段守卫拒绝非 S1.5 路线锁且失败仅写一个回执", asy
 });
 
 test("S1.5 写入冲突回执与 PROFILE_CONFLICT_REJECTED 并存且不互相降级", () => {
-  for (const code of ["WRITE_CONFLICT_REJECTED", "WRITE_PARTIAL_BLOCKED", "WRITE_ACCESS_BLOCKED", "PROFILE_CONFLICT_REJECTED"] as const) {
+  for (const code of ["WRITE_ACCESS_BLOCKED", "PROFILE_CONFLICT_REJECTED"] as const) {
     assert.equal(parseMachineReceipt({
       schema_version: "1.0",
       receipt_id: `receipt-${code.toLowerCase()}`,
@@ -506,5 +717,111 @@ test("S1.5 写入冲突回执与 PROFILE_CONFLICT_REJECTED 并存且不互相降
       code,
       data: { dry_run: false },
     }).code, code);
+  }
+  for (const code of ["WRITE_CONFLICT_REJECTED", "WRITE_PARTIAL_BLOCKED"] as const) {
+    assert.throws(() => parseMachineReceipt({
+      schema_version: "1.0",
+      receipt_id: `receipt-${code.toLowerCase()}`,
+      ok: false,
+      code,
+      data: { dry_run: false },
+    }));
+  }
+});
+
+async function prepareFaultCli(name: string) {
+  const scenario = await loadWriteConsistencyScenario(name);
+  const materialized = await materializeWriteConsistencyScenario(scenario);
+  const root = createNodeProjectRootProbe().realpath(materialized.projectRoot);
+  await writeFile(join(root, "PROJECT_ROUTE_LOCK.md"), validRouteLock(scenario.target_project.project_id), "utf8");
+  const files = new Map<string, string>();
+  for (const entry of scenario.baseline.files) files.set(join(root, entry.path), entry.content);
+  files.set(join(root, "PROJECT_ROUTE_LOCK.md"), validRouteLock(scenario.target_project.project_id));
+  const fixture = scenario as unknown as WriteFixture;
+  const context = resolveProjectContext({
+    workspace_roots: [root],
+    requested_project: scenario.target_project.project_id,
+    explicit_canonical_root: root,
+    action_summary: "故障端口回执验证",
+  }, createNodeProjectRootProbe());
+  const plan = buildPlan(fixture, context, files);
+  const candidate = buildCandidate(fixture, context, plan);
+  const decision = buildReadyDecision(candidate);
+  const basePort = createNodeWriteFileSystem({ project_root: root });
+  const contextFor = (port: WriteFileSystemPort): WriteTransactionCliContext => ({
+    actor_role: "integration-agent",
+    confirmation_envelope: buildEnvelope(plan),
+    file_system: port,
+    project_probe: createNodeProjectRootProbe(),
+    canonical_project_root: root,
+    now: () => new Date("2026-08-14T00:05:00.000Z"),
+  });
+  return { scenario, materialized, root, context, plan, candidate, decision, basePort, contextFor };
+}
+
+function writeResultOf(run: ReturnType<typeof fakeIo>): WriteTransactionResult {
+  const receipt = parseMachineReceipt(parseCanonicalJsonBytes(Buffer.from(run.output[0]!, "utf8")));
+  return receipt.data.write_transaction_result as unknown as WriteTransactionResult;
+}
+
+test("S1.5 CLI 回执层用 W1 真实故障 fixture 保留 access/symlink 的结构化目标结果", async (t) => {
+  for (const name of ["fault/readonly-directory-blocked.json", "fault/symlink-escape-blocked.json"]) {
+    await t.test(name, async () => {
+      const setup = await prepareFaultCli(name);
+      try {
+        await setup.materialized.applyFaultSetup();
+        const run = fakeIo(buildWriteCommand(setup.context, setup.candidate, setup.decision, setup.plan), ["--commit"]);
+        await runWriteTransaction(run.io, setup.contextFor(setup.basePort));
+        const result = writeResultOf(run);
+        assert.equal(result.code, "WRITE_ACCESS_BLOCKED");
+        assert.ok(result.targets.some((target) => target.status === "access-blocked"));
+        assert.deepEqual(run.exitCodes, [1]);
+      } finally {
+        await setup.materialized.cleanup();
+      }
+    });
+  }
+});
+
+test("S1.5 CLI 回执层用 W1 写中/不安全回退 fixture 保留 partial、已写/未写与 recovery 状态", async (t) => {
+  for (const name of ["fault/mid-write-failure-partial.json", "fault/unsafe-rollback-blocked.json"]) {
+    await t.test(name, async () => {
+      const setup = await prepareFaultCli(name);
+      try {
+        const fault = setup.scenario.fault;
+        assert.ok(fault?.fault_at_target_index !== undefined && fault.fault_after_bytes !== undefined);
+        if (fault.kind === "unsafe-rollback") await setup.materialized.applyFaultSetup();
+        let call = 0;
+        const port: WriteFileSystemPort = {
+          probe: setup.basePort.probe,
+          readContent: setup.basePort.readContent,
+          removeCreated: setup.basePort.removeCreated,
+          async atomicWrite(path, content) {
+            const index = call++;
+            if (index === fault.fault_at_target_index) {
+              if (fault.kind === "unsafe-rollback" && setup.plan.targets[0] !== undefined) {
+                await writeFile(join(setup.root, setup.plan.targets[0].path), "外部并发漂移，回退归属不可证明\n", "utf8");
+              }
+              await writeFile(join(setup.root, path), Buffer.from(content).subarray(0, fault.fault_after_bytes));
+              throw Object.assign(new Error("injected write fault"), { code: "EIO" });
+            }
+            await setup.basePort.atomicWrite(path, content);
+          },
+        };
+        const run = fakeIo(buildWriteCommand(setup.context, setup.candidate, setup.decision, setup.plan), ["--commit"]);
+        await runWriteTransaction(run.io, setup.contextFor(port));
+        const result = writeResultOf(run);
+        assert.equal(result.code, "WRITE_PARTIAL_BLOCKED");
+        assert.ok(result.targets.some((target) => target.status === "skipped" || target.status === "rollback-blocked"));
+        if (fault.kind === "unsafe-rollback") {
+          assert.ok(result.targets.some((target) => target.status === "rollback-blocked"));
+        } else {
+          assert.ok(result.targets.some((target) => target.status === "rolled-back"));
+        }
+        assert.deepEqual(run.exitCodes, [1]);
+      } finally {
+        await setup.materialized.cleanup();
+      }
+    });
   }
 });

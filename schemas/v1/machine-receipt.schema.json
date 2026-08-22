@@ -367,8 +367,6 @@
                   "PROFILE_CONFLICT_REJECTED",
                   "CANDIDATE_CHANGE_REJECTED",
                   "WRITE_CONFIRMATION_REJECTED",
-                  "WRITE_CONFLICT_REJECTED",
-                  "WRITE_PARTIAL_BLOCKED",
                   "WRITE_ACCESS_BLOCKED"
                 ]
               },

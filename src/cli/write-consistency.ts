@@ -15,16 +15,22 @@ import {
   CandidateChangeError,
   evaluateCandidateChange,
   parseCandidateChange,
+  parseCandidateChangeDecision,
+  type CandidateChange,
+  type CandidateChangeDecision,
   type CandidateChangeProbe,
   type WorkingBaselineEvidence,
 } from "../domain/candidate-change.ts";
 import { assertWriteCommandPolicy, type WriteCommandActorRole } from "../domain/command-policy.ts";
+import { parseWriteConfirmationEnvelope } from "../domain/confirmation-node.ts";
 import { digestJson } from "../domain/content-digest.ts";
 import { parseMachineReceipt, type MachineReceipt, type MachineReceiptCode } from "../domain/machine-receipt.ts";
 import {
   ProjectContextError,
   parseProjectContext,
+  projectContextDigest,
   resolveProjectContext,
+  type ProjectContext,
   type ProjectResolutionInput,
   type ProjectRootProbe,
 } from "../domain/project-context.ts";
@@ -50,6 +56,8 @@ export interface WriteTransactionCliContext {
   readonly actor_role: WriteCommandActorRole;
   readonly confirmation_envelope: unknown;
   readonly file_system: WriteFileSystemPort;
+  readonly project_probe: ProjectRootProbe;
+  readonly canonical_project_root: string;
   readonly now: () => Date;
 }
 
@@ -62,7 +70,18 @@ interface CandidatePreviewCommand {
 interface WriteTransactionCommand {
   readonly transaction_id: string;
   readonly project_context: unknown;
+  readonly candidate_change: unknown;
+  readonly candidate_change_decision: unknown;
   readonly write_plan: unknown;
+}
+
+class WriteCliBoundaryError extends Error {
+  readonly receiptCode: "WRITE_ACCESS_BLOCKED" | "WRITE_CONFIRMATION_REJECTED";
+
+  constructor(receiptCode: "WRITE_ACCESS_BLOCKED" | "WRITE_CONFIRMATION_REJECTED", message: string) {
+    super(message);
+    this.receiptCode = receiptCode;
+  }
 }
 
 function receipt(
@@ -103,7 +122,11 @@ function parseCandidatePreviewCommand(value: unknown): CandidatePreviewCommand {
 }
 
 function parseWriteCommand(value: unknown): WriteTransactionCommand {
-  assertExactFields(value, ["transaction_id", "project_context", "write_plan"], "write transaction command");
+  assertExactFields(
+    value,
+    ["transaction_id", "project_context", "candidate_change", "candidate_change_decision", "write_plan"],
+    "write transaction command",
+  );
   if (typeof value.transaction_id !== "string" || value.transaction_id.length === 0) {
     throw new TypeError("Write transaction id is required");
   }
@@ -168,7 +191,6 @@ function candidateFailureCode(error: unknown): MachineReceiptCode {
     ? error.code
     : undefined;
   if (code === "SENSITIVE_CONTENT_DETECTED") return "SENSITIVE_FIELD_DETECTED";
-  if (code === "WRITE_CONFLICT_REJECTED") return code;
   if (
     code === "WRITE_ACCESS_BLOCKED" ||
     (typeof code === "string" && /^(?:PROJECT_|WRITE_PATH_ESCAPE)/.test(code))
@@ -215,8 +237,8 @@ export async function runCandidateChangePreview(
     if (decision.status === "rejected") {
       const code = decision.rejection?.code;
       const receiptCode: MachineReceiptCode =
-        code === "WRITE_CONFLICT_REJECTED" || code === "WRITE_ACCESS_BLOCKED"
-          ? code
+        code === "WRITE_ACCESS_BLOCKED"
+          ? "WRITE_ACCESS_BLOCKED"
           : "CANDIDATE_CHANGE_REJECTED";
       writeFailure(io, receiptCode, true, `Candidate change rejected: ${code ?? "unknown"}`);
       return;
@@ -254,6 +276,120 @@ function isSuccessfulWriteCode(code: WriteTransactionCode): code is "WRITE_PREVI
   return code === "WRITE_PREVIEWED" || code === "WRITE_COMMITTED";
 }
 
+function failWriteBoundary(
+  code: "WRITE_ACCESS_BLOCKED" | "WRITE_CONFIRMATION_REJECTED",
+  message: string,
+): never {
+  throw new WriteCliBoundaryError(code, message);
+}
+
+function assertTrustedWriteCapability(
+  integration: WriteTransactionCliContext | undefined,
+  dryRun: boolean,
+): asserts integration is WriteTransactionCliContext {
+  if (integration === undefined) {
+    failWriteBoundary("WRITE_ACCESS_BLOCKED", "Integration execution capability is required");
+  }
+  if (integration.actor_role === "main-conversation-agent") {
+    failWriteBoundary("WRITE_ACCESS_BLOCKED", "Main conversation has no project capability");
+  }
+  if (
+    typeof integration.now !== "function" ||
+    integration.file_system === undefined ||
+    integration.project_probe === undefined ||
+    typeof integration.canonical_project_root !== "string" ||
+    integration.canonical_project_root.length === 0
+  ) {
+    failWriteBoundary("WRITE_ACCESS_BLOCKED", "Incomplete trusted project capability");
+  }
+  try {
+    parseWriteConfirmationEnvelope(integration.confirmation_envelope);
+  } catch {
+    failWriteBoundary("WRITE_CONFIRMATION_REJECTED", "Missing or malformed confirmation envelope");
+  }
+  try {
+    assertWriteCommandPolicy({
+      command: "write-transaction",
+      dry_run: dryRun,
+      actor_role: integration.actor_role,
+      explicit_confirmation: true,
+    });
+  } catch {
+    failWriteBoundary("WRITE_ACCESS_BLOCKED", "Actor role cannot execute requested write mode");
+  }
+}
+
+function assertCurrentProjectBinding(
+  submittedValue: unknown,
+  planContextDigest: string,
+  integration: WriteTransactionCliContext,
+): ProjectContext {
+  const submitted = assertS15Stage(submittedValue);
+  if (submitted.project_root !== integration.canonical_project_root) {
+    failWriteBoundary("WRITE_ACCESS_BLOCKED", "Submitted project root is not bound to the trusted canonical root");
+  }
+  const current = assertS15Stage(resolveProjectContext({
+    workspace_roots: [integration.canonical_project_root],
+    requested_project: submitted.project_name,
+    explicit_canonical_root: integration.canonical_project_root,
+    action_summary: submitted.confirmation_view.action,
+  }, integration.project_probe));
+  const currentDigest = projectContextDigest(current);
+  if (current.project_root !== integration.canonical_project_root) {
+    failWriteBoundary("WRITE_ACCESS_BLOCKED", "Resolved project root escaped the trusted canonical root");
+  }
+  if (currentDigest !== projectContextDigest(submitted) || currentDigest !== planContextDigest) {
+    failWriteBoundary("WRITE_ACCESS_BLOCKED", "Project route lock or project context drifted after preview");
+  }
+  return current;
+}
+
+function assertPlanMatchesPreview(
+  candidate: CandidateChange,
+  decision: CandidateChangeDecision,
+  plan: ReturnType<typeof parseWritePlan>,
+  context: ProjectContext,
+  now: Date,
+): void {
+  if (
+    decision.status !== "ready-for-confirmation" ||
+    decision.rejection !== null ||
+    decision.candidate_change_id !== candidate.candidate_change_id ||
+    decision.candidate_change_digest !== digestJson(candidate) ||
+    decision.project_context_digest !== candidate.project_context_digest
+  ) {
+    failWriteBoundary("WRITE_CONFIRMATION_REJECTED", "Write command is not bound to a ready preview decision");
+  }
+  if (Date.parse(candidate.expires_at) <= now.valueOf()) {
+    failWriteBoundary("WRITE_CONFIRMATION_REJECTED", "Candidate change expired after preview");
+  }
+  if (
+    candidate.project_context_digest !== projectContextDigest(context) ||
+    candidate.project.repository_id !== plan.project.repository_id ||
+    candidate.project.formal_baseline !== plan.formal_baseline ||
+    candidate.working_baseline.baseline_digest !== plan.working_baseline_digest ||
+    candidate.targets.some((target) => target.kind === "delete")
+  ) {
+    failWriteBoundary("WRITE_CONFIRMATION_REJECTED", "Write plan project or baseline does not match previewed candidate");
+  }
+  const candidateTargets = candidate.targets.map((target) => ({
+    path: target.path,
+    mode: target.kind,
+    before_digest: target.before_digest,
+    after_digest: target.after_digest,
+    content: target.after_content,
+  }));
+  if (canonicalizeJson(candidateTargets) !== canonicalizeJson(plan.targets)) {
+    failWriteBoundary("WRITE_CONFIRMATION_REJECTED", "Write plan targets do not match previewed candidate");
+  }
+}
+
+function assertNoProtectedTargets(plan: ReturnType<typeof parseWritePlan>): void {
+  if (plan.targets.some((target) => target.path.split("/", 1)[0]?.toLowerCase() === ".git")) {
+    failWriteBoundary("WRITE_ACCESS_BLOCKED", "Protected .git targets are not writable through S1.5");
+  }
+}
+
 export async function runWriteTransaction(
   io: ProcessIoAdapter,
   integration?: WriteTransactionCliContext,
@@ -261,31 +397,28 @@ export async function runWriteTransaction(
   let dryRun = false;
   try {
     dryRun = parseMode(io.args);
-    // 角色/确认来自进程内集成能力，绝不从 stdin、参数或环境变量读取。
-    if (integration === undefined) throw new Error("Integration execution capability is required");
-    assertWriteCommandPolicy({
-      command: "write-transaction",
-      dry_run: dryRun,
-      actor_role: integration.actor_role,
-      explicit_confirmation: integration.confirmation_envelope !== undefined,
-    });
-    if (typeof integration.now !== "function" || integration.file_system === undefined) {
-      throw new TypeError("Incomplete integration execution capability");
-    }
+    // 角色、确认、规范根与两个 I/O 端口来自进程内可信组合能力，绝不从 stdin、参数或环境变量读取。
+    // 端口本身无法在领域层反射其根，因此组合根必须把 file_system/project_probe 与同一个 canonical root 一起注入。
+    assertTrustedWriteCapability(integration, dryRun);
 
     const command = parseWriteCommand(parseInput(await io.readInput()));
-    const context = assertS15Stage(command.project_context);
     const plan = parseWritePlan(command.write_plan);
-    if (plan.project_context_digest !== digestJson(context)) {
-      throw new ProjectContextError("INVALID_PROJECT_CONTEXT", "Write plan project context binding does not match");
+    assertNoProtectedTargets(plan);
+    const context = assertCurrentProjectBinding(command.project_context, plan.project_context_digest, integration);
+    const candidate = parseCandidateChange(command.candidate_change);
+    const decision = parseCandidateChangeDecision(command.candidate_change_decision);
+    const now = integration.now();
+    if (!(now instanceof Date) || Number.isNaN(now.valueOf())) {
+      failWriteBoundary("WRITE_ACCESS_BLOCKED", "Invalid trusted integration clock");
     }
+    assertPlanMatchesPreview(candidate, decision, plan, context, now);
 
     const result = parseWriteTransactionResult(await executeWriteTransaction({
       transaction_id: command.transaction_id,
       plan,
       confirmation_envelope: integration.confirmation_envelope,
       file_system: integration.file_system,
-      now: integration.now,
+      now: () => now,
       dry_run: dryRun,
     }));
     const ok = isSuccessfulWriteCode(result.code);
@@ -295,10 +428,13 @@ export async function runWriteTransaction(
       io.setExitCode(1);
     }
   } catch (error) {
-    writeFailure(io, "WRITE_ACCESS_BLOCKED", dryRun, safeDiagnostic(error, "Write transaction blocked"));
+    const code = error instanceof WriteCliBoundaryError ? error.receiptCode : "WRITE_ACCESS_BLOCKED";
+    writeFailure(io, code, dryRun, safeDiagnostic(error, "Write transaction blocked"));
   }
 }
 
 if (process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  await runWriteTransaction(createProcessIoAdapter());
+  const io = createProcessIoAdapter();
+  if (io.args.length === 0) await runCandidateChangePreview(io);
+  else await runWriteTransaction(io);
 }
