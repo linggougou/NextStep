@@ -13,6 +13,7 @@ import { createProcessIoAdapter, type ProcessIoAdapter } from "../adapters/node/
 import { canonicalizeJson, parseCanonicalJsonBytes } from "../domain/canonical-json.ts";
 import {
   CandidateChangeError,
+  deriveWorkingBaselineDigest,
   evaluateCandidateChange,
   parseCandidateChange,
   parseCandidateChangeDecision,
@@ -52,12 +53,23 @@ export interface CandidateChangePreviewContext {
   readonly now?: () => Date;
 }
 
+export interface BoundWriteFileSystemPort extends WriteFileSystemPort {
+  readonly canonical_project_root: string;
+}
+
+export interface CurrentWriteBaselineEvidence {
+  readonly formal_baseline: string;
+  readonly working_baseline: WorkingBaselineEvidence;
+}
+
 export interface WriteTransactionCliContext {
   readonly actor_role: WriteCommandActorRole;
   readonly confirmation_envelope: unknown;
-  readonly file_system: WriteFileSystemPort;
+  readonly file_system: BoundWriteFileSystemPort;
   readonly project_probe: ProjectRootProbe;
+  readonly candidate_probe: CandidateChangeProbe;
   readonly canonical_project_root: string;
+  readonly baseline_probe: () => CurrentWriteBaselineEvidence | Promise<CurrentWriteBaselineEvidence>;
   readonly now: () => Date;
 }
 
@@ -297,8 +309,12 @@ function assertTrustedWriteCapability(
     typeof integration.now !== "function" ||
     integration.file_system === undefined ||
     integration.project_probe === undefined ||
+    integration.candidate_probe === undefined ||
+    typeof integration.baseline_probe !== "function" ||
     typeof integration.canonical_project_root !== "string" ||
-    integration.canonical_project_root.length === 0
+    integration.canonical_project_root.length === 0 ||
+    typeof integration.file_system.canonical_project_root !== "string" ||
+    integration.file_system.canonical_project_root !== integration.canonical_project_root
   ) {
     failWriteBoundary("WRITE_ACCESS_BLOCKED", "Incomplete trusted project capability");
   }
@@ -316,6 +332,41 @@ function assertTrustedWriteCapability(
     });
   } catch {
     failWriteBoundary("WRITE_ACCESS_BLOCKED", "Actor role cannot execute requested write mode");
+  }
+}
+
+function parseCurrentBaselineEvidence(value: unknown): CurrentWriteBaselineEvidence {
+  if (
+    !isPlainRecord(value) ||
+    Object.keys(value).length !== 2 ||
+    typeof value.formal_baseline !== "string" ||
+    !/^[a-f0-9]{40}$/.test(value.formal_baseline) ||
+    !isPlainRecord(value.working_baseline) ||
+    Object.keys(value.working_baseline).length !== 2 ||
+    typeof value.working_baseline.head_oid !== "string" ||
+    !/^[a-f0-9]{40}$/.test(value.working_baseline.head_oid) ||
+    typeof value.working_baseline.dirty !== "boolean"
+  ) {
+    failWriteBoundary("WRITE_ACCESS_BLOCKED", "Trusted baseline probe returned invalid evidence");
+  }
+  return value as unknown as CurrentWriteBaselineEvidence;
+}
+
+function assertCurrentBaselineBinding(
+  candidate: CandidateChange,
+  plan: ReturnType<typeof parseWritePlan>,
+  evidence: CurrentWriteBaselineEvidence,
+): void {
+  const workingDigest = deriveWorkingBaselineDigest(evidence.working_baseline);
+  if (
+    candidate.project.formal_baseline !== evidence.formal_baseline ||
+    plan.formal_baseline !== evidence.formal_baseline ||
+    candidate.working_baseline.head_oid !== evidence.working_baseline.head_oid ||
+    candidate.working_baseline.dirty !== evidence.working_baseline.dirty ||
+    candidate.working_baseline.baseline_digest !== workingDigest ||
+    plan.working_baseline_digest !== workingDigest
+  ) {
+    failWriteBoundary("WRITE_CONFIRMATION_REJECTED", "Formal or working baseline drifted after preview");
   }
 }
 
@@ -365,6 +416,7 @@ function assertPlanMatchesPreview(
   }
   if (
     candidate.project_context_digest !== projectContextDigest(context) ||
+    plan.candidate_change_digest !== digestJson(candidate) ||
     candidate.project.repository_id !== plan.project.repository_id ||
     candidate.project.formal_baseline !== plan.formal_baseline ||
     candidate.working_baseline.baseline_digest !== plan.working_baseline_digest ||
@@ -381,6 +433,25 @@ function assertPlanMatchesPreview(
   }));
   if (canonicalizeJson(candidateTargets) !== canonicalizeJson(plan.targets)) {
     failWriteBoundary("WRITE_CONFIRMATION_REJECTED", "Write plan targets do not match previewed candidate");
+  }
+}
+
+function assertFreshCandidateDecision(
+  candidate: CandidateChange,
+  submitted: CandidateChangeDecision,
+  current: CandidateChangeDecision,
+): void {
+  if (
+    current.status !== "ready-for-confirmation" ||
+    current.rejection !== null ||
+    submitted.status !== "ready-for-confirmation" ||
+    submitted.rejection !== null ||
+    submitted.candidate_change_id !== current.candidate_change_id ||
+    submitted.candidate_change_digest !== current.candidate_change_digest ||
+    submitted.project_context_digest !== current.project_context_digest ||
+    submitted.candidate_change_digest !== digestJson(candidate)
+  ) {
+    failWriteBoundary("WRITE_CONFIRMATION_REJECTED", "Candidate is not currently ready or preview identity was forged");
   }
 }
 
@@ -411,6 +482,16 @@ export async function runWriteTransaction(
     if (!(now instanceof Date) || Number.isNaN(now.valueOf())) {
       failWriteBoundary("WRITE_ACCESS_BLOCKED", "Invalid trusted integration clock");
     }
+    const baseline = parseCurrentBaselineEvidence(await integration.baseline_probe());
+    assertCurrentBaselineBinding(candidate, plan, baseline);
+    const currentDecision = evaluateCandidateChange({
+      candidate,
+      project_context: context,
+      working_baseline: baseline.working_baseline,
+      now: now.toISOString().replace(/\.\d{3}Z$/, "Z"),
+      dry_run: true,
+    }, integration.candidate_probe);
+    assertFreshCandidateDecision(candidate, decision, currentDecision);
     assertPlanMatchesPreview(candidate, decision, plan, context, now);
 
     const result = parseWriteTransactionResult(await executeWriteTransaction({

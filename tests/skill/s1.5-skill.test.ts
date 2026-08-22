@@ -29,6 +29,9 @@ test("NextStep Skill 固定 S1.5 阶段、职责、确认与失败不提升边�
     /WRITE_CONFLICT_REJECTED/,
     /WRITE_PARTIAL_BLOCKED/,
     /WRITE_ACCESS_BLOCKED/,
+    /BoundWriteFileSystemPort/,
+    /candidate_change_digest/,
+    /baseline probe|基线探针/i,
     /不得.*formal|formal.*不得/i,
     /fixture.*manual-isolated consumer contract/is,
   ]) assert.match(skill, expected);
