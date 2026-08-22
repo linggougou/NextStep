@@ -60,17 +60,17 @@
     {
       "name": "positive/community-workshop-write.json",
       "scenario_id": "wc-community-workshop-positive-001",
-      "record_digest": "sha256:0f1a2840fe622143155b0485afbab5e91e8c1ac27ab024aa81ecca42e656b61b"
+      "record_digest": "sha256:439968591d6272e6ebfe97dc5343ecb3cfdb52e34aa87c6e5c31c6f1668cd96f"
     },
     {
       "name": "positive/expense-reminder-write.json",
       "scenario_id": "wc-expense-reminder-positive-002",
-      "record_digest": "sha256:0d4620e92f01f4694b9c5bbf4fbbb4e8e883a85f6ed24302c4bb1906f3c9976e"
+      "record_digest": "sha256:ad53d318bc91123c236600ddf9353ee87eaca4688435ca85674f61192676b750"
     },
     {
       "name": "positive/project-delivery-tool-write.json",
       "scenario_id": "wc-project-delivery-tool-positive-003",
-      "record_digest": "sha256:781b8ecd54b20a8547a10091421f2a1ffae5b157885f94ea704c80566926d82c"
+      "record_digest": "sha256:93a5624300700739f5b047da887b29bf2672d2acda86534f287c11ef3a5e1b2a"
     }
   ]
 }
