@@ -33,6 +33,7 @@ import {
 
 const REPOSITORY_ID = `sha256:${"d".repeat(64)}` as const;
 const PROJECT_CONTEXT_DIGEST = `sha256:${"e".repeat(64)}` as const;
+const CANDIDATE_CHANGE_DIGEST = `sha256:${"c".repeat(64)}` as const;
 const FORMAL_BASELINE = "024c1db6d941b6f771746c8d6249fb8a09b816f3";
 const WORKING_BASELINE_DIGEST = `sha256:${"b".repeat(64)}` as const;
 const EXECUTION_TIME = "2026-08-15T01:10:00.000Z";
@@ -169,6 +170,7 @@ function buildPlan(targets: WriteTargetSpec[], overrides: Record<string, unknown
     plan_id: "plan-001",
     project: { repository_id: REPOSITORY_ID },
     project_context_digest: PROJECT_CONTEXT_DIGEST,
+    candidate_change_digest: CANDIDATE_CHANGE_DIGEST,
     formal_baseline: FORMAL_BASELINE,
     working_baseline_digest: WORKING_BASELINE_DIGEST,
     targets,
@@ -249,6 +251,7 @@ test("write plan parsing enforces structure, digests and path safety", () => {
   ]);
   const plan = buildPlan(targets);
   assert.equal(plan.record_type, "write-plan");
+  assert.equal(plan.candidate_change_digest, CANDIDATE_CHANGE_DIGEST);
   assert.equal(plan.targets.length, 2);
   assert.ok(Object.isFrozen(plan));
   assert.equal(Object.getPrototypeOf(plan), null);
@@ -296,6 +299,7 @@ test("write plan parsing enforces structure, digests and path safety", () => {
       plan_id: "plan-x",
       project: { repository_id: REPOSITORY_ID },
       project_context_digest: PROJECT_CONTEXT_DIGEST,
+      candidate_change_digest: CANDIDATE_CHANGE_DIGEST,
       formal_baseline: FORMAL_BASELINE,
       working_baseline_digest: WORKING_BASELINE_DIGEST,
       targets: buildTargets([{ path: "a.md", mode: "create", content: "x" }]),
@@ -304,6 +308,14 @@ test("write plan parsing enforces structure, digests and path safety", () => {
     }),
   );
   assert.throws(() => parseWritePlan(withUnknownField), WriteTransactionError);
+
+  const serializedPlan = JSON.parse(JSON.stringify(plan)) as Record<string, unknown>;
+  const { candidate_change_digest: _missingCandidateChangeDigest, ...withoutCandidateChangeDigest } = serializedPlan;
+  assert.throws(() => parseWritePlan(withoutCandidateChangeDigest), WriteTransactionError);
+  assert.throws(
+    () => parseWritePlan({ ...serializedPlan, candidate_change_digest: "sha256:not-a-digest" }),
+    WriteTransactionError,
+  );
 });
 
 test("execution rejects envelopes that do not bind the exact plan and baseline", async () => {
@@ -318,6 +330,20 @@ test("execution rejects envelopes that do not bind the exact plan and baseline",
   assert.equal(mismatch.status, "rejected");
   assert.equal(fileSystem.writeCount, 0);
   assertNoPromotion(mismatch);
+
+  const envelopeForOriginalCandidateChange = confirmPlan(plan);
+  const tamperedCandidateChangePlan = parseWritePlan({
+    ...JSON.parse(JSON.stringify(plan)),
+    candidate_change_digest: `sha256:${"9".repeat(64)}`,
+  });
+  const candidateChangeMismatch = await execute(
+    tamperedCandidateChangePlan,
+    envelopeForOriginalCandidateChange,
+    fileSystem,
+  );
+  assert.equal(candidateChangeMismatch.code, "WRITE_CONFIRMATION_REJECTED");
+  assert.equal(candidateChangeMismatch.detail, "candidate-digest-mismatch");
+  assert.equal(fileSystem.writeCount, 0);
 
   const rebasedPlan = parseWritePlan({
     ...JSON.parse(JSON.stringify(plan)),

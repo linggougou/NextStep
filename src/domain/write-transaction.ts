@@ -56,6 +56,7 @@ export interface WritePlan {
   readonly plan_id: string;
   readonly project: { readonly repository_id: Sha256Digest };
   readonly project_context_digest: Sha256Digest;
+  readonly candidate_change_digest: Sha256Digest;
   readonly formal_baseline: string;
   readonly working_baseline_digest: Sha256Digest;
   readonly targets: readonly WriteTargetSpec[];
