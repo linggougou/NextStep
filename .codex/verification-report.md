@@ -2172,6 +2172,15 @@
 - 边界验证：相对 repair parent 仅 `src/adapters/node/file-write.ts` 与 `tests/domain/node-file-write-race.test.ts`；相对 working parent 仅既定四条产品路径；候选与审查 worktree clean。
 - 结论：Execution candidate PASS，P0/P1/P2=`0/0/0`；允许进入全新 CV 与 I/X/P，不允许跳过门禁生成 snapshot、移动 formal 或宣称 S1.5/M1.2/V1/P5 完成。
 
+## 2026-08-23 S1.5 attempt 12 CV / I-X-P / L3
+
+- CV：8/8 hard gates，PASS / 100，P0/P1/P2=`0/0/0`；444/444 双跑、定向 196/196，覆盖率最低一轮 93.04/88.54/99.09。
+- I/X/P：6/6 hard gates，PASS / 100，P0/P1/P2=`0/0/0`；全量 444/444、聚焦 170/170、write-consistency 13/13、Acceptance Profile 17/17、Q6=100%。
+- L3：6/6 hard gates，PASS / 98，P0/P1/P2=`0/0/1`；Verifier、Strict Judge、Anti-Slop Judge、Chief Reviewer 全部 PASS，无 required_fixes。
+- 摘要复算：CV/I-X-P/L3 三份 scorecard JCS 分别为 `sha256:a159714...`、`sha256:4124d24...`、`sha256:9b84b22...`；三份 Result JCS 分别为 `sha256:931b8f4...`、`sha256:3cc34fd...`、`sha256:bc306f5...`，与 control 记录一致。
+- 边界：L3 的 P2 仅记录专属 worktree 依赖预置不足；CV 已在精确 subject worktree 完成两轮全量，因此最终判定不缺硬证据。formal F14 与 subject/control 身份全程不变。
+- 结论：允许冻结 S1.5 Final Content Snapshot；仍不允许跳过 FV、Credential、Audit Anchor、AV/Proof 与 expected-old=F14 的 formal CAS。
+
 ## 2026-08-22 Multica 迁移可行性审查验证
 
 - 审查对象：当前 NextStep 仓库、已冻结 S3/S4 宿主边界、当前实现面，以及 Multica 官方 Agents / Squads / Tasks / Skills / Project resources / Providers / Auth / Comments / CLI 文档。

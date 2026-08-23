@@ -2228,3 +2228,13 @@
 - 主线集成：确认 main 精确为 `d9632c5`、formal 精确为 F14、候选为其后代且净写集仅四条 allowlist 路径后，以 `git merge --ff-only` 快进到 `128e86b`；用户既有未跟踪 Multica 摘要未触碰。
 - 工具替代：当前环境未提供 Context7；其原用途是核对最新 Node.js 文件 API 行为。替代流程为 Node.js 官方文档与本机 Node 24.14.0 活体探针，结合两轮全量与独立审查；替代验证通过，不影响本轮结论。
 - 状态边界：candidate-ready 不等于 S1.5 完成；formal 仍为 F14。下一步必须对 attempt12 精确 subject 重新执行 CV、I/X/P 与 L3，旧门禁结果不得复用。
+
+## 2026-08-23 S1.5 attempt 12 双门禁与 L3
+
+- CV：fence 99，review commit=`22c9b835884dc5739289f9f839173726c4572e3a`，scorecard digest=`sha256:a15971489aa60695b73c5f369f2a04261d21268ddba3f77fc6ad06c5799ca822`；PASS / 100，P0/P1/P2=`0/0/0`，全量双跑 444/444、定向 196/196。
+- I/X/P：fence 100，review commit=`fcab787787458b051af4d920fcf9a7480b4fd435`，scorecard digest=`sha256:4124d24f6719eab2c1bae12ddf09667e905def72f40c8ef1542bee26e77eb8dc`；PASS / 100，P0/P1/P2=`0/0/0`，重点回放 170/170、write-consistency 13/13、Profile 17/17、Q6=100%。
+- 双门 Results：CV=`sha256:931b8f480936c052bf403193f84af7009347240c35e4feead79f17fd28bddcdc`；I/X/P=`sha256:3cc34fdbdaaae9aef09660035824480b244a50436461849a6ec186c8fa23e72f`。
+- L3：启用 `judge-harness` 四角色契约，由全新独立 reviewer 在 fence 101 执行；review commit=`faa2e81268e4d0f4f90496c3341eca05b2573d59`，scorecard digest=`sha256:9b84b22bdade81e8ccf732ec346d84730f9ef8f77d3a64fb9cf2ca79b992aad9`，PASS / 98，P0/P1/P2=`0/0/1`。
+- L3 P2：专属 worktree 未预置 node_modules/dist，原位定向 86/86；全量在与 subject 执行面零差异的主仓库完成 444/444、93.04/88.54/99.09。精确 subject 的 CV 已完成双轮 444/444，因此该项仅为环境方法学折损，不是硬门缺证据。
+- L3 Result：`sha256:bc306f5c714317dfeb4134e509f7fad739add8f2e7a2440ca5bb831bff438202`；control=`041346f1c2a726c4e05119ccdebc09334b11ab86`。formal 仍为 F14；下一步只允许冻结 Final Content Snapshot 并进入独立 Final Verification。
+- 资源回收：CV、I/X/P、L3 三个已完成 worktree 均确认 clean 后移除；评审分支与提交保留。
