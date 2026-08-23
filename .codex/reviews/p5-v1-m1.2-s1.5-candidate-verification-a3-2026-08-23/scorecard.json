@@ -1,0 +1,246 @@
+{
+  "review_id": "p5-v1-m1.2-s1.5-candidate-verification-a3-2026-08-23",
+  "task_id": "S1.5-CV",
+  "task_attempt": 3,
+  "lane": "candidate-verification",
+  "review_level": "L2",
+  "rubric_id": "nextstep-s1.5-candidate-verification-a3-v1",
+  "stage_id": "P5/V1/M1.2/S1.5/candidate-verification",
+  "claim_id": "claim-s1.5-cv-g4-a3-f87-20260823",
+  "fence_token": 87,
+  "host_task_id": "codex-subagent:/root/s15_cv_a3",
+  "reviewed_at": "2026-08-23T11:00:33Z",
+  "subject": {
+    "commit_oid": "f226e0fce689284b5f02747784d82c09c47b3ec5",
+    "parent_oid": "e4d10ccd3299ec7d3573254db60afe8b6d48d573",
+    "tree_oid": "c5d2e7c2a22023970d4a73feba856afdd44cd891",
+    "working_parent_oid": "a028bb7eccf3df4601cb3655e9e56e56f3c83066",
+    "formal_baseline_oid": "024c1db6d941b6f771746c8d6249fb8a09b816f3",
+    "subject_digest_contract": "sha256(JCS({commit_oid,parent_oid,tree_oid}))",
+    "subject_digest": "sha256:c01eb4ed6cae835e6c282e56b8a4a69c7f5c61adcebc58d14bf89ae0ac382d30"
+  },
+  "control_identity": {
+    "fixed_packet_source_oid": "c57c5b5d5536c28dac929e556d1d674ad7057989",
+    "ack_complete_control_oid": "0da2005200fb4f64795d584f2ff5fcf26d25d6b2",
+    "gate_packet_digest": "sha256:908a560202dec634421954f215b1258e45aebd905befd1d91013d84fbf5f5b5c",
+    "gate_dedup_key": "sha256:3c07386958805f497d3731638efad6143485037ba39b362df06990c6cedca030",
+    "execution_packet_digest": "sha256:35f2a9595b108f2fe10aaaf02981c4c60d07e1080e24082128e418e6f2caa139",
+    "execution_dedup_key": "sha256:e5bf8635d654d7fc53c21a8c8cd699a8f1f0bccf2aad770812ed4b7d7cc388df",
+    "execution_result_digest": "sha256:1b17265a0917159aeb0808aa120a220984a436290cc6059124e52ab7c7a6155b",
+    "execution_fence_token": 86,
+    "verification_fence_token": 87,
+    "packet_expired_during_review": false,
+    "pending_dispatches_at_ack": 0
+  },
+  "historical_attempt2": {
+    "gate_packet_ref": "git:c57c5b5d5536c28dac929e556d1d674ad7057989:gate-requests/gate-candidate-verification-s1.5-g4-a2-20260823.json",
+    "gate_packet_blob_oid": "cb836136bc4185cfa7503b77f3216bdf2a4b2b33",
+    "result_ref": "git:c57c5b5d5536c28dac929e556d1d674ad7057989:results/result-candidate-verification-s1.5-g4-a2-f84-20260823.json",
+    "result_blob_oid": "d7e9c8083bcb0f6309d7a1629fd2539b7278b9fc",
+    "result_digest": "sha256:3e2d5377dc1d9d362a7f103fb88d6402b576582c0b4136b46a8c0c1c2f6b0323",
+    "scorecard_ref": "git:b3a15b154cff97e63878b667dfbb5d45deed4e9f:.codex/reviews/p5-v1-m1.2-s1.5-candidate-verification-2026-08-23/scorecard.json",
+    "scorecard_digest": "sha256:6d0add4e5da7abaaf51b1b846f9acc51c7afaa30f1834f6c983ab5deee42a400",
+    "verdict": "REJECT",
+    "score": 78,
+    "severity_summary": {
+      "P0": 1,
+      "P1": 0,
+      "P2": 0
+    },
+    "registry_status_at_ack": "rejected",
+    "preservation_evidence": "attempt 2 gate/result 在 c57c5b5 与 ack-complete control 0da2005 中的 blob OID 分别保持 cb836136 与 d7e9c808；attempt 3 使用独立 registry 条目，未覆盖 REJECT 历史。"
+  },
+  "baseline": {
+    "main_oid_before": "f226e0fce689284b5f02747784d82c09c47b3ec5",
+    "formal_oid_before": "024c1db6d941b6f771746c8d6249fb8a09b816f3",
+    "control_oid_before": "0da2005200fb4f64795d584f2ff5fcf26d25d6b2",
+    "main_oid_after": "f226e0fce689284b5f02747784d82c09c47b3ec5",
+    "formal_oid_after": "024c1db6d941b6f771746c8d6249fb8a09b816f3",
+    "control_oid_after": "0da2005200fb4f64795d584f2ff5fcf26d25d6b2",
+    "subject_tree_after": "c5d2e7c2a22023970d4a73feba856afdd44cd891",
+    "control_commits_during_authoritative_window": 0,
+    "source_worktree_dirty_fingerprint_before": [
+      "M .codex/operations-log.md",
+      "M .codex/verification-report.md",
+      "?? .codex/context-summary-multica-migration-feasibility-2026-08-22.md",
+      "?? .codex/context-summary-s1.5-recovery-integration-2026-08-22.md",
+      "?? .codex/exec-plan-autonomous-p5-2026-08-23.md"
+    ],
+    "source_worktree_dirty_fingerprint_after": [
+      "M .codex/operations-log.md",
+      "M .codex/verification-report.md",
+      "?? .codex/context-summary-multica-migration-feasibility-2026-08-22.md",
+      "?? .codex/context-summary-s1.5-recovery-integration-2026-08-22.md",
+      "?? .codex/exec-plan-autonomous-p5-2026-08-23.md"
+    ],
+    "source_status_sha256": "4ee6f5594d652f5095f4405d5f057bf6ec20f20cb9c63934cbf013c5fddfaac8",
+    "source_worktree_diff_sha256": "a8c2ea29829aa83b28a6bed6cb3817892e8ce64173904c0ba64dfea835f54038",
+    "source_index_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source_untracked_sha256": "37e855a31f92addd34d22c56318e90eb95c1e7dc4530fbfa61a63844a2548b54"
+  },
+  "artifact_refs": [
+    "git:f226e0fce689284b5f02747784d82c09c47b3ec5",
+    "git:c57c5b5d5536c28dac929e556d1d674ad7057989:gate-requests/gate-candidate-verification-s1.5-g4-a3-20260823.json",
+    "git:c57c5b5d5536c28dac929e556d1d674ad7057989:packets/ep-p5-v1-m1.2-s1.5-g4-a3-20260823.json",
+    "git:c57c5b5d5536c28dac929e556d1d674ad7057989:results/result-execution-s1.5-g4-a3-f86-20260823.json",
+    "git:0da2005200fb4f64795d584f2ff5fcf26d25d6b2:messages/msg-dispatch-ack-s1.5-cv-g4-a3-f87-20260823.json",
+    "tests/cli/write-consistency.test.ts",
+    "tests/domain/write-transaction.test.ts",
+    "tests/domain/fs-fault-fixture.test.ts",
+    "tests/skill/s1.5-skill.test.ts",
+    "tests/architecture/dependency-direction.test.ts"
+  ],
+  "isolated_environment": {
+    "clone_path": "/private/tmp/nextstep-s1-5-cv-a3-run.E5ymaw/repo",
+    "clone_flags": "git clone --no-local --no-checkout；detached checkout 至精确 subject",
+    "node_version": "v24.14.0",
+    "pnpm_version": "10.33.2",
+    "install_command": "pnpm install --offline --frozen-lockfile",
+    "install_result": "exit 0；reused 10、downloaded 0",
+    "check_command": "pnpm check",
+    "check_result": "exit 0",
+    "source_test_files": 36,
+    "compiled_test_files": 36,
+    "tap_top_level_pass": 337,
+    "tap_nested_subtest_pass": 16,
+    "tests_total": 353,
+    "tests_pass": 353,
+    "tests_fail": 0,
+    "coverage_lines_percent": 92.82,
+    "coverage_branches_percent": 87.62,
+    "coverage_functions_percent": 99.0,
+    "coverage_baseline": "91.07/83.80/98.36",
+    "targeted_gate_tests": "86/86",
+    "fixture_index": "3 positive + 6 fault + 4 layout；13/13 RFC8785 record_digest 重算匹配",
+    "sensitive_probe": "exit 1；stdout 一行且为可解析 JCS；stderr 仅 diagnostics；stdout/stderr 均未出现标记值"
+  },
+  "hard_gates": [
+    {
+      "id": "CV-01",
+      "status": "pass",
+      "evidence": "subject/parent/tree 与 sha256(JCS({commit_oid,parent_oid,tree_oid}))=sha256:c01eb4ed… 精确匹配；固定 gate packet、attempt 3 execution packet、Execution Result 摘要分别独立复算为 908a5602…、35f2a959…、1b17265a…；两份七字段 dedup 分别为 3c073869…、e5bf8635…；attempt 3、execution fence 86、CV fence 87、ack host 与有效期均匹配。attempt 2 REJECT / 78 的 gate/result blob 与 JCS 摘要原样保留。"
+    },
+    {
+      "id": "CV-02",
+      "status": "pass",
+      "evidence": "git diff --name-only a028bb7..f226e0f 恰 38 路径，与 attempt 2 immutable Result changed_paths 集合逐项恒等；38/38 命中原 attempt 2 allowed_paths，forbidden_paths 命中 0；git diff --check 退出 0。"
+    },
+    {
+      "id": "CV-03",
+      "status": "pass",
+      "evidence": "全新 --no-local clone 在 Node v24.14.0 / pnpm 10.33.2 下 offline frozen install 退出 0（downloaded 0），pnpm check 退出 0；36 source + 36 compiled 测试文件，TAP 337 顶层 + 16 nested = 353/353、0 fail；覆盖率 Lines/Branches/Functions=92.82/87.62/99.00，高于 F14 91.07/83.80/98.36，并与 attempt 3 Result 精确一致。"
+    },
+    {
+      "id": "CV-04",
+      "status": "pass",
+      "evidence": "S1.5 专项 5 文件 86/86：community-workshop、expense-reminder、project-delivery-tool 三类 fixture 均完成项目/阶段解析→preview→独立显式确认→dry-run 零写→commit→read-back→fixture Git commit；同时绑定 candidate/project/formal/HEAD/dirty/targets/digests/plan/envelope。"
+    },
+    {
+      "id": "CV-05",
+      "status": "pass",
+      "evidence": "fixture index 独立确认 3 正例、6 故障、4 布局且 13/13 record_digest 重算匹配；专项回放覆盖 .git/formal/control 保护、项目根/route/stage/formal/HEAD/dirty 漂移、确认缺失/伪造/过期、baseline drift、权限/符号链接、写中失败、读回失败、部分写入与不安全归属回退，全部 fail closed，失败路径无阶段/会签/formal/control 提升。"
+    },
+    {
+      "id": "CV-06",
+      "status": "pass",
+      "evidence": "真实敏感标记探针返回 exit 1、stdout 恰一行且可按 RFC8785/JCS 解析为 WRITE_ACCESS_BLOCKED，stderr 仅 diagnostics，stdout/stderr 零标记泄漏；专项测试确认 WRITE_* 与 PROFILE_CONFLICT_REJECTED 互不降级。S1.5 freeze runner 回放确认 S1.2 Frozen Requirement 规范字节恒定，digest=sha256:21a0f7ce08ed8cbd5a4d7a8dbc1d21629c6c77b6927e66bd27c128d22532f58a。"
+    },
+    {
+      "id": "CV-07",
+      "status": "pass",
+      "evidence": "dependency-direction.test.ts 随专项套件通过；candidate 相对 a028bb7 未修改架构、路线、依赖或 refs 路径。ack-complete control 0da2005 起至评审收口，main=f226e0f、subject/tree、formal=024c1db、control=0da2005 与源工作区五条 dirty 指纹及四项 SHA-256 均不变；review 分支相对 subject 只新增本 review 目录 scorecard.json、verdict.md。"
+    },
+    {
+      "id": "CV-08",
+      "status": "pass",
+      "evidence": "本结论只覆盖 S1.5 attempt 3 Candidate Verification；明确不冒领 attempt 3 I/X/P、L3、Final Verification、F15、S1.5/M1.2/V1/P5 完成、S1.6 启动或 full host support。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "identity_and_control_integrity",
+      "score": 15,
+      "max_score": 15,
+      "reason": "固定身份、RFC8785 摘要、七字段 dedup、attempt/fence/ack 与 attempt 2 历史保留全部精确成立。",
+      "evidence_refs": ["CV-01"]
+    },
+    {
+      "id": "change_scope_and_protection",
+      "score": 15,
+      "max_score": 15,
+      "reason": "38 路径集合恒等，allowlist/forbidden 与 diff 检查无偏差。",
+      "evidence_refs": ["CV-02"]
+    },
+    {
+      "id": "reproducible_verification",
+      "score": 20,
+      "max_score": 20,
+      "reason": "attempt 3 修正后的 353/353 在固定运行时、离线冻结安装和全量覆盖率回放中完整复现。",
+      "evidence_refs": ["CV-03"]
+    },
+    {
+      "id": "pc06_pc07_behavior_closure",
+      "score": 20,
+      "max_score": 20,
+      "reason": "三类真实 fixture 的解析、确认、dry-run、写入、读回与 Git 提交闭环成立。",
+      "evidence_refs": ["CV-04"]
+    },
+    {
+      "id": "security_receipts_and_freeze",
+      "score": 20,
+      "max_score": 20,
+      "reason": "故障、布局、回滚、JCS、退出码、敏感数据、冲突码与 S1.2 freeze 均满足 fail-closed/恒定要求。",
+      "evidence_refs": ["CV-05", "CV-06"]
+    },
+    {
+      "id": "architecture_refs_and_scope_discipline",
+      "score": 10,
+      "max_score": 10,
+      "reason": "架构依赖、权威窗口 refs/源状态与结论范围均保持不变且无越界声明。",
+      "evidence_refs": ["CV-07", "CV-08"]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "hard_gates_pass": 8,
+    "hard_gates_fail": 0,
+    "hard_gates_total": 8,
+    "tests": "353/353",
+    "required_tests": "353/353",
+    "targeted_gate_tests": "86/86",
+    "changed_paths": 38
+  },
+  "severity_summary": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [],
+  "evidence_scope_declaration": "本 CV 仅证明 S1.5 attempt 3 精确候选在 manual-isolated/headless consumer contract 下满足固定 8 项 hard gates；三类 fixture 不证明真实宿主适配器、真实用户事件或 full 支持。attempt 2 REJECT 历史保持有效且未被改写。",
+  "gate_disclaimer": "PASS 只允许本 attempt 3 Candidate Verification 结果进入后续独立门禁输入；不构成 I/X/P、L3、Final Verification、F14→F15 批准，不构成 S1.5/M1.2/V1/P5 完成，也不授权启动 S1.6。",
+  "reviewers": [
+    {
+      "role": "independent-candidate-verifier",
+      "model": "codex-independent-a3-lane",
+      "conclusion": "PASS",
+      "claim_id": "claim-s1.5-cv-g4-a3-f87-20260823"
+    },
+    {
+      "role": "strict-judge",
+      "model": "codex-independent-a3-lane",
+      "conclusion": "PASS",
+      "reason": "8/8 hard gates 均有独立、可重复、与固定 packet/Result 一致的本地证据。"
+    },
+    {
+      "role": "chief-reviewer",
+      "model": "codex-independent-a3-lane",
+      "conclusion": "PASS",
+      "reason": "无 P0/P1/P2；attempt 3 CV 可通过，但后续门禁与正式提升仍保持隔离。"
+    }
+  ]
+}
