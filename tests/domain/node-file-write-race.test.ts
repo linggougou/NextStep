@@ -1012,3 +1012,280 @@ test("恢复生命周期的最晚竞态保留 cwd 身份、竞争者与可定位
     }
   });
 });
+
+test("hardlink-quarantine cleanup 绑定真实对象且 locator 不指向旧词法路径", async (t) => {
+  await t.test("link 已完成后替换原名时保留竞争者并以 quarantine 定位事务对象", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-quarantine-post-link-"));
+    await writeFile(join(root, "result.md"), "owned");
+    let injected = false;
+    let bindingUnlinkCalls = 0;
+    const binding = {
+      link: async (existingPath: string, newPath: string) => {
+        await nodeLink(existingPath, newPath);
+        if (!injected && newPath.includes(".nextstep-quarantine-")) {
+          injected = true;
+          await unlink(existingPath);
+          await writeFile(existingPath, "competitor", { flag: "wx" });
+        }
+      },
+      unlink: async () => {
+        bindingUnlinkCalls += 1;
+        const error = new Error("binding.unlink must not be a trusted cleanup primitive") as NodeJS.ErrnoException;
+        error.code = "EUNTRUSTED";
+        throw error;
+      },
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      const error = await fileSystem.removeCreated("result.md", digest("owned")).then(
+        () => undefined,
+        (caught: unknown) => caught as NodeJS.ErrnoException & { recovery_path?: string },
+      );
+      assert.equal(error?.code, "ESTALE");
+      assert.match(error?.recovery_path ?? "", /\.nextstep-quarantine-/);
+      assert.equal(injected, true);
+      assert.equal(bindingUnlinkCalls, 0);
+      assert.equal(await readFile(join(root, error!.recovery_path!), "utf8"), "owned");
+      const competitor = (await readdir(root))
+        .find((entry) => entry.includes(".nextstep-recovery-") && !entry.includes(".nextstep-quarantine-"));
+      assert.ok(competitor);
+      assert.equal(await readFile(join(root, competitor), "utf8"), "competitor");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("替换原名后才 link 时保留两份竞争者并从原始句柄创建 fallback", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-quarantine-pre-link-"));
+    await writeFile(join(root, "result.md"), "owned");
+    let injected = false;
+    const binding = {
+      link: async (existingPath: string, newPath: string) => {
+        if (!injected && newPath.includes(".nextstep-quarantine-")) {
+          injected = true;
+          await unlink(existingPath);
+          await writeFile(existingPath, "competitor", { flag: "wx" });
+        }
+        await nodeLink(existingPath, newPath);
+      },
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      const error = await fileSystem.removeCreated("result.md", digest("owned")).then(
+        () => undefined,
+        (caught: unknown) => caught as NodeJS.ErrnoException & { recovery_path?: string },
+      );
+      assert.equal(error?.code, "ESTALE");
+      assert.match(error?.recovery_path ?? "", /\.nextstep-(?:recovered|fallback)-/);
+      assert.equal(injected, true);
+      assert.equal(await readFile(join(root, error!.recovery_path!), "utf8"), "owned");
+      const entries = await readdir(root);
+      const quarantine = entries.find((entry) => entry.includes(".nextstep-quarantine-"));
+      const currentName = entries.find((entry) => entry.includes(".nextstep-recovery-") && entry !== quarantine);
+      assert.ok(quarantine);
+      assert.ok(currentName);
+      assert.equal(await readFile(join(root, quarantine), "utf8"), "competitor");
+      assert.equal(await readFile(join(root, currentName), "utf8"), "competitor");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("update 的 recovery hardlink 返回前 target 漂移时保留 before quarantine", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-quarantine-update-invariant-"));
+    const target = join(root, "result.md");
+    await writeFile(target, "before");
+    let injected = false;
+    let bindingUnlinkCalls = 0;
+    const binding = {
+      link: async (existingPath: string, newPath: string) => {
+        await nodeLink(existingPath, newPath);
+        if (
+          !injected &&
+          existingPath.includes(".nextstep-recovery-") &&
+          newPath.includes(".nextstep-quarantine-")
+        ) {
+          injected = true;
+          await writeFile("result.md", "competitor");
+        }
+      },
+      unlink: async () => {
+        bindingUnlinkCalls += 1;
+        const error = new Error("binding.unlink must not run") as NodeJS.ErrnoException;
+        error.code = "EUNTRUSTED";
+        throw error;
+      },
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      const error = await fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), {
+        mode: "update",
+        before_digest: digest("before"),
+      }).then(
+        () => undefined,
+        (caught: unknown) => caught as NodeJS.ErrnoException & { recovery_path?: string },
+      );
+      assert.equal(error?.code, "ESTALE");
+      assert.match(error?.recovery_path ?? "", /\.nextstep-quarantine-/);
+      assert.equal(injected, true);
+      assert.equal(bindingUnlinkCalls, 0);
+      assert.equal(await readFile(target, "utf8"), "competitor");
+      assert.equal(await readFile(join(root, error!.recovery_path!), "utf8"), "before");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("父目录根内改名后 recovery_path 使用实时 anchored parent", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-live-locator-root-"));
+    const outside = await mkdtemp(join(tmpdir(), "nextstep-live-locator-outside-"));
+    const parent = join(root, "docs");
+    const movedParent = join(root, "docs-original");
+    await mkdir(parent);
+    let injected = false;
+    const binding = {
+      link: async (existingPath: string, newPath: string) => {
+        await nodeLink(existingPath, newPath);
+        if (!injected && newPath.includes(".nextstep-quarantine-")) {
+          injected = true;
+          await nodeRename(parent, movedParent);
+          await symlink(outside, parent, "dir");
+          const error = new Error("injected post-link parent move") as NodeJS.ErrnoException;
+          error.code = "EIO";
+          throw error;
+        }
+      },
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      const error = await fileSystem.atomicWrite("docs/result.md", Buffer.from("nextstep"), {
+        mode: "create",
+        before_digest: null,
+      }).then(
+        () => undefined,
+        (caught: unknown) => caught as NodeJS.ErrnoException & { recovery_path?: string },
+      );
+      assert.equal(error?.code, "EIO");
+      assert.match(error?.recovery_path ?? "", /^docs-original\//);
+      assert.equal(injected, true);
+      assert.equal(await readFile(join(root, error!.recovery_path!), "utf8"), "nextstep");
+      assert.deepEqual(await readdir(outside), []);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+      await rm(outside, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("anchored parent 移到 canonical root 外时保留对象且不伪造 recovery_path", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-outside-locator-root-"));
+    const outside = await mkdtemp(join(tmpdir(), "nextstep-outside-locator-parent-"));
+    const parent = join(root, "docs");
+    const movedParent = join(outside, "docs-moved");
+    await mkdir(parent);
+    let injected = false;
+    const binding = {
+      link: async (existingPath: string, newPath: string) => {
+        await nodeLink(existingPath, newPath);
+        if (!injected && newPath.includes(".nextstep-quarantine-")) {
+          injected = true;
+          await nodeRename(parent, movedParent);
+          const error = new Error("injected root escape after quarantine link") as NodeJS.ErrnoException;
+          error.code = "EIO";
+          throw error;
+        }
+      },
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      const error = await fileSystem.atomicWrite("docs/result.md", Buffer.from("nextstep"), {
+        mode: "create",
+        before_digest: null,
+      }).then(
+        () => undefined,
+        (caught: unknown) => caught as NodeJS.ErrnoException & {
+          recovery_path?: string;
+          recovery_path_unavailable?: string;
+        },
+      );
+      assert.equal(error?.code, "WRITE_ACCESS_BLOCKED");
+      assert.equal(error?.recovery_path, undefined);
+      assert.equal(error?.recovery_path_unavailable, "anchor-outside-canonical-root");
+      assert.equal(injected, true);
+      assert.ok((await readdir(movedParent)).some((entry) => entry.includes(".nextstep-")));
+    } finally {
+      await rm(root, { recursive: true, force: true });
+      await rm(outside, { recursive: true, force: true });
+    }
+  });
+
+  for (const stage of ["write", "fsync", "verify"] as const) {
+    await t.test(`fallback ${stage} 失败时 recovery_path 指向实际 candidate`, async () => {
+      const root = await mkdtemp(join(tmpdir(), `nextstep-fallback-${stage}-`));
+      await writeFile(join(root, "result.md"), "owned");
+      let cleanupLinkInjected = false;
+      let candidatePath: string | undefined;
+      const binding = {
+        link: async (existingPath: string, newPath: string) => {
+          if (!cleanupLinkInjected && newPath.includes(".nextstep-quarantine-")) {
+            cleanupLinkInjected = true;
+            await unlink(existingPath);
+            await writeFile(existingPath, "competitor", { flag: "wx" });
+          }
+          await nodeLink(existingPath, newPath);
+        },
+        open: async (path: string, flags: string, mode: number) => {
+          const handle = await nodeOpen(path, flags, mode);
+          if (!cleanupLinkInjected || flags !== "wx") {
+            return handle;
+          }
+          candidatePath = path;
+          return new Proxy(handle, {
+            get(targetHandle, property) {
+              if (property === "writeFile" && stage === "write") {
+                return async () => {
+                  await targetHandle.writeFile("partial-fallback");
+                  const error = new Error("injected fallback write failure") as NodeJS.ErrnoException;
+                  error.code = "EIO";
+                  throw error;
+                };
+              }
+              if (property === "close" && stage === "verify") {
+                return async () => {
+                  await targetHandle.close();
+                  await writeFile(path, "verify-drift");
+                };
+              }
+              const value = Reflect.get(targetHandle, property, targetHandle) as unknown;
+              return typeof value === "function" ? value.bind(targetHandle) : value;
+            },
+          });
+        },
+        fsync: async () => {
+          if (stage === "fsync" && candidatePath !== undefined) {
+            const error = new Error("injected fallback fsync failure") as NodeJS.ErrnoException;
+            error.code = "EIO";
+            throw error;
+          }
+        },
+      } as Partial<NodeWriteFileSystemBinding>;
+
+      try {
+        const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+        const error = await fileSystem.removeCreated("result.md", digest("owned")).then(
+          () => undefined,
+          (caught: unknown) => caught as NodeJS.ErrnoException & { recovery_path?: string },
+        );
+        assert.ok(candidatePath);
+        assert.equal(error?.recovery_path, candidatePath);
+        assert.equal(await nodeLstat(join(root, candidatePath)).then(() => true), true);
+      } finally {
+        await rm(root, { recursive: true, force: true });
+      }
+    });
+  }
+});
