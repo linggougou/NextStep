@@ -623,31 +623,27 @@ test("update 的 no-replace 恢复路径与 remove 摘要归属均 fail closed",
     }
   });
 
-  await t.test("update 的 recovery 清理无效时保留恢复对象并拒绝成功", async () => {
+  await t.test("update cleanup 不调用可注入的 binding.unlink", async () => {
     const root = await mkdtemp(join(tmpdir(), "nextstep-recovery-cleanup-"));
     const target = join(root, "result.md");
     await writeFile(target, "before");
+    let unlinkCalls = 0;
     const binding = {
-      unlink: async (path: string) => {
-        if (!path.includes(".nextstep-recovery-")) {
-          await unlink(path);
-        }
+      unlink: async () => {
+        unlinkCalls += 1;
+        throw new Error("binding.unlink must not be used");
       },
     } as Partial<NodeWriteFileSystemBinding>;
 
     try {
       const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
-      const error = await fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), {
+      await fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), {
         mode: "update",
         before_digest: digest("before"),
-      }).then(
-        () => undefined,
-        (caught: unknown) => caught as NodeJS.ErrnoException & { recovery_path?: string },
-      );
-      assert.equal(error?.code, "WRITE_ACCESS_BLOCKED");
-      assert.match(error?.recovery_path ?? "", /^result\.md\.nextstep-recovery-/);
+      });
+      assert.equal(unlinkCalls, 0);
       assert.equal(await readFile(target, "utf8"), "nextstep");
-      assert.equal((await readdir(root)).filter((entry) => entry.includes(".nextstep-recovery-")).length, 1);
+      assert.deepEqual(await readdir(root), ["result.md"]);
     } finally {
       await rm(root, { recursive: true, force: true });
     }
@@ -714,37 +710,31 @@ test("恢复生命周期的最晚竞态保留 cwd 身份、竞争者与可定位
   });
 
   for (const operation of ["update", "remove"] as const) {
-    await t.test(`${operation} 在 unlink(recovery) 入口改写对象时保留竞争者`, async () => {
+    await t.test(`${operation} cleanup 不调用可注入的 binding.unlink`, async () => {
       const root = await mkdtemp(join(tmpdir(), `nextstep-${operation}-recovery-race-`));
       const target = join(root, "result.md");
       await writeFile(target, operation === "update" ? "before" : "owned");
-      let injected = false;
+      let unlinkCalls = 0;
       const binding = {
-        unlink: async (path: string) => {
-          if (!injected && path.includes(".nextstep-recovery-")) {
-            injected = true;
-            await writeFile(path, "competitor");
-          }
-          await unlink(path);
+        unlink: async () => {
+          unlinkCalls += 1;
+          throw new Error("binding.unlink must not be used");
         },
       } as Partial<NodeWriteFileSystemBinding>;
 
       try {
         const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
-        const outcome = operation === "update"
-          ? fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), {
+        if (operation === "update") {
+          await fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), {
               mode: "update",
               before_digest: digest("before"),
-            })
-          : fileSystem.removeCreated("result.md", digest("owned"));
-        const error = await outcome.then(
-          () => undefined,
-          (caught: unknown) => caught as NodeJS.ErrnoException & { recovery_path?: string },
-        );
-        assert.equal(error?.code, "ESTALE");
-        assert.match(error?.recovery_path ?? "", /^result\.md\.nextstep-recovery-/);
-        assert.equal(injected, true);
-        assert.equal(await readFile(join(root, error!.recovery_path!), "utf8"), "competitor");
+            });
+          assert.equal(await readFile(target, "utf8"), "nextstep");
+        } else {
+          await fileSystem.removeCreated("result.md", digest("owned"));
+          await assert.rejects(readFile(target), hasCode("ENOENT"));
+        }
+        assert.equal(unlinkCalls, 0);
       } finally {
         await rm(root, { recursive: true, force: true });
       }
@@ -757,12 +747,16 @@ test("恢复生命周期的最晚竞态保留 cwd 身份、竞争者与可定位
     await writeFile(target, "before");
     let injected = false;
     const binding = {
-      unlink: async (path: string) => {
-        if (!injected && path.includes(".nextstep-recovery-")) {
+      link: async (existingPath: string, newPath: string) => {
+        await nodeLink(existingPath, newPath);
+        if (
+          !injected &&
+          existingPath.includes(".nextstep-recovery-") &&
+          newPath.includes(".nextstep-quarantine-")
+        ) {
           injected = true;
-          await writeFile("result.md", "competitor");
+          await writeFile(target, "competitor");
         }
-        await unlink(path);
       },
     } as Partial<NodeWriteFileSystemBinding>;
 
@@ -785,7 +779,7 @@ test("恢复生命周期的最晚竞态保留 cwd 身份、竞争者与可定位
   });
 
   for (const mode of ["create", "update"] as const) {
-    await t.test(`${mode} 的 temp unlink 持续 EPERM 时返回可定位 recovery_path`, async () => {
+    await t.test(`${mode} 的 temp quarantine link 返回 EPERM 时定位已绑定对象`, async () => {
       const root = await mkdtemp(join(tmpdir(), `nextstep-${mode}-temp-cleanup-`));
       const target = join(root, "docs", "result.md");
       await mkdir(join(root, "docs"));
@@ -793,13 +787,13 @@ test("恢复生命周期的最晚竞态保留 cwd 身份、竞争者与可定位
         await writeFile(target, "before");
       }
       const binding = {
-        unlink: async (path: string) => {
-          if (path.includes(".nextstep-tmp-")) {
+        link: async (existingPath: string, newPath: string) => {
+          await nodeLink(existingPath, newPath);
+          if (existingPath.includes(".nextstep-tmp-") && newPath.includes(".nextstep-quarantine-")) {
             const error = new Error("injected persistent temp cleanup failure") as NodeJS.ErrnoException;
             error.code = "EPERM";
             throw error;
           }
-          await unlink(path);
         },
       } as Partial<NodeWriteFileSystemBinding>;
 
@@ -812,7 +806,7 @@ test("恢复生命周期的最晚竞态保留 cwd 身份、竞争者与可定位
           (caught: unknown) => caught as NodeJS.ErrnoException & { recovery_path?: string },
         );
         assert.equal(error?.code, "EPERM");
-        assert.match(error?.recovery_path ?? "", /^docs\/result\.md\.nextstep-tmp-/);
+        assert.match(error?.recovery_path ?? "", /^docs\/result\.md\.nextstep-tmp-.*\.nextstep-quarantine-/);
         assert.equal(await readFile(join(root, error!.recovery_path!), "utf8"), "nextstep");
         if (mode === "update") {
           const recovery = (await readdir(join(root, "docs")))
@@ -850,17 +844,17 @@ test("恢复生命周期的最晚竞态保留 cwd 身份、竞争者与可定位
     }
   });
 
-  await t.test("temp 在 cleanup 预检时变成目录则保留对象并返回定位路径", async () => {
+  await t.test("temp 在 quarantine link 前变成目录时从打开句柄保留 fallback", async () => {
     const root = await mkdtemp(join(tmpdir(), "nextstep-temp-type-race-"));
     let injected = false;
     const binding = {
-      lstat: async (path: string) => {
-        if (!injected && path.includes(".nextstep-tmp-")) {
+      link: async (existingPath: string, newPath: string) => {
+        if (!injected && newPath.includes(".nextstep-quarantine-")) {
           injected = true;
-          await unlink(path);
-          await mkdir(path);
+          await unlink(existingPath);
+          await mkdir(existingPath);
         }
-        return nodeLstat(path);
+        await nodeLink(existingPath, newPath);
       },
     } as Partial<NodeWriteFileSystemBinding>;
 
@@ -874,8 +868,9 @@ test("恢复生命周期的最晚竞态保留 cwd 身份、竞争者与可定位
         (caught: unknown) => caught as NodeJS.ErrnoException & { recovery_path?: string },
       );
       assert.equal(error?.code, "ESTALE");
-      assert.match(error?.recovery_path ?? "", /^result\.md\.nextstep-tmp-/);
-      assert.equal((await nodeLstat(join(root, error!.recovery_path!))).isDirectory(), true);
+      assert.match(error?.recovery_path ?? "", /^result\.md\.nextstep-tmp-.*\.nextstep-recovered-/);
+      assert.equal(await readFile(join(root, error!.recovery_path!), "utf8"), "nextstep");
+      assert.equal(injected, true);
       assert.equal(await readFile(join(root, "result.md"), "utf8"), "nextstep");
     } finally {
       await rm(root, { recursive: true, force: true });
@@ -885,28 +880,19 @@ test("恢复生命周期的最晚竞态保留 cwd 身份、竞争者与可定位
   await t.test("首选 recovery 被占据时保留占据者并使用 no-replace 备用路径", async () => {
     const root = await mkdtemp(join(tmpdir(), "nextstep-recovery-fallback-"));
     await writeFile(join(root, "result.md"), "owned");
-    let unlinkInjected = false;
-    let preferredOccupied = false;
+    let linkInjected = false;
     const binding = {
-      unlink: async (path: string) => {
-        if (!unlinkInjected && path.includes(".nextstep-recovery-")) {
-          unlinkInjected = true;
-          await writeFile(path, "mutated-at-unlink");
-        }
-        await unlink(path);
-      },
-      open: async (path: string, flags: string, mode: number) => {
+      link: async (existingPath: string, newPath: string) => {
         if (
-          unlinkInjected &&
-          !preferredOccupied &&
-          flags === "wx" &&
-          path.includes(".nextstep-recovery-") &&
-          !path.includes(".nextstep-recovered-")
+          !linkInjected &&
+          existingPath.includes(".nextstep-recovery-") &&
+          newPath.includes(".nextstep-quarantine-")
         ) {
-          preferredOccupied = true;
-          await writeFile(path, "preferred-occupant", { flag: "wx" });
+          linkInjected = true;
+          await unlink(existingPath);
+          await writeFile(existingPath, "preferred-occupant", { flag: "wx" });
         }
-        return nodeOpen(path, flags, mode);
+        await nodeLink(existingPath, newPath);
       },
     } as Partial<NodeWriteFileSystemBinding>;
 
@@ -918,7 +904,8 @@ test("恢复生命周期的最晚竞态保留 cwd 身份、竞争者与可定位
       );
       assert.equal(error?.code, "ESTALE");
       assert.match(error?.recovery_path ?? "", /\.nextstep-recovery-.*\.nextstep-recovered-/);
-      assert.equal(await readFile(join(root, error!.recovery_path!), "utf8"), "mutated-at-unlink");
+      assert.equal(await readFile(join(root, error!.recovery_path!), "utf8"), "owned");
+      assert.equal(linkInjected, true);
       const preferred = (await readdir(root))
         .find((entry) => entry.includes(".nextstep-recovery-") && !entry.includes(".nextstep-recovered-"));
       assert.ok(preferred);
@@ -928,22 +915,17 @@ test("恢复生命周期的最晚竞态保留 cwd 身份、竞争者与可定位
     }
   });
 
-  await t.test("temp cleanup 的目录项与打开对象身份不一致时拒绝删除", async () => {
+  await t.test("temp quarantine 后原名身份变化时定位 hardlink 对象", async () => {
     const root = await mkdtemp(join(tmpdir(), "nextstep-temp-identity-race-"));
+    let injected = false;
     const binding = {
-      lstat: async (path: string) => {
-        const stats = await nodeLstat(path);
-        if (!path.includes(".nextstep-tmp-")) {
-          return stats;
+      link: async (existingPath: string, newPath: string) => {
+        await nodeLink(existingPath, newPath);
+        if (!injected && newPath.includes(".nextstep-quarantine-")) {
+          injected = true;
+          await unlink(existingPath);
+          await writeFile(existingPath, "competitor", { flag: "wx" });
         }
-        return {
-          isFile: () => stats.isFile(),
-          isSymbolicLink: () => stats.isSymbolicLink(),
-          isDirectory: () => stats.isDirectory(),
-          mode: stats.mode,
-          dev: stats.dev + 1,
-          ino: stats.ino,
-        };
       },
     } as Partial<NodeWriteFileSystemBinding>;
 
@@ -957,8 +939,9 @@ test("恢复生命周期的最晚竞态保留 cwd 身份、竞争者与可定位
         (caught: unknown) => caught as NodeJS.ErrnoException & { recovery_path?: string },
       );
       assert.equal(error?.code, "ESTALE");
-      assert.match(error?.recovery_path ?? "", /^result\.md\.nextstep-tmp-/);
+      assert.match(error?.recovery_path ?? "", /^result\.md\.nextstep-tmp-.*\.nextstep-quarantine-/);
       assert.equal(await readFile(join(root, error!.recovery_path!), "utf8"), "nextstep");
+      assert.equal(injected, true);
     } finally {
       await rm(root, { recursive: true, force: true });
     }
@@ -967,18 +950,23 @@ test("恢复生命周期的最晚竞态保留 cwd 身份、竞争者与可定位
   await t.test("竞争 recovery 重建 fsync 失败时仍保留并定位已写对象", async () => {
     const root = await mkdtemp(join(tmpdir(), "nextstep-recovery-persist-fsync-"));
     await writeFile(join(root, "result.md"), "owned");
-    let unlinkInjected = false;
+    let linkInjected = false;
     let recoveryOpened = false;
     const binding = {
-      unlink: async (path: string) => {
-        if (!unlinkInjected && path.includes(".nextstep-recovery-")) {
-          unlinkInjected = true;
-          await writeFile(path, "competitor");
+      link: async (existingPath: string, newPath: string) => {
+        if (
+          !linkInjected &&
+          existingPath.includes(".nextstep-recovery-") &&
+          newPath.includes(".nextstep-quarantine-")
+        ) {
+          linkInjected = true;
+          await unlink(existingPath);
+          await writeFile(existingPath, "competitor", { flag: "wx" });
         }
-        await unlink(path);
+        await nodeLink(existingPath, newPath);
       },
       open: async (path: string, flags: string, mode: number) => {
-        if (unlinkInjected && flags === "wx" && path.includes(".nextstep-recovery-")) {
+        if (linkInjected && flags === "wx" && path.includes(".nextstep-recovered-")) {
           recoveryOpened = true;
         }
         return nodeOpen(path, flags, mode);
@@ -1005,8 +993,9 @@ test("恢复生命周期的最晚竞态保留 cwd 身份、竞争者与可定位
         (caught: unknown) => caught as NodeJS.ErrnoException & { recovery_path?: string },
       );
       assert.equal(error?.code, "EIO");
-      assert.match(error?.recovery_path ?? "", /^result\.md\.nextstep-recovery-/);
-      assert.equal(await readFile(join(root, error!.recovery_path!), "utf8"), "competitor");
+      assert.match(error?.recovery_path ?? "", /^result\.md\.nextstep-recovery-.*\.nextstep-recovered-/);
+      assert.equal(await readFile(join(root, error!.recovery_path!), "utf8"), "owned");
+      assert.equal(linkInjected, true);
     } finally {
       await rm(root, { recursive: true, force: true });
     }
@@ -1223,7 +1212,76 @@ test("hardlink-quarantine cleanup 绑定真实对象且 locator 不指向旧词�
     }
   });
 
-  for (const stage of ["write", "fsync", "verify"] as const) {
+  await t.test("cleanup 打开对象的摘要与归属摘要不一致时保留原名并定位", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-cleanup-digest-drift-"));
+    await writeFile(join(root, "result.md"), "owned");
+    const binding = {
+      rename: async (oldPath: string, newPath: string) => {
+        await nodeRename(oldPath, newPath);
+        await writeFile(newPath, "drifted");
+      },
+      readFile: async (path: string) => path.includes(".nextstep-recovery-")
+        ? Buffer.from("owned")
+        : readFile(path),
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      const error = await fileSystem.removeCreated("result.md", digest("owned")).then(
+        () => undefined,
+        (caught: unknown) => caught as NodeJS.ErrnoException & { recovery_path?: string },
+      );
+      assert.equal(error?.code, "ESTALE");
+      assert.match(error?.recovery_path ?? "", /^result\.md\.nextstep-recovery-/);
+      assert.equal(await readFile(join(root, error!.recovery_path!), "utf8"), "drifted");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  for (const openFailure of ["access", "exhausted"] as const) {
+    await t.test(`fallback no-replace open ${openFailure} 时 fail closed`, async () => {
+      const root = await mkdtemp(join(tmpdir(), `nextstep-fallback-open-${openFailure}-`));
+      await writeFile(join(root, "result.md"), "owned");
+      let cleanupLinkInjected = false;
+      const binding = {
+        link: async (existingPath: string, newPath: string) => {
+          if (!cleanupLinkInjected && newPath.includes(".nextstep-quarantine-")) {
+            cleanupLinkInjected = true;
+            await unlink(existingPath);
+            await writeFile(existingPath, "competitor", { flag: "wx" });
+          }
+          await nodeLink(existingPath, newPath);
+        },
+        open: async (path: string, flags: string, mode: number) => {
+          if (cleanupLinkInjected && flags === "wx" && path.includes(".nextstep-recovered-")) {
+            if (openFailure === "exhausted") {
+              await writeFile(path, "candidate-occupant", { flag: "wx" });
+              return nodeOpen(path, flags, mode);
+            }
+            const error = new Error("injected fallback access failure") as NodeJS.ErrnoException;
+            error.code = "EACCES";
+            throw error;
+          }
+          return nodeOpen(path, flags, mode);
+        },
+      } as Partial<NodeWriteFileSystemBinding>;
+
+      try {
+        const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+        const error = await fileSystem.removeCreated("result.md", digest("owned")).then(
+          () => undefined,
+          (caught: unknown) => caught as NodeJS.ErrnoException,
+        );
+        assert.equal(error?.code, openFailure === "exhausted" ? "EEXIST" : "EACCES");
+        assert.equal(cleanupLinkInjected, true);
+      } finally {
+        await rm(root, { recursive: true, force: true });
+      }
+    });
+  }
+
+  for (const stage of ["write", "write-close", "fsync", "verify"] as const) {
     await t.test(`fallback ${stage} 失败时 recovery_path 指向实际 candidate`, async () => {
       const root = await mkdtemp(join(tmpdir(), `nextstep-fallback-${stage}-`));
       await writeFile(join(root, "result.md"), "owned");
@@ -1246,10 +1304,17 @@ test("hardlink-quarantine cleanup 绑定真实对象且 locator 不指向旧词�
           candidatePath = path;
           return new Proxy(handle, {
             get(targetHandle, property) {
-              if (property === "writeFile" && stage === "write") {
+              if (property === "writeFile" && (stage === "write" || stage === "write-close")) {
                 return async () => {
                   await targetHandle.writeFile("partial-fallback");
                   const error = new Error("injected fallback write failure") as NodeJS.ErrnoException;
+                  error.code = "EIO";
+                  throw error;
+                };
+              }
+              if (property === "close" && stage === "write-close") {
+                return async () => {
+                  const error = new Error("injected fallback close failure") as NodeJS.ErrnoException;
                   error.code = "EIO";
                   throw error;
                 };
