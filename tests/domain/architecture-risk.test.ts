@@ -15,6 +15,7 @@ import {
   parseArchitectureRiskAssessment,
   type ArchitectureRiskAssessment,
   type ArchitectureRiskAssessmentCandidate,
+  type ArchitectureRiskProjectBinding,
 } from "../../src/domain/architecture-risk.ts";
 
 const REQUIRED_FIELD_KEYS = [
@@ -62,7 +63,7 @@ const ROLLBACK_IDS = [
 ] as const;
 
 function buildCandidate(
-  activeProject = ARCHITECTURE_RISK_PROJECT_FIXTURES[0],
+  activeProject: ArchitectureRiskProjectBinding = ARCHITECTURE_RISK_PROJECT_FIXTURES[0],
 ): ArchitectureRiskAssessmentCandidate {
   return {
     schema_version: "1.0",
@@ -70,11 +71,12 @@ function buildCandidate(
     project: { ...activeProject },
     stage: ARCHITECTURE_RISK_STAGE,
     formal_baseline: S1_6_FORMAL_BASELINE,
+    evidence_scope: "manual-isolated consumer contract",
     project_fixture_bindings: ARCHITECTURE_RISK_PROJECT_FIXTURES.map((binding) => ({ ...binding })),
     upstream_source_bindings: ARCHITECTURE_RISK_SOURCE_BINDINGS.map((binding) => ({ ...binding })),
     required_field_bindings: ARCHITECTURE_RISK_REQUIRED_FIELD_KEYS.map((bindingKey) => ({
       binding_key: bindingKey,
-      source_ref: ARCHITECTURE_RISK_SOURCE_BINDINGS[0].source_ref,
+      source_ref: `${ARCHITECTURE_RISK_SOURCE_BINDINGS[0].source_ref} / ${bindingKey}`,
       source_raw_sha256: ARCHITECTURE_RISK_SOURCE_BINDINGS[0].source_raw_sha256,
       binding_status: "bound" as const,
     })),
@@ -137,6 +139,32 @@ test("冻结常量逐字匹配 packet 的 F15、10/20/5 契约", () => {
       ["P4", "sha256:edd41dc218f14ba2ae5b0766b6572b528f15e4cf86aafde77e0c2a8789521c75"],
     ],
   );
+  assert.deepEqual(
+    ARCHITECTURE_RISK_SOURCE_BINDINGS.map(({ source_ref }) => source_ref),
+    [
+      "docs/product-specs/005-stage-document-contracts.md §4.2",
+      "docs/architecture/009-s4-technical-input-supplement.md §7",
+      "docs/architecture/s4-technical-architecture.md §18",
+      "docs/exec-plans/completed/p3-version-and-milestone-breakdown.md S1.6",
+      "docs/design-docs/p4-execution-mechanism-design.md",
+    ],
+  );
+  assert.equal(
+    ARCHITECTURE_RISK_CATALOG[0]!.source_ref,
+    "docs/architecture/s4-technical-architecture.md §18 行：项目根解析正确",
+  );
+  assert.equal(
+    ARCHITECTURE_RISK_CATALOG[19]!.source_ref,
+    "docs/architecture/009-s4-technical-input-supplement.md §7 行：归档失败",
+  );
+  const rollbackByRisk = new Map(
+    ARCHITECTURE_RISK_CATALOG.map(({ risk_id, rollback_entry_id }) => [risk_id, rollback_entry_id]),
+  );
+  assert.equal(rollbackByRisk.get("read-only-verification-effective"), "manual-isolated-fallback");
+  assert.equal(rollbackByRisk.get("control-ref-single-writer-fencing"), "stop-auto-write-and-enter-change-request");
+  assert.equal(rollbackByRisk.get("final-verification-precision"), "awaiting-formal-promotion");
+  assert.equal(rollbackByRisk.get("credential-and-proof-no-replace"), "awaiting-formal-promotion");
+  assert.equal(rollbackByRisk.get("credential-crash-durability"), "awaiting-formal-promotion");
 });
 
 test("三类内存候选均得到 ACCEPTED，Q3=10/10=100%、Q11=20/20", () => {
@@ -187,6 +215,33 @@ test("十类 required field 缺失、额外、别名均 fail closed", () => {
   assert.throws(() => evaluateArchitectureRiskAssessment(alias), expectError("REQUIRED_FIELD_SET_MISMATCH"));
 });
 
+test("推荐技术栈、备选与不选原因缺一即拒绝", () => {
+  for (const field of ["recommended", "alternatives", "rejection_reasons"] as const) {
+    const candidate = cloneCandidate();
+    delete (candidate.technical_stack as Record<string, unknown>)[field];
+    assert.throws(
+      () => evaluateArchitectureRiskAssessment(candidate),
+      expectError("INVALID_ARCHITECTURE_RISK_ASSESSMENT"),
+    );
+  }
+});
+
+test("数据模型五类与门禁四态必须完整、顺序固定", () => {
+  const missingModel = cloneCandidate();
+  ((missingModel.architecture_model as Record<string, unknown>).data_models as unknown[]).pop();
+  assert.throws(
+    () => evaluateArchitectureRiskAssessment(missingModel),
+    expectError("REQUIRED_FIELD_SET_MISMATCH"),
+  );
+
+  const wrongGate = cloneCandidate();
+  ((wrongGate.architecture_model as Record<string, unknown>).phase_gate_states as unknown[])[1] = "已退回";
+  assert.throws(
+    () => evaluateArchitectureRiskAssessment(wrongGate),
+    expectError("REQUIRED_FIELD_SET_MISMATCH"),
+  );
+});
+
 test("risk 集合缺失、重复与未知 id 均 fail closed", () => {
   const missing = cloneCandidate();
   (missing.risk_bindings as unknown[]).pop();
@@ -194,7 +249,7 @@ test("risk 集合缺失、重复与未知 id 均 fail closed", () => {
 
   const duplicate = cloneCandidate();
   const risks = duplicate.risk_bindings as Record<string, unknown>[];
-  risks[1] = structuredClone(risks[0]);
+  risks[1] = structuredClone(risks[0] as Record<string, unknown>);
   assert.throws(() => evaluateArchitectureRiskAssessment(duplicate), expectError("RISK_SET_MISMATCH"));
 
   const unknown = cloneCandidate();
@@ -241,6 +296,10 @@ test("F15、阶段、会签、跨项目与五份 source raw SHA 漂移均拒绝"
   wrongStage.stage = "S5/P5/V1/M1.2/S1.7/PC-08";
   assert.throws(() => evaluateArchitectureRiskAssessment(wrongStage), expectError("STAGE_MISMATCH"));
 
+  const wrongEvidenceScope = cloneCandidate();
+  wrongEvidenceScope.evidence_scope = "full consumer contract";
+  assert.throws(() => evaluateArchitectureRiskAssessment(wrongEvidenceScope), expectError("OUT_OF_SCOPE_CAPABILITY"));
+
   const unsigned = cloneCandidate();
   ((unsigned.upstream_source_bindings as Record<string, unknown>[])[0] as Record<string, unknown>).signed_off = false;
   assert.throws(() => evaluateArchitectureRiskAssessment(unsigned), expectError("SOURCE_BINDING_MISMATCH"));
@@ -249,11 +308,28 @@ test("F15、阶段、会签、跨项目与五份 source raw SHA 漂移均拒绝"
   (crossProject.project as Record<string, unknown>).record_digest = ARCHITECTURE_RISK_PROJECT_FIXTURES[1].record_digest;
   assert.throws(() => evaluateArchitectureRiskAssessment(crossProject), expectError("PROJECT_BINDING_MISMATCH"));
 
+  const unknownProject = cloneCandidate();
+  (unknownProject.project as Record<string, unknown>).project_id = "foreign-project";
+  assert.throws(() => evaluateArchitectureRiskAssessment(unknownProject), expectError("PROJECT_BINDING_MISMATCH"));
+
   for (let index = 0; index < ARCHITECTURE_RISK_SOURCE_BINDINGS.length; index += 1) {
     const drift = cloneCandidate();
     ((drift.upstream_source_bindings as Record<string, unknown>[])[index] as Record<string, unknown>).source_raw_sha256 =
       `sha256:${String(index).repeat(64)}`;
     assert.throws(() => evaluateArchitectureRiskAssessment(drift), expectError("SOURCE_BINDING_MISMATCH"));
+  }
+});
+
+test("十类字段的 005 人读 ref、raw SHA 与 bound 状态逐项重验", () => {
+  const mutations: ReadonlyArray<(binding: Record<string, unknown>) => void> = [
+    (binding) => { binding.binding_status = "missing"; },
+    (binding) => { binding.source_ref = ARCHITECTURE_RISK_SOURCE_BINDINGS[0].source_ref; },
+    (binding) => { binding.source_raw_sha256 = `sha256:${"e".repeat(64)}`; },
+  ];
+  for (const mutate of mutations) {
+    const candidate = cloneCandidate();
+    mutate((candidate.required_field_bindings as Record<string, unknown>[])[0] as Record<string, unknown>);
+    assert.throws(() => evaluateArchitectureRiskAssessment(candidate), expectError("REQUIRED_FIELD_SET_MISMATCH"));
   }
 });
 
@@ -323,6 +399,17 @@ test("输出 parser 拒绝未知字段、敏感内容与候选 record_type", () 
 
   assert.throws(
     () => parseArchitectureRiskAssessment(buildCandidate() as unknown as ArchitectureRiskAssessment),
+    expectError("ASSESSMENT_INTEGRITY_MISMATCH"),
+  );
+
+  const sensitive = structuredClone(assessment) as unknown as Record<string, unknown>;
+  sensitive.api_token = "redacted-value";
+  assert.throws(
+    () => parseArchitectureRiskAssessment(sensitive),
+    expectError("ASSESSMENT_INTEGRITY_MISMATCH"),
+  );
+  assert.throws(
+    () => parseArchitectureRiskAssessment(null),
     expectError("ASSESSMENT_INTEGRITY_MISMATCH"),
   );
 });

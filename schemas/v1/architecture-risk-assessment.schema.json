@@ -1,0 +1,187 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nextstep.local/schemas/v1/architecture-risk-assessment.schema.json",
+  "title": "NextStep Architecture Risk Assessment Candidate 1.0",
+  "description": "P5/V1/M1.2/S1.6 PC-08 的 manual-isolated 架构风险评估输入候选；输出由领域 parser 独立重验。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "project",
+    "stage",
+    "formal_baseline",
+    "evidence_scope",
+    "project_fixture_bindings",
+    "upstream_source_bindings",
+    "required_field_bindings",
+    "technical_stack",
+    "architecture_model",
+    "risk_bindings",
+    "rollback_entries",
+    "scope"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "record_type": { "const": "architecture-risk-assessment-candidate" },
+    "project": { "$ref": "#/definitions/projectBinding" },
+    "stage": { "type": "string", "minLength": 1 },
+    "formal_baseline": { "$ref": "#/definitions/oid" },
+    "evidence_scope": { "const": "manual-isolated consumer contract" },
+    "project_fixture_bindings": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "$ref": "#/definitions/projectBinding" }
+    },
+    "upstream_source_bindings": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": { "$ref": "#/definitions/sourceBinding" }
+    },
+    "required_field_bindings": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/requiredFieldBinding" }
+    },
+    "technical_stack": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recommended", "alternatives", "rejection_reasons"],
+      "properties": {
+        "recommended": { "type": "string", "minLength": 1 },
+        "alternatives": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "rejection_reasons": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "architecture_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "data_models",
+        "phase_gate_states",
+        "state_machine_model",
+        "ai_interaction_boundary",
+        "permissions_and_data_safety"
+      ],
+      "properties": {
+        "data_models": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "phase_gate_states": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "state_machine_model": { "type": "string", "minLength": 1 },
+        "ai_interaction_boundary": { "type": "string", "minLength": 1 },
+        "permissions_and_data_safety": { "type": "string", "minLength": 1 }
+      }
+    },
+    "risk_bindings": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/riskBinding" }
+    },
+    "rollback_entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/rollbackEntry" }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "support_level",
+        "interaction_profile",
+        "web_ui",
+        "database",
+        "persistent_service",
+        "p4_api_schema_frozen"
+      ],
+      "properties": {
+        "support_level": { "enum": ["manual-isolated", "full"] },
+        "interaction_profile": { "enum": ["headless", "ui"] },
+        "web_ui": { "type": "boolean" },
+        "database": { "type": "boolean" },
+        "persistent_service": { "type": "boolean" },
+        "p4_api_schema_frozen": { "type": "boolean" }
+      }
+    }
+  },
+  "definitions": {
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "oid": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "projectBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["project_id", "scenario_id", "record_digest"],
+      "properties": {
+        "project_id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "scenario_id": { "type": "string", "pattern": "^[a-z0-9.-]+$" },
+        "record_digest": { "$ref": "#/definitions/digest" }
+      }
+    },
+    "sourceBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "source_ref", "source_raw_sha256", "signed_off"],
+      "properties": {
+        "source_id": { "enum": ["005", "009", "S4", "P3", "P4"] },
+        "source_ref": { "type": "string", "minLength": 1 },
+        "source_raw_sha256": { "$ref": "#/definitions/digest" },
+        "signed_off": { "type": "boolean" }
+      }
+    },
+    "requiredFieldBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["binding_key", "source_ref", "source_raw_sha256", "binding_status"],
+      "properties": {
+        "binding_key": { "type": "string", "minLength": 1 },
+        "source_ref": { "type": "string", "minLength": 1 },
+        "source_raw_sha256": { "$ref": "#/definitions/digest" },
+        "binding_status": { "enum": ["bound", "missing"] }
+      }
+    },
+    "riskBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "risk_id",
+        "source_id",
+        "section",
+        "row_label",
+        "source_ref",
+        "source_raw_sha256",
+        "tg_bindings",
+        "owner_milestone",
+        "rollback_entry_id",
+        "validation_method",
+        "failure_standard",
+        "failure_handling"
+      ],
+      "properties": {
+        "risk_id": { "type": "string", "minLength": 1 },
+        "source_id": { "enum": ["009", "S4"] },
+        "section": { "type": "string", "minLength": 1 },
+        "row_label": { "type": "string", "minLength": 1 },
+        "source_ref": { "type": "string", "minLength": 1 },
+        "source_raw_sha256": { "$ref": "#/definitions/digest" },
+        "tg_bindings": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^TG-[0-9]{2}$" } },
+        "owner_milestone": { "type": "string", "pattern": "^S[0-9]+\\.[0-9]+$" },
+        "rollback_entry_id": { "type": "string", "minLength": 1 },
+        "validation_method": { "type": "string", "minLength": 1 },
+        "failure_standard": { "type": "string", "minLength": 1 },
+        "failure_handling": { "type": "string", "minLength": 1 }
+      }
+    },
+    "rollbackEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rollback_id", "trigger", "terminal_state", "next_action", "proof_expectation"],
+      "properties": {
+        "rollback_id": { "type": "string", "minLength": 1 },
+        "trigger": { "type": "string", "minLength": 1 },
+        "terminal_state": { "type": "string", "minLength": 1 },
+        "next_action": { "type": "string", "minLength": 1 },
+        "proof_expectation": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
