@@ -1016,14 +1016,9 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
           }
           if (tempProof === undefined) {
             if (openAttempted) {
-              const locatorError = await recoveryError(
-                mutationError("ESTALE", `Primary temporary object proof is unavailable: ${relativePath}`),
-                tempName,
-                anchor,
-                cleanupContext,
-                null,
-              );
-              mergeRecoveryMetadata(error, locatorError);
+              mergeRecoveryMetadata(error, {
+                recovery_path_unavailable: "candidate-proof-unavailable",
+              });
             }
             throw error;
           }
