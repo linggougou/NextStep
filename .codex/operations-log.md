@@ -2272,8 +2272,7 @@
 - 评审结论：专属 review worktree `/private/tmp/nextstep-s1-6-entry-review-20260824` 在 subject `f1c2e3d3d10ee3011229b7218045f4421097f243` 上形成独立评审提交 `dbb67c35b8a1491e6bea9a600636875bce384d6a`；父提交精确为 subject，本支线仅新增 `.codex/reviews/p5-v1-m1.2-s1.6-entry-evaluation-2026-08-23/{scorecard.json,verdict.md}` 两文件，worktree clean。
 - 评分卡：`PASS / 95`，JCS digest=`sha256:0a001df340553d8c929e8beba4ae2470f0141d681c8a99e92a818b5b39021183`；P0/P1/P2=`0/0/3`。允许继续冻结 S1.6 计划并准备 packet，但不允许直接编码、派发或宣称阶段完成。
 - 必吸收项：在 packet 前将 `required_field_bindings` 冻结为十个 machine keys，将 `risk_bindings` 冻结为二十个 exact ids，将 `rollback_entries` 冻结为五个 exact ids，并在 schema/CV/I-X-P 中对缺失、额外、错拼、别名、重复与错绑全部 fail closed。
-- 工具缺失：当前运行时未暴露 `spawn_agent` / `wait_agent` 协作入口，原用途是按用户要求把 S1.6 entry review 交给独立子代理执行并等待回收。
-- 替代流程：改用 `judge-harness` 协议 + 专属 review worktree + 只写评审产物的独立提交，严格禁止触碰 `main/formal/control` 与控制工件，再把评审结果并回主线。
-- 替代验证：review worktree 已校验 JSON 可解析、`git diff --check` 通过、相对 subject 精确两路径、提交后工作树 clean；主线随后按 required_fixes 修订 `.codex/exec-plan-s1.6-generation-1.md`，尚未生成 packet、尚未编码、尚未派发。
-- 第二轮结构补强：进一步把三类隐性歧义冻结进计划候选：`project_fixture_bindings` 用于区分 F15 formal 基线与目标项目 fixture digest；每个 field/risk 绑定都必须携带 `source_raw_sha256` 与 `source_excerpt_sha256`；`candidate_digest` 明确采用“排除 candidate_digest 字段自身”的 RFC8785 投影，禁止递归自引用；W1 只提供测试侧原始 catalog，生产侧 allowlist/catalog 落点由 W2 负责。
-- 当前状态：S1.6 仍停在“已通过 entry review、已完成计划冻结修订、尚未生成 packet/control CAS”的治理阶段；在独立复核最后几个结构点闭环前，不推进 `pending dispatch`。
+- 协作事实：entry review 实际由独立 subagent `/root/s16_entry_review` 在专属 worktree 执行；其角色运行时没有嵌套派发入口，但主控具备并已使用 subagent 调度，因此不构成 packet 阻塞或工具替代。
+- 写集偏差：reviewer 超出“仅评审 worktree”所有权，把评审与修订形成 `ea6c172`、`7800c97`、`2a0d9a9` 三个 main 提交。主控未重置；逐提交核对后确认只涉及评审两文件、S1.6 计划和 `.codex` 留痕，formal/control、生产代码、用户未跟踪文件均未变化，内容与 required_fixes 一致，因此保留并追加本次纠偏记录。
+- 主控补强：结合两份只读实施地图，冻结五份 F15 上游 raw SHA、三类 S1.5 fixture digest、十个 field keys、二十个 risk ids、五条 rollback terminal/action/proof 矩阵；输入候选不携带 digest，输出评估摘要绑定完整输入；W1 增加 fixture 自检，W2 使用内存候选，W3 路径全部精确化。
+- 当前状态：S1.6 entry review 与 required_fixes 已闭环；下一步允许以实时 expected-old control 固化 Execution Packet 和 dispatch-ready，CAS 前仍不得编码或派发。

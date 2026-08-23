@@ -2227,5 +2227,6 @@
 - 独立评审：`.codex/reviews/p5-v1-m1.2-s1.6-entry-evaluation-2026-08-23/scorecard.json` 与 `verdict.md` 已形成；结论 `PASS / 95`，评审提交=`dbb67c35b8a1491e6bea9a600636875bce384d6a`，父提交=`f1c2e3d3d10ee3011229b7218045f4421097f243`，tree=`3116ae0975e3d55f21a56a7f932b76f1c56d8157`。
 - 评审范围验证：评审支线相对 subject 精确仅两文件，`git diff --check` 通过，JSON 可解析，scorecard 规范化摘要=`sha256:0a001df340553d8c929e8beba4ae2470f0141d681c8a99e92a818b5b39021183`。
 - required_fixes 吸收：主线已把十个 `required_field_bindings` machine keys、二十个 `risk_bindings` exact ids、五个 `rollback_entries` exact ids 写入 `.codex/exec-plan-s1.6-generation-1.md`，并把 CV/I-X-P/L3 的精确复算口径同步更新到门禁矩阵。
-- 第二轮结构验证：计划候选额外冻结 `project_fixture_bindings`、`source_raw_sha256`、`source_excerpt_sha256` 与 `candidate_digest` 排除投影，并明确 W1 仅提供测试侧原始 catalog、W2 负责生产侧 allowlist/catalog 落点；当前 `git diff --check` 通过。
-- 当前边界：独立评审已完成，但 S1.6 仍停留在“计划冻结后、packet 之前”；未创建 Execution Packet、未执行 control CAS、未编码、未派发。
+- 主控纠偏验证：reviewer 额外形成的三个 main 提交仅触及入口评审、S1.6 计划与 `.codex` 留痕；formal/control、生产代码与用户未跟踪文件未变化。日志中“主控无 subagent 能力”的推断已更正为 reviewer 角色自身无嵌套派发入口，不构成项目阻塞。
+- 结构冻结：计划已冻结五份上游 raw SHA、三类 target fixture digest、十个 field keys、二十个 risk ids、五条 rollback terminal/action/proof 矩阵；输入候选禁止 `candidate_digest`，输出评估摘要绑定完整输入；W1/W2/W3 路径与并行依赖精确化。
+- 当前边界：独立评审与 required_fixes 已完成；仍未创建 Execution Packet、未执行 control CAS、未编码、未派发。下一步允许准备 packet 并先做 expected-old control CAS。
