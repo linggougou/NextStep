@@ -5,6 +5,7 @@ import {
   lstat as nodeLstat,
   mkdir,
   mkdtemp,
+  open as nodeOpen,
   readFile,
   realpath as nodeRealpath,
   readdir,
@@ -32,6 +33,7 @@ interface GuardedAtomicWriter {
       readonly before_digest: `sha256:${string}` | null;
     },
   ): Promise<void>;
+  removeCreated(relativePath: string, expectedDigest: `sha256:${string}`): Promise<void>;
 }
 
 function asGuardedWriter(value: unknown): GuardedAtomicWriter {
@@ -390,5 +392,129 @@ test("最终安装对象被替换为 symlink 或目录时拒绝 readback", async
         await rm(root, { recursive: true, force: true });
       }
     });
+  }
+});
+
+test("update 在最终安装入口出现竞争写入时保留竞争者且拒绝覆盖", async () => {
+  const root = await mkdtemp(join(tmpdir(), "nextstep-update-install-race-"));
+  const target = join(root, "result.md");
+  await writeFile(target, "before");
+  let injected = false;
+  const binding = {
+    rename: async (oldPath: string, newPath: string) => {
+      if (!injected) {
+        injected = true;
+        await writeFile(target, "competitor");
+      }
+      await nodeRename(oldPath, newPath);
+    },
+  } as Partial<NodeWriteFileSystemBinding>;
+
+  try {
+    const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+    await assert.rejects(
+      fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), {
+        mode: "update",
+        before_digest: digest("before"),
+      }),
+      (error: unknown) => ["EEXIST", "ESTALE"].includes((error as { code?: string })?.code ?? ""),
+    );
+    assert.equal(injected, true);
+    assert.equal(await readFile(target, "utf8"), "competitor");
+    assert.ok((await readdir(root)).every((entry) => !entry.includes(".nextstep-tmp-")));
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("最后父路径复核后替换 symlink 时 temp 在任意时刻都不落到根外", async () => {
+  const originalCwd = process.cwd();
+  const root = await mkdtemp(join(tmpdir(), "nextstep-temp-anchor-root-"));
+  const outside = await mkdtemp(join(tmpdir(), "nextstep-temp-anchor-outside-"));
+  const parent = join(root, "docs");
+  const originalParent = join(root, "docs-original");
+  await mkdir(parent);
+  let injected = false;
+  const outsideSnapshots: string[][] = [];
+  const binding = {
+    open: async (path: string, flags: string, mode: number) => {
+      if (!injected && flags === "wx") {
+        injected = true;
+        await nodeRename(parent, originalParent);
+        await symlink(outside, parent, "dir");
+      }
+      const handle = await nodeOpen(path, flags, mode);
+      if (flags === "wx") {
+        outsideSnapshots.push(await readdir(outside));
+      }
+      return handle;
+    },
+  } as Partial<NodeWriteFileSystemBinding>;
+
+  try {
+    const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+    await assert.rejects(
+      fileSystem.atomicWrite("docs/result.md", Buffer.from("nextstep"), {
+        mode: "create",
+        before_digest: null,
+      }),
+      hasCode("WRITE_ACCESS_BLOCKED"),
+    );
+    assert.equal(injected, true);
+    assert.deepEqual(outsideSnapshots, [[]]);
+    assert.deepEqual(await readdir(outside), []);
+  } finally {
+    process.chdir(originalCwd);
+    await rm(root, { recursive: true, force: true });
+    await rm(outside, { recursive: true, force: true });
+  }
+});
+
+test("removeCreated 的父目录被替换为 symlink 时绝不删除根外竞争者", async () => {
+  const originalCwd = process.cwd();
+  const root = await mkdtemp(join(tmpdir(), "nextstep-remove-anchor-root-"));
+  const outside = await mkdtemp(join(tmpdir(), "nextstep-remove-anchor-outside-"));
+  const parent = join(root, "docs");
+  const originalParent = join(root, "docs-original");
+  const target = join(parent, "result.md");
+  await mkdir(parent);
+  await writeFile(target, "owned");
+  await writeFile(join(outside, "result.md"), "outside-competitor");
+  let injected = false;
+
+  const injectParentSwap = async (): Promise<void> => {
+    if (!injected) {
+      injected = true;
+      await nodeRename(parent, originalParent);
+      await symlink(outside, parent, "dir");
+    }
+  };
+  const binding = {
+    rename: async (oldPath: string, newPath: string) => {
+      await injectParentSwap();
+      await nodeRename(oldPath, newPath);
+    },
+    unlink: async (path: string) => {
+      await injectParentSwap();
+      await unlink(path);
+    },
+  } as Partial<NodeWriteFileSystemBinding>;
+
+  try {
+    const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+    try {
+      await fileSystem.removeCreated("docs/result.md", digest("owned"));
+    } catch (error) {
+      assert.equal(
+        ["WRITE_ACCESS_BLOCKED", "EEXIST", "ESTALE"].includes((error as { code?: string })?.code ?? ""),
+        true,
+      );
+    }
+    assert.equal(injected, true);
+    assert.equal(await readFile(join(outside, "result.md"), "utf8"), "outside-competitor");
+  } finally {
+    process.chdir(originalCwd);
+    await rm(root, { recursive: true, force: true });
+    await rm(outside, { recursive: true, force: true });
   }
 });
