@@ -1,0 +1,163 @@
+{
+  "review_id": "p5-v1-m1.2-s1.5-l3-a3-2026-08-23",
+  "task_id": "S1.5-L3",
+  "lane": "P5/V1/M1.2/S1.5/independent-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-s1.5-l3-v1",
+  "artifact_refs": [
+    "git:f226e0fce689284b5f02747784d82c09c47b3ec5",
+    "refs/nextstep/control:gate-requests/gate-independent-review-s1.5-g4-a1-20260823.json",
+    "refs/nextstep/control:results/result-execution-s1.5-g4-a3-f86-20260823.json",
+    "refs/nextstep/control:results/result-candidate-verification-s1.5-g4-a3-f87-20260823.json",
+    "refs/nextstep/control:results/result-product-interaction-s1.5-g4-a3-f88-20260823.json",
+    "git:0d8717901b00f55384fe47ac1b4a14657a2fecb1:.codex/reviews/p5-v1-m1.2-s1.5-execution-evidence-correction-a3-2026-08-23/scorecard.json",
+    "git:9eb334a6d7b4e0a062af33557b57fd93b9db0ed4:.codex/reviews/p5-v1-m1.2-s1.5-candidate-verification-a3-2026-08-23/scorecard.json",
+    "git:7e8a0c80fc039eb142d6e102dbc0e3a23e60ee1e:.codex/reviews/p5-v1-m1.2-s1.5-independent-ixp-a3-2026-08-23/scorecard.json"
+  ],
+  "control_binding": {
+    "ack_control_oid": "2282da4cc60fdf4d85c022ccb1baabb56f23e8d7",
+    "ack_message_id": "msg-dispatch-ack-s1.5-l3-g4-a1-f89-20260823",
+    "claim_id": "claim-s1.5-l3-g4-a1-f89-20260823",
+    "fence_token": 89,
+    "host_task_id": "codex-subagent:/root/s15_l3_review",
+    "formal_oid": "024c1db6d941b6f771746c8d6249fb8a09b816f3",
+    "review_base_oid": "b06d5dbabc1f76b0cce7f7363f152e110ace4ded"
+  },
+  "hard_gates": [
+    {
+      "id": "HG1",
+      "name": "attempt 3 Execution Evidence、CV、I/X/P 均通过且身份链可独立复算",
+      "result": "pass",
+      "evidence": "独立 RFC8785/JCS 实现复算 15/15 MATCH：L3/CV/IXP/execution 四份 packet、四份七字段 dedup、execution/CV/IXP 三份 Result、三份 review scorecard 与 subject digest 全部匹配。Execution/CV/IXP 分别 PASS / 100、PASS / 100、PASS / 100，P0/P1=0；三个 Result 的 subject 恒为 f226e0f…/c01eb4ed…。三份原始 review commit 都以 subject 为唯一父提交且各自只新增允许目录两文件。"
+    },
+    {
+      "id": "HG2",
+      "name": "固定工具链、353/353 与覆盖率可在冻结窗口独立复现",
+      "result": "pass",
+      "evidence": "Node v24.14.0、pnpm 10.33.2；offline frozen install reused 10/downloaded 0；pnpm check exit 0，36 source + 36 compiled test files，353/353、0 fail，覆盖率 Lines 92.82%、Branches 87.62%、Functions 99.00%。attempt 2 的 374/374 失真口径未被复用。"
+    },
+    {
+      "id": "HG3",
+      "name": "PC-06/PC-07、write-consistency、Profile、确认链与失败恢复全部成立",
+      "result": "fail",
+      "evidence": "静态 fixture 身份与行为证据通过：13/13 write-consistency index digest、17/17 Acceptance Profile、Q6=100%，全量测试覆盖确认、故障和恢复。但两条活体并发探针推翻 PC-06/PC-07 的用户改动保护与根边界：update 在 precheck 后第二次读到新用户内容仍覆盖并返回 WRITE_COMMITTED；create 在 precheck 后出现目标文件也被普通 rename 覆盖，父目录改为 symlink 时写入逃逸到项目根外仍返回 WRITE_COMMITTED。"
+    },
+    {
+      "id": "HG4",
+      "name": "代码与测试无明显 slop、宽松放行或安全边界降级",
+      "result": "fail",
+      "evidence": "未发现 TODO/stub/模板伪实现，领域契约、JCS、确认链和回滚实现整体扎实；但 src/domain/write-transaction.ts:562-595 的 check/read/write 分离没有对第二次 baseline bytes 做 digest 比对，src/adapters/node/file-write.ts:117-147 又以普通 rename 承诺 atomicWrite，导致 create 覆盖与父目录 symlink TOCTOU。tests/domain/write-transaction.test.ts:812-835 只覆盖第二次读取抛 ENOENT/EACCES，没有覆盖读取成功但内容已变化、create 目标竞态或父路径竞态，属于阻塞性测试缺口。"
+    },
+    {
+      "id": "HG5",
+      "name": "formal F14、control 单父链与 S1.5 精确范围保持不变",
+      "result": "pass",
+      "evidence": "冻结窗口前后 main=b06d5db…、formal=024c1db…、control=2282da4…；control rev-list 零合并提交，formal 为 subject 祖先。a028bb7..subject 恰 38 条既定 S1.5 路径，subject..review base 的产品/测试/Schema/Skill/依赖/路线锁路径变化为 0；本评审未启动 S1.6、移动 F15 或声明 M1.2/V1/P5 完成。"
+    }
+  ],
+  "findings": [
+    {
+      "id": "P1-01",
+      "severity": "P1",
+      "title": "更新与创建目标可在最终写入边界覆盖确认后的用户改动",
+      "location": "src/domain/write-transaction.ts:562",
+      "evidence": "update 探针让第一次 precheck 读取 old-a、第二次 rollback baseline 读取 user-new；实现只把第二次 bytes 存入 beforeContents，不与 target.before_digest 比较，随后写入 planned，最终返回 WRITE_COMMITTED，reads=3、writes=1、final_content=planned。create 探针在 Node adapter rename 前创建 user-created-during-transaction；普通 rename 覆盖该文件，仍返回 WRITE_COMMITTED。",
+      "impact": "违反 S3 §7.1 的确认后版本冲突保护和 TG-11 用户改动保护；成功回执可掩盖真实用户内容丢失。"
+    },
+    {
+      "id": "P1-02",
+      "severity": "P1",
+      "title": "父目录在预检后变为符号链接时可越出规范项目根写入",
+      "location": "src/adapters/node/file-write.ts:117",
+      "evidence": "确定性 Node adapter 探针在 target/parent 预检通过后、atomicWrite 的第三次 lstat 前将 root/docs 改名并替换为指向外部目录的 symlink。后续 lstat/open/rename/readback 均沿父 symlink 操作，结果为 WRITE_COMMITTED，项目外 outside/new.md 内容为 planned。",
+      "impact": "违反 PC-06 唯一规范根、S3 §5.1 全部读写限制在已确认项目根内及 TG-01 符号链接越界阻塞要求；可能污染不在用户确认范围内的路径。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "D1",
+      "name": "功能正确性与写入事务",
+      "score": 16,
+      "max": 25,
+      "reason": "常规、故障与回滚矩阵通过，但确认后的内容竞态仍可被包装为 WRITE_COMMITTED。",
+      "evidence": ["pnpm check 353/353", "13/13 write-consistency digest", "P1-01 活体探针"]
+    },
+    {
+      "id": "D2",
+      "name": "身份与证据链",
+      "score": 25,
+      "max": 25,
+      "reason": "packet/dedup/Result/scorecard/subject 15/15 独立复算匹配，attempt 2 历史与 attempt 3 纠正边界清晰。",
+      "evidence": ["HG1", "HG2"]
+    },
+    {
+      "id": "D3",
+      "name": "安全边界与反粗制滥造",
+      "score": 10,
+      "max": 25,
+      "reason": "实现不是伪代码或模板，但真实 Node 写入路径存在父 symlink 根逃逸，并缺少三类 mutation-boundary 竞态回归。",
+      "evidence": ["P1-02 活体探针", "src/adapters/node/file-write.ts:117-147", "tests/domain/write-transaction.test.ts:812-835"]
+    },
+    {
+      "id": "D4",
+      "name": "范围边界与治理纪律",
+      "score": 25,
+      "max": 25,
+      "reason": "候选、评审证据、control/formal 与 S1.5 范围均绑定且冻结；无阶段或正式状态冒领。",
+      "evidence": ["HG5"]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw": 76,
+    "penalties": 0,
+    "final": 76,
+    "hard_gates_pass": 3,
+    "hard_gates_fail": 2,
+    "hard_gates_total": 5,
+    "severity_counts": {
+      "P0": 0,
+      "P1": 2,
+      "P2": 0
+    },
+    "tests": "353/353",
+    "digest_checks": "15/15",
+    "write_consistency": "13/13",
+    "acceptance_profile": "17/17",
+    "Q6": "100%"
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "把 target mode、confirmed before_digest 与写入动作收拢到文件系统 mutation boundary：update 在最终写入前对当前 bytes 重新比对并在不匹配时以 WRITE_CONFLICT_REJECTED、零写入退出；create 必须使用原子 no-replace 安装语义，目标一旦出现不得由 rename 覆盖。",
+    "在 Node adapter 的最终 open/install/readback 路径固定或重新验证规范根与全部父路径，禁止父目录 symlink/替换竞态把 temp、目标或 readback 导向项目根外；无法保证时返回 WRITE_ACCESS_BLOCKED。",
+    "新增确定性回归：第二次 baseline read 返回不同内容、create 目标在 precheck 后出现、父目录在 precheck 后变为 symlink；三例都必须零越界、零用户内容覆盖、state_promotion=none，并重新执行 attempt 4 的 Execution Evidence、CV、I/X/P 与 L3。"
+  ],
+  "nice_to_have": [
+    "进入真实宿主或 full 支持前，把 mutation-boundary 能力与目标工作树隔离等级写入独立宿主门禁，不复用 manual-isolated fixture 结论。",
+    "CodeGraph CLI 已安装但本 worktree 无 .codegraph 索引，且本评审只允许写专属 review 目录；本轮按协议使用直接源码、测试与活体探针替代，后续可在项目级授权后建立索引。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "fail",
+      "summary": "身份、固定运行时和静态矩阵均通过，但两条 mutation-boundary 活体探针使 HG3/HG4 失败。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "revise",
+      "summary": "两项 P1 直接违反用户改动保护与规范项目根边界；当前候选不可进入 Final Content Snapshot。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "revise",
+      "summary": "代码主体为真实实现且测试量充足，但竞态测试把读取异常当作全部 baseline race，遗漏成功读取但 bytes 已变化以及父路径替换，形成高信号测试盲区。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "REVISE",
+      "summary": "提交可修复，故不作 REJECT；在两项 P1 闭环并以新 attempt 重跑完整门禁前，不得生成 Final Snapshot、Final Verification、Anchor、F15 或启动 S1.6。"
+    }
+  ],
+  "independence_declaration": "本评审在 fence 89 ACK-complete 后，从专用 worktree 独立执行 offline frozen install、全量 check、RFC8785/JCS 复算、fixture/Profile 回放、源码/测试审查与三条 mutation-boundary 活体探针；未复用上游 PASS 作为最终判断，未修改候选、main/formal/control 或本目录外 tracked 文件。",
+  "reviewed_at": "2026-08-23T11:23:05Z"
+}
