@@ -2163,6 +2163,15 @@
 - 阻塞探针 3：`removeCreated("docs/victim.md")` 在 `docs` 指向 outside 的 symlink 时直接删除根外 victim，未抛错。
 - 结论：P0/P1/P2=`0/3/1`，现有永久测试注入点偏早；attempt 4 Result=`sha256:429bd0d3...`、control=`0bb0c70a...`，不得生成 candidate-ready、CV/I-X-P/L3 或正式证据链。
 
+## 2026-08-23 S1.5 attempt 12 候选验证
+
+- 精确 subject：commit=`128e86bc8ecc23dd3f0ce2150bc2744edb3751d9`，parent=`14793d5800e5a3e3d8ed34f0de2331ecbbfc0e59`，tree=`814361368dde1233b788f30545f292a6a3ca0f2e`，JCS subject digest=`sha256:95e670a8caf0f9c6f36bb1d60a5ad4530b0ea475e4ca204338549cb57c2c3447`。
+- TDD 证据：旧实现在 root-moved × no-proof 交叉场景形成真实 RED；GREEN 将该状态改为同步 first-wins 固定 marker，静态确认无 `await`、恢复定位 helper、root/basename/path 调用。
+- Worker 验证：定向 86/86；fresh full run 1=`444/444, 93.04/88.54/99.09`；fresh full run 2=`444/444, 93.01/88.51/99.09`。
+- 独立验证：定向 15/15；全量 444/444；Lines 93.07%、Branches 88.62%、Functions 99.09%；原始 error 对象、code、cause 与 custom state 保持，已有 recovery metadata first-wins。
+- 边界验证：相对 repair parent 仅 `src/adapters/node/file-write.ts` 与 `tests/domain/node-file-write-race.test.ts`；相对 working parent 仅既定四条产品路径；候选与审查 worktree clean。
+- 结论：Execution candidate PASS，P0/P1/P2=`0/0/0`；允许进入全新 CV 与 I/X/P，不允许跳过门禁生成 snapshot、移动 formal 或宣称 S1.5/M1.2/V1/P5 完成。
+
 ## 2026-08-22 Multica 迁移可行性审查验证
 
 - 审查对象：当前 NextStep 仓库、已冻结 S3/S4 宿主边界、当前实现面，以及 Multica 官方 Agents / Squads / Tasks / Skills / Project resources / Providers / Auth / Comments / CLI 文档。

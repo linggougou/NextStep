@@ -42,3 +42,9 @@
 - 验证闭环：typecheck、build、全量测试、覆盖率、安全扫描、diff/allowlist、JSON/JCS、Git 完整性与 refs 前后不变均需可重复。
 - 质量门：综合分至少 90 且建议 PASS；P0/P1=0。任一路为 REVISE/REJECT、摘要不匹配、ref 漂移或 pending dispatch 非零，立即停止对应正式链。
 - 高危停止：路线、技术栈、产品定位、验收门禁或安全边界需要改变时，写明影响并等待用户确认；本计划不授予绕过路线锁的权限。
+
+## 6. 实时执行状态（2026-08-23 14:46Z）
+
+- 步骤 1 的实现候选已更新为 attempt12：subject=`128e86bc8ecc23dd3f0ce2150bc2744edb3751d9`，digest=`sha256:95e670a8caf0f9c6f36bb1d60a5ad4530b0ea475e4ca204338549cb57c2c3447`，Execution Result digest=`sha256:b724253ef695ae9461f21d1f665a23358c84f4c52065087afaa5a118a5c327a9`。
+- attempt12 TDD、双轮全量与独立候选审查均 PASS，主线已严格快进到候选；formal 保持 F14，control=`9c644cda11c9d73a30e0edd0d07029a62375f64f`。
+- 当前进行步骤：为 attempt12 创建全新的 CV 与 I/X/P；两者均通过后才允许进入 L3。后续步骤 3—9 状态不变。

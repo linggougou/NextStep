@@ -2217,3 +2217,14 @@
 - 独立活体审计 fail closed：在 update `rename` 入口注入用户写仍被覆盖；父路径复核后到 temp open 之间替换 symlink 可短暂在根外创建并写 temp；`removeCreated` 可经父目录 symlink 删除根外用户文件。结论 P0/P1/P2=`0/3/1`，attempt 4 不进入 CV/L3。
 - Execution Result：`results/result-execution-s1.5-g4-a4-f90-20260823.json`，outcome=`revision-required`，digest=`sha256:429bd0d3b1e7cbbb31c10ba854e5abdb4e388fd1bb215ea5bc1ff104670ea67e`；control CAS=`0bb0c70a0a2e4c0c62b092bf337bbd08cf41ad28`，formal 仍 F14。
 - 资源回收：W6/W7 已完成 worktree 安全移除，保留分支/提交；清理释放约 1.8 GiB 临时构建空间。最低有效 attempt=5，仅允许继续修复最晚 mutation/install/remove 边界。
+
+## 2026-08-23 S1.5 attempt 12 候选冻结与主线集成
+
+- 状态梳理：反复出现的运行时风险提示来自子代理长回传中的双用途词汇组合，并非项目发起网络访问、外部扫描或高危写入；后续调度改用“本地文件一致性/恢复证据”的中性表述，并限制为结构化结论。项目 Git、formal、control 与 worktree 状态均正常。
+- TDD：W16 RED=`14793d5800e5a3e3d8ed34f0de2331ecbbfc0e59`，GREEN=`128e86bc8ecc23dd3f0ce2150bc2744edb3751d9`；修复仅令 no-proof 分支同步写入固定 unavailable marker，不再进入任何路径定位流程。
+- 自动验证：定向 86/86；两轮全量均 444/444，覆盖率分别为 Lines/Branches/Functions=`93.04/88.54/99.09` 与 `93.01/88.51/99.09`。
+- 独立候选审查：P0/P1/P2=`0/0/0`，定向 15/15、全量 444/444、覆盖率 `93.07/88.62/99.09`，结论 PASS；候选树=`814361368dde1233b788f30545f292a6a3ca0f2e`，subject digest=`sha256:95e670a8caf0f9c6f36bb1d60a5ad4530b0ea475e4ca204338549cb57c2c3447`。
+- Execution Result：`results/result-execution-s1.5-g4-a12-f98-20260823.json`，digest=`sha256:b724253ef695ae9461f21d1f665a23358c84f4c52065087afaa5a118a5c327a9`；control CAS=`9c644cda11c9d73a30e0edd0d07029a62375f64f`。
+- 主线集成：确认 main 精确为 `d9632c5`、formal 精确为 F14、候选为其后代且净写集仅四条 allowlist 路径后，以 `git merge --ff-only` 快进到 `128e86b`；用户既有未跟踪 Multica 摘要未触碰。
+- 工具替代：当前环境未提供 Context7；其原用途是核对最新 Node.js 文件 API 行为。替代流程为 Node.js 官方文档与本机 Node 24.14.0 活体探针，结合两轮全量与独立审查；替代验证通过，不影响本轮结论。
+- 状态边界：candidate-ready 不等于 S1.5 完成；formal 仍为 F14。下一步必须对 attempt12 精确 subject 重新执行 CV、I/X/P 与 L3，旧门禁结果不得复用。
