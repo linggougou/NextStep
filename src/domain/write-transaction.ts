@@ -30,6 +30,7 @@ export type WriteTransactionCode = (typeof WRITE_TRANSACTION_CODES)[number];
 export type WriteTransactionErrorCode =
   | "INVALID_WRITE_PLAN"
   | "WRITE_PLAN_MISMATCH"
+  | "WRITE_CONFLICT_REJECTED"
   | "WRITE_ACCESS_BLOCKED"
   | "SENSITIVE_CONTENT_DETECTED";
 
@@ -71,10 +72,20 @@ export interface WriteTargetProbe {
   readonly writable: boolean;
 }
 
+export type WriteMutationGuard =
+  | {
+      readonly mode: "create";
+      readonly before_digest: null;
+    }
+  | {
+      readonly mode: "update";
+      readonly before_digest: Sha256Digest;
+    };
+
 export interface WriteFileSystemPort {
   probe(relativePath: string): Promise<WriteTargetProbe>;
   readContent(relativePath: string): Promise<Uint8Array>;
-  atomicWrite(relativePath: string, content: Uint8Array): Promise<void>;
+  atomicWrite(relativePath: string, content: Uint8Array, guard?: WriteMutationGuard): Promise<void>;
   removeCreated(relativePath: string): Promise<void>;
 }
 
@@ -117,7 +128,15 @@ export interface WriteTransactionResult {
 const ajv = new Ajv({ strict: true, allErrors: true, ownProperties: true });
 const validateWriteTransaction: ValidateFunction = ajv.compile(writeTransactionSchema);
 
-const ACCESS_ERRNOS = new Set(["EACCES", "EPERM", "EROFS", "ELOOP", "EISDIR"]);
+const ACCESS_ERRNOS = new Set([
+  "EACCES",
+  "EPERM",
+  "EROFS",
+  "ELOOP",
+  "EISDIR",
+  "ENOTDIR",
+  "WRITE_ACCESS_BLOCKED",
+]);
 
 const CODE_STATUS: Record<WriteTransactionCode, WriteTransactionStatus> = {
   WRITE_COMMITTED: "committed",
@@ -154,6 +173,22 @@ function errnoOf(error: unknown): string {
 
 function isAccessError(error: unknown): boolean {
   return ACCESS_ERRNOS.has(errnoOf(error));
+}
+
+function isMutationConflictError(error: unknown, target: WriteTargetSpec): boolean {
+  const code = errnoOf(error);
+  return (
+    code === "WRITE_CONFLICT_REJECTED" ||
+    code === "EEXIST" ||
+    code === "ESTALE" ||
+    (code === "ENOENT" && target.mode === "update")
+  );
+}
+
+function mutationGuardFor(target: WriteTargetSpec): WriteMutationGuard {
+  return target.mode === "create"
+    ? Object.freeze({ mode: "create", before_digest: null })
+    : Object.freeze({ mode: "update", before_digest: target.before_digest as Sha256Digest });
 }
 
 export function digestBytes(bytes: Uint8Array): Sha256Digest {
@@ -442,7 +477,11 @@ async function rollbackSingleTarget(
     if (candidate.beforeBytes === null) {
       return false;
     }
-    await fileSystem.atomicWrite(target.path, candidate.beforeBytes);
+    await fileSystem.atomicWrite(
+      target.path,
+      candidate.beforeBytes,
+      Object.freeze({ mode: "update", before_digest: candidate.expectedCurrentDigest }),
+    );
     const restored = await fileSystem.readContent(target.path);
     return digestBytes(restored) === target.before_digest;
   } catch {
@@ -564,7 +603,21 @@ export async function executeWriteTransaction(input: ExecuteInput): Promise<Writ
   for (const target of plan.targets) {
     if (target.mode === "update") {
       try {
-        beforeContents.set(target.path, await fileSystem.readContent(target.path));
+        const beforeBytes = await fileSystem.readContent(target.path);
+        if (digestBytes(beforeBytes) !== target.before_digest) {
+          results.set(target.path, targetResult(target, "conflict", "baseline-drift-at-mutation-boundary"));
+          return buildResult({
+            transactionId: input.transaction_id,
+            plan,
+            envelope,
+            code: "WRITE_CONFLICT_REJECTED",
+            dryRun: input.dry_run,
+            executedAt,
+            targets: plan.targets.map((entry) => results.get(entry.path) as WriteTargetResult),
+            detail: "baseline-changed-after-confirmation",
+          });
+        }
+        beforeContents.set(target.path, beforeBytes);
       } catch (error) {
         const missing = errnoOf(error) === "ENOENT";
         results.set(
@@ -585,14 +638,24 @@ export async function executeWriteTransaction(input: ExecuteInput): Promise<Writ
     }
   }
 
-  let rootCause: "access" | "write-error" = "write-error";
+  let rootCause: "access" | "conflict" | "write-error" = "write-error";
   let failedDetail = "";
   const attempted = new Set<string>();
   for (const target of plan.targets) {
     attempted.add(target.path);
     const contentBytes = Buffer.from(target.content, "utf8");
     try {
-      await fileSystem.atomicWrite(target.path, contentBytes);
+      try {
+        await fileSystem.atomicWrite(target.path, contentBytes, mutationGuardFor(target));
+      } catch (error) {
+        if (isMutationConflictError(error, target)) {
+          rootCause = "conflict";
+          failedDetail = `mutation-conflict:${errnoOf(error)}:${target.path}`;
+          results.set(target.path, targetResult(target, "conflict", failedDetail));
+          break;
+        }
+        throw error;
+      }
       const readback = await fileSystem.readContent(target.path);
       const readbackDigest = digestBytes(readback);
       if (readbackDigest !== target.after_digest) {
@@ -693,7 +756,7 @@ function finalizeFailure(input: {
   results: Map<string, WriteTargetResult>;
   rollbackCandidates: RollbackCandidate[];
   fileSystem: WriteFileSystemPort;
-  rootCause: "access" | "write-error";
+  rootCause: "access" | "conflict" | "write-error";
   failedDetail: string;
   fullyRestored?: boolean;
 }): WriteTransactionResult {
@@ -701,7 +764,11 @@ function finalizeFailure(input: {
   const targets = input.plan.targets.map((target) => input.results.get(target.path) as WriteTargetResult);
   const rollbackBlocked = targets.some((target) => target.status === "rollback-blocked");
   const detail = [
-    fullyRestored && !rollbackBlocked ? "reverted" : "rollback-incomplete",
+    fullyRestored && !rollbackBlocked
+      ? input.rollbackCandidates.length === 0
+        ? "no-writes"
+        : "reverted"
+      : "rollback-incomplete",
     `cause=${input.rootCause}`,
     input.failedDetail,
     rollbackBlocked || !fullyRestored ? "manual-review-required" : "",
@@ -710,9 +777,11 @@ function finalizeFailure(input: {
     .join(";");
   const code: WriteTransactionCode = rollbackBlocked || !fullyRestored
     ? "WRITE_PARTIAL_BLOCKED"
-    : input.rootCause === "access"
-      ? "WRITE_ACCESS_BLOCKED"
-      : "WRITE_PARTIAL_BLOCKED";
+    : input.rootCause === "conflict"
+      ? "WRITE_CONFLICT_REJECTED"
+      : input.rootCause === "access"
+        ? "WRITE_ACCESS_BLOCKED"
+        : "WRITE_PARTIAL_BLOCKED";
   return buildResult({
     transactionId: input.input.transaction_id,
     plan: input.plan,

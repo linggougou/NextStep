@@ -25,6 +25,7 @@ import {
   parseWritePlan,
   parseWriteTransactionResult,
   type WriteFileSystemPort,
+  type WriteMutationGuard,
   type WritePlan,
   type WriteTargetProbe,
   type WriteTargetSpec,
@@ -50,8 +51,6 @@ interface MemoryFaultSpec {
   readonly landThenThrow?: NodeJS.ErrnoException;
 }
 
-type ExpectedMutationGuard = Pick<WriteTargetSpec, "mode" | "before_digest">;
-
 class MemoryWriteFileSystem implements WriteFileSystemPort {
   readonly files = new Map<string, string>();
   readonly dirs = new Set<string>();
@@ -63,7 +62,7 @@ class MemoryWriteFileSystem implements WriteFileSystemPort {
   readonly readCallCounts = new Map<string, number>();
   readonly mutationGuards: Array<{
     readonly path: string;
-    readonly guard: ExpectedMutationGuard | undefined;
+    readonly guard: WriteMutationGuard;
   }> = [];
   removeFailures = new Map<string, NodeJS.ErrnoException>();
   writeCount = 0;
@@ -127,13 +126,26 @@ class MemoryWriteFileSystem implements WriteFileSystemPort {
     return Buffer.from(content, "utf8");
   }
 
-  async atomicWrite(path: string, content: Uint8Array, guard?: ExpectedMutationGuard): Promise<void> {
+  async atomicWrite(path: string, content: Uint8Array, guard?: WriteMutationGuard): Promise<void> {
+    if (guard === undefined) {
+      throw new TypeError(`Memory mutation guard missing: ${path}`);
+    }
     this.mutationGuards.push({ path, guard });
-    this.writeCount += 1;
     const fault = this.writeFaults.get(path);
     if (fault?.writeError !== undefined) {
       throw fault.writeError;
     }
+    const current = this.files.get(path);
+    if (guard.mode === "create") {
+      if (current !== undefined) {
+        throw errnoError("EEXIST", `Memory create target appeared: ${path}`);
+      }
+    } else if (current === undefined) {
+      throw errnoError("ENOENT", `Memory update target disappeared: ${path}`);
+    } else if (digestUtf8Content(current) !== guard.before_digest) {
+      throw errnoError("ESTALE", `Memory update baseline changed: ${path}`);
+    }
+    this.writeCount += 1;
     const text = Buffer.from(content).toString("utf8");
     this.files.set(path, fault?.readbackContent ?? text);
     if (fault?.landThenThrow !== undefined) {
@@ -594,8 +606,8 @@ test("rollback blocks instead of destroying changes it cannot prove it owns", as
 
   const originalAtomicWrite = fileSystem.atomicWrite.bind(fileSystem);
   let mutated = false;
-  fileSystem.atomicWrite = async (path: string, content: Uint8Array) => {
-    await originalAtomicWrite(path, content);
+  fileSystem.atomicWrite = async (path: string, content: Uint8Array, guard?: WriteMutationGuard) => {
+    await originalAtomicWrite(path, content, guard);
     if (path === "docs/a.md" && !mutated) {
       mutated = true;
       fileSystem.mutateExternally("docs/a.md", "concurrent-external-edit");
@@ -767,7 +779,7 @@ test("node adapter blocks symlink escape and permission failures end to end", as
   });
 });
 
-test("node adapter write fault injection surfaces as a blocked partial-free result", async () => {
+test("node adapter exclusive-create collision surfaces as a conflict with no mutation", async () => {
   await withTemporaryProject(async ({ root }) => {
     const fileSystem = createNodeWriteFileSystem({
       project_root: root,
@@ -779,8 +791,8 @@ test("node adapter write fault injection surfaces as a blocked partial-free resu
     });
     const plan = buildPlan(buildTargets([{ path: "a.txt", mode: "create", content: "x" }]));
     const result = await execute(plan, confirmPlan(plan), fileSystem);
-    assert.equal(result.code, "WRITE_PARTIAL_BLOCKED");
-    assert.equal(result.targets[0]?.status, "error");
+    assert.equal(result.code, "WRITE_CONFLICT_REJECTED");
+    assert.equal(result.targets[0]?.status, "conflict");
     assertNoPromotion(result);
     const entries = await readdir(root);
     assert.equal(entries.length, 0);
@@ -897,6 +909,87 @@ test("mutation boundary receives explicit create and update guards", async () =>
   ]);
 });
 
+test("mutation boundary create and update collisions preserve user bytes and map to conflict", async () => {
+  const createPlan = buildPlan(buildTargets([
+    { path: "docs/new.md", mode: "create", content: "planned-create" },
+  ]));
+  const createFileSystem = new MemoryWriteFileSystem();
+  createFileSystem.seedDirectory("docs");
+  const originalCreateWrite = createFileSystem.atomicWrite.bind(createFileSystem);
+  createFileSystem.atomicWrite = async (path: string, content: Uint8Array, guard?: WriteMutationGuard) => {
+    createFileSystem.mutateExternally(path, "user-created");
+    await originalCreateWrite(path, content, guard);
+  };
+
+  const createResult = await execute(createPlan, confirmPlan(createPlan), createFileSystem);
+  assert.equal(createResult.code, "WRITE_CONFLICT_REJECTED");
+  assert.equal(createResult.targets[0]?.status, "conflict");
+  assert.equal(createFileSystem.files.get("docs/new.md"), "user-created");
+  assert.equal(createFileSystem.writeCount, 0);
+  assertNoPromotion(createResult);
+
+  const updatePlan = buildPlan(buildTargets([
+    { path: "docs/a.md", mode: "update", content: "planned-update", beforeContent: "old-a" },
+  ]));
+  const updateFileSystem = new MemoryWriteFileSystem();
+  updateFileSystem.seedDirectory("docs");
+  updateFileSystem.seedFile("docs/a.md", "old-a");
+  const originalUpdateWrite = updateFileSystem.atomicWrite.bind(updateFileSystem);
+  updateFileSystem.atomicWrite = async (path: string, content: Uint8Array, guard?: WriteMutationGuard) => {
+    updateFileSystem.mutateExternally(path, "user-updated");
+    await originalUpdateWrite(path, content, guard);
+  };
+
+  const updateResult = await execute(updatePlan, confirmPlan(updatePlan), updateFileSystem);
+  assert.equal(updateResult.code, "WRITE_CONFLICT_REJECTED");
+  assert.equal(updateResult.targets[0]?.status, "conflict");
+  assert.equal(updateFileSystem.files.get("docs/a.md"), "user-updated");
+  assert.equal(updateFileSystem.writeCount, 0);
+  assertNoPromotion(updateResult);
+
+  const vanishedUpdateFileSystem = new MemoryWriteFileSystem();
+  vanishedUpdateFileSystem.seedDirectory("docs");
+  vanishedUpdateFileSystem.seedFile("docs/a.md", "old-a");
+  const originalVanishedUpdateWrite = vanishedUpdateFileSystem.atomicWrite.bind(vanishedUpdateFileSystem);
+  vanishedUpdateFileSystem.atomicWrite = async (
+    path: string,
+    content: Uint8Array,
+    guard?: WriteMutationGuard,
+  ) => {
+    vanishedUpdateFileSystem.files.delete(path);
+    await originalVanishedUpdateWrite(path, content, guard);
+  };
+
+  const vanishedUpdateResult = await execute(
+    updatePlan,
+    confirmPlan(updatePlan),
+    vanishedUpdateFileSystem,
+  );
+  assert.equal(vanishedUpdateResult.code, "WRITE_CONFLICT_REJECTED");
+  assert.equal(vanishedUpdateResult.targets[0]?.status, "conflict");
+  assert.equal(vanishedUpdateFileSystem.files.has("docs/a.md"), false);
+  assert.equal(vanishedUpdateFileSystem.writeCount, 0);
+  assertNoPromotion(vanishedUpdateResult);
+});
+
+test("mutation boundary access errors remain WRITE_ACCESS_BLOCKED with no promotion", async () => {
+  const plan = buildPlan(buildTargets([
+    { path: "docs/new.md", mode: "create", content: "planned" },
+  ]));
+  const fileSystem = new MemoryWriteFileSystem();
+  fileSystem.seedDirectory("docs");
+  fileSystem.atomicWrite = async () => {
+    throw new WriteTransactionError("WRITE_ACCESS_BLOCKED", "canonical parent changed");
+  };
+
+  const result = await execute(plan, confirmPlan(plan), fileSystem);
+
+  assert.equal(result.code, "WRITE_ACCESS_BLOCKED");
+  assert.equal(fileSystem.files.has("docs/new.md"), false);
+  assert.equal(fileSystem.writeCount, 0);
+  assertNoPromotion(result);
+});
+
 test("rollback restores proven create targets by removal and blocks on vanished update targets", async () => {
   const createPlanTargets = buildTargets([
     { path: "docs/a.md", mode: "create", content: "new-a" },
@@ -926,8 +1019,8 @@ test("rollback restores proven create targets by removal and blocks on vanished 
   vanishedFileSystem.seedFile("docs/a.md", "old-a");
   vanishedFileSystem.writeFaults.set("docs/b.md", { writeError: errnoError("ENOSPC", "full") });
   const originalAtomicWrite = vanishedFileSystem.atomicWrite.bind(vanishedFileSystem);
-  vanishedFileSystem.atomicWrite = async (path: string, content: Uint8Array) => {
-    await originalAtomicWrite(path, content);
+  vanishedFileSystem.atomicWrite = async (path: string, content: Uint8Array, guard?: WriteMutationGuard) => {
+    await originalAtomicWrite(path, content, guard);
     if (path === "docs/a.md") {
       vanishedFileSystem.files.delete("docs/a.md");
     }
@@ -951,11 +1044,11 @@ test("rollback failures and unreadable post-write state block instead of reverti
   restoreFailureFileSystem.writeFaults.set("docs/b.md", { writeError: errnoError("ENOSPC", "full") });
   const restoreFailureOriginal = restoreFailureFileSystem.atomicWrite.bind(restoreFailureFileSystem);
   let armed = false;
-  restoreFailureFileSystem.atomicWrite = async (path: string, content: Uint8Array) => {
+  restoreFailureFileSystem.atomicWrite = async (path: string, content: Uint8Array, guard?: WriteMutationGuard) => {
     if (path === "docs/a.md" && armed) {
       throw errnoError("EIO", "restore write failed");
     }
-    await restoreFailureOriginal(path, content);
+    await restoreFailureOriginal(path, content, guard);
     if (path === "docs/a.md") {
       armed = true;
     }
