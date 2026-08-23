@@ -24,16 +24,22 @@ record_type
 project
 stage
 formal_baseline
+project_fixture_bindings
 upstream_source_bindings
 required_field_bindings
 technical_stack
 architecture_model
 risk_bindings[20]
 rollback_entries
+digest_contract
 candidate_digest
 ```
 
-`required_field_bindings` 必须覆盖 005 的十类字段：技术目标、候选技术栈、不选原因、数据模型、阶段门禁、状态机、AI 交互边界、权限与数据、风险验证、回滚方案。每项 `risk_binding` 必须包含 `source_ref`、`validation_method`、`failure_standard`、`failure_handling`、`tg_bindings`、`owner_milestone`。
+`formal_baseline` 固定绑定 F15；`project_fixture_bindings` 必须为三类目标项目分别冻结 fixture ref、fixture digest 与目标项目标识，禁止把 F15 formal 基线偷换成目标项目状态，也禁止只写目标项目名而不绑 digest。
+
+`upstream_source_bindings` 与 `required_field_bindings` 必须覆盖 005 的十类字段：技术目标、候选技术栈、不选原因、数据模型、阶段门禁、状态机、AI 交互边界、权限与数据、风险验证、回滚方案。每个绑定项至少包含 `source_ref`、`source_raw_sha256`、`source_excerpt_sha256`、`binding_key`、`binding_status`；不允许只保留人类可读 ref。
+
+每项 `risk_binding` 必须包含 `source_ref`、`source_raw_sha256`、`source_excerpt_sha256`、`validation_method`、`failure_standard`、`failure_handling`、`tg_bindings`、`owner_milestone`。
 
 风险集合固定为 S4 §18 十九项加 009 §7 归档风险，共 20 项；缺失、重复、未知、跨项目错绑、摘要漂移或未会签状态均 fail closed。
 
@@ -89,13 +95,18 @@ awaiting-formal-promotion
 awaiting-archive
 ```
 
+`digest_contract` 必须声明 `candidate_digest` 的计算投影显式排除 `candidate_digest` 自身；packet/schema/CV 要对“自引用 digest”与“未声明排除字段”全部拒绝。
+
 ## 3. 最小 Definition of Done
 
 - [ ] 三类目标项目 `community-workshop`、`expense-reminder`、`project-delivery-tool` 均形成绑定 F15 的 PC-08 架构评估。
+- [ ] 三类架构评估同时绑定 F15 formal 基线与各自 target fixture digest，禁止把 formal 与目标项目基线混写为单一字段。
 - [ ] 005 十类必填字段完整率 Q3=`100%`；候选技术栈、备选与不选原因可追溯。
 - [ ] 数据模型覆盖 Project、Stage、Deliverable、Change Request、Milestone；门禁模型覆盖通过、退回、需讨论、阻塞。
 - [ ] S4/009 风险精确 Q11=`20/20`；每项都有验证、失败标准、失败处理、TG 绑定、owner milestone 与回滚入口。
 - [ ] 五类回滚入口必须精确冻结为 `stop-auto-write-and-enter-change-request`、`manual-isolated-fallback`、`blocked-await-external-proof`、`awaiting-formal-promotion`、`awaiting-archive`，并分别绑定 TypeScript 运行时失败、Adapter 失败、台账不可裁决、自动提升不可验证、归档失败。
+- [ ] 每个 field/risk/source 绑定都携带 `source_raw_sha256` 与 `source_excerpt_sha256`；上游原文或摘录任一漂移都拒绝。
+- [ ] `candidate_digest` 明确采用“排除 candidate_digest 字段自身”的 RFC8785 投影，禁止递归自引用。
 - [ ] 未知版本、额外字段、敏感字段、错误阶段、非 F15、上游摘要漂移、未会签或跨项目绑定全部拒绝。
 - [ ] `source-validate` 只产生一份 RFC8785/JCS stdout 回执；诊断仅 stderr，失败 exit 1，不回显敏感原值。
 - [ ] CLI 运行前后 formal/control、目标项目状态和工作树内容不变。
@@ -112,7 +123,8 @@ awaiting-archive
 3. 二十个 `risk_bindings` allowlist ids 完整通过；缺失、重复、未知、source 摘要变化、未会签、跨项目绑定均阻塞。
 4. 五个 `rollback_entries` exact ids 与 `terminal_state`/`next_action`/`proof_expectation` 缺一即拒绝。
 5. 候选若声明 `full`、冻结 P4 API/Schema、恢复 Web/UI、增加数据库或常驻服务，必须拒绝。
-6. 未知 schema、额外字段、敏感字段/内容、非对象输入 fail closed。
+6. `candidate_digest` 若自引用或未声明排除字段，必须拒绝。
+7. 未知 schema、额外字段、敏感字段/内容、非对象输入 fail closed。
 
 ### CLI / Receipt / Skill
 
@@ -127,8 +139,8 @@ awaiting-archive
 
 | 切片 | 职责 | 独占写集 | 进入条件 |
 |---|---|---|---|
-| W1 | 三类 fixture、20 项风险 catalog、正负例 | `tests/fixtures/architecture-risk/**` | packet/claim 后立即 RED |
-| W2 | Domain、Schema、领域测试 | `src/domain/architecture-risk.ts`、`schemas/v1/architecture-risk-assessment.schema.json`、`tests/domain/architecture-risk.test.ts` | packet/claim 后与 W1 并行；先用冻结 catalog 接口 |
+| W1 | 三类 fixture、20 项风险原始 catalog、正负例 | `tests/fixtures/architecture-risk/**` | packet/claim 后立即 RED |
+| W2 | 生产 allowlist/catalog 落点、Domain、Schema、领域测试 | `src/domain/architecture-risk.ts`、`schemas/v1/architecture-risk-assessment.schema.json`、`tests/domain/architecture-risk.test.ts` | packet/claim 后与 W1 并行；W1 只提供测试侧原始 catalog，生产侧枚举和接口由 W2 冻结 |
 | W3 | CLI、receipt、Skill、集成/依赖测试 | `src/cli/source-validate.ts`、`src/domain/machine-receipt.ts`、`schemas/v1/machine-receipt.schema.json`、`skills/nextstep/SKILL.md`、对应测试 | W1/W2 导出签名冻结后启动 |
 | 主控 | cherry-pick、契约冲突裁决、全量回归、候选与正式证据链 | 治理文件、共享集成修正 | 不替代独立 CV/I-X-P/L3 |
 
@@ -136,9 +148,9 @@ Worker 之间不得修改他人写集；共享文件仅归 W3。用户未跟踪 
 
 ## 6. 门禁矩阵
 
-1. **CV**：subject/packet/dedup/control/F15 一致；changed paths 命中 allowlist；十个 field keys、二十个 risk ids、五个 rollback ids 全部精确匹配；三类 fixture 与负例全过；Q3=100%、Q11=20/20；`pnpm check` 全过；formal/control 不变。
-2. **I/X/P**：回放架构候选→字段校验→风险绑定→失败处理/回滚；输出能回答缺失 risk id、失败原因、下一动作；PC-08、TG-05/17/19 可追溯；不把 fixture 冒充真实宿主能力。
-3. **L3**：全新 reviewer，P0/P1=0、综合分不低于 90；独立复算十个 field keys、二十个 risk ids、五个 rollback ids、三 fixture、上游摘要/F15；反扫 P4/V3 范围偷跑。
+1. **CV**：subject/packet/dedup/control/F15 一致；changed paths 命中 allowlist；十个 field keys、二十个 risk ids、五个 rollback ids、三类 target fixture digests、`candidate_digest` 排除投影和 `source_raw_sha256/source_excerpt_sha256` 全部精确匹配；三类 fixture 与负例全过；Q3=100%、Q11=20/20；`pnpm check` 全过；formal/control 不变。
+2. **I/X/P**：回放架构候选→字段校验→风险绑定→失败处理/回滚；输出能回答缺失 risk id、失败原因、下一动作，并能指出对应 source raw SHA；PC-08、TG-05/17/19 可追溯；不把 fixture 冒充真实宿主能力。
+3. **L3**：全新 reviewer，P0/P1=0、综合分不低于 90；独立复算十个 field keys、二十个 risk ids、五个 rollback ids、三类 fixture digest、`candidate_digest` 排除投影、上游 raw SHA/F15；反扫 P4/V3 范围偷跑。
 4. **Final Verification**：精确 Final Snapshot 全量回归、覆盖率、manifest、JSON/JCS、source/risk/rollback 反扫；项目外 Credential create-once。
 5. **Anchor Verification**：唯一父、允许留痕路径、受保护业务路径、Credential/FV/manifest/transaction 绑定与项目外 Proof create-once 全部通过。
 6. **Formal promotion**：pending=0，Anchor 是 F15 后代；仅以 expected-old=F15 CAS 到 S1.6 Anchor/F16。
