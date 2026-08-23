@@ -1,10 +1,12 @@
-import { randomBytes } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { fsync as fsyncCallback } from "node:fs";
 import {
   access as nodeAccess,
+  link as nodeLink,
   lstat as nodeLstat,
   open as nodeOpen,
   readFile as nodeReadFile,
+  realpath as nodeRealpath,
   rename as nodeRename,
   unlink as nodeUnlink,
   type FileHandle,
@@ -17,6 +19,7 @@ import {
   type WriteFileSystemPort,
   type WriteTargetProbe,
 } from "../../domain/write-transaction.ts";
+import type { Sha256Digest } from "../../domain/content-digest.ts";
 import { createNodeFsProbeAdapter } from "./fs-probe.ts";
 
 export interface NodeWriteFileSystemBinding {
@@ -25,6 +28,8 @@ export interface NodeWriteFileSystemBinding {
   readFile(path: string): Promise<Buffer>;
   open(path: string, flags: string, mode: number): Promise<FileHandle>;
   fsync(fd: number): Promise<void>;
+  link(existingPath: string, newPath: string): Promise<void>;
+  realpath(path: string): Promise<string>;
   rename(oldPath: string, newPath: string): Promise<void>;
   unlink(path: string): Promise<void>;
 }
@@ -34,6 +39,11 @@ export interface NodeWriteFileSystemOptions {
   readonly binding?: Partial<NodeWriteFileSystemBinding>;
 }
 
+export interface NodeWriteMutationGuard {
+  readonly mode: "create" | "update";
+  readonly before_digest: Sha256Digest | null;
+}
+
 function fail(code: "INVALID_WRITE_PLAN" | "WRITE_ACCESS_BLOCKED", message: string): never {
   throw new WriteTransactionError(code, message);
 }
@@ -41,6 +51,20 @@ function fail(code: "INVALID_WRITE_PLAN" | "WRITE_ACCESS_BLOCKED", message: stri
 function errnoOf(error: unknown): string {
   const code = (error as { code?: unknown })?.code;
   return typeof code === "string" ? code : "unknown";
+}
+
+function mutationError(code: "EEXIST" | "ENOENT" | "ESTALE", message: string): NodeJS.ErrnoException {
+  const error = new Error(message) as NodeJS.ErrnoException;
+  error.code = code;
+  return error;
+}
+
+function digestBytes(content: Uint8Array): Sha256Digest {
+  return `sha256:${createHash("sha256").update(content).digest("hex")}`;
+}
+
+function isWithinRoot(projectRoot: string, path: string): boolean {
+  return path === projectRoot || path.startsWith(projectRoot.endsWith(sep) ? projectRoot : projectRoot + sep);
 }
 
 export function resolveProjectPath(projectRoot: string, relativePath: string): string {
@@ -75,6 +99,8 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
     readFile: nodeReadFile,
     open: nodeOpen,
     fsync: promisify(fsyncCallback),
+    link: nodeLink,
+    realpath: nodeRealpath,
     rename: nodeRename,
     unlink: nodeUnlink,
     ...options.binding,
@@ -102,6 +128,111 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
     }
   }
 
+  function assertGuard(guard: NodeWriteMutationGuard | undefined): NodeWriteMutationGuard {
+    if (
+      guard === undefined ||
+      (guard.mode !== "create" && guard.mode !== "update") ||
+      (guard.mode === "create" && guard.before_digest !== null) ||
+      (guard.mode === "update" &&
+        (typeof guard.before_digest !== "string" || !/^sha256:[0-9a-f]{64}$/.test(guard.before_digest)))
+    ) {
+      fail("INVALID_WRITE_PLAN", "Atomic write requires a valid mutation guard");
+    }
+    return guard;
+  }
+
+  async function assertCanonicalRootAndParents(relativePath: string): Promise<void> {
+    const lexicalRoot = resolve(projectRoot);
+    try {
+      const rootStats = await binding.lstat(projectRoot);
+      if (rootStats.isSymbolicLink() || !rootStats.isDirectory()) {
+        fail("WRITE_ACCESS_BLOCKED", "Project root must be a real directory");
+      }
+      const canonicalRoot = await binding.realpath(projectRoot);
+
+      let parent = lexicalRoot;
+      let expectedCanonicalParent = canonicalRoot;
+      for (const segment of relativePath.split("/").slice(0, -1)) {
+        parent = resolve(parent, segment);
+        expectedCanonicalParent = resolve(expectedCanonicalParent, segment);
+        const stats = await binding.lstat(parent);
+        if (stats.isSymbolicLink() || !stats.isDirectory()) {
+          fail("WRITE_ACCESS_BLOCKED", `Write parent must be a real directory: ${relativePath}`);
+        }
+        const canonicalParent = await binding.realpath(parent);
+        if (canonicalParent !== expectedCanonicalParent || !isWithinRoot(canonicalRoot, canonicalParent)) {
+          fail("WRITE_ACCESS_BLOCKED", `Write parent escapes the canonical project root: ${relativePath}`);
+        }
+      }
+    } catch (error) {
+      if (error instanceof WriteTransactionError) {
+        throw error;
+      }
+      fail(
+        "WRITE_ACCESS_BLOCKED",
+        `Cannot validate canonical project root and parents for ${relativePath}: ${errnoOf(error)}`,
+      );
+    }
+  }
+
+  async function assertTargetMatchesGuard(
+    resolved: string,
+    relativePath: string,
+    guard: NodeWriteMutationGuard,
+  ): Promise<number | null> {
+    let stats: Awaited<ReturnType<NodeWriteFileSystemBinding["lstat"]>>;
+    try {
+      stats = await binding.lstat(resolved);
+    } catch (error) {
+      if (errnoOf(error) === "ENOENT" || errnoOf(error) === "ENOTDIR") {
+        if (guard.mode === "update") {
+          throw mutationError("ENOENT", `Update target disappeared: ${relativePath}`);
+        }
+        return null;
+      }
+      throw error;
+    }
+
+    if (stats.isSymbolicLink()) {
+      fail("WRITE_ACCESS_BLOCKED", `Refusing to write through a symlink: ${relativePath}`);
+    }
+    if (!stats.isFile()) {
+      fail("WRITE_ACCESS_BLOCKED", `Refusing to overwrite a non-file target: ${relativePath}`);
+    }
+    if (guard.mode === "create") {
+      throw mutationError("EEXIST", `Create target already exists: ${relativePath}`);
+    }
+
+    const current = await binding.readFile(resolved);
+    if (digestBytes(current) !== guard.before_digest) {
+      throw mutationError("ESTALE", `Update target no longer matches before_digest: ${relativePath}`);
+    }
+    return stats.mode & 0o777;
+  }
+
+  async function assertInstalledContent(
+    resolved: string,
+    relativePath: string,
+    content: Uint8Array,
+  ): Promise<void> {
+    let stats: Awaited<ReturnType<NodeWriteFileSystemBinding["lstat"]>>;
+    try {
+      stats = await binding.lstat(resolved);
+    } catch (error) {
+      if (errnoOf(error) === "ENOENT" || errnoOf(error) === "ENOTDIR") {
+        throw mutationError("ENOENT", `Installed target disappeared before read-back: ${relativePath}`);
+      }
+      throw error;
+    }
+    if (stats.isSymbolicLink() || !stats.isFile()) {
+      fail("WRITE_ACCESS_BLOCKED", `Installed target is not a regular file: ${relativePath}`);
+    }
+    const installed = await binding.readFile(resolved);
+    if (digestBytes(installed) !== digestBytes(content)) {
+      throw mutationError("ESTALE", `Installed target failed read-back verification: ${relativePath}`);
+    }
+  }
+
   return {
     async probe(relativePath: string): Promise<WriteTargetProbe> {
       const resolved = resolveProjectPath(projectRoot, relativePath);
@@ -114,36 +245,37 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
       return binding.readFile(resolved);
     },
 
-    async atomicWrite(relativePath: string, content: Uint8Array): Promise<void> {
+    async atomicWrite(
+      relativePath: string,
+      content: Uint8Array,
+      mutationGuard?: NodeWriteMutationGuard,
+    ): Promise<void> {
       const resolved = resolveProjectPath(projectRoot, relativePath);
-      let existingMode: number | null = null;
-      try {
-        const stats = await binding.lstat(resolved);
-        if (stats.isSymbolicLink()) {
-          fail("WRITE_ACCESS_BLOCKED", `Refusing to write through a symlink: ${relativePath}`);
-        }
-        if (stats.isDirectory()) {
-          fail("WRITE_ACCESS_BLOCKED", `Refusing to overwrite a directory: ${relativePath}`);
-        }
-        existingMode = stats.mode & 0o777;
-      } catch (error) {
-        if (error instanceof WriteTransactionError) {
-          throw error;
-        }
-        if (errnoOf(error) !== "ENOENT" && errnoOf(error) !== "ENOTDIR") {
-          throw error;
-        }
-      }
+      const guard = assertGuard(mutationGuard);
+      await assertCanonicalRootAndParents(relativePath);
+      const existingMode = await assertTargetMatchesGuard(resolved, relativePath, guard);
 
       const tempPath = `${resolved}.nextstep-tmp-${randomBytes(8).toString("hex")}`;
       let handle: FileHandle | undefined;
       try {
+        await assertCanonicalRootAndParents(relativePath);
         handle = await binding.open(tempPath, "wx", existingMode ?? 0o644);
-        await handle.write(content);
+        await handle.writeFile(content);
         await binding.fsync(handle.fd);
         await handle.close();
         handle = undefined;
-        await binding.rename(tempPath, resolved);
+
+        await assertCanonicalRootAndParents(relativePath);
+        if (guard.mode === "create") {
+          await binding.link(tempPath, resolved);
+          await binding.unlink(tempPath);
+        } else {
+          await assertTargetMatchesGuard(resolved, relativePath, guard);
+          await binding.rename(tempPath, resolved);
+        }
+
+        await assertCanonicalRootAndParents(relativePath);
+        await assertInstalledContent(resolved, relativePath, content);
         await fsyncDirectory(dirname(resolved));
       } catch (error) {
         if (handle !== undefined) {

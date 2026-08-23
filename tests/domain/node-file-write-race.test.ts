@@ -1,10 +1,12 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import {
   link as nodeLink,
   lstat as nodeLstat,
   mkdir,
   mkdtemp,
   readFile,
+  readdir,
   rename as nodeRename,
   rm,
   symlink,
@@ -36,6 +38,10 @@ function asGuardedWriter(value: unknown): GuardedAtomicWriter {
 
 function hasCode(expected: string): (error: unknown) => boolean {
   return (error) => (error as { code?: unknown })?.code === expected;
+}
+
+function digest(content: string): `sha256:${string}` {
+  return `sha256:${createHash("sha256").update(content).digest("hex")}`;
 }
 
 test("create 在预检后出现竞争目标时执行 no-replace 且保留竞争者内容", async () => {
@@ -72,6 +78,41 @@ test("create 在预检后出现竞争目标时执行 no-replace 且保留竞争�
     );
     assert.equal(injected, true);
     assert.equal(await readFile(target, "utf8"), "competitor");
+    assert.deepEqual(await readdir(join(root, "docs")), ["result.md"]);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("update 在最终安装前重读 before_digest 并拒绝中途内容漂移", async () => {
+  const root = await mkdtemp(join(tmpdir(), "nextstep-update-race-"));
+  const target = join(root, "result.md");
+  await writeFile(target, "before");
+  let injected = false;
+
+  const binding = {
+    readFile: async (path: string) => {
+      const observed = await readFile(path);
+      if (!injected && path === target) {
+        injected = true;
+        await writeFile(target, "competitor");
+      }
+      return observed;
+    },
+  } as Partial<NodeWriteFileSystemBinding>;
+
+  try {
+    const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+    await assert.rejects(
+      fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), {
+        mode: "update",
+        before_digest: digest("before"),
+      }),
+      hasCode("ESTALE"),
+    );
+    assert.equal(injected, true);
+    assert.equal(await readFile(target, "utf8"), "competitor");
+    assert.deepEqual(await readdir(root), ["result.md"]);
   } finally {
     await rm(root, { recursive: true, force: true });
   }
