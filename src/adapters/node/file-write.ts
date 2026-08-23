@@ -128,9 +128,8 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
     }
   }
 
-  function assertGuard(guard: NodeWriteMutationGuard | undefined): NodeWriteMutationGuard {
+  function assertGuard(guard: NodeWriteMutationGuard): NodeWriteMutationGuard {
     if (
-      guard === undefined ||
       (guard.mode !== "create" && guard.mode !== "update") ||
       (guard.mode === "create" && guard.before_digest !== null) ||
       (guard.mode === "update" &&
@@ -210,6 +209,26 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
     return stats.mode & 0o777;
   }
 
+  async function inferLegacyGuard(resolved: string, relativePath: string): Promise<NodeWriteMutationGuard> {
+    let stats: Awaited<ReturnType<NodeWriteFileSystemBinding["lstat"]>>;
+    try {
+      stats = await binding.lstat(resolved);
+    } catch (error) {
+      if (errnoOf(error) === "ENOENT" || errnoOf(error) === "ENOTDIR") {
+        return Object.freeze({ mode: "create", before_digest: null });
+      }
+      throw error;
+    }
+    if (stats.isSymbolicLink()) {
+      fail("WRITE_ACCESS_BLOCKED", `Refusing to write through a symlink: ${relativePath}`);
+    }
+    if (!stats.isFile()) {
+      fail("WRITE_ACCESS_BLOCKED", `Refusing to overwrite a non-file target: ${relativePath}`);
+    }
+    const current = await binding.readFile(resolved);
+    return Object.freeze({ mode: "update", before_digest: digestBytes(current) });
+  }
+
   async function assertInstalledContent(
     resolved: string,
     relativePath: string,
@@ -251,7 +270,12 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
       mutationGuard?: NodeWriteMutationGuard,
     ): Promise<void> {
       const resolved = resolveProjectPath(projectRoot, relativePath);
-      const guard = assertGuard(mutationGuard);
+      // The domain execution and rollback paths always supply an explicit guard. This
+      // fallback preserves older low-level callers while still snapshotting their
+      // mutation boundary and enforcing the same final no-replace / digest checks.
+      const guard = mutationGuard === undefined
+        ? await inferLegacyGuard(resolved, relativePath)
+        : assertGuard(mutationGuard);
       await assertCanonicalRootAndParents(relativePath);
       const existingMode = await assertTargetMatchesGuard(resolved, relativePath, guard);
 
