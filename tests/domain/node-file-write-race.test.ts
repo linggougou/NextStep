@@ -2383,3 +2383,201 @@ test("attempt11 openAttempted、proof 与 basename 真值表", async (t) => {
     }
   });
 });
+
+test("attempt12 noProof marker 不观察 root 与 basename", async (t) => {
+  for (const basename of ["created-empty", "missing", "same-content-competitor", "native-eexist"] as const) {
+    await t.test(`parent moved-out × ${basename} 固定 proof-unavailable`, async () => {
+      const root = await mkdtemp(join(tmpdir(), `nextstep-no-proof-root-${basename}-`));
+      const outside = await mkdtemp(join(tmpdir(), `nextstep-no-proof-outside-${basename}-`));
+      const parent = join(root, "docs");
+      const movedParent = join(outside, "docs-moved");
+      await mkdir(parent);
+      const firstCause = { stage: `no-proof-root-moved:${basename}` };
+      let firstError: (NodeJS.ErrnoException & { cause?: unknown; transaction_state?: string }) | undefined;
+      let injected = false;
+      let entriesAtThrow: string[] = [];
+      let tempLstatCalls = 0;
+      let tempReadCalls = 0;
+      let cleanupLinkCalls = 0;
+      let cleanupRenameCalls = 0;
+      let cleanupUnlinkCalls = 0;
+      let fallbackOpenCalls = 0;
+      const binding = {
+        lstat: async (path: string) => {
+          if (path.includes(".nextstep-tmp-")) {
+            tempLstatCalls += 1;
+          }
+          return nodeLstat(path);
+        },
+        readFile: async (path: string) => {
+          if (path.includes(".nextstep-tmp-")) {
+            tempReadCalls += 1;
+          }
+          return readFile(path);
+        },
+        open: async (path: string, flags: string, mode: number) => {
+          if (!injected && flags === "wx" && path.includes(".nextstep-tmp-")) {
+            injected = true;
+            if (basename === "native-eexist") {
+              await writeFile(path, "occupied", { flag: "wx" });
+              try {
+                return await nodeOpen(path, flags, mode);
+              } catch (error) {
+                firstError = error as NodeJS.ErrnoException & { cause?: unknown; transaction_state?: string };
+              }
+            } else {
+              const handle = await nodeOpen(path, flags, mode);
+              await handle.close();
+              if (basename === "missing") {
+                await unlink(path);
+              } else if (basename === "same-content-competitor") {
+                await unlink(path);
+                await writeFile(path, "nextstep", { flag: "wx" });
+              }
+              firstError = new Error(`injected moved-root open failure: ${basename}`) as NodeJS.ErrnoException & {
+                cause?: unknown;
+                transaction_state?: string;
+              };
+              firstError.code = "EIO";
+            }
+            firstError!.cause = firstCause;
+            firstError!.transaction_state = "temp-open-uncertain";
+            await nodeRename(parent, movedParent);
+            entriesAtThrow = (await readdir(".")).sort();
+            throw firstError;
+          }
+          if (injected && flags === "wx") {
+            fallbackOpenCalls += 1;
+          }
+          return nodeOpen(path, flags, mode);
+        },
+        link: async (existingPath: string, newPath: string) => {
+          cleanupLinkCalls += 1;
+          await nodeLink(existingPath, newPath);
+        },
+        rename: async (oldPath: string, newPath: string) => {
+          cleanupRenameCalls += 1;
+          await nodeRename(oldPath, newPath);
+        },
+        unlink: async (path: string) => {
+          cleanupUnlinkCalls += 1;
+          await unlink(path);
+        },
+      } as Partial<NodeWriteFileSystemBinding>;
+
+      try {
+        const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+        const error = await fileSystem.atomicWrite("docs/result.md", Buffer.from("nextstep"), {
+          mode: "create",
+          before_digest: null,
+        }).then(
+          () => undefined,
+          (caught: unknown) => caught as NodeJS.ErrnoException & {
+            recovery_path?: string;
+            recovery_path_unavailable?: string;
+            transaction_state?: string;
+          },
+        );
+        assert.ok(firstError);
+        assert.equal(error, firstError);
+        assert.equal(error?.code, basename === "native-eexist" ? "EEXIST" : "EIO");
+        assert.equal(error?.cause, firstCause);
+        assert.equal(error?.transaction_state, "temp-open-uncertain");
+        assert.equal(error?.recovery_path, undefined);
+        assert.equal(error?.recovery_path_unavailable, "candidate-proof-unavailable");
+        assert.equal(tempLstatCalls, 0);
+        assert.equal(tempReadCalls, 0);
+        assert.equal(cleanupLinkCalls, 0);
+        assert.equal(cleanupRenameCalls, 0);
+        assert.equal(cleanupUnlinkCalls, 0);
+        assert.equal(fallbackOpenCalls, 0);
+        assert.deepEqual((await readdir(movedParent)).sort(), entriesAtThrow);
+      } finally {
+        await rm(root, { recursive: true, force: true });
+        await rm(outside, { recursive: true, force: true });
+      }
+    });
+  }
+
+  await t.test("parent realpath unavailable × missing 固定 proof-unavailable", async () => {
+    const suiteCwd = process.cwd();
+    const root = await mkdtemp(join(tmpdir(), "nextstep-no-proof-realpath-root-"));
+    const outside = await mkdtemp(join(tmpdir(), "nextstep-no-proof-realpath-outside-"));
+    const parent = join(root, "docs");
+    const movedParent = join(outside, "docs-moved");
+    await mkdir(parent);
+    const firstCause = { stage: "no-proof-realpath-unavailable" };
+    const firstError = new Error("injected open failure after parent removal") as NodeJS.ErrnoException & {
+      cause?: unknown;
+      transaction_state?: string;
+    };
+    firstError.code = "EIO";
+    firstError.cause = firstCause;
+    firstError.transaction_state = "temp-open-uncertain";
+    let tempLstatCalls = 0;
+    let cleanupLinkCalls = 0;
+    const binding = {
+      lstat: async (path: string) => {
+        if (path.includes(".nextstep-tmp-")) {
+          tempLstatCalls += 1;
+        }
+        return nodeLstat(path);
+      },
+      open: async (path: string, flags: string, mode: number) => {
+        const handle = await nodeOpen(path, flags, mode);
+        if (flags === "wx" && path.includes(".nextstep-tmp-")) {
+          await handle.close();
+          await unlink(path);
+          await nodeRename(parent, movedParent);
+          await rm(movedParent, { recursive: true, force: true });
+          throw firstError;
+        }
+        return handle;
+      },
+      link: async (existingPath: string, newPath: string) => {
+        cleanupLinkCalls += 1;
+        await nodeLink(existingPath, newPath);
+      },
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      const error = await fileSystem.atomicWrite("docs/result.md", Buffer.from("nextstep"), {
+        mode: "create",
+        before_digest: null,
+      }).then(
+        () => undefined,
+        (caught: unknown) => caught as NodeJS.ErrnoException & {
+          recovery_path?: string;
+          recovery_path_unavailable?: string;
+          transaction_state?: string;
+        },
+      );
+      assert.equal(error, firstError);
+      assert.equal(error?.code, "EIO");
+      assert.equal(error?.cause, firstCause);
+      assert.equal(error?.transaction_state, "temp-open-uncertain");
+      assert.equal(error?.recovery_path, undefined);
+      assert.equal(error?.recovery_path_unavailable, "candidate-proof-unavailable");
+      assert.equal(tempLstatCalls, 0);
+      assert.equal(cleanupLinkCalls, 0);
+    } finally {
+      process.chdir(suiteCwd);
+      await rm(root, { recursive: true, force: true });
+      await rm(outside, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("noProof 分支为同步固定 marker 且不含路径逻辑", async () => {
+    const source = await readFile(join(process.cwd(), "src/adapters/node/file-write.ts"), "utf8");
+    const branchStart = source.indexOf("if (tempProof === undefined) {");
+    const branchEnd = source.indexOf("\n          try {", branchStart);
+    assert.notEqual(branchStart, -1);
+    assert.notEqual(branchEnd, -1);
+    const noProofBranch = source.slice(branchStart, branchEnd);
+    assert.doesNotMatch(
+      noProofBranch,
+      /\bawait\b|recoveryError|assertLiveCleanupRoot|realpath|pathExists|lstat|readFile|cleanupOwnedBasename/,
+    );
+  });
+});
