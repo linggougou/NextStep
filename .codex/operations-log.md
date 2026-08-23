@@ -2247,3 +2247,22 @@
 - Credential：`evidence:verification-credential-c9e45fb00812c6eeb0b6fd4db08f1cd425af1fcbda307414873ae91d4c0edad4.json`，6387 bytes，目录/文件 0700/0600，raw SHA=JCS=文件名，link_count=1。
 - 安装收尾：初次 hard-link no-replace 后本次运行临时硬链接未及时移除，主控在 Result 固化前发现并阻断；原 verifier 精确删除该临时项、fsync 父目录并重验 tmp_residue=0，review amend=`cb40fb6343489e14260a639159e6cd6e7728ee7e`。未删除或更改任何历史 evidence。
 - FV Result digest=`sha256:5d4961f22389b052cec351a7b91484a0eacd9e817a00c90a422cd481a0014ffb`，control=`deda3e9df809a8720a3ba994a9491f63f8552a80`；formal 仍为 F14。下一步仅允许形成唯一父 Audit Anchor 并执行 AV/Proof。
+
+## 2026-08-24 S1.5 Audit Anchor、AV 与 F15 正式提升
+
+- Audit Anchor：main commit=`7169e9b019fe2213ca76babb4122a84760bdf112`，唯一父 Snapshot=`ee80eb3de3b9d2de17571f2536c5dbd54be68481`，tree=`b402135e2cfa8ff72ac7d7d840f53cce3b971b78`；相对 Snapshot 精确仅 operations log、verification report 与 FV review 三文件共 5 条路径。
+- Anchor record：`anchors/audit-anchor-s1.5-g4-a12.json`，digest=`sha256:ebb333d59bcca54894c70a60999a7ed0d060cb808d1f3b4b336189d9f7968e4b`；387/387 protected manifest 在 Snapshot/Anchor 双树逐项一致。
+- Anchor Verification：fence 103，独立 review commit=`35bbb53372074645c1e4eca17d8844b24f22c8c1`，唯一父 Anchor；相对 Anchor 精确仅专属评审三文件。结论 `PASS / 100`，7/7 hard gates，50/50 前置断言与 8/8 Proof 安装后检查通过。
+- Anchor Proof：`evidence:anchor-proof-edcc5b9e7aa6df7775bd1042020c6c5f5ce9accf69a2fab021f35d977a8bf849.json`，7402 bytes，目录/文件 0700/0600，raw=JCS=文件名，link_count=1，本次 temp residue=0。
+- AV Result：`sha256:585fb3e0fad7d3390fd429712da4d5e249c89d30d38184efe2f8129b3b042aff`。主控再次复算 review record=`sha256:003d61fc...`、scorecard=`sha256:d95f50e8...` 与 Proof=`sha256:edcc5b9e...` 一致。
+- Formal CAS：确认 pending=0、F14 为 Anchor 祖先、formal expected-old 精确为 F14 后，原子推进到 F15 `7169e9b...`；promotion digest=`sha256:e5806ef9e508c50a1d408b88bd17bc81b0bccbca2bdcee51fd5867710ebfdc38`，control=`b6b5e2f4ed559cad8f0bea4e962ea308f88c7f96`。
+- 回收：已验收的 FV/AV worktree 均在 clean 状态移除，评审分支与提交保留；用户未跟踪 Multica 摘要保持原样。
+- 阶段结论：S1.5/F15 正式完成；M1.2、V1、P5 仍未完成。下一步仅进入 S1.6 entry evaluation、独立 review 与计划/packet 固化，packet/control CAS 前不得编码或派发。
+
+## 2026-08-24 S1.6 入口材料与 Generation 1 计划候选
+
+- 生命周期：继续 `S5 / P5 / V1 / M1.2`，活动小里程碑切换到 S1.6；本轮属于既定路线内的入口评估，不触发 Change Request。
+- 真源收敛：S1.6 承接 PC-08、TG-05/17/19、005 十类技术字段、S4 §18 十九项风险与 009 §7 归档风险；Q3 必须为 100%，Q11 必须精确为 20/20。
+- 边界：不实现 V3 host full、真实预检/fencing/正式提升工具，不冻结 P4 API/Schema，不改已会签风险语义，不把 fixture 称为真实宿主能力。
+- 计划候选：`.codex/exec-plan-s1.6-generation-1.md`，包含首批 RED、三路互斥 worktree、CV/I-X-P/L3/Final 门禁与 expected-old=F15 的最终 CAS 约束。
+- 当前门禁：仅允许独立 entry review；review 结论与修订吸收完成、Execution Packet 和 dispatch-ready/control CAS 固化前不得编码或派发。

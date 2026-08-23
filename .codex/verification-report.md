@@ -2201,3 +2201,23 @@
 - 审查评分：88/100。适配价值高、领域复用率高，但不是零改动迁移，且真实宿主安全契约尚未验证。
 - 建议：需讨论。建议先通过 Change Request 建立窄 `MulticaAdapter` 与 `manual-isolated` 纵向探针，不重写 NextStep 内核，不用 Multica issue/status 代替 NextStep 正式真源。
 - 门禁结论：本轮可行性判断通过；迁移实施门禁未开启，不改变 S1.5、M1.2、V1、P5 或 formal 状态。
+
+## 2026-08-24 S1.5 Anchor Verification 与 formal promotion
+
+- Anchor 身份：`7169e9b019fe2213ca76babb4122a84760bdf112` 唯一父为 Snapshot `ee80eb3de3b9d2de17571f2536c5dbd54be68481`，F14 为祖先；ref/tree/record digest 全部匹配。
+- 差异边界：Snapshot 到 Anchor 精确 5 条路径，全部命中 operations log、verification report、FV review 目录三类 allowlist；无隐藏路径。
+- 内容保护：387/387 `{mode,type,oid,path}` 在 Snapshot 与 Anchor 双树恒等，mismatch=0。
+- Credential：raw/JCS/文件名/6387B/0700/0600/link_count=1/本次 temp=0 及 FV/control/F14/Snapshot/Transaction/Manifest 绑定全部通过。
+- AV：独立 subagent 在 fence 103、专属 worktree 执行；50/50 前置断言、7/7 hard gates、8/8 Proof 安装后检查通过，`PASS / 100`，required fixes=0。
+- Proof：`sha256:edcc5b9e7aa6df7775bd1042020c6c5f5ce9accf69a2fab021f35d977a8bf849`，7402B、raw=JCS、0700/0600、link_count=1、本次 temp=0。
+- 主控复核：review commit 唯一父和三路径、record digest `003d61fc...`、scorecard JCS `d95f50e8...`、Proof raw/JCS、Git fsck 全部通过。
+- Formal CAS：expected-old=F14 精确匹配且 pending=0，CAS 成功推进到 F15 `7169e9b...`；promotion digest=`sha256:e5806ef9e508c50a1d408b88bd17bc81b0bccbca2bdcee51fd5867710ebfdc38`，control=`b6b5e2f...`。
+- 结论：S1.5 正式完成；不代表 M1.2/V1/P5 完成。允许进入 S1.6 entry evaluation，不允许在 entry review 与 packet/control CAS 前编码或派发。
+
+## 2026-08-24 S1.6 入口计划候选静态验证
+
+- 正式前置：formal=F15 `7169e9b...`、control=`b6b5e2f...`、pending=0，满足进入 S1.6 入口评估的依赖。
+- 范围矩阵：PC-08、TG-05/17/19、005 十类技术字段、S4 §18 十九项风险与 009 §7 归档风险均已映射；量化门禁冻结为 Q3=100%、Q11=20/20。
+- TDD/并行：计划候选定义 W1 fixture/catalog、W2 domain/schema、W3 CLI/receipt/Skill 三个互斥写集与主控集成边界；首批 RED 覆盖缺失/重复/未知风险、摘要漂移、非 F15、范围偷跑、回滚入口和敏感输出。
+- 非目标反扫：计划明确禁止 full/真实宿主预检/fencing/registry/formal 产品实现、P4 API/Schema 冻结、Web/UI/数据库/常驻服务。
+- 当前结论：静态入口材料完整，可提交独立 entry review；尚未生成 packet、未编码、未派发，S1.6 仍未开始实施。
