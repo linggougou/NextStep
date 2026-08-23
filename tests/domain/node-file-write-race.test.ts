@@ -1991,3 +1991,92 @@ test("attempt9 primary unavailable 与稳定覆盖余量", async (t) => {
     }
   });
 });
+
+test("attempt10 open 未返回 proof 时禁止按 basename 推定归属", async (t) => {
+  for (const replacement of ["created-empty", "same-content-competitor"] as const) {
+    await t.test(`${replacement} 保留 firstError、目录项与 proof-unavailable`, async () => {
+      const root = await mkdtemp(join(tmpdir(), `nextstep-open-no-proof-${replacement}-`));
+      const firstCause = { stage: `open-before-return:${replacement}` };
+      const firstError = new Error(`injected open failure: ${replacement}`) as NodeJS.ErrnoException & {
+        cause?: unknown;
+        transaction_state?: string;
+      };
+      firstError.code = "EIO";
+      firstError.cause = firstCause;
+      firstError.transaction_state = "temp-open-uncertain";
+      let injected = false;
+      let primaryTempName: string | undefined;
+      let entriesAtThrow: string[] = [];
+      let cleanupLinkCalls = 0;
+      let cleanupRenameCalls = 0;
+      let cleanupUnlinkCalls = 0;
+      let fallbackOpenCalls = 0;
+      const binding = {
+        open: async (path: string, flags: string, mode: number) => {
+          if (!injected && flags === "wx" && path.includes(".nextstep-tmp-")) {
+            const handle = await nodeOpen(path, flags, mode);
+            await handle.close();
+            injected = true;
+            primaryTempName = path;
+            if (replacement === "same-content-competitor") {
+              await unlink(path);
+              await writeFile(path, "nextstep", { flag: "wx" });
+            }
+            entriesAtThrow = (await readdir(".")).sort();
+            throw firstError;
+          }
+          if (injected && flags === "wx") {
+            fallbackOpenCalls += 1;
+          }
+          return nodeOpen(path, flags, mode);
+        },
+        link: async (existingPath: string, newPath: string) => {
+          cleanupLinkCalls += 1;
+          await nodeLink(existingPath, newPath);
+        },
+        rename: async (oldPath: string, newPath: string) => {
+          cleanupRenameCalls += 1;
+          await nodeRename(oldPath, newPath);
+        },
+        unlink: async (path: string) => {
+          cleanupUnlinkCalls += 1;
+          await unlink(path);
+        },
+      } as Partial<NodeWriteFileSystemBinding>;
+
+      try {
+        const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+        const error = await fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), {
+          mode: "create",
+          before_digest: null,
+        }).then(
+          () => undefined,
+          (caught: unknown) => caught as NodeJS.ErrnoException & {
+            recovery_path?: string;
+            recovery_path_unavailable?: string;
+            transaction_state?: string;
+          },
+        );
+        assert.equal(injected, true);
+        assert.ok(primaryTempName);
+        assert.equal(error, firstError);
+        assert.equal(error?.code, "EIO");
+        assert.equal(error?.cause, firstCause);
+        assert.equal(error?.transaction_state, "temp-open-uncertain");
+        assert.equal(error?.recovery_path, undefined);
+        assert.equal(error?.recovery_path_unavailable, "candidate-proof-unavailable");
+        assert.deepEqual((await readdir(root)).sort(), entriesAtThrow);
+        assert.equal(cleanupLinkCalls, 0);
+        assert.equal(cleanupRenameCalls, 0);
+        assert.equal(cleanupUnlinkCalls, 0);
+        assert.equal(fallbackOpenCalls, 0);
+        assert.equal(
+          await readFile(join(root, primaryTempName), "utf8"),
+          replacement === "created-empty" ? "" : "nextstep",
+        );
+      } finally {
+        await rm(root, { recursive: true, force: true });
+      }
+    });
+  }
+});
