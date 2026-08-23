@@ -566,3 +566,69 @@ test("PROFILE_CONFLICT_REJECTED 是独立的失败码：只允许 dry_run data�
     /data|receipt|schema|invalid/i,
   );
 });
+
+test("S1.6 架构风险成功回执独立重验 canonical、digest、评估对象与 10/20/5 结论", async () => {
+  const { evaluateArchitectureRiskAssessment } = await import("../../src/domain/architecture-risk.ts");
+  const fixture = JSON.parse(
+    readFileSync(resolve(process.cwd(), "tests/fixtures/architecture-risk/positive/community-workshop.json"), "utf8"),
+  ) as { candidate: unknown };
+  const assessment = evaluateArchitectureRiskAssessment(fixture.candidate);
+  const receipt = {
+    schema_version: "1.0",
+    receipt_id: "receipt-s16-architecture-risk",
+    ok: true,
+    code: "ARCHITECTURE_RISK_ASSESSMENT_ACCEPTED",
+    data: {
+      canonical_json: canonicalizeJson(assessment),
+      digest: digestJson(assessment),
+      architecture_risk_assessment: assessment,
+      schema_version: "1.0",
+    },
+  };
+
+  const parsed = parseMachineReceipt(receipt);
+  assert.equal(parsed.code, "ARCHITECTURE_RISK_ASSESSMENT_ACCEPTED");
+  assert.deepEqual(Object.keys(parsed.data).sort(), [
+    "architecture_risk_assessment",
+    "canonical_json",
+    "digest",
+    "schema_version",
+  ]);
+  assert.ok(Object.isFrozen(parsed));
+  assert.ok(Object.isFrozen(parsed.data));
+
+  const assessmentRecord = assessment as unknown as Record<string, unknown>;
+  for (const tampered of [
+    { ...assessmentRecord, conclusion: "退回" },
+    { ...assessmentRecord, candidate_digest: `sha256:${"0".repeat(64)}` },
+    { ...assessmentRecord, metrics: { required_fields: { bound: 9, total: 10, percentage: 90 } } },
+    { ...assessmentRecord, risk_bindings: (assessment.risk_bindings as readonly unknown[]).slice(1) },
+  ]) {
+    assert.throws(
+      () => parseMachineReceipt({ ...receipt, data: { ...receipt.data, architecture_risk_assessment: tampered } }),
+      /architecture|risk|assessment|canonical|digest|receipt|mismatch|invalid/i,
+    );
+  }
+  assert.throws(
+    () => parseMachineReceipt({ ...receipt, data: { ...receipt.data, canonical_json: canonicalizeJson({ tampered: true }) } }),
+    /canonical|digest|receipt|mismatch|invalid/i,
+  );
+});
+
+test("S1.6 架构风险失败回执仅允许 REJECTED + dry_run:false", () => {
+  const rejected = {
+    schema_version: "1.0",
+    receipt_id: "receipt-s16-architecture-risk-rejected",
+    ok: false,
+    code: "ARCHITECTURE_RISK_ASSESSMENT_REJECTED",
+    data: { dry_run: false },
+  };
+  assert.equal(parseMachineReceipt(rejected).code, "ARCHITECTURE_RISK_ASSESSMENT_REJECTED");
+  for (const invalid of [
+    { ...rejected, ok: true },
+    { ...rejected, code: "ARCHITECTURE_RISK_ASSESSMENT_ACCEPTED" },
+    { ...rejected, data: { dry_run: true, reason: "leak" } },
+  ]) {
+    assert.throws(() => parseMachineReceipt(invalid), /code|data|receipt|schema|invalid/i);
+  }
+});

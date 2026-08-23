@@ -79,3 +79,11 @@ test("S1.5 write consistency entry remains a CLI composition root", async () => 
   assert.match(source, /\.\.\/domain\//);
   assert.match(source, /\.\.\/adapters\//);
 });
+
+test("S1.6 source-validate remains a read-only CLI composition root", async () => {
+  const source = await readFile(resolve(projectRoot, "src/cli/source-validate.ts"), "utf8");
+  assert.match(source, /\.\.\/domain\/architecture-risk\.ts/);
+  assert.match(source, /\.\.\/domain\/machine-receipt\.ts/);
+  assert.match(source, /\.\.\/adapters\/node\/process-io\.ts/);
+  assert.doesNotMatch(source, /node:(?:fs|child_process)|writeFile|atomicWrite|removeCreated|update-ref|refs\/nextstep|host[_ -]?bootstrap|support_level\s*:\s*["']full/i);
+});
