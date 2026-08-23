@@ -1,0 +1,198 @@
+{
+  "review_id": "p5-v1-m1.2-s1.6-entry-evaluation-2026-08-23",
+  "task_id": "S1.6-entry",
+  "lane": "P5/V1/M1.2",
+  "review_level": "L3",
+  "rubric_id": "entry-readiness-v1",
+  "artifact_refs": [
+    "git:f1c2e3d3d10ee3011229b7218045f4421097f243",
+    ".codex/exec-plan-s1.6-generation-1.md",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/PLANS.md",
+    "docs/exec-plans/active/p5-product-implementation-milestones.md",
+    "docs/exec-plans/completed/p3-version-and-milestone-breakdown.md",
+    "docs/product-specs/005-stage-document-contracts.md",
+    "docs/architecture/s4-technical-architecture.md",
+    "docs/architecture/009-s4-technical-input-supplement.md",
+    "docs/design-docs/p4-execution-mechanism-design.md",
+    "control:b6b5e2f4ed559cad8f0bea4e962ea308f88c7f96:checkpoint.json"
+  ],
+  "hard_gates": [
+    {
+      "id": "formal_control_binding",
+      "status": "pass",
+      "evidence": "formal=F15 7169e9b019fe2213ca76babb4122a84760bdf112，control=b6b5e2f4ed559cad8f0bea4e962ea308f88c7f96；checkpoint 的 next_stage=“S1.5 formally promoted as F15; evaluate S1.6 entry”，pending_dispatch_messages=[]。"
+    },
+    {
+      "id": "route_locked_to_entry_only",
+      "status": "pass",
+      "evidence": "PROJECT_ROUTE_LOCK、docs/PLANS 与 P5 活动计划都把当前状态限定为“S1.6 入口评估与计划冻结”；entry review 与新 packet/control CAS 前不得编码或派发。"
+    },
+    {
+      "id": "pc08_scope_integrity",
+      "status": "pass",
+      "evidence": "候选把 S1.6 限定为 PC-08 + TG-05/17/19 + S4 §18 十九项风险与 009 §7 归档风险，不恢复 Web/UI、不声明 full、不冻结 P4 API/Schema。"
+    },
+    {
+      "id": "parallel_worktree_plan_present",
+      "status": "pass",
+      "evidence": "候选给出 W1/W2/W3/主控 四段职责、互斥写集、共享文件归属与启动顺序，并把治理文件与 control 操作保留给主控。"
+    },
+    {
+      "id": "gate_chain_complete",
+      "status": "pass",
+      "evidence": "候选显式列出 CV、I/X/P、L3、Final Verification、Anchor Verification 与 F16 formal promotion，并限定 formal 只能 expected-old=F15 CAS。"
+    },
+    {
+      "id": "manual_isolated_headless_boundary",
+      "status": "pass",
+      "evidence": "候选明确 fixture 只证明 manual-isolated consumer contract，NextStep 自身继续 headless I/X/P；不实现真实 host bootstrap/probe，不冒领 full 或真实宿主能力。"
+    },
+    {
+      "id": "protected_untracked_file_preserved",
+      "status": "pass",
+      "evidence": "候选把用户未跟踪文件 .codex/context-summary-multica-migration-feasibility-2026-08-22.md 明确列为永久排除对象，不进入 packet、snapshot 或清理动作。"
+    },
+    {
+      "id": "change_request_boundary",
+      "status": "pass",
+      "evidence": "候选要求一旦风险集合不再是 20 项、上游存在实质缺口或实现必须突破非目标，就立即停止并进入 Change Request。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "dependency_readiness",
+      "score": 25,
+      "max_score": 25,
+      "reason": "F15 与 control 基线、P3/P4/S4/005/009 上游和当前路线锁完全对齐，S1.6 作为 S1.5 后继的入口条件成立。",
+      "evidence_refs": [
+        "PROJECT_ROUTE_LOCK.md",
+        "docs/PLANS.md",
+        "docs/exec-plans/active/p5-product-implementation-milestones.md",
+        "control:b6b5e2f4ed559cad8f0bea4e962ea308f88c7f96:checkpoint.json"
+      ]
+    },
+    {
+      "id": "scope_and_contract_precision",
+      "score": 25,
+      "max_score": 25,
+      "reason": "范围边界、非目标、门禁顺序和 TG/PC 绑定都正确，但 packet 前仍需把 005 十类字段、20 项风险集合与五类回滚入口冻结成精确机器枚举，避免后续语义漂移。",
+      "evidence_refs": [
+        ".codex/exec-plan-s1.6-generation-1.md",
+        "docs/product-specs/005-stage-document-contracts.md",
+        "docs/architecture/s4-technical-architecture.md",
+        "docs/architecture/009-s4-technical-input-supplement.md"
+      ]
+    },
+    {
+      "id": "test_and_gate_readiness",
+      "score": 20,
+      "max_score": 20,
+      "reason": "首批 RED、三类 fixture、负例、覆盖率下限和 CV/I-X-P/L3/FV/AV/F16 全链门禁均已明确，且禁止在 packet 前编码。",
+      "evidence_refs": [
+        ".codex/exec-plan-s1.6-generation-1.md",
+        "docs/exec-plans/completed/p3-version-and-milestone-breakdown.md",
+        "docs/design-docs/p4-execution-mechanism-design.md"
+      ]
+    },
+    {
+      "id": "parallelization_safety",
+      "score": 15,
+      "max_score": 15,
+      "reason": "三路 worktree 写集互斥、共享文件只归 W3、主控只负责治理与集成，能够在不触碰 control/formal 的前提下并行推进。",
+      "evidence_refs": [
+        ".codex/exec-plan-s1.6-generation-1.md"
+      ]
+    },
+    {
+      "id": "traceability_and_boundary_integrity",
+      "score": 15,
+      "max_score": 15,
+      "reason": "候选对 F15、control、manual-isolated/headless、非目标与受保护未跟踪文件都有清晰声明；唯一扣分点是机器拒绝口径尚需进一步冻结后再发 packet。",
+      "evidence_refs": [
+        ".codex/exec-plan-s1.6-generation-1.md",
+        "PROJECT_ROUTE_LOCK.md",
+        "docs/PLANS.md"
+      ]
+    }
+  ],
+  "penalties": [
+    {
+      "severity": "P2",
+      "deduction": 2,
+      "reason": "required_field_bindings 目前还是“要求覆盖”的自然语言表述，尚未冻结为与 005 §4.2 一一对应的十个机器键。",
+      "evidence_refs": [
+        ".codex/exec-plan-s1.6-generation-1.md",
+        "docs/product-specs/005-stage-document-contracts.md"
+      ]
+    },
+    {
+      "severity": "P2",
+      "deduction": 2,
+      "reason": "20 项 risk_bindings 已限定来源范围，但未在候选中点名为固定 allowlist，后续 packet/CV 仍存在把“20/20”写成摘要而非精确枚举的风险。",
+      "evidence_refs": [
+        ".codex/exec-plan-s1.6-generation-1.md",
+        "docs/architecture/s4-technical-architecture.md",
+        "docs/architecture/009-s4-technical-input-supplement.md"
+      ]
+    },
+    {
+      "severity": "P2",
+      "deduction": 1,
+      "reason": "rollback_entries 已有五类语义要求，但未冻结成 exact ids + terminal state/next action 组合，后续 I/X/P 与 CV 可能出现同义不同名。",
+      "evidence_refs": [
+        ".codex/exec-plan-s1.6-generation-1.md",
+        "docs/exec-plans/completed/p3-version-and-milestone-breakdown.md"
+      ]
+    }
+  ],
+  "totals": {
+    "raw_score": 95,
+    "penalty_total": 5,
+    "final_score": 95,
+    "max_score": 100
+  },
+  "verdict": "PASS",
+  "required_fixes": [
+    "在生成 S1.6 Execution Packet 之前，把 required_field_bindings 冻结为与 005 §4.2 精确一一对应的十个 machine keys，并在 schema/CV 中对缺失、额外、错拼和别名全部 fail closed。",
+    "在生成 S1.6 Execution Packet 之前，把 risk_bindings 冻结为精确 20 项 allowlist：S4 §18 的 19 条风险/假设逐项命名，加上 009 §7 的“归档失败”；packet/CV/I-X-P 必须对 missing/duplicate/unknown/out-of-order source mapping 全部拒绝。",
+    "在生成 S1.6 Execution Packet 之前，把 rollback_entries 冻结为精确 5 项枚举，并为每项补上 terminal_state、next_action 和 proof expectation，至少覆盖停止自动写入/进入 Change Request、manual-isolated、blocked、待正式提升、待归档。"
+  ],
+  "nice_to_have": [
+    "在 packet 附录中把 20 项风险 id 与对应 TG/owner milestone 以固定顺序列出，减少后续 reviewer 的人工复算成本。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "signal": "PASS",
+      "conclusion": "formal/control/F15、路线锁、上游真源、pending dispatch 与非目标边界一致。",
+      "identity": "dedicated review worktree fallback; 当前运行时未暴露 spawn_agent/wait_agent 协作入口"
+    },
+    {
+      "role": "Strict Judge",
+      "signal": "PASS",
+      "conclusion": "候选具备启动 S1.6 的完整方向与门禁顺序，但 packet 前必须先把字段/风险/回滚枚举从叙述提升为机器契约。",
+      "identity": "judge-harness L3"
+    },
+    {
+      "role": "Chief Reviewer",
+      "signal": "PASS",
+      "conclusion": "允许进入“吸收 required_fixes 后再固化 packet/control CAS”的下一步；不允许立即编码、派发或宣称 S1.6/M1.2/V1/P5 完成。",
+      "identity": "review-plane final call"
+    }
+  ],
+  "reviewed_at": "2026-08-23T16:25:49Z",
+  "severity_summary": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 3
+  },
+  "next_allowed_action": "先吸收 required_fixes，补齐机器枚举冻结，再以实时 expected-old control CAS 固化 S1.6 Execution Packet；CAS 成功前不得编码或派发。",
+  "forbidden_until_packet_cas": [
+    "修改生产代码",
+    "派发 S1.6 编码任务",
+    "创建 S1.6 packet/control 以外的执行对象",
+    "移动 formal ref",
+    "宣称 S1.6、M1.2、V1 或 P5 完成"
+  ]
+}

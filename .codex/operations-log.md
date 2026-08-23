@@ -2266,3 +2266,12 @@
 - 边界：不实现 V3 host full、真实预检/fencing/正式提升工具，不冻结 P4 API/Schema，不改已会签风险语义，不把 fixture 称为真实宿主能力。
 - 计划候选：`.codex/exec-plan-s1.6-generation-1.md`，包含首批 RED、三路互斥 worktree、CV/I-X-P/L3/Final 门禁与 expected-old=F15 的最终 CAS 约束。
 - 当前门禁：仅允许独立 entry review；review 结论与修订吸收完成、Execution Packet 和 dispatch-ready/control CAS 固化前不得编码或派发。
+
+## 2026-08-23 S1.6 入口独立评审与计划冻结修订
+
+- 评审结论：专属 review worktree `/private/tmp/nextstep-s1-6-entry-review-20260824` 在 subject `f1c2e3d3d10ee3011229b7218045f4421097f243` 上形成独立评审提交 `dbb67c35b8a1491e6bea9a600636875bce384d6a`；父提交精确为 subject，本支线仅新增 `.codex/reviews/p5-v1-m1.2-s1.6-entry-evaluation-2026-08-23/{scorecard.json,verdict.md}` 两文件，worktree clean。
+- 评分卡：`PASS / 95`，JCS digest=`sha256:0a001df340553d8c929e8beba4ae2470f0141d681c8a99e92a818b5b39021183`；P0/P1/P2=`0/0/3`。允许继续冻结 S1.6 计划并准备 packet，但不允许直接编码、派发或宣称阶段完成。
+- 必吸收项：在 packet 前将 `required_field_bindings` 冻结为十个 machine keys，将 `risk_bindings` 冻结为二十个 exact ids，将 `rollback_entries` 冻结为五个 exact ids，并在 schema/CV/I-X-P 中对缺失、额外、错拼、别名、重复与错绑全部 fail closed。
+- 工具缺失：当前运行时未暴露 `spawn_agent` / `wait_agent` 协作入口，原用途是按用户要求把 S1.6 entry review 交给独立子代理执行并等待回收。
+- 替代流程：改用 `judge-harness` 协议 + 专属 review worktree + 只写评审产物的独立提交，严格禁止触碰 `main/formal/control` 与控制工件，再把评审结果并回主线。
+- 替代验证：review worktree 已校验 JSON 可解析、`git diff --check` 通过、相对 subject 精确两路径、提交后工作树 clean；主线随后按 required_fixes 修订 `.codex/exec-plan-s1.6-generation-1.md`，尚未生成 packet、尚未编码、尚未派发。

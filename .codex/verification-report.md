@@ -2221,3 +2221,10 @@
 - TDD/并行：计划候选定义 W1 fixture/catalog、W2 domain/schema、W3 CLI/receipt/Skill 三个互斥写集与主控集成边界；首批 RED 覆盖缺失/重复/未知风险、摘要漂移、非 F15、范围偷跑、回滚入口和敏感输出。
 - 非目标反扫：计划明确禁止 full/真实宿主预检/fencing/registry/formal 产品实现、P4 API/Schema 冻结、Web/UI/数据库/常驻服务。
 - 当前结论：静态入口材料完整，可提交独立 entry review；尚未生成 packet、未编码、未派发，S1.6 仍未开始实施。
+
+## 2026-08-23 S1.6 入口独立评审与计划修订验证
+
+- 独立评审：`.codex/reviews/p5-v1-m1.2-s1.6-entry-evaluation-2026-08-23/scorecard.json` 与 `verdict.md` 已形成；结论 `PASS / 95`，评审提交=`dbb67c35b8a1491e6bea9a600636875bce384d6a`，父提交=`f1c2e3d3d10ee3011229b7218045f4421097f243`，tree=`3116ae0975e3d55f21a56a7f932b76f1c56d8157`。
+- 评审范围验证：评审支线相对 subject 精确仅两文件，`git diff --check` 通过，JSON 可解析，scorecard 规范化摘要=`sha256:0a001df340553d8c929e8beba4ae2470f0141d681c8a99e92a818b5b39021183`。
+- required_fixes 吸收：主线已把十个 `required_field_bindings` machine keys、二十个 `risk_bindings` exact ids、五个 `rollback_entries` exact ids 写入 `.codex/exec-plan-s1.6-generation-1.md`，并把 CV/I-X-P/L3 的精确复算口径同步更新到门禁矩阵。
+- 当前边界：独立评审已完成，但 S1.6 仍停留在“计划冻结后、packet 之前”；未创建 Execution Packet、未执行 control CAS、未编码、未派发。
