@@ -1,0 +1,165 @@
+{
+  "review_id": "p5-v1-m1.2-entry-evaluation-2026-08-24",
+  "task_id": "M1.2-ENTRY-EVALUATION",
+  "lane": "P5/V1/M1.2/acceptance-entry",
+  "review_level": "L3",
+  "rubric_id": "nextstep-milestone-acceptance-entry-readiness-v1",
+  "artifact_refs": [
+    "git:88fd311e79d187a05816e7f723c57ba25de22d7f",
+    "git:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    ".codex/exec-plan-m1.2-acceptance-generation-1.md",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/exec-plans/active/p5-product-implementation-milestones.md",
+    "docs/exec-plans/completed/p3-version-and-milestone-breakdown.md",
+    "tests/fixtures/acceptance-profile/",
+    "tests/fixtures/write-consistency/",
+    "tests/fixtures/architecture-risk/"
+  ],
+  "hard_gates": [
+    {
+      "id": "subject_and_live_ref_identity",
+      "status": "pass",
+      "evidence": "entry subject 88fd311e79d187a05816e7f723c57ba25de22d7f 唯一父为 F16 ea04b57de83d6c548dcb1629b1f61832db8375ad；实时 formal/control 分别为 ea04b57d…/d87aa015…，与计划入口一致。F16 commit/tree/parent 三元组按固定字段 JCS 独立复算为 sha256:3e75ad6dffe9a2f5479f0e2c48bea6e45f04593b4e75ac14d48e1e4cbb891672，与计划逐字相等。"
+    },
+    {
+      "id": "state_source_sync",
+      "status": "pass",
+      "evidence": "路线锁、README、PLANS、P5 活动计划和 QA 索引已统一为 F16、S1.4-S1.6 正式完成、M1.2/V1/P5 未完成；下一步一致限定为 M1.2 累计验收入口和 packet/control CAS。相对 F16 仅状态真源、计划与 .codex 留痕变化，无生产代码、Schema 或依赖变化。"
+    },
+    {
+      "id": "pc_tg_q_scope_complete",
+      "status": "pass",
+      "evidence": "计划覆盖 PC-04..08、Q3/Q6/Q11，并按 P3 PC 表逐行求并集固定 TG-01/02/03/04/05/06/11/12/15/16/17/19；既没有照搬 M1.2 摘要行造成 TG-05/15/16 漏项，也没有引入 PC-04..08 之外的新产品范围。"
+    },
+    {
+      "id": "three_project_cumulative_chain",
+      "status": "pass",
+      "evidence": "计划明确要求 community-workshop、expense-reminder、project-delivery-tool 逐项目回放 S1.3 Product Definition→S1.4 carrier/profile→S1.5 write record→S1.6 architecture assessment，并把身份、完整 canonical 内容、digest、产品语义连续率冻结为 3/3。独立静态抽查三项目 fixture：S1.4 profile 的 profile/product/carrier 四项身份均与 S1.5 target_project 相等，S1.6 source_fixture 的 scenario 与三份 S1.5 record digest 43996859…/ad53d318…/93a56243…逐项一致。"
+    },
+    {
+      "id": "formal_evidence_and_isolated_replay",
+      "status": "pass",
+      "evidence": "计划要求唯一 git clone --no-local、detached F16、offline frozen install、pnpm check、逐阶段 JCS/digest 复算，并复核 F13→F16 ancestry、S1.4-S1.6 promotion/Credential/Anchor/Proof/CV/I-X-P/L3/FV/AV；历史 PASS 不得代替正式 subject 的累计复验。"
+    },
+    {
+      "id": "packet_dispatch_fencing",
+      "status": "pass",
+      "evidence": "首次任务固定 M1.2-I-X-P/attempt 1；packet/dedup、ready、outbox、claim、fence、ack、registry 必须先持久化并以实时 expected-old control CAS 串行推进。entry review 通过前不得创建正式验收派发，失败返回对应 S1.4/S1.5/S1.6 或真源入口。"
+    },
+    {
+      "id": "user_signoff_state_machine",
+      "status": "pass",
+      "evidence": "验收 PASS 仅形成 awaiting-user-signoff；用户会签包还要独立终审。只有用户明确批准后，主控才可实时重读 formal/control/Result/plan_generation 并以 expected-old control CAS 固化 M1.2；Agent 不代签，CAS 前不得标记 M1.2 完成或进入 V1 累计验收/V2。"
+    },
+    {
+      "id": "scope_and_multica_protection",
+      "status": "pass",
+      "evidence": "计划明确禁止触碰、纳入或清理 .codex/context-summary-multica-migration-feasibility-2026-08-22.md；该路径不在 subject tree 或 subject diff 中。M1.2 验收权限被限定为只读 formal/control/main 与 manual-isolated/headless consumer contract，不声明真实宿主、trusted-host、full 或 Web/UI 主线。"
+    },
+    {
+      "id": "mechanical_integrity",
+      "status": "pass",
+      "evidence": "git diff --check HEAD^ HEAD 通过；subject 工作树审查前干净；状态同步提交唯一父为 F16，文件集与入口同步目标一致。按任务约束未重跑全量测试，本轮只判定 packet 前入口完整性。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "identity_and_state_truth",
+      "score": 20,
+      "max_score": 20,
+      "reason": "F16、control、subject digest 与所有活动状态真源一致，未发现陈旧 F15/S1.6 待启动状态。",
+      "evidence_refs": [
+        "git:88fd311e79d187a05816e7f723c57ba25de22d7f",
+        "PROJECT_ROUTE_LOCK.md",
+        "docs/PLANS.md"
+      ]
+    },
+    {
+      "id": "acceptance_scope_and_continuity",
+      "score": 30,
+      "max_score": 30,
+      "reason": "PC、TG、Q 指标、Profile 与三项目 S1.3→S1.6 累计链全部显式冻结，fixture 跨阶段关键身份可静态闭合。",
+      "evidence_refs": [
+        ".codex/exec-plan-m1.2-acceptance-generation-1.md",
+        "docs/exec-plans/completed/p3-version-and-milestone-breakdown.md",
+        "tests/fixtures/acceptance-profile/",
+        "tests/fixtures/write-consistency/",
+        "tests/fixtures/architecture-risk/"
+      ]
+    },
+    {
+      "id": "control_and_signoff_state_machine",
+      "score": 25,
+      "max_score": 25,
+      "reason": "packet 前门禁、claim/fence、ACK、Result、会签包终审、用户批准和最终 CAS 的因果顺序明确，自动开发授权没有被误写成用户会签。",
+      "evidence_refs": [
+        ".codex/exec-plan-m1.2-acceptance-generation-1.md §4/§6",
+        "PROJECT_ROUTE_LOCK.md §6"
+      ]
+    },
+    {
+      "id": "verification_design_and_traceability",
+      "score": 15,
+      "max_score": 15,
+      "reason": "唯一隔离 F16 副本、offline frozen、全量检查、JCS 复算、正式证据链与失败回退均具有可执行入口，未以历史 Result 替代累计复验。",
+      "evidence_refs": [
+        ".codex/exec-plan-m1.2-acceptance-generation-1.md §3",
+        ".codex/verification-report.md"
+      ]
+    },
+    {
+      "id": "scope_honesty_and_anti_slop",
+      "score": 10,
+      "max_score": 10,
+      "reason": "M1.2、V1、P5 未被提前宣称完成；formal 不移动、Multica 不纳入、Web/UI/full 不冒领，关键 OID、TG 和三项目名称无模板转写错误。",
+      "evidence_refs": [
+        ".codex/exec-plan-m1.2-acceptance-generation-1.md §5",
+        "docs/qa/index.md"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100
+  },
+  "severity_summary": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "生成 packet 时把 provisional next fence 与实时 control 再比较；当前历史最大值为 111，但 fence 只能在 claim CAS 成功后成为事实。",
+    "Result 登记时对失败结论也保留不可变 Result envelope，只允许通过结论进入 awaiting-user-signoff。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "signal": "PASS",
+      "conclusion": "九项硬门全部通过；F16 身份、TG 并集、三项目跨阶段绑定、会签状态机与 Multica 排除均有直接证据。"
+    },
+    {
+      "role": "Strict Judge",
+      "signal": "PASS",
+      "score": 100,
+      "conclusion": "入口计划完整吸收此前只读控制面分析，可安全进入 packet/source-ref 冻结，不存在需先修复的 P0/P1/P2。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "signal": "PASS",
+      "conclusion": "未发现 F15/F16、Anchor digest/subject digest、TG 列表、三项目身份或用户会签语义的复制粘贴衰减。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "signal": "PASS",
+      "score": 100,
+      "conclusion": "M1.2 Generation 1 入口评审通过；只允许继续创建并固化首次只读验收 packet/control，不构成 M1.2 验收 PASS 或用户会签。"
+    }
+  ],
+  "reviewed_at": "2026-08-23T18:59:04Z",
+  "verdict_scope": "PASS 仅覆盖 subject 88fd311e79d187a05816e7f723c57ba25de22d7f 的 M1.2 累计验收入口真源与 Generation 1 计划完整性；允许准备 M1.2-I-X-P attempt 1 packet、ready/outbox/claim/fence/ack，不允许直接宣称 M1.2/V1/P5 完成，不代替累计 I/X/P、用户会签或任何 formal 移动。"
+}
