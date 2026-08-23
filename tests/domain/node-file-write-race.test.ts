@@ -2080,3 +2080,306 @@ test("attempt10 open 未返回 proof 时禁止按 basename 推定归属", async 
     });
   }
 });
+
+test("attempt11 openAttempted、proof 与 basename 真值表", async (t) => {
+  for (const scenario of ["created-empty", "missing", "same-content-competitor", "native-eexist"] as const) {
+    await t.test(`${scenario} attempted/noProof 零 basename query 与 cleanup`, async () => {
+      const root = await mkdtemp(join(tmpdir(), `nextstep-open-truth-${scenario}-`));
+      const firstCause = { stage: `open-attempted:${scenario}` };
+      let firstError: (NodeJS.ErrnoException & { cause?: unknown; transaction_state?: string }) | undefined;
+      let injected = false;
+      let tempName: string | undefined;
+      let entriesAtThrow: string[] = [];
+      let tempLstatCalls = 0;
+      let tempReadCalls = 0;
+      let cleanupLinkCalls = 0;
+      let cleanupRenameCalls = 0;
+      let cleanupUnlinkCalls = 0;
+      let fallbackOpenCalls = 0;
+      const binding = {
+        lstat: async (path: string) => {
+          if (path.includes(".nextstep-tmp-")) {
+            tempLstatCalls += 1;
+          }
+          return nodeLstat(path);
+        },
+        readFile: async (path: string) => {
+          if (path.includes(".nextstep-tmp-")) {
+            tempReadCalls += 1;
+          }
+          return readFile(path);
+        },
+        open: async (path: string, flags: string, mode: number) => {
+          if (!injected && flags === "wx" && path.includes(".nextstep-tmp-")) {
+            injected = true;
+            tempName = path;
+            if (scenario === "native-eexist") {
+              await writeFile(path, "occupied", { flag: "wx" });
+              try {
+                return await nodeOpen(path, flags, mode);
+              } catch (error) {
+                firstError = error as NodeJS.ErrnoException & { cause?: unknown; transaction_state?: string };
+              }
+            } else {
+              const handle = await nodeOpen(path, flags, mode);
+              await handle.close();
+              if (scenario === "missing") {
+                await unlink(path);
+              } else if (scenario === "same-content-competitor") {
+                await unlink(path);
+                await writeFile(path, "nextstep", { flag: "wx" });
+              }
+              firstError = new Error(`injected open failure: ${scenario}`) as NodeJS.ErrnoException & {
+                cause?: unknown;
+                transaction_state?: string;
+              };
+              firstError.code = "EIO";
+            }
+            firstError!.cause = firstCause;
+            firstError!.transaction_state = "temp-open-uncertain";
+            entriesAtThrow = (await readdir(".")).sort();
+            throw firstError;
+          }
+          if (injected && flags === "wx") {
+            fallbackOpenCalls += 1;
+          }
+          return nodeOpen(path, flags, mode);
+        },
+        link: async (existingPath: string, newPath: string) => {
+          cleanupLinkCalls += 1;
+          await nodeLink(existingPath, newPath);
+        },
+        rename: async (oldPath: string, newPath: string) => {
+          cleanupRenameCalls += 1;
+          await nodeRename(oldPath, newPath);
+        },
+        unlink: async (path: string) => {
+          cleanupUnlinkCalls += 1;
+          await unlink(path);
+        },
+      } as Partial<NodeWriteFileSystemBinding>;
+
+      try {
+        const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+        const error = await fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), {
+          mode: "create",
+          before_digest: null,
+        }).then(
+          () => undefined,
+          (caught: unknown) => caught as NodeJS.ErrnoException & {
+            recovery_path?: string;
+            recovery_path_unavailable?: string;
+            transaction_state?: string;
+          },
+        );
+        assert.equal(injected, true);
+        assert.ok(firstError);
+        assert.ok(tempName);
+        assert.equal(error, firstError);
+        assert.equal(error?.code, scenario === "native-eexist" ? "EEXIST" : "EIO");
+        assert.equal(error?.cause, firstCause);
+        assert.equal(error?.transaction_state, "temp-open-uncertain");
+        assert.equal(error?.recovery_path, undefined);
+        assert.equal(error?.recovery_path_unavailable, "candidate-proof-unavailable");
+        assert.equal(tempLstatCalls, 0);
+        assert.equal(tempReadCalls, 0);
+        assert.equal(cleanupLinkCalls, 0);
+        assert.equal(cleanupRenameCalls, 0);
+        assert.equal(cleanupUnlinkCalls, 0);
+        assert.equal(fallbackOpenCalls, 0);
+        assert.deepEqual((await readdir(root)).sort(), entriesAtThrow);
+        if (scenario !== "missing") {
+          assert.equal(
+            await readFile(join(root, tempName), "utf8"),
+            scenario === "created-empty" ? "" : scenario === "native-eexist" ? "occupied" : "nextstep",
+          );
+        }
+      } finally {
+        await rm(root, { recursive: true, force: true });
+      }
+    });
+  }
+
+  await t.test("open 未 attempted 的前置失败保持 exact error 且无 locator", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-open-not-attempted-"));
+    const firstCause = { stage: "target-guard" };
+    const firstError = new Error("injected pre-open target guard") as NodeJS.ErrnoException & {
+      cause?: unknown;
+      transaction_state?: string;
+    };
+    firstError.code = "EIO";
+    firstError.cause = firstCause;
+    firstError.transaction_state = "precondition";
+    let wxOpenCalls = 0;
+    let tempLstatCalls = 0;
+    const binding = {
+      lstat: async (path: string) => {
+        if (path.includes(".nextstep-tmp-")) {
+          tempLstatCalls += 1;
+        }
+        if (path === join(root, "result.md")) {
+          throw firstError;
+        }
+        return nodeLstat(path);
+      },
+      open: async (path: string, flags: string, mode: number) => {
+        if (flags === "wx") {
+          wxOpenCalls += 1;
+        }
+        return nodeOpen(path, flags, mode);
+      },
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      const error = await fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), {
+        mode: "create",
+        before_digest: null,
+      }).then(
+        () => undefined,
+        (caught: unknown) => caught as NodeJS.ErrnoException & {
+          recovery_path?: string;
+          recovery_path_unavailable?: string;
+          transaction_state?: string;
+        },
+      );
+      assert.equal(error, firstError);
+      assert.equal(error?.code, "EIO");
+      assert.equal(error?.cause, firstCause);
+      assert.equal(error?.transaction_state, "precondition");
+      assert.equal(error?.recovery_path, undefined);
+      assert.equal(error?.recovery_path_unavailable, undefined);
+      assert.equal(wxOpenCalls, 0);
+      assert.equal(tempLstatCalls, 0);
+      assert.deepEqual(await readdir(root), []);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("FileHandle 返回但 proofFromHandle 失败时 close 后零 basename cleanup", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-proof-capture-failure-"));
+    const firstCause = { stage: "proof-from-handle" };
+    const firstError = new Error("injected handle stat failure") as NodeJS.ErrnoException & {
+      cause?: unknown;
+      transaction_state?: string;
+    };
+    firstError.code = "EIO";
+    firstError.cause = firstCause;
+    firstError.transaction_state = "proof-pending";
+    let handleClosed = false;
+    let tempName: string | undefined;
+    let entriesAtFailure: string[] = [];
+    let tempLstatCalls = 0;
+    let cleanupLinkCalls = 0;
+    const binding = {
+      lstat: async (path: string) => {
+        if (path.includes(".nextstep-tmp-")) {
+          tempLstatCalls += 1;
+        }
+        return nodeLstat(path);
+      },
+      open: async (path: string, flags: string, mode: number) => {
+        const handle = await nodeOpen(path, flags, mode);
+        if (flags === "wx" && path.includes(".nextstep-tmp-")) {
+          tempName = path;
+          entriesAtFailure = (await readdir(".")).sort();
+          return new Proxy(handle, {
+            get(targetHandle, property) {
+              if (property === "stat") {
+                return async () => {
+                  throw firstError;
+                };
+              }
+              if (property === "close") {
+                return async () => {
+                  handleClosed = true;
+                  await targetHandle.close();
+                };
+              }
+              const value = Reflect.get(targetHandle, property, targetHandle) as unknown;
+              return typeof value === "function" ? value.bind(targetHandle) : value;
+            },
+          });
+        }
+        return handle;
+      },
+      link: async (existingPath: string, newPath: string) => {
+        cleanupLinkCalls += 1;
+        await nodeLink(existingPath, newPath);
+      },
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      const error = await fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), {
+        mode: "create",
+        before_digest: null,
+      }).then(
+        () => undefined,
+        (caught: unknown) => caught as NodeJS.ErrnoException & {
+          recovery_path?: string;
+          recovery_path_unavailable?: string;
+          transaction_state?: string;
+        },
+      );
+      assert.equal(error, firstError);
+      assert.equal(error?.code, "EIO");
+      assert.equal(error?.cause, firstCause);
+      assert.equal(error?.transaction_state, "proof-pending");
+      assert.equal(error?.recovery_path, undefined);
+      assert.equal(error?.recovery_path_unavailable, "candidate-proof-unavailable");
+      assert.equal(handleClosed, true);
+      assert.equal(tempLstatCalls, 0);
+      assert.equal(cleanupLinkCalls, 0);
+      assert.deepEqual((await readdir(root)).sort(), entriesAtFailure);
+      assert.equal(await readFile(join(root, tempName!), "utf8"), "");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("attempted/noProof 保留已有较优 recovery metadata", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-open-first-wins-"));
+    const firstError = new Error("injected open failure with locator") as NodeJS.ErrnoException & {
+      recovery_path?: string;
+      recovery_path_unavailable?: string;
+    };
+    firstError.code = "EIO";
+    firstError.recovery_path = "known/recovery.bin";
+    let tempLstatCalls = 0;
+    const binding = {
+      lstat: async (path: string) => {
+        if (path.includes(".nextstep-tmp-")) {
+          tempLstatCalls += 1;
+        }
+        return nodeLstat(path);
+      },
+      open: async (path: string, flags: string, mode: number) => {
+        if (flags === "wx" && path.includes(".nextstep-tmp-")) {
+          const handle = await nodeOpen(path, flags, mode);
+          await handle.close();
+          throw firstError;
+        }
+        return nodeOpen(path, flags, mode);
+      },
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      const error = await fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), {
+        mode: "create",
+        before_digest: null,
+      }).then(
+        () => undefined,
+        (caught: unknown) => caught as typeof firstError,
+      );
+      assert.equal(error, firstError);
+      assert.equal(error?.recovery_path, "known/recovery.bin");
+      assert.equal(error?.recovery_path_unavailable, undefined);
+      assert.equal(tempLstatCalls, 0);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+});
