@@ -2181,6 +2181,15 @@
 - 边界：L3 的 P2 仅记录专属 worktree 依赖预置不足；CV 已在精确 subject worktree 完成两轮全量，因此最终判定不缺硬证据。formal F14 与 subject/control 身份全程不变。
 - 结论：允许冻结 S1.5 Final Content Snapshot；仍不允许跳过 FV、Credential、Audit Anchor、AV/Proof 与 expected-old=F14 的 formal CAS。
 
+## 2026-08-23 S1.5 Final Verification
+
+- 精确 snapshot：`ee80eb3de3b9d2de17571f2536c5dbd54be68481` / tree `4d38ef383e46fbf38da65f1bbfb8958be8eaace9`；Snapshot/Manifest/Transaction 三摘要独立复算匹配。
+- 隔离验证：唯一 `--no-local` clone detached snapshot；Node 24.14.0 / pnpm 10.33.2，offline frozen `--ignore-scripts` 安装通过，`pnpm check` 444/444、0 fail，覆盖率 93.07/88.62/99.09。
+- 行为矩阵：write-consistency 13/13、Acceptance Profile 17/17、Q6=100%，三类 fixture、本地文件一致性、noProof/first-wins、敏感输出边界全部通过。
+- 内容保护：387/387 `{mode,type,oid,path}` 与 snapshot tree 精确一致；formal F14、control、S1.6 未启动边界在验证窗口内不变。
+- Credential：`sha256:c9e45fb00812c6eeb0b6fd4db08f1cd425af1fcbda307414873ae91d4c0edad4`，6387B、0600、link_count=1、tmp_residue=0；安装后临时硬链接清理及父目录 fsync 已由主控复核。
+- 结论：FV PASS / 100，P0/P1/P2=`0/0/0`；允许创建 Audit Anchor，仍不允许跳过 AV/Proof 或移动 formal。
+
 ## 2026-08-22 Multica 迁移可行性审查验证
 
 - 审查对象：当前 NextStep 仓库、已冻结 S3/S4 宿主边界、当前实现面，以及 Multica 官方 Agents / Squads / Tasks / Skills / Project resources / Providers / Auth / Comments / CLI 文档。

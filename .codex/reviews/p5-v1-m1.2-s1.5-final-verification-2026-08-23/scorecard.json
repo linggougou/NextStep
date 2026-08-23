@@ -1,0 +1,163 @@
+{
+  "review_id": "p5-v1-m1.2-s1.5-final-verification-2026-08-23",
+  "task_id": "S1.5-FV",
+  "task_attempt": 1,
+  "lane": "final-verification",
+  "review_level": "L4",
+  "rubric_id": "nextstep-s1.5-final-verification-v1",
+  "stage_id": "P5/V1/M1.2/S1.5/final-verification",
+  "plan_id": "p5-product-implementation",
+  "plan_generation": 4,
+  "route_generation": 1,
+  "repository_id": "sha256:d11253328d36050bd559844c64b438e9b84e0c13125184e9b01e1e7cf23a8c56",
+  "claim_id": "claim-s1.5-fv-g4-a1-f102-20260823",
+  "fence_token": 102,
+  "host_task_id": "codex-subagent:/root/s15_fv_a1",
+  "verification_run_id": "verification-run-s1.5-g4-a12-20260823",
+  "reviewed_at": "2026-08-23T15:42:17Z",
+  "subject": {
+    "snapshot_ref": "git:ee80eb3de3b9d2de17571f2536c5dbd54be68481",
+    "snapshot_tree": "4d38ef383e46fbf38da65f1bbfb8958be8eaace9",
+    "snapshot_digest": "sha256:4fa7ec01c9cb1279311b1c9025239cf5e0b7190ca47e505735c3428b02f8a5d0",
+    "baseline_formal": "024c1db6d941b6f771746c8d6249fb8a09b816f3",
+    "baseline_formal_tree": "6f722b973d7b7ee72a607498d8027d9df615ef4b",
+    "candidate_ref": "git:128e86bc8ecc23dd3f0ce2150bc2744edb3751d9",
+    "candidate_digest": "sha256:95e670a8caf0f9c6f36bb1d60a5ad4530b0ea475e4ca204338549cb57c2c3447"
+  },
+  "isolated_environment": {
+    "clone_command": "git clone --no-local /private/tmp/nextstep-s1-5-fv-a1-20260823 <mktemp>/repo",
+    "clone_path": "/tmp/nextstep-s1-5-fv-disposable.xn2VRm/repo",
+    "head": "ee80eb3de3b9d2de17571f2536c5dbd54be68481 (detached)",
+    "tree": "4d38ef383e46fbf38da65f1bbfb8958be8eaace9",
+    "install": "corepack pnpm install --offline --frozen-lockfile --ignore-scripts",
+    "check": "corepack pnpm check",
+    "evidence_scope": "manual-isolated consumer contract"
+  },
+  "artifact_refs": [
+    "refs/nextstep/control:gate-requests/gate-final-verification-s1.5-g4-a1-20260823.json",
+    "refs/nextstep/control:snapshots/final-content-snapshot-s1.5-g4-a12-20260823.json",
+    "refs/nextstep/control:transactions/write-transaction-s1.5-g4-a12-20260823.json",
+    "refs/nextstep/control:manifests/protected-manifest-s1.5-g4-a12-20260823.json",
+    "refs/nextstep/control:results/result-execution-s1.5-g4-a12-f98-20260823.json",
+    "refs/nextstep/control:results/result-candidate-verification-s1.5-g4-a4-f99-20260823.json",
+    "refs/nextstep/control:results/result-product-interaction-s1.5-g4-a4-f100-20260823.json",
+    "refs/nextstep/control:results/result-independent-review-s1.5-g4-a2-f101-20260823.json",
+    "refs/nextstep/control:messages/msg-dispatch-ready-s1.5-fv-g4-a1-20260823.json",
+    "refs/nextstep/control:messages/msg-dispatch-ack-s1.5-fv-g4-a1-f102-20260823.json",
+    "git:22c9b835884dc5739289f9f839173726c4572e3a:.codex/reviews/p5-v1-m1.2-s1.5-cv-a4-2026-08-23/scorecard.json",
+    "git:fcab787787458b051af4d920fcf9a7480b4fd435:.codex/reviews/p5-v1-m1.2-s1.5-ixp-a4-2026-08-23/scorecard.json",
+    "git:faa2e81268e4d0f4f90496c3341eca05b2573d59:.codex/reviews/p5-v1-m1.2-s1.5-l3-a12-2026-08-23/scorecard.json",
+    "evidence:verification-credential-c9e45fb00812c6eeb0b6fd4db08f1cd425af1fcbda307414873ae91d4c0edad4.json"
+  ],
+  "hard_gates": [
+    {
+      "id": "HG1",
+      "result": "pass",
+      "statement": "packet/dedup/dispatch/claim/fence/host、F14、Snapshot、Transaction、manifest、Execution/CV/I-X-P/L3 摘要与 Git 身份精确匹配。",
+      "evidence": "FV packet sha256:5356daba…、dedup sha256:4fdaf6f8…、snapshot sha256:4fa7ec01…、transaction sha256:522560a1…、manifest(entries) sha256:f74ffedc…、Execution/CV/I-X-P/L3 result sha256:b724253e…/931b8f48…/3cc34fdb…/bc306f5c… 均由本轮 RFC8785 复算匹配；dispatch ready/ack 绑定 claim-s1.5-fv-g4-a1-f102-20260823、fence 102、host codex-subagent:/root/s15_fv_a1；control HEAD=1ebd5d92…，formal 保持 F14=024c1db6…。"
+    },
+    {
+      "id": "HG2",
+      "result": "pass",
+      "statement": "唯一 --no-local 隔离副本 detached snapshot；offline frozen install 与 pnpm check 444/444、覆盖率三维高于门槛。",
+      "evidence": "唯一 clone=/tmp/nextstep-s1-5-fv-disposable.xn2VRm/repo，detached ee80eb3…；corepack pnpm install --offline --frozen-lockfile --ignore-scripts 成功；corepack pnpm check exit 0，444/444，coverage 93.07/88.62/99.09。"
+    },
+    {
+      "id": "HG3",
+      "result": "pass",
+      "statement": "write-consistency 13/13、Acceptance Profile 17/17、Q6=100%、三 fixture、本地一致性矩阵与敏感输出边界全部成立。",
+      "evidence": "write-consistency 场景独立计数 13/13=3 正例+6 故障+4 布局；Acceptance Profile fixture 独立计数 17/17=5 accepted+6 rejected+6 contract/identity，Q6=17/17=100%；全量测试中三类 fixture 真实跑通 preview→confirm→dry-run→commit→read-back；CLI/domain 测试覆盖不回显敏感值。"
+    },
+    {
+      "id": "HG4",
+      "result": "pass",
+      "statement": "387 条 protected manifest 与 snapshot 精确一致；F14 与 S1.6 未启动边界不变。",
+      "evidence": "manifest 387/387 条 mode/type/oid/path 与 git ls-tree 精确匹配；唯一 extra path 为 excluded mutable 的 operations-log/verification-report；formal 前后均为 024c1db6…；路线锁保持“F15 CAS 前仅允许 FV→Credential→Anchor→AV/Proof”，S1.6 仅存在未来计划与负例测试，不存在已启动实现。"
+    },
+    {
+      "id": "HG5",
+      "result": "pass",
+      "statement": "Credential 仅在全部 hard gates PASS 后生成，并以 create-once/no-replace/fsync 方式安装。",
+      "evidence": "credential=verification-credential-c9e45fb0….json，raw SHA-256 与文件名一致，6387 bytes；evidence root 0700、file 0600；exclusive temp + hard-link no-replace 安装后，本次运行专属 tmp 硬链接 .verification-credential-c9e45fb0….tmp-21593-1787499737080 已精确删除并 fsync 父目录；重读 final credential 后 raw SHA/JCS/文件名仍一致，link_count=1，tmp residue=0。"
+    },
+    {
+      "id": "HG6",
+      "result": "pass",
+      "statement": "评审相对 snapshot 只新增专属 review 三文件；不修改产品代码、formal/control 或完成态声明。",
+      "evidence": "工作树当前仅允许新增 .codex/reviews/p5-v1-m1.2-s1.5-final-verification-2026-08-23/{final-verification.json,scorecard.json,verdict.md}；credential 写入 evidence root；formal/control/main 不变，且 verdict 明确声明 S1.5/M1.2/V1/P5 与 S1.6 仍未完成。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "identity-chain",
+      "score": 25,
+      "max": 25,
+      "reason": "控制面、快照、事务、manifest 与四类上游 result 摘要均独立复算匹配。",
+      "evidence_refs": [
+        "HG1"
+      ]
+    },
+    {
+      "id": "isolated-build-test",
+      "score": 25,
+      "max": 25,
+      "reason": "唯一隔离副本的 offline install 与 444/444 全量回归、覆盖率三维全部通过。",
+      "evidence_refs": [
+        "HG2"
+      ]
+    },
+    {
+      "id": "product-profile-matrix",
+      "score": 25,
+      "max": 25,
+      "reason": "13/13、17/17、Q6=100%、三 fixture 与敏感输出边界均有本轮一手证据。",
+      "evidence_refs": [
+        "HG3"
+      ]
+    },
+    {
+      "id": "manifest-boundary-credential",
+      "score": 25,
+      "max": 25,
+      "reason": "387 条 manifest 精确一致，F14/S1.6 边界保持，credential create-once 安装完成。",
+      "evidence_refs": [
+        "HG4",
+        "HG5",
+        "HG6"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw": 100,
+    "penalty_total": 0,
+    "final": 100
+  },
+  "verdict": "PASS",
+  "gate_conclusion": "通过",
+  "required_fixes": [],
+  "nice_to_have": [
+    "后续进入 trusted-host 或 full 支持时，建立独立门禁，不复用本次 manual-isolated 证据。"
+  ],
+  "credential": {
+    "ref": "/Users/ling/.codex/nextstep/evidence/sha256-d11253328d36050bd559844c64b438e9b84e0c13125184e9b01e1e7cf23a8c56/verification-credential-c9e45fb00812c6eeb0b6fd4db08f1cd425af1fcbda307414873ae91d4c0edad4.json",
+    "sha256": "c9e45fb00812c6eeb0b6fd4db08f1cd425af1fcbda307414873ae91d4c0edad4",
+    "size_bytes": 6387,
+    "permissions": {
+      "directory": "0700",
+      "file": "0600"
+    },
+    "install": "exclusive temp + hard-link no-replace + file/dir fsync，create-once"
+  },
+  "next_allowed_action": "Audit Anchor 准备与独立 Anchor Verification 链；expected-old=F14 的 F14→F15 CAS 只能在 Anchor Proof 后执行；S1.6 仍不得启动。",
+  "independence_declaration": "本评审在 fence 102 ACK CAS 后，以唯一 git clone --no-local 一次性副本完成 offline install、全量回归、fixture 计数、RFC8785 摘要复算与项目外 credential 安装；未修改产品代码、formal、control 或 main。",
+  "gate_disclaimer": "本裁决仅覆盖 manual-isolated headless consumer contract 证据范围，不证明 trusted-host 适配器、真实用户动作探针或 full 支持；不批准 formal promotion。",
+  "reviewers": [
+    {
+      "role": "Final Verifier",
+      "agent": "codex-subagent:/root/s15_fv_a1",
+      "conclusion": "pass",
+      "summary": "六条 hard gate 全部通过；444/444、13/13、17/17、Q6=100%、387/387、credential create-once 均由本轮独立证据支持。"
+    }
+  ]
+}

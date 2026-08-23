@@ -2238,3 +2238,12 @@
 - L3 P2：专属 worktree 未预置 node_modules/dist，原位定向 86/86；全量在与 subject 执行面零差异的主仓库完成 444/444、93.04/88.54/99.09。精确 subject 的 CV 已完成双轮 444/444，因此该项仅为环境方法学折损，不是硬门缺证据。
 - L3 Result：`sha256:bc306f5c714317dfeb4134e509f7fad739add8f2e7a2440ca5bb831bff438202`；control=`041346f1c2a726c4e05119ccdebc09334b11ab86`。formal 仍为 F14；下一步只允许冻结 Final Content Snapshot 并进入独立 Final Verification。
 - 资源回收：CV、I/X/P、L3 三个已完成 worktree 均确认 clean 后移除；评审分支与提交保留。
+
+## 2026-08-23 S1.5 Final Snapshot 与 Final Verification
+
+- Snapshot：main-derived 精确 commit=`ee80eb3de3b9d2de17571f2536c5dbd54be68481`，tree=`4d38ef383e46fbf38da65f1bbfb8958be8eaace9`；subject=`128e86b` 单独绑定，用户未跟踪 Multica 摘要未纳入。
+- 三件套：Snapshot digest=`sha256:4fa7ec01c9cb1279311b1c9025239cf5e0b7190ca47e505735c3428b02f8a5d0`；Manifest 387 条、digest=`sha256:f74ffedcee1d693a7631afb21bd7f4b28c1f9ab4f173c557db369548016f3023`；Write Transaction digest=`sha256:522560a1fbf123c7f2bf1e49d4bacdbb376e42a5db29eaf4103e180c04bdc24e`。
+- FV：fence 102，唯一 `git clone --no-local` 一次性副本，offline frozen install 与全量 444/444；覆盖率 `93.07/88.62/99.09`，387/387 manifest、13/13、17/17、Q6=100%，PASS / 100，P0/P1/P2=`0/0/0`。
+- Credential：`evidence:verification-credential-c9e45fb00812c6eeb0b6fd4db08f1cd425af1fcbda307414873ae91d4c0edad4.json`，6387 bytes，目录/文件 0700/0600，raw SHA=JCS=文件名，link_count=1。
+- 安装收尾：初次 hard-link no-replace 后本次运行临时硬链接未及时移除，主控在 Result 固化前发现并阻断；原 verifier 精确删除该临时项、fsync 父目录并重验 tmp_residue=0，review amend=`cb40fb6343489e14260a639159e6cd6e7728ee7e`。未删除或更改任何历史 evidence。
+- FV Result digest=`sha256:5d4961f22389b052cec351a7b91484a0eacd9e817a00c90a422cd481a0014ffb`，control=`deda3e9df809a8720a3ba994a9491f63f8552a80`；formal 仍为 F14。下一步仅允许形成唯一父 Audit Anchor 并执行 AV/Proof。
