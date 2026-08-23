@@ -1016,14 +1016,25 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
           }
           try {
             if (await pathExists(tempName)) {
-              await cleanupOwnedBasename(
-                tempName,
-                contentDigest,
-                relativePath,
-                anchor,
-                cleanupContext,
-                tempWasCreated ? tempProof ?? null : undefined,
-              );
+              if (tempProof === undefined) {
+                const locatorError = await recoveryError(
+                  mutationError("ESTALE", `Primary temporary object proof is unavailable: ${relativePath}`),
+                  tempName,
+                  anchor,
+                  cleanupContext,
+                  null,
+                );
+                mergeRecoveryMetadata(error, locatorError);
+              } else {
+                await cleanupOwnedBasename(
+                  tempName,
+                  contentDigest,
+                  relativePath,
+                  anchor,
+                  cleanupContext,
+                  tempProof,
+                );
+              }
             } else if (tempWasCreated) {
               const locatorError = await recoveryError(
                 mutationError("ESTALE", `Primary temporary object became unavailable: ${relativePath}`),
