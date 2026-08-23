@@ -1761,3 +1761,233 @@ test("attempt8 locator 身份与 rootEscaped 熔断", async (t) => {
     }
   });
 });
+
+test("attempt9 primary unavailable 与稳定覆盖余量", async (t) => {
+  for (const mode of ["create", "update"] as const) {
+    await t.test(`${mode} primary wx 返回前原名消失时保留 firstError 并报告 unavailable`, async () => {
+      const root = await mkdtemp(join(tmpdir(), `nextstep-primary-missing-${mode}-`));
+      const target = join(root, "result.md");
+      if (mode === "update") {
+        await writeFile(target, "before");
+      }
+      const firstCause = { stage: `${mode}-install` };
+      let firstError: (NodeJS.ErrnoException & { cause?: unknown; transaction_state?: string }) | undefined;
+      let tempUnlinked = false;
+      const binding = {
+        open: async (path: string, flags: string, fileMode: number) => {
+          const handle = await nodeOpen(path, flags, fileMode);
+          if (!tempUnlinked && flags === "wx" && path.includes(".nextstep-tmp-")) {
+            tempUnlinked = true;
+            await unlink(path);
+          }
+          return handle;
+        },
+        link: async (existingPath: string, newPath: string) => {
+          try {
+            await nodeLink(existingPath, newPath);
+          } catch (error) {
+            if (newPath === "result.md" && existingPath.includes(".nextstep-tmp-")) {
+              firstError = error as NodeJS.ErrnoException & { cause?: unknown; transaction_state?: string };
+              firstError.cause = firstCause;
+              firstError.transaction_state = "install-not-started";
+            }
+            throw error;
+          }
+        },
+      } as Partial<NodeWriteFileSystemBinding>;
+
+      try {
+        const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+        const error = await fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), mode === "create"
+          ? { mode: "create", before_digest: null }
+          : { mode: "update", before_digest: digest("before") }).then(
+          () => undefined,
+          (caught: unknown) => caught as NodeJS.ErrnoException & {
+            recovery_path?: string;
+            recovery_path_unavailable?: string;
+            transaction_state?: string;
+          },
+        );
+        assert.equal(tempUnlinked, true);
+        assert.ok(firstError);
+        assert.equal(error, firstError);
+        assert.equal(error?.code, "ENOENT");
+        assert.equal(error?.cause, firstCause);
+        assert.equal(error?.transaction_state, "install-not-started");
+        assert.equal(error?.recovery_path, undefined);
+        assert.equal(error?.recovery_path_unavailable, "candidate-unavailable");
+        if (mode === "create") {
+          await assert.rejects(readFile(target), hasCode("ENOENT"));
+        } else {
+          assert.equal(await readFile(target, "utf8"), "before");
+        }
+      } finally {
+        await rm(root, { recursive: true, force: true });
+      }
+    });
+  }
+
+  await t.test("primary wx 已创建但 FileHandle 无 regular proof 时明确 proof-unavailable", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-primary-proof-unavailable-"));
+    let injected = false;
+    const binding = {
+      open: async (path: string, flags: string, mode: number) => {
+        const handle = await nodeOpen(path, flags, mode);
+        if (!injected && flags === "wx" && path.includes(".nextstep-tmp-")) {
+          injected = true;
+          return new Proxy(handle, {
+            get(targetHandle, property) {
+              if (property === "stat") {
+                return async () => ({ isFile: () => false });
+              }
+              const value = Reflect.get(targetHandle, property, targetHandle) as unknown;
+              return typeof value === "function" ? value.bind(targetHandle) : value;
+            },
+          });
+        }
+        return handle;
+      },
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      const error = await fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), {
+        mode: "create",
+        before_digest: null,
+      }).then(
+        () => undefined,
+        (caught: unknown) => caught as NodeJS.ErrnoException & {
+          recovery_path?: string;
+          recovery_path_unavailable?: string;
+        },
+      );
+      assert.equal(injected, true);
+      assert.equal(error?.code, "ESTALE");
+      assert.equal(error?.recovery_path, undefined);
+      assert.equal(error?.recovery_path_unavailable, "candidate-proof-unavailable");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("anchored cwd 被删除导致 live realpath 失败时单调熔断", async () => {
+    const suiteCwd = process.cwd();
+    const root = await mkdtemp(join(tmpdir(), "nextstep-live-realpath-missing-root-"));
+    const outside = await mkdtemp(join(tmpdir(), "nextstep-live-realpath-missing-outside-"));
+    const parent = join(root, "docs");
+    const movedParent = join(outside, "docs-moved");
+    await mkdir(parent);
+    let injected = false;
+    const binding = {
+      link: async (existingPath: string, newPath: string) => {
+        await nodeLink(existingPath, newPath);
+        if (!injected && newPath.includes(".nextstep-quarantine-")) {
+          injected = true;
+          await nodeRename(parent, movedParent);
+          await rm(movedParent, { recursive: true, force: true });
+          const error = new Error("injected deleted anchored cwd") as NodeJS.ErrnoException;
+          error.code = "EIO";
+          throw error;
+        }
+      },
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      const error = await fileSystem.atomicWrite("docs/result.md", Buffer.from("nextstep"), {
+        mode: "create",
+        before_digest: null,
+      }).then(
+        () => undefined,
+        (caught: unknown) => caught as NodeJS.ErrnoException & { recovery_path_unavailable?: string },
+      );
+      assert.equal(injected, true);
+      assert.equal(error?.code, "WRITE_ACCESS_BLOCKED");
+      assert.equal(error?.recovery_path_unavailable, "anchor-root-membership-unavailable");
+    } finally {
+      process.chdir(suiteCwd);
+      await rm(root, { recursive: true, force: true });
+      await rm(outside, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("显式 guard 对初始 lstat 故障、symlink 与目录目标 fail closed", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-initial-target-guards-"));
+    const outside = join(root, "outside.md");
+    await writeFile(outside, "outside");
+    await symlink(outside, join(root, "link.md"));
+    await mkdir(join(root, "directory"));
+    const lstatError = new Error("injected target lstat failure") as NodeJS.ErrnoException;
+    lstatError.code = "EIO";
+    const binding = {
+      lstat: async (path: string) => path === join(root, "fault.md") ? Promise.reject(lstatError) : nodeLstat(path),
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      await assert.rejects(
+        fileSystem.atomicWrite("fault.md", Buffer.from("nextstep"), {
+          mode: "update",
+          before_digest: digest("before"),
+        }),
+        (error: unknown) => error === lstatError,
+      );
+      for (const relativePath of ["link.md", "directory"] as const) {
+        await assert.rejects(
+          fileSystem.atomicWrite(relativePath, Buffer.from("nextstep"), {
+            mode: "update",
+            before_digest: digest("outside"),
+          }),
+          hasCode("WRITE_ACCESS_BLOCKED"),
+        );
+      }
+      assert.equal(await readFile(outside, "utf8"), "outside");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("目录 fsync 后 close 失败不掩盖成功写入", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-directory-close-failure-"));
+    let directoryHandle: Awaited<ReturnType<typeof nodeOpen>> | undefined;
+    let closeInjected = false;
+    const binding = {
+      open: async (path: string, flags: string, mode: number) => {
+        const handle = await nodeOpen(path, flags, mode);
+        if (path === "." && flags === "r") {
+          directoryHandle = handle;
+          return new Proxy(handle, {
+            get(targetHandle, property) {
+              if (property === "close") {
+                return async () => {
+                  closeInjected = true;
+                  const error = new Error("injected directory close failure") as NodeJS.ErrnoException;
+                  error.code = "EIO";
+                  throw error;
+                };
+              }
+              const value = Reflect.get(targetHandle, property, targetHandle) as unknown;
+              return typeof value === "function" ? value.bind(targetHandle) : value;
+            },
+          });
+        }
+        return handle;
+      },
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      await fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), {
+        mode: "create",
+        before_digest: null,
+      });
+      assert.equal(closeInjected, true);
+      assert.equal(await readFile(join(root, "result.md"), "utf8"), "nextstep");
+    } finally {
+      if (directoryHandle !== undefined) {
+        await directoryHandle.close();
+      }
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+});
