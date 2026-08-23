@@ -75,6 +75,25 @@ interface FileIdentity {
   readonly content: Buffer;
 }
 
+interface FileObjectProof {
+  readonly dev: number;
+  readonly ino: number;
+  readonly mode: number;
+  readonly digest?: Sha256Digest;
+}
+
+interface CleanupContext {
+  root_error?: WriteTransactionError & {
+    recovery_path_unavailable?: string;
+    cause?: unknown;
+  };
+}
+
+interface PersistedRecovery {
+  readonly name: string;
+  readonly proof: FileIdentity;
+}
+
 let cwdMutationQueue: Promise<void> = Promise.resolve();
 
 async function serializeCwdMutation<T>(operation: () => Promise<T>): Promise<T> {
@@ -405,12 +424,52 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
     }
   }
 
+  function rootMembershipError(
+    context: CleanupContext,
+    reason: "anchor-outside-canonical-root" | "anchor-root-membership-unavailable",
+    cause: unknown,
+  ): WriteTransactionError & { recovery_path_unavailable?: string; cause?: unknown } {
+    if (context.root_error !== undefined) {
+      return context.root_error;
+    }
+    const blocked = new WriteTransactionError(
+      "WRITE_ACCESS_BLOCKED",
+      "Anchored cleanup parent is not verifiably inside the canonical project root",
+    ) as WriteTransactionError & { recovery_path_unavailable?: string; cause?: unknown };
+    blocked.recovery_path_unavailable = reason;
+    blocked.cause = cause;
+    context.root_error = blocked;
+    return blocked;
+  }
+
+  async function assertLiveCleanupRoot(
+    context: CleanupContext,
+    anchor: ParentAnchor,
+    cause: unknown,
+  ): Promise<string> {
+    if (context.root_error !== undefined) {
+      throw context.root_error;
+    }
+    let liveParent: string;
+    try {
+      liveParent = await nodeRealpath(".");
+    } catch (error) {
+      throw rootMembershipError(context, "anchor-root-membership-unavailable", error);
+    }
+    if (!isWithinRoot(anchor.canonical_root, liveParent)) {
+      throw rootMembershipError(context, "anchor-outside-canonical-root", cause);
+    }
+    return liveParent;
+  }
+
   async function restoreRecoveryNoReplace(
     recoveryName: string,
     targetName: string,
     expectedDigest: Sha256Digest,
     relativePath: string,
     anchor: ParentAnchor,
+    context: CleanupContext,
+    primaryError: unknown,
   ): Promise<boolean> {
     if (!(await pathExists(recoveryName))) {
       return true;
@@ -423,8 +482,9 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
       if (stats.isSymbolicLink() || !stats.isFile()) {
         return false;
       }
+      await assertLiveCleanupRoot(context, anchor, primaryError);
       await binding.link(recoveryName, targetName);
-      await cleanupOwnedBasename(recoveryName, expectedDigest, relativePath, anchor);
+      await cleanupOwnedBasename(recoveryName, expectedDigest, relativePath, anchor, context);
       return !(await pathExists(recoveryName)) && await pathExists(targetName);
     } catch {
       return false;
@@ -435,7 +495,8 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
     error: unknown,
     candidateName: string,
     anchor: ParentAnchor,
-    proof?: FileIdentity,
+    context: CleanupContext,
+    proof?: FileObjectProof | null,
   ): Promise<unknown> {
     let targetError = typeof error === "object" && error !== null
       ? error as NodeJS.ErrnoException & { recovery_path?: string; recovery_path_unavailable?: string }
@@ -443,22 +504,26 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
           recovery_path?: string;
           recovery_path_unavailable?: string;
         };
+    let liveParent: string;
     try {
-      const liveParent = await nodeRealpath(".");
-      if (!isWithinRoot(anchor.canonical_root, liveParent)) {
-        const blocked = new WriteTransactionError(
-          "WRITE_ACCESS_BLOCKED",
-          "Anchored cleanup parent moved outside the canonical project root",
-        ) as WriteTransactionError & { recovery_path_unavailable?: string; cause?: unknown };
-        blocked.recovery_path_unavailable = "anchor-outside-canonical-root";
-        blocked.cause = error;
-        return blocked;
-      }
-
-      const candidateStats = await nodeLstat(candidateName);
+      liveParent = await assertLiveCleanupRoot(context, anchor, error);
+    } catch (rootError) {
+      return rootError;
+    }
+    if (proof === null) {
+      delete targetError.recovery_path;
+      targetError.recovery_path_unavailable = "candidate-proof-unavailable";
+      return targetError;
+    }
+    try {
+      const candidateIdentity = await readTrustedFileIdentity(candidateName);
       if (
         proof !== undefined &&
-        (candidateStats.dev !== proof.dev || candidateStats.ino !== proof.ino)
+        (
+          candidateIdentity.dev !== proof.dev ||
+          candidateIdentity.ino !== proof.ino ||
+          (proof.digest !== undefined && candidateIdentity.digest !== proof.digest)
+        )
       ) {
         delete targetError.recovery_path;
         targetError.recovery_path_unavailable = "candidate-identity-changed";
@@ -520,6 +585,32 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
     }
   }
 
+  async function proofFromHandle(handle: FileHandle, name: string): Promise<FileObjectProof> {
+    const stats = await handle.stat();
+    if (!stats.isFile()) {
+      throw mutationError("ESTALE", `Newly created object is not a regular file: ${name}`);
+    }
+    return { dev: stats.dev, ino: stats.ino, mode: stats.mode & 0o777 };
+  }
+
+  function matchesFileProof(identity: FileIdentity, proof: FileObjectProof): boolean {
+    return identity.dev === proof.dev &&
+      identity.ino === proof.ino &&
+      (proof.digest === undefined || identity.digest === proof.digest);
+  }
+
+  async function completeNamedProof(
+    name: string,
+    proof: FileObjectProof,
+  ): Promise<FileObjectProof> {
+    try {
+      const identity = await readTrustedFileIdentity(name);
+      return matchesFileProof(identity, proof) ? identity : proof;
+    } catch {
+      return proof;
+    }
+  }
+
   async function readTrustedFileIdentityOrUndefined(name: string): Promise<FileIdentity | undefined> {
     try {
       return await readTrustedFileIdentity(name);
@@ -554,8 +645,9 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
     content: Uint8Array,
     relativePath: string,
     anchor: ParentAnchor,
+    context: CleanupContext,
     mode = 0o600,
-  ): Promise<string> {
+  ): Promise<PersistedRecovery> {
     const candidates = [
       preferredName,
       `${preferredName}.nextstep-recovered-${randomBytes(8).toString("hex")}`,
@@ -563,16 +655,30 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
     for (const candidate of candidates) {
       let handle: FileHandle | undefined;
       let candidateWasCreated = false;
+      let candidateProof: FileObjectProof | undefined;
       try {
+        await assertLiveCleanupRoot(context, anchor, `fallback-open:${relativePath}`);
         handle = await binding.open(candidate, "wx", mode);
         candidateWasCreated = true;
+        candidateProof = await proofFromHandle(handle, candidate);
+        await assertLiveCleanupRoot(context, anchor, `fallback-created:${relativePath}`);
         await handle.writeFile(content);
         await binding.fsync(handle.fd);
         await handle.close();
         handle = undefined;
-        await assertInstalledContent(candidate, relativePath, content);
-        return candidate;
+        const installedProof = await readTrustedFileIdentity(candidate);
+        if (
+          candidateProof === undefined ||
+          !matchesFileProof(installedProof, candidateProof) ||
+          installedProof.digest !== digestBytes(content)
+        ) {
+          throw mutationError("ESTALE", `Persisted recovery object changed: ${relativePath}`);
+        }
+        return { name: candidate, proof: installedProof };
       } catch (error) {
+        const locatorProof = candidateProof === undefined
+          ? undefined
+          : await completeNamedProof(candidate, candidateProof);
         if (handle !== undefined) {
           try {
             await handle.close();
@@ -581,7 +687,7 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
           }
         }
         if (candidateWasCreated) {
-          throw await recoveryError(error, candidate, anchor);
+          throw await recoveryError(error, candidate, anchor, context, locatorProof ?? null);
         }
         if (errnoOf(error) !== "EEXIST") {
           throw error;
@@ -596,10 +702,13 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
     expectedDigest: Sha256Digest,
     relativePath: string,
     anchor: ParentAnchor,
+    context: CleanupContext,
+    expectedProof?: FileObjectProof,
     postLinkInvariant?: () => Promise<void>,
   ): Promise<Buffer> {
     let originalHandle: FileHandle | undefined;
     try {
+      await assertLiveCleanupRoot(context, anchor, `cleanup-open:${relativePath}`);
       originalHandle = await nodeOpen(name, "r", 0);
       const originalStats = await originalHandle.stat();
       const originalContent = await readOpenFile(originalHandle);
@@ -610,14 +719,19 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
         digest: digestBytes(originalContent),
         content: originalContent,
       };
-      if (!originalStats.isFile() || originalIdentity.digest !== expectedDigest) {
+      if (
+        !originalStats.isFile() ||
+        originalIdentity.digest !== expectedDigest ||
+        (expectedProof !== undefined && !matchesFileProof(originalIdentity, expectedProof))
+      ) {
         const error = mutationError("ESTALE", `Cleanup object proof changed: ${relativePath}`);
-        throw await recoveryError(error, name, anchor);
+        throw await recoveryError(error, name, anchor, context, expectedProof ?? originalIdentity);
       }
 
       const quarantineName = `${name}.nextstep-quarantine-${randomBytes(8).toString("hex")}`;
       let linkError: unknown;
       try {
+        await assertLiveCleanupRoot(context, anchor, `quarantine-link:${relativePath}`);
         await binding.link(name, quarantineName);
       } catch (error) {
         linkError = error;
@@ -630,41 +744,43 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
 
       if (linkError !== undefined) {
         if (quarantineMatches) {
-          throw await recoveryError(linkError, quarantineName, anchor, quarantineIdentity);
+          throw await recoveryError(linkError, quarantineName, anchor, context, quarantineIdentity);
         }
         if (nameMatches) {
-          throw await recoveryError(linkError, name, anchor, nameIdentity);
+          throw await recoveryError(linkError, name, anchor, context, nameIdentity);
         }
-        const fallbackName = await persistRecoveryNoReplace(
+        const fallback = await persistRecoveryNoReplace(
           name,
           originalContent,
           relativePath,
           anchor,
+          context,
           originalIdentity.mode,
         );
         const error = mutationError("ESTALE", `Cleanup link failed after pathname replacement: ${relativePath}`);
-        throw await recoveryError(error, fallbackName, anchor);
+        throw await recoveryError(error, fallback.name, anchor, context, fallback.proof);
       }
       if (!nameMatches || !quarantineMatches) {
         const error = mutationError("ESTALE", `Cleanup pathname changed around hardlink: ${relativePath}`);
         if (quarantineMatches) {
-          throw await recoveryError(error, quarantineName, anchor, quarantineIdentity);
+          throw await recoveryError(error, quarantineName, anchor, context, quarantineIdentity);
         }
         if (nameMatches) {
-          throw await recoveryError(error, name, anchor, nameIdentity);
+          throw await recoveryError(error, name, anchor, context, nameIdentity);
         }
-        const fallbackName = await persistRecoveryNoReplace(
+        const fallback = await persistRecoveryNoReplace(
           name,
           originalContent,
           relativePath,
           anchor,
+          context,
           originalIdentity.mode,
         );
-        throw await recoveryError(error, fallbackName, anchor);
+        throw await recoveryError(error, fallback.name, anchor, context, fallback.proof);
       }
 
       try {
-        const liveParent = await nodeRealpath(".");
+        const liveParent = await assertLiveCleanupRoot(context, anchor, `post-link:${relativePath}`);
         if (liveParent !== anchor.canonical_parent) {
           fail("WRITE_ACCESS_BLOCKED", `Cleanup parent identity changed: ${relativePath}`);
         }
@@ -672,7 +788,7 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
           await postLinkInvariant();
         }
       } catch (error) {
-        throw await recoveryError(error, quarantineName, anchor, quarantineIdentity);
+        throw await recoveryError(error, quarantineName, anchor, context, quarantineIdentity);
       }
 
       const finalNameIdentity = await readTrustedFileIdentityOrUndefined(name);
@@ -683,22 +799,24 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
       ) {
         const error = mutationError("ESTALE", `Cleanup pathname changed before trusted unlink: ${relativePath}`);
         if (sameFileIdentity(finalQuarantineIdentity, originalIdentity)) {
-          throw await recoveryError(error, quarantineName, anchor, finalQuarantineIdentity);
+          throw await recoveryError(error, quarantineName, anchor, context, finalQuarantineIdentity);
         }
         if (sameFileIdentity(finalNameIdentity, originalIdentity)) {
-          throw await recoveryError(error, name, anchor, finalNameIdentity);
+          throw await recoveryError(error, name, anchor, context, finalNameIdentity);
         }
-        const fallbackName = await persistRecoveryNoReplace(
+        const fallback = await persistRecoveryNoReplace(
           name,
           originalContent,
           relativePath,
           anchor,
+          context,
           originalIdentity.mode,
         );
-        throw await recoveryError(error, fallbackName, anchor);
+        throw await recoveryError(error, fallback.name, anchor, context, fallback.proof);
       }
 
       try {
+        await assertLiveCleanupRoot(context, anchor, `trusted-unlink:${relativePath}`);
         const syncNameStats = lstatSync(name);
         const syncQuarantineStats = lstatSync(quarantineName);
         if (
@@ -714,7 +832,7 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
         unlinkSync(name);
         unlinkSync(quarantineName);
       } catch (error) {
-        throw await recoveryError(error, quarantineName, anchor, finalQuarantineIdentity);
+        throw await recoveryError(error, quarantineName, anchor, context, finalQuarantineIdentity);
       }
       return originalContent;
     } finally {
@@ -758,13 +876,18 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
 
       await withAnchoredParent(relativePath, anchor, async ({ target_name: targetName, assertIdentity }) => {
         const tempName = `${targetName}.nextstep-tmp-${randomBytes(8).toString("hex")}`;
+        const cleanupContext: CleanupContext = {};
         let handle: FileHandle | undefined;
+        let tempProof: FileObjectProof | undefined;
         try {
           if (guard.mode === "update") {
             await assertTargetMatchesGuard(targetName, relativePath, guard);
           }
 
+          await assertLiveCleanupRoot(cleanupContext, anchor, `temp-open:${relativePath}`);
           handle = await binding.open(tempName, "wx", existingMode ?? 0o644);
+          tempProof = await proofFromHandle(handle, tempName);
+          await assertLiveCleanupRoot(cleanupContext, anchor, `temp-created:${relativePath}`);
           await assertIdentity();
           await handle.writeFile(content);
           await binding.fsync(handle.fd);
@@ -773,6 +896,7 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
           await assertIdentity();
 
           if (guard.mode === "create") {
+            await assertLiveCleanupRoot(cleanupContext, anchor, `create-install:${relativePath}`);
             await binding.link(tempName, targetName);
             await assertIdentity();
             await assertInstalledContent(targetName, relativePath, content);
@@ -781,6 +905,8 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
               contentDigest,
               relativePath,
               anchor,
+              cleanupContext,
+              tempProof,
               () => assertTrustedDigest(targetName, contentDigest),
             );
           } else {
@@ -789,6 +915,7 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
             let recoveryCleanupStarted = false;
             try {
               await assertTargetMatchesGuard(targetName, relativePath, guard);
+              await assertLiveCleanupRoot(cleanupContext, anchor, `update-recovery:${relativePath}`);
               await binding.rename(targetName, recoveryName);
               recoveryCreated = true;
               await assertIdentity();
@@ -798,6 +925,7 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
                 throw mutationError("ESTALE", `Update target changed at the installation boundary: ${relativePath}`);
               }
 
+              await assertLiveCleanupRoot(cleanupContext, anchor, `update-install:${relativePath}`);
               await binding.link(tempName, targetName);
               await assertIdentity();
               await assertInstalledContent(targetName, relativePath, content);
@@ -806,6 +934,8 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
                 contentDigest,
                 relativePath,
                 anchor,
+                cleanupContext,
+                tempProof,
                 () => assertTrustedDigest(targetName, contentDigest),
               );
               await assertTrustedDigest(targetName, contentDigest);
@@ -816,6 +946,8 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
                 guard.before_digest,
                 relativePath,
                 anchor,
+                cleanupContext,
+                undefined,
                 () => assertTrustedDigest(targetName, contentDigest),
               );
               recoveryCleanupStarted = false;
@@ -828,6 +960,8 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
                   guard.before_digest!,
                   relativePath,
                   anchor,
+                  cleanupContext,
+                  error,
                 );
                 recoveryCreated = !restored;
               }
@@ -838,7 +972,7 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
                 !("recovery_path" in error) &&
                 !("recovery_path_unavailable" in error)
               ) {
-                throw await recoveryError(error, recoveryName, anchor);
+                throw await recoveryError(error, recoveryName, anchor, cleanupContext);
               }
               throw error;
             }
@@ -846,6 +980,9 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
 
           await fsyncDirectory(".");
         } catch (error) {
+          if (tempProof !== undefined) {
+            tempProof = await completeNamedProof(tempName, tempProof);
+          }
           if (handle !== undefined) {
             try {
               await handle.close();
@@ -857,7 +994,14 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
             if (
               await pathExists(tempName)
             ) {
-              await cleanupOwnedBasename(tempName, contentDigest, relativePath, anchor);
+              await cleanupOwnedBasename(
+                tempName,
+                contentDigest,
+                relativePath,
+                anchor,
+                cleanupContext,
+                tempProof,
+              );
             }
           } catch (cleanupError) {
             const recoveryPath = (cleanupError as { recovery_path?: unknown })?.recovery_path;
@@ -912,6 +1056,7 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
       }
 
       await withAnchoredParent(relativePath, anchor, async ({ target_name: targetName, assertIdentity }) => {
+        const cleanupContext: CleanupContext = {};
         let stats: Awaited<ReturnType<NodeWriteFileSystemBinding["lstat"]>>;
         try {
           stats = await binding.lstat(targetName);
@@ -932,6 +1077,7 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
         let recoveryCreated = false;
         let recoveryCleanupStarted = false;
         try {
+          await assertLiveCleanupRoot(cleanupContext, anchor, `remove-recovery:${relativePath}`);
           await binding.rename(targetName, recoveryName);
           recoveryCreated = true;
           await assertIdentity();
@@ -939,7 +1085,13 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
             throw mutationError("ESTALE", `Created target changed at the removal boundary: ${relativePath}`);
           }
           recoveryCleanupStarted = true;
-          await cleanupOwnedBasename(recoveryName, expectedDigest, relativePath, anchor);
+          await cleanupOwnedBasename(
+            recoveryName,
+            expectedDigest,
+            relativePath,
+            anchor,
+            cleanupContext,
+          );
           recoveryCleanupStarted = false;
           recoveryCreated = false;
           await fsyncDirectory(".");
@@ -951,6 +1103,8 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
               expectedDigest,
               relativePath,
               anchor,
+              cleanupContext,
+              error,
             );
             recoveryCreated = !restored;
           }
@@ -961,7 +1115,7 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
             !("recovery_path" in error) &&
             !("recovery_path_unavailable" in error)
           ) {
-            throw await recoveryError(error, recoveryName, anchor);
+            throw await recoveryError(error, recoveryName, anchor, cleanupContext);
           }
           throw error;
         }
