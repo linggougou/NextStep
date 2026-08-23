@@ -11,6 +11,7 @@ import {
 import { parseInteractionPrototype } from "./interaction-prototype.ts";
 import { parseCarrierDecision } from "./carrier-decision.ts";
 import { parseAcceptanceProfileDecision } from "./acceptance-profile.ts";
+import { parseArchitectureRiskAssessment } from "./architecture-risk.ts";
 import { parseCandidateChangeDecision } from "./candidate-change.ts";
 import { recoverFrozenRequirement } from "./requirement-freeze.ts";
 import { parseProductDefinitionCandidate } from "./product-definition.ts";
@@ -39,6 +40,8 @@ export type MachineReceiptCode =
   | "ACCEPTANCE_PROFILE_ACCEPTED"
   | "ACCEPTANCE_PROFILE_REJECTED"
   | "PROFILE_CONFLICT_REJECTED"
+  | "ARCHITECTURE_RISK_ASSESSMENT_ACCEPTED"
+  | "ARCHITECTURE_RISK_ASSESSMENT_REJECTED"
   | "CANDIDATE_CHANGE_PREVIEWED"
   | "CANDIDATE_CHANGE_REJECTED"
   | "WRITE_PREVIEWED"
@@ -108,6 +111,7 @@ export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
       INTERACTION_PROTOTYPE_ACCEPTED: ["canonical_json", "digest", "interaction_prototype", "schema_version"],
       CARRIER_DECISION_ACCEPTED: ["canonical_json", "digest", "carrier_decision", "schema_version"],
       ACCEPTANCE_PROFILE_ACCEPTED: ["canonical_json", "digest", "acceptance_profile", "schema_version"],
+      ARCHITECTURE_RISK_ASSESSMENT_ACCEPTED: ["canonical_json", "digest", "architecture_risk_assessment", "schema_version"],
       CANDIDATE_CHANGE_PREVIEWED: ["canonical_json", "digest", "candidate_change_decision", "dry_run", "schema_version"],
       WRITE_PREVIEWED: ["canonical_json", "digest", "dry_run", "schema_version", "write_transaction_result"],
       WRITE_COMMITTED: ["canonical_json", "digest", "dry_run", "schema_version", "write_transaction_result"],
@@ -189,6 +193,15 @@ export const MACHINE_RECEIPT_SCHEMA: ExecutableSchema<MachineReceipt> = {
         const profile = parseAcceptanceProfileDecision(snapshot.data.acceptance_profile);
         if (canonicalJson !== canonicalizeJson(profile)) {
           throw new TypeError("Acceptance profile receipt payload does not match canonical JSON");
+        }
+      }
+      if (snapshot.code === "ARCHITECTURE_RISK_ASSESSMENT_ACCEPTED") {
+        if (snapshot.data.schema_version !== "1.0") {
+          throw new TypeError("Architecture risk assessment receipt subject version must be 1.0");
+        }
+        const assessment = parseArchitectureRiskAssessment(snapshot.data.architecture_risk_assessment);
+        if (canonicalJson !== canonicalizeJson(assessment)) {
+          throw new TypeError("Architecture risk assessment receipt payload does not match canonical JSON");
         }
       }
       if (snapshot.code === "CANDIDATE_CHANGE_PREVIEWED") {

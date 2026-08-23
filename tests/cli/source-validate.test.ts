@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { execFile } from "node:child_process";
+import { execFile, spawn } from "node:child_process";
 import { promisify } from "node:util";
 import { readFile, readdir } from "node:fs/promises";
 import { resolve } from "node:path";
@@ -19,19 +19,19 @@ interface FixtureRecord {
   readonly base_fixture_ref?: string;
   readonly negative_kind?: string;
   readonly mutation?: {
-    readonly operation: "add" | "replace" | "remove";
+    readonly operation: "add" | "duplicate" | "replace" | "remove";
     readonly path: string;
     readonly value?: unknown;
   };
 }
 
-function fakeIo(input: string, args: readonly string[] = []) {
+function fakeIo(input: string | Uint8Array, args: readonly string[] = []) {
   const output: string[] = [];
   const diagnostics: string[] = [];
   const exitCodes: number[] = [];
   const io: ProcessIoAdapter = {
     args,
-    async readInput() { return Buffer.from(input, "utf8"); },
+    async readInput() { return typeof input === "string" ? Buffer.from(input, "utf8") : Buffer.from(input); },
     writeOutput(value) { output.push(value); },
     writeDiagnostic(value) { diagnostics.push(value); },
     setExitCode(code) { exitCodes.push(code); },
@@ -60,6 +60,7 @@ function materializeNegative(base: unknown, mutation: NonNullable<FixtureRecord[
   if (Array.isArray(parent)) {
     const index = Number(finalToken);
     if (mutation.operation === "remove") parent.splice(index, 1);
+    else if (mutation.operation === "duplicate") parent.splice(index, 0, structuredClone(parent[index]));
     else if (mutation.operation === "add") parent.splice(index, 0, structuredClone(mutation.value));
     else parent[index] = structuredClone(mutation.value);
   } else {
@@ -95,6 +96,12 @@ test("source-validate 直接消费三类 fixture.candidate，并输出唯一 JCS
     assert.equal(receipt.data.schema_version, "1.0");
     assert.equal((assessment as Record<string, unknown>).evidence_scope, "manual-isolated consumer contract");
     assert.equal(Object.hasOwn(assessment as object, "support_level"), false);
+    assert.equal((assessment as Record<string, unknown>).candidate_digest, digestJson(fixture.candidate));
+    assert.equal(canonicalizeJson((assessment as Record<string, unknown>).metrics), canonicalizeJson({
+      required_fields: { bound: 10, total: 10, percentage: 100 },
+      risks: { bound: 20, total: 20, percentage: 100 },
+      rollback_entries: { bound: 5, total: 5 },
+    }));
   }
 });
 
@@ -114,7 +121,7 @@ test("source-validate 对 15 类 fixture 负例统一 fail closed，失败 data 
     const receipt = parseMachineReceipt(parseCanonicalJsonBytes(Buffer.from(output[0]!, "utf8")));
     assert.equal(receipt.ok, false, name);
     assert.equal(receipt.code, "ARCHITECTURE_RISK_ASSESSMENT_REJECTED", name);
-    assert.deepEqual(receipt.data, { dry_run: false }, name);
+    assert.equal(canonicalizeJson(receipt.data), canonicalizeJson({ dry_run: false }), name);
     assert.deepEqual(exitCodes, [1], name);
     assert.equal(diagnostics.length, 1, name);
     const combined = `${output[0]}\n${diagnostics[0]}`;
@@ -129,6 +136,9 @@ test("source-validate 对非 JCS、未知参数和错误身份只输出一个拒
 
   for (const sample of [
     fakeIo('{"z":1,"a":2}'),
+    fakeIo(Buffer.from([0xff, 0xfe, 0xfd])),
+    fakeIo(Buffer.concat([Buffer.from([0xef, 0xbb, 0xbf]), Buffer.from(canonicalizeJson(positive.candidate), "utf8")])),
+    fakeIo(Buffer.from(`${canonicalizeJson(positive.candidate)}\n`, "utf8")),
     fakeIo(canonicalizeJson(positive.candidate), ["--full"]),
     fakeIo(canonicalizeJson(wrongIdentity)),
     fakeIo("{broken"),
@@ -137,7 +147,7 @@ test("source-validate 对非 JCS、未知参数和错误身份只输出一个拒
     assert.equal(sample.output.length, 1);
     const receipt = parseMachineReceipt(parseCanonicalJsonBytes(Buffer.from(sample.output[0]!, "utf8")));
     assert.equal(receipt.code, "ARCHITECTURE_RISK_ASSESSMENT_REJECTED");
-    assert.deepEqual(receipt.data, { dry_run: false });
+    assert.equal(canonicalizeJson(receipt.data), canonicalizeJson({ dry_run: false }));
     assert.deepEqual(sample.exitCodes, [1]);
     assert.equal(sample.diagnostics.length, 1);
   }
@@ -162,4 +172,49 @@ test("source-validate 运行前后 HEAD/formal/control、工作树状态和 fixt
   assert.equal(output.length, 1);
   assert.deepEqual(await gitState(), before);
   assert.deepEqual(await readFile(fixturePath), fixtureBytesBefore);
+});
+
+async function runBuiltCli(input: Uint8Array): Promise<{
+  readonly exitCode: number | null;
+  readonly stdout: string;
+  readonly stderr: string;
+}> {
+  return new Promise((resolveResult, reject) => {
+    const child = spawn(process.execPath, [resolve(process.cwd(), "dist/src/cli/source-validate.js")], {
+      cwd: process.cwd(),
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+    const stdout: Buffer[] = [];
+    const stderr: Buffer[] = [];
+    child.stdout.on("data", (chunk: Buffer) => stdout.push(chunk));
+    child.stderr.on("data", (chunk: Buffer) => stderr.push(chunk));
+    child.on("error", reject);
+    child.on("close", (exitCode) => resolveResult({
+      exitCode,
+      stdout: Buffer.concat(stdout).toString("utf8"),
+      stderr: Buffer.concat(stderr).toString("utf8"),
+    }));
+    child.stdin.end(Buffer.from(input));
+  });
+}
+
+test("构建后的 source-validate 真实进程保持单一 stdout 回执和失败 exit 1", async () => {
+  const positive = await readFixture("positive/community-workshop.json");
+  const success = await runBuiltCli(Buffer.from(canonicalizeJson(positive.candidate), "utf8"));
+  assert.equal(success.exitCode, 0);
+  assert.equal(success.stderr, "");
+  assert.equal(success.stdout.split("\n").length, 1);
+  assert.equal(
+    parseMachineReceipt(parseCanonicalJsonBytes(Buffer.from(success.stdout, "utf8"))).code,
+    "ARCHITECTURE_RISK_ASSESSMENT_ACCEPTED",
+  );
+
+  const failure = await runBuiltCli(Buffer.from([0xff, 0xfe, 0xfd]));
+  assert.equal(failure.exitCode, 1);
+  assert.equal(failure.stdout.split("\n").length, 1);
+  assert.equal(
+    parseMachineReceipt(parseCanonicalJsonBytes(Buffer.from(failure.stdout, "utf8"))).code,
+    "ARCHITECTURE_RISK_ASSESSMENT_REJECTED",
+  );
+  assert.match(failure.stderr, /rejected/i);
 });

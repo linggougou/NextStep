@@ -606,7 +606,7 @@ test("S1.6 架构风险成功回执独立重验 canonical、digest、评估对�
   ]) {
     assert.throws(
       () => parseMachineReceipt({ ...receipt, data: { ...receipt.data, architecture_risk_assessment: tampered } }),
-      /architecture|risk|assessment|canonical|digest|receipt|mismatch|invalid/i,
+      /architecture|risk|assessment|canonical|digest|receipt|mismatch|invalid|架构|风险|评估|结论/i,
     );
   }
   assert.throws(

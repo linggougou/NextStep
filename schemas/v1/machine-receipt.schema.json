@@ -45,6 +45,8 @@
         "ACCEPTANCE_PROFILE_ACCEPTED",
         "ACCEPTANCE_PROFILE_REJECTED",
         "PROFILE_CONFLICT_REJECTED",
+        "ARCHITECTURE_RISK_ASSESSMENT_ACCEPTED",
+        "ARCHITECTURE_RISK_ASSESSMENT_REJECTED",
         "CANDIDATE_CHANGE_PREVIEWED",
         "CANDIDATE_CHANGE_REJECTED",
         "WRITE_PREVIEWED",
@@ -342,6 +344,38 @@
                 }
               }
             }
+          },
+          {
+            "properties": {
+              "code": {
+                "const": "ARCHITECTURE_RISK_ASSESSMENT_ACCEPTED"
+              },
+              "data": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "canonical_json",
+                  "digest",
+                  "architecture_risk_assessment",
+                  "schema_version"
+                ],
+                "properties": {
+                  "canonical_json": {
+                    "type": "string"
+                  },
+                  "digest": {
+                    "type": "string",
+                    "pattern": "^sha256:[a-f0-9]{64}$"
+                  },
+                  "architecture_risk_assessment": {
+                    "type": "object"
+                  },
+                  "schema_version": {
+                    "const": "1.0"
+                  }
+                }
+              }
+            }
           }
         ]
       },
@@ -365,6 +399,7 @@
                   "CARRIER_DECISION_REJECTED",
                   "ACCEPTANCE_PROFILE_REJECTED",
                   "PROFILE_CONFLICT_REJECTED",
+                  "ARCHITECTURE_RISK_ASSESSMENT_REJECTED",
                   "CANDIDATE_CHANGE_REJECTED",
                   "WRITE_CONFIRMATION_REJECTED",
                   "WRITE_ACCESS_BLOCKED"

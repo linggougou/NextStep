@@ -1,17 +1,17 @@
 ---
 name: nextstep
-description: Validate NextStep requirement, freeze, Product Definition 2.0 in `V1 / M1.1 / S1.3`, S1.4 prototype/profile in `V1 / M1.2 / S1.4`, and S1.5 candidate-write contracts in `V1 / M1.2 / S1.5` after explicit project/stage inspection. S1.5 permits dry-run preview and a narrowly injected integration-agent write transaction only after explicit confirmation; the main conversation never reads or writes project files.
+description: Validate NextStep requirement and freeze flows, Product Definition 2.0 in `V1 / M1.1 / S1.3`, prototype/profile in `V1 / M1.2 / S1.4`, candidate-write contracts in `V1 / M1.2 / S1.5`, and the read-only PC-08 architecture-risk candidate in `V1 / M1.2 / S1.6` after explicit project/stage inspection. S1.6 proves only a manual-isolated consumer contract; the main conversation never reads or writes project files.
 ---
 
 # NextStep
 
-Operate only within the current `V1 / M1.1 / S1.1`, `V1 / M1.1 / S1.2`, `V1 / M1.1 / S1.3`, `V1 / M1.2 / S1.4`, or `V1 / M1.2 / S1.5` boundary shown by project truth.
+Operate only within the current `V1 / M1.1 / S1.1`, `V1 / M1.1 / S1.2`, `V1 / M1.1 / S1.3`, `V1 / M1.2 / S1.4`, `V1 / M1.2 / S1.5`, or `V1 / M1.2 / S1.6` boundary shown by project truth.
 
 ## Inspect The Stage
 
 1. Resolve the project root explicitly.
 2. Read `PROJECT_ROUTE_LOCK.md` and `docs/PLANS.md`.
-3. Confirm the active milestone is `V1 / M1.1 / S1.1` before running requirement intake, `V1 / M1.1 / S1.2` before preparing a freeze record, `V1 / M1.1 / S1.3` before validating a product-definition candidate, `V1 / M1.2 / S1.4` before validating a carrier-free prototype, carrier decision, or Acceptance Profile candidate, or `V1 / M1.2 / S1.5` before previewing or applying a candidate write.
+3. Confirm the active milestone is `V1 / M1.1 / S1.1` before running requirement intake, `V1 / M1.1 / S1.2` before preparing a freeze record, `V1 / M1.1 / S1.3` before validating a product-definition candidate, `V1 / M1.2 / S1.4` before validating a carrier-free prototype, carrier decision, or Acceptance Profile candidate, `V1 / M1.2 / S1.5` before previewing or applying a candidate write, or `V1 / M1.2 / S1.6` before validating a PC-08 architecture-risk candidate.
 4. Report the current stage, active gate, blocking reason, and permitted next action from those sources.
 
 Do not infer stage state from chat history or task titles.
@@ -169,3 +169,26 @@ Direct shell execution of `--dry-run` or `--commit` has no integration capabilit
 On any failed target, readback mismatch, unsafe rollback, or validation failure, keep state promotion at `none`: do not update signoff, stage, `refs/nextstep/formal`, `refs/nextstep/control`, registry, Final Snapshot, or Audit Anchor. Never use destructive Git recovery. The three write-consistency fixture replays prove only a `manual-isolated consumer contract`; they do not prove a real host adapter, real user event, `full` support, S1.5 completion, M1.2 completion, or permission to enter S1.6.
 
 不得推进 formal/control；候选写入成功也不等于阶段正式提升。
+
+## S1.6 Architecture Risk Assessment
+
+Enter only after project truth explicitly reports `V1 / M1.2 / S1.6` and formal remains F15 `7169e9b019fe2213ca76babb4122a84760bdf112`. This entry validates PC-08 only: Q3 required architecture fields must be `10/10 = 100%`, and Q11 risk coverage must be exactly `20/20` from S4 section 18 plus the 009 archive-failure row.
+
+Pass the positive architecture-risk fixture's stdin `fixture.candidate` directly as one RFC 8785 canonical JSON value:
+
+```bash
+pnpm build
+node dist/src/cli/source-validate.js
+```
+
+The candidate must carry the exact `evidence_scope: manual-isolated consumer contract` and the exact nested `scope`; it must not add a root-level `support_level`. The command emits exactly one JCS machine receipt on stdout（一份 JCS 机器回执）. Success uses `ARCHITECTURE_RISK_ASSESSMENT_ACCEPTED`; every malformed, non-canonical, identity-mismatched, incomplete, drifted, unknown, sensitive, or out-of-scope candidate uses `ARCHITECTURE_RISK_ASSESSMENT_REJECTED`, failure `data` is only `dry_run: false`, diagnostics go only to stderr, and exit code is 1.
+
+The five rollback entries are frozen and must remain exact:
+
+- `stop-auto-write-and-enter-change-request`
+- `manual-isolated-fallback`
+- `blocked-await-external-proof`
+- `awaiting-formal-promotion`
+- `awaiting-archive`
+
+`source-validate` is a read-only candidate consumer. 不得修改或移动 formal/control、目标项目状态、fixture 字节或工作树；it does not write files or invoke Git. 不实现 host bootstrap 或宿主探测，不得声明 `full` support. 不冻结或扩大 P4 API 或 Schema，不恢复 Web/UI，不增加数据库或常驻服务，不执行正式提升，也不宣称 S1.6、M1.2、V1 或 P5 已完成。
