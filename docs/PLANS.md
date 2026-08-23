@@ -4,8 +4,8 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：V1 / M1.2 / S1.6（S1.5 已正式提升到 F15；S1.6 进入口评估与计划冻结）
-- 当前状态：formal=F15 `7169e9b019fe2213ca76babb4122a84760bdf112`；control=`b6b5e2f4ed559cad8f0bea4e962ea308f88c7f96`。M1.1、S1.4、S1.5 已正式完成；S1.5 Final Verification/Anchor Verification 均为 `PASS / 100`，444/444 全量回归通过。M1.2、V1、P5 尚未完成；S1.6 entry review 与新 packet/control CAS 前不得编码或派发。
+- 当前活动里程碑：V1 / M1.2 累计验收（S1.4-S1.6 均已正式提升，当前 formal=F16）
+- 当前状态：formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`；control=`d87aa015002be21c68135defe769e3339546c382`。M1.1、S1.4、S1.5、S1.6 已正式完成；S1.6 Final Verification/Anchor Verification 均为 `PASS / 100`，474/474 全量回归通过。M1.2、V1、P5 尚未完成；M1.2 entry review 与验收 packet/control CAS 前不得派发正式验收。
 
 ## 当前活动计划
 
@@ -27,7 +27,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。M1.1、S1.4、S1.5 已正式完成，CR-004/CR-005 已关闭。M1.2 当前只剩 S1.6 与 S1.4-S1.6 累积验收；V1 仍需 S1.1-S1.6 累积验收和用户会签，P5 尚未完成。
+P5 已于 2026-08-08 单独启动。M1.1、S1.4、S1.5、S1.6 已正式完成，CR-004/CR-005 已关闭。M1.2 当前只剩 S1.4-S1.6 累积 I/X/P 与用户会签；V1 仍需 S1.1-S1.6 累积验收和用户会签，P5 尚未完成。
 
 实施顺序保持 P3 已会签结构：
 

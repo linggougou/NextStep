@@ -2241,3 +2241,18 @@
 - Credential：`sha256:e2f6d2c27fcbab7004da12bedd4bf0dd83208e2a0665a0d66157dd5c88d40377`，6214B，目录/文件 0700/0600，raw/JCS/文件名匹配，link_count=1，tmp residue=0。
 - 并发纠偏：L3 reviewer 的两次所有权越界均由 expected-old CAS/状态断言即时发现；主控未强推或重置，保留单父提交并校正 control host 记录，逐文件复验无候选漂移。
 - 结论：允许创建唯一父 Audit Anchor；formal F15 不变，AV/Proof 与 F15→F16 expected-old CAS 尚未执行，M1.2/V1/P5 未完成。
+## 2026-08-24 S1.6 Anchor Verification / F16 Formal Promotion
+
+- 修正版 AV：7/7 hard gates、50/50 前置断言、8/8 Proof 安装后复核，`PASS / 100`，P0/P1/P2=`0/0/0`。
+- Review commit=`ae3e798a28dd73170a13358943b1adf7d2d05029`，唯一父为 Anchor；仅三条 review 路径，worktree clean。
+- 新 Proof=`sha256:566b1a11d156eb23eaecf788e3c07657204364f31f364ed48dd51e1e79b54205`，7179B、0700/0600、raw=JCS、link_count=1、tmp=0；旧错误 Proof 保持不可变但不接纳。
+- AV Result digest=`sha256:a916639c3758c5870380325bb1a03a666855809796cbdb57f0e494bf8c9990e7`；promotion digest=`sha256:659d2455929a69ce92dcb05c1abd8980ed8f2913303bf5f28eb035431749c5c6`。
+- expected-old F15→F16 CAS 成功：formal/main=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，tree=`5b97a4432fbedb3dda189e05052c2e7665a1bea8`，control=`d87aa015002be21c68135defe769e3339546c382`，pending=0。
+- 用户工作树只保留既有 Multica 未跟踪文档；该文件未被读取、修改、提交、验收或清理。
+
+## 2026-08-24 M1.2 累计验收入口静态验证
+
+- 实时身份：main/formal=F16，F13→F14→F15→F16 ancestry 通过；control checkpoint 指向 M1.2 cumulative acceptance entry evaluation，pending=0。
+- M1.2 验收矩阵已冻结为 S1.3→S1.6 三类目标项目累计链、PC-04..08、TG 完整并集、Q3=100%、Q6=100%、Q11=20/20、write-consistency 13/13 与五条 rollback。
+- 入口判断：现有 S1.4/S1.5/S1.6 单独 PASS 不能直接拼接为 M1.2 PASS；必须在精确 F16 唯一隔离副本中重跑全量门禁和累计 runner，并独立形成 I/X/P/Profile 结论。
+- 当前只形成状态同步与 Generation 1 计划候选；尚无 M1.2 entry review、packet、claim/fence、Result 或用户会签，因此 M1.2/V1/P5 保持未完成。

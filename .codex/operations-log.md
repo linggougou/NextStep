@@ -2287,3 +2287,18 @@
 - Final Verification：fence 109，唯一 no-local clone；custom refs 未随 clone 复制的环境预检为 473/474，只读 fetch F15/control 后正式回归 474/474、定向 52/52、manifest 426/426，`PASS / 100`。
 - Credential：`evidence:verification-credential-e2f6d2c27fcbab7004da12bedd4bf0dd83208e2a0665a0d66157dd5c88d40377.json`，6214B、0700/0600、raw=JCS=文件名、link_count=1、无临时残留；FV Result=`13d76fe1...`。
 - 边界：formal 仍为 F15；本记录只允许形成 Audit Anchor 并进入 AV/Proof，不冒领 F16、M1.2、V1 或 P5 完成；用户未跟踪 Multica 文档始终未纳入候选、快照或清理。
+## 2026-08-24 S1.6 Anchor Verification 修正与 F16 正式提升
+
+- AV attempt 1 在零项目写入、零 Proof 状态停滞，主控回收该 reviewer 后以全新身份和 fence 111 启动 attempt 2；历史 attempt 保留为 `stalled-before-mutation`。
+- attempt 2 初始评审记录将 control request 完整 OID 转写错误；错误也进入首次 create-once Proof。旧 Proof 按不可覆盖原则保留但不接纳，独立 reviewer 修正为真实 `ab705b4aead26b46b86816a4027182d316e3a041` 并生成新内容寻址 Proof。
+- 接纳评审提交=`ae3e798a28dd73170a13358943b1adf7d2d05029`，唯一父为 Anchor `ea04b57de83d6c548dcb1629b1f61832db8375ad`，精确只新增专属三文件；record JCS=`sha256:81384cbceba9093913d95515655661428d43241867a663fd89f63c53929161c4`，scorecard JCS=`sha256:0e4d39852ebf5cd1939227358e1d0cb0a4b2417d374015783e66f7c7bcaea440`。
+- accepted Proof=`sha256:566b1a11d156eb23eaecf788e3c07657204364f31f364ed48dd51e1e79b54205`，7179B、目录/文件 0700/0600、raw=JCS、内容寻址文件名匹配、link_count=1、本轮 temp=0；AV Result=`sha256:a916639c3758c5870380325bb1a03a666855809796cbdb57f0e494bf8c9990e7`。
+- expected-old=F15 的 formal CAS 成功，formal/main=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，promotion digest=`sha256:659d2455929a69ce92dcb05c1abd8980ed8f2913303bf5f28eb035431749c5c6`，control=`d87aa015002be21c68135defe769e3339546c382`，pending=0。
+- 已验收 AV worktree 通过 `git worktree remove` 回收；一次性 FV clone 因本地策略拒绝不可恢复删除而移入废纸篓，保留可恢复性。用户 Multica 未跟踪文档未纳入任何提交、证据包或清理范围。
+
+## 2026-08-24 M1.2 累计验收入口与 Generation 1 计划冻结准备
+
+- 生命周期保持 `S5 / P5 / V1 / M1.2`，不改变产品路线、技术栈或验收门禁；S1.4-S1.6 已正式提升到 F14-F16，M1.2、V1、P5 仍未完成。
+- 两路只读 subagent 分别梳理 M1.2 真源/证据矩阵与 M1.1 控制面先例；共同结论为：先同步 F16 状态真源，再对 `.codex/exec-plan-m1.2-acceptance-generation-1.md` 做独立 entry review，通过后才允许创建 `M1.2-I-X-P` packet/control CAS。
+- 计划冻结 PC-04..08、TG-01/02/03/04/05/06/11/12/15/16/17/19、Q3/Q6/Q11、三类目标项目从 S1.3 Product Definition 到 S1.6 architecture assessment 的累计连续率 3/3，以及 F13→F16 正式证据链复核。
+- 当前仅同步路线锁、README、PLANS、活动计划、QA 入口和 `.codex` 留痕；不修改生产代码、Schema、依赖或 refs，不形成 M1.2 PASS，不代替用户会签。
