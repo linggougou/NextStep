@@ -548,6 +548,26 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
     }
   }
 
+  function mergeRecoveryMetadata(primaryError: unknown, locatorError: unknown): void {
+    if (
+      typeof primaryError !== "object" ||
+      primaryError === null ||
+      typeof locatorError !== "object" ||
+      locatorError === null ||
+      "recovery_path" in primaryError
+    ) {
+      return;
+    }
+    const recoveryPath = (locatorError as { recovery_path?: unknown }).recovery_path;
+    const unavailable = (locatorError as { recovery_path_unavailable?: unknown }).recovery_path_unavailable;
+    if (typeof recoveryPath === "string") {
+      Object.assign(primaryError, { recovery_path: recoveryPath });
+      delete (primaryError as { recovery_path_unavailable?: string }).recovery_path_unavailable;
+    } else if (typeof unavailable === "string" && !("recovery_path_unavailable" in primaryError)) {
+      Object.assign(primaryError, { recovery_path_unavailable: unavailable });
+    }
+  }
+
   async function readOpenFile(handle: FileHandle): Promise<Buffer> {
     const stats = await handle.stat();
     if (!stats.isFile()) {
@@ -703,7 +723,7 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
     relativePath: string,
     anchor: ParentAnchor,
     context: CleanupContext,
-    expectedProof?: FileObjectProof,
+    expectedProof?: FileObjectProof | null,
     postLinkInvariant?: () => Promise<void>,
   ): Promise<Buffer> {
     let originalHandle: FileHandle | undefined;
@@ -722,10 +742,12 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
       if (
         !originalStats.isFile() ||
         originalIdentity.digest !== expectedDigest ||
+        expectedProof === null ||
         (expectedProof !== undefined && !matchesFileProof(originalIdentity, expectedProof))
       ) {
         const error = mutationError("ESTALE", `Cleanup object proof changed: ${relativePath}`);
-        throw await recoveryError(error, name, anchor, context, expectedProof ?? originalIdentity);
+        const locatorProof = expectedProof === undefined ? originalIdentity : expectedProof;
+        throw await recoveryError(error, name, anchor, context, locatorProof);
       }
 
       const quarantineName = `${name}.nextstep-quarantine-${randomBytes(8).toString("hex")}`;
@@ -878,6 +900,7 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
         const tempName = `${targetName}.nextstep-tmp-${randomBytes(8).toString("hex")}`;
         const cleanupContext: CleanupContext = {};
         let handle: FileHandle | undefined;
+        let tempWasCreated = false;
         let tempProof: FileObjectProof | undefined;
         try {
           if (guard.mode === "update") {
@@ -886,6 +909,7 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
 
           await assertLiveCleanupRoot(cleanupContext, anchor, `temp-open:${relativePath}`);
           handle = await binding.open(tempName, "wx", existingMode ?? 0o644);
+          tempWasCreated = true;
           tempProof = await proofFromHandle(handle, tempName);
           await assertLiveCleanupRoot(cleanupContext, anchor, `temp-created:${relativePath}`);
           await assertIdentity();
@@ -991,37 +1015,27 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
             }
           }
           try {
-            if (
-              await pathExists(tempName)
-            ) {
+            if (await pathExists(tempName)) {
               await cleanupOwnedBasename(
                 tempName,
                 contentDigest,
                 relativePath,
                 anchor,
                 cleanupContext,
-                tempProof,
+                tempWasCreated ? tempProof ?? null : undefined,
               );
+            } else if (tempWasCreated) {
+              const locatorError = await recoveryError(
+                mutationError("ESTALE", `Primary temporary object became unavailable: ${relativePath}`),
+                tempName,
+                anchor,
+                cleanupContext,
+                tempProof ?? null,
+              );
+              mergeRecoveryMetadata(error, locatorError);
             }
           } catch (cleanupError) {
-            const recoveryPath = (cleanupError as { recovery_path?: unknown })?.recovery_path;
-            const unavailable = (cleanupError as { recovery_path_unavailable?: unknown })?.recovery_path_unavailable;
-            if (
-              typeof recoveryPath === "string" &&
-              typeof error === "object" &&
-              error !== null &&
-              !("recovery_path" in error)
-            ) {
-              Object.assign(error, { recovery_path: recoveryPath });
-            } else if (
-              typeof unavailable === "string" &&
-              typeof error === "object" &&
-              error !== null &&
-              !("recovery_path" in error) &&
-              !("recovery_path_unavailable" in error)
-            ) {
-              Object.assign(error, { recovery_path_unavailable: unavailable });
-            }
+            mergeRecoveryMetadata(error, cleanupError);
           }
           throw error;
         }
