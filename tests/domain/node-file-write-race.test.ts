@@ -1354,3 +1354,148 @@ test("hardlink-quarantine cleanup 绑定真实对象且 locator 不指向旧词�
     });
   }
 });
+
+test("attempt8 locator 身份与 rootEscaped 熔断", async (t) => {
+  await t.test("primary temp 的 wx 返回前名称被替换时不把竞争者报告为 recovery_path", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-primary-open-replace-"));
+    let injected = false;
+    let replacedPath = "";
+    const binding = {
+      open: async (path: string, flags: string, mode: number) => {
+        const handle = await nodeOpen(path, flags, mode);
+        if (!injected && flags === "wx" && path.includes(".nextstep-tmp-")) {
+          injected = true;
+          replacedPath = path;
+          await unlink(path);
+          await writeFile(path, "primary-competitor", { flag: "wx" });
+        }
+        return handle;
+      },
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      const error = await fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), {
+        mode: "create",
+        before_digest: null,
+      }).then(
+        () => undefined,
+        (caught: unknown) => caught as NodeJS.ErrnoException & {
+          recovery_path?: string;
+          recovery_path_unavailable?: string;
+        },
+      );
+      assert.equal(injected, true);
+      assert.equal(error?.code, "ESTALE");
+      assert.equal(error?.recovery_path, undefined);
+      assert.equal(error?.recovery_path_unavailable, "candidate-identity-changed");
+      assert.equal(await readFile(join(root, replacedPath), "utf8"), "primary-competitor");
+      assert.equal(await readFile(join(root, "result.md"), "utf8"), "primary-competitor");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("fallback candidate 的 wx 返回前名称被替换时不把竞争者报告为 recovery_path", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-fallback-open-replace-"));
+    await writeFile(join(root, "result.md"), "owned");
+    let cleanupLinkInjected = false;
+    let fallbackOpenInjected = false;
+    let fallbackPath = "";
+    const binding = {
+      link: async (existingPath: string, newPath: string) => {
+        if (!cleanupLinkInjected && newPath.includes(".nextstep-quarantine-")) {
+          cleanupLinkInjected = true;
+          await unlink(existingPath);
+          await writeFile(existingPath, "cleanup-competitor", { flag: "wx" });
+        }
+        await nodeLink(existingPath, newPath);
+      },
+      open: async (path: string, flags: string, mode: number) => {
+        const handle = await nodeOpen(path, flags, mode);
+        if (
+          cleanupLinkInjected &&
+          !fallbackOpenInjected &&
+          flags === "wx" &&
+          path.includes(".nextstep-recovered-")
+        ) {
+          fallbackOpenInjected = true;
+          fallbackPath = path;
+          await unlink(path);
+          await writeFile(path, "fallback-competitor", { flag: "wx" });
+        }
+        return handle;
+      },
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      const error = await fileSystem.removeCreated("result.md", digest("owned")).then(
+        () => undefined,
+        (caught: unknown) => caught as NodeJS.ErrnoException & {
+          recovery_path?: string;
+          recovery_path_unavailable?: string;
+        },
+      );
+      assert.equal(cleanupLinkInjected, true);
+      assert.equal(fallbackOpenInjected, true);
+      assert.equal(error?.code, "ESTALE");
+      assert.equal(error?.recovery_path, undefined);
+      assert.equal(error?.recovery_path_unavailable, "candidate-identity-changed");
+      assert.equal(await readFile(join(root, fallbackPath), "utf8"), "fallback-competitor");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("首轮 cleanup 将 parent 移到 root 外后 outer catch 不再产生目录项副作用", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-root-escape-fuse-root-"));
+    const outside = await mkdtemp(join(tmpdir(), "nextstep-root-escape-fuse-outside-"));
+    const parent = join(root, "docs");
+    const movedParent = join(outside, "docs-moved");
+    await mkdir(parent);
+    let escaped = false;
+    let afterEscapeLinkCalls = 0;
+    let firstFailureEntries: string[] = [];
+    const binding = {
+      link: async (existingPath: string, newPath: string) => {
+        if (escaped) {
+          afterEscapeLinkCalls += 1;
+          await nodeLink(existingPath, newPath);
+          return;
+        }
+        await nodeLink(existingPath, newPath);
+        if (newPath.includes(".nextstep-quarantine-")) {
+          await nodeRename(parent, movedParent);
+          escaped = true;
+          firstFailureEntries = (await readdir(movedParent)).sort();
+          const error = new Error("injected first cleanup root escape") as NodeJS.ErrnoException;
+          error.code = "EIO";
+          throw error;
+        }
+      },
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      const error = await fileSystem.atomicWrite("docs/result.md", Buffer.from("nextstep"), {
+        mode: "create",
+        before_digest: null,
+      }).then(
+        () => undefined,
+        (caught: unknown) => caught as NodeJS.ErrnoException & {
+          recovery_path?: string;
+          recovery_path_unavailable?: string;
+        },
+      );
+      assert.equal(error?.code, "WRITE_ACCESS_BLOCKED");
+      assert.equal(error?.recovery_path, undefined);
+      assert.equal(error?.recovery_path_unavailable, "anchor-outside-canonical-root");
+      assert.equal(afterEscapeLinkCalls, 0);
+      assert.deepEqual((await readdir(movedParent)).sort(), firstFailureEntries);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+      await rm(outside, { recursive: true, force: true });
+    }
+  });
+});
