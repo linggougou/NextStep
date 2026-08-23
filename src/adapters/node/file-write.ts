@@ -23,7 +23,14 @@ import type { Sha256Digest } from "../../domain/content-digest.ts";
 import { createNodeFsProbeAdapter } from "./fs-probe.ts";
 
 export interface NodeWriteFileSystemBinding {
-  lstat(path: string): Promise<{ isFile(): boolean; isSymbolicLink(): boolean; isDirectory(): boolean; readonly mode: number }>;
+  lstat(path: string): Promise<{
+    isFile(): boolean;
+    isSymbolicLink(): boolean;
+    isDirectory(): boolean;
+    readonly mode: number;
+    readonly dev?: number;
+    readonly ino?: number;
+  }>;
   access(path: string, mode?: number): Promise<void>;
   readFile(path: string): Promise<Buffer>;
   open(path: string, flags: string, mode: number): Promise<FileHandle>;
@@ -52,6 +59,11 @@ interface ParentAnchor {
 
 interface AnchoredParent extends ParentAnchor {
   assertIdentity(): Promise<void>;
+}
+
+interface DirectoryIdentity {
+  readonly dev: number;
+  readonly ino: number;
 }
 
 let cwdMutationQueue: Promise<void> = Promise.resolve();
@@ -91,6 +103,18 @@ function digestBytes(content: Uint8Array): Sha256Digest {
 
 function isWithinRoot(projectRoot: string, path: string): boolean {
   return path === projectRoot || path.startsWith(projectRoot.endsWith(sep) ? projectRoot : projectRoot + sep);
+}
+
+async function directoryIdentity(path: string): Promise<DirectoryIdentity> {
+  const stats = await nodeLstat(path);
+  if (stats.isSymbolicLink() || !stats.isDirectory()) {
+    fail("WRITE_ACCESS_BLOCKED", `Cannot preserve cwd directory identity: ${path}`);
+  }
+  return { dev: stats.dev, ino: stats.ino };
+}
+
+function sameDirectoryIdentity(left: DirectoryIdentity, right: DirectoryIdentity): boolean {
+  return left.dev === right.dev && left.ino === right.ino;
 }
 
 export function resolveProjectPath(projectRoot: string, relativePath: string): string {
@@ -212,7 +236,14 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
   ): Promise<T> {
     return serializeCwdMutation(async () => {
       const previousCwd = process.cwd();
+      const previousCanonicalCwd = await nodeRealpath(".");
+      const previousIdentity = await directoryIdentity(".");
+      const startedInAnchor = previousCanonicalCwd === anchor.canonical_parent;
       let primaryError: unknown;
+
+      if (!startedInAnchor && isWithinRoot(anchor.canonical_parent, previousCanonicalCwd)) {
+        fail("WRITE_ACCESS_BLOCKED", `Cannot safely restore a cwd nested below the write parent: ${relativePath}`);
+      }
 
       const assertIdentity = async (): Promise<void> => {
         try {
@@ -229,10 +260,12 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
       };
 
       try {
-        try {
-          process.chdir(anchor.lexical_parent);
-        } catch (error) {
-          fail("WRITE_ACCESS_BLOCKED", `Cannot anchor write parent for ${relativePath}: ${errnoOf(error)}`);
+        if (!startedInAnchor) {
+          try {
+            process.chdir(anchor.lexical_parent);
+          } catch (error) {
+            fail("WRITE_ACCESS_BLOCKED", `Cannot anchor write parent for ${relativePath}: ${errnoOf(error)}`);
+          }
         }
         await assertIdentity();
         return await operation({ ...anchor, assertIdentity });
@@ -241,7 +274,26 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
         throw error;
       } finally {
         try {
-          process.chdir(previousCwd);
+          if (startedInAnchor) {
+            const currentIdentity = await directoryIdentity(".");
+            if (!sameDirectoryIdentity(currentIdentity, previousIdentity)) {
+              fail("WRITE_ACCESS_BLOCKED", `Anchored cwd identity changed while writing ${relativePath}`);
+            }
+          } else {
+            const lexicalIdentity = await directoryIdentity(previousCwd);
+            const lexicalCanonical = await nodeRealpath(previousCwd);
+            if (
+              lexicalCanonical !== previousCanonicalCwd ||
+              !sameDirectoryIdentity(lexicalIdentity, previousIdentity)
+            ) {
+              fail("WRITE_ACCESS_BLOCKED", `Cannot safely restore changed cwd identity after writing ${relativePath}`);
+            }
+            process.chdir(previousCwd);
+            const restoredIdentity = await directoryIdentity(".");
+            if (!sameDirectoryIdentity(restoredIdentity, previousIdentity)) {
+              fail("WRITE_ACCESS_BLOCKED", `Restored cwd identity does not match after writing ${relativePath}`);
+            }
+          }
         } catch (restoreError) {
           if (primaryError !== undefined && typeof primaryError === "object" && primaryError !== null) {
             Object.assign(primaryError, { cwd_restore_error: errnoOf(restoreError) });
@@ -348,7 +400,12 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
     }
   }
 
-  async function restoreRecoveryNoReplace(recoveryName: string, targetName: string): Promise<boolean> {
+  async function restoreRecoveryNoReplace(
+    recoveryName: string,
+    targetName: string,
+    expectedDigest: Sha256Digest,
+    relativePath: string,
+  ): Promise<boolean> {
     if (!(await pathExists(recoveryName))) {
       return true;
     }
@@ -356,8 +413,12 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
       return false;
     }
     try {
+      const stats = await binding.lstat(recoveryName);
+      if (stats.isSymbolicLink() || !stats.isFile()) {
+        return false;
+      }
       await binding.link(recoveryName, targetName);
-      await binding.unlink(recoveryName);
+      await unlinkOwnedFile(recoveryName, expectedDigest, relativePath);
       return !(await pathExists(recoveryName)) && await pathExists(targetName);
     } catch {
       return false;
@@ -370,11 +431,127 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
     recoveryName: string,
   ): Promise<void> {
     try {
-      if (await pathExists(recoveryName) && typeof error === "object" && error !== null) {
+      if (
+        await pathExists(recoveryName) &&
+        typeof error === "object" &&
+        error !== null &&
+        !("recovery_path" in error)
+      ) {
         Object.assign(error, { recovery_path: siblingRecoveryPath(relativePath, recoveryName) });
       }
     } catch {
       // The primary failure remains authoritative when recovery inspection itself fails.
+    }
+  }
+
+  async function readOpenFile(handle: FileHandle): Promise<Buffer> {
+    const stats = await handle.stat();
+    if (!stats.isFile()) {
+      throw mutationError("ESTALE", "Cleanup object is no longer a regular file");
+    }
+    const content = Buffer.alloc(stats.size);
+    let offset = 0;
+    while (offset < content.length) {
+      const { bytesRead } = await handle.read(content, offset, content.length - offset, offset);
+      if (bytesRead === 0) {
+        break;
+      }
+      offset += bytesRead;
+    }
+    return content.subarray(0, offset);
+  }
+
+  async function persistRecoveryNoReplace(
+    preferredName: string,
+    content: Uint8Array,
+    relativePath: string,
+  ): Promise<string> {
+    const candidates = [
+      preferredName,
+      `${preferredName}.nextstep-recovered-${randomBytes(8).toString("hex")}`,
+    ];
+    for (const candidate of candidates) {
+      let handle: FileHandle | undefined;
+      try {
+        handle = await binding.open(candidate, "wx", 0o600);
+        await handle.writeFile(content);
+        await binding.fsync(handle.fd);
+        await handle.close();
+        handle = undefined;
+        await assertInstalledContent(candidate, relativePath, content);
+        return candidate;
+      } catch (error) {
+        if (handle !== undefined) {
+          try {
+            await handle.close();
+          } catch {
+            // The persistence failure remains authoritative.
+          }
+        }
+        if (errnoOf(error) !== "EEXIST") {
+          throw error;
+        }
+      }
+    }
+    throw mutationError("EEXIST", `Cannot persist a no-replace recovery object for ${relativePath}`);
+  }
+
+  async function unlinkOwnedFile(
+    name: string,
+    expectedDigest: Sha256Digest,
+    relativePath: string,
+  ): Promise<Buffer> {
+    let handle: FileHandle | undefined;
+    try {
+      const pathStats = await binding.lstat(name);
+      if (pathStats.isSymbolicLink() || !pathStats.isFile()) {
+        throw mutationError("ESTALE", `Cleanup object type changed: ${relativePath}`);
+      }
+      handle = await nodeOpen(name, "r", 0);
+      const openedStats = await handle.stat();
+      if (
+        !openedStats.isFile() ||
+        (pathStats.dev !== undefined && pathStats.dev !== openedStats.dev) ||
+        (pathStats.ino !== undefined && pathStats.ino !== openedStats.ino)
+      ) {
+        throw mutationError("ESTALE", `Cleanup object identity changed: ${relativePath}`);
+      }
+      const beforeUnlink = await readOpenFile(handle);
+      if (digestBytes(beforeUnlink) !== expectedDigest) {
+        throw mutationError("ESTALE", `Cleanup object digest changed: ${relativePath}`);
+      }
+
+      try {
+        await binding.unlink(name);
+      } catch (error) {
+        await attachRecoveryPath(error, relativePath, name);
+        throw error;
+      }
+      if (await pathExists(name)) {
+        const error = new WriteTransactionError("WRITE_ACCESS_BLOCKED", `Cleanup verification failed: ${relativePath}`);
+        await attachRecoveryPath(error, relativePath, name);
+        throw error;
+      }
+
+      const afterUnlink = await readOpenFile(handle);
+      if (digestBytes(afterUnlink) !== expectedDigest) {
+        const recoveredName = await persistRecoveryNoReplace(name, afterUnlink, relativePath);
+        const error = mutationError("ESTALE", `Cleanup object changed at unlink boundary: ${relativePath}`);
+        await attachRecoveryPath(error, relativePath, recoveredName);
+        throw error;
+      }
+      return beforeUnlink;
+    } catch (error) {
+      await attachRecoveryPath(error, relativePath, name);
+      throw error;
+    } finally {
+      if (handle !== undefined) {
+        try {
+          await handle.close();
+        } catch {
+          // Closing a cleanup proof handle must not mask the primary outcome.
+        }
+      }
     }
   }
 
@@ -402,6 +579,7 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
       const guard = mutationGuard === undefined
         ? await inferLegacyGuard(resolved, relativePath)
         : assertGuard(mutationGuard);
+      const contentDigest = digestBytes(content);
       const anchor = await assertCanonicalRootAndParents(relativePath);
       const existingMode = await assertTargetMatchesGuard(resolved, relativePath, guard);
 
@@ -424,7 +602,7 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
           if (guard.mode === "create") {
             await binding.link(tempName, targetName);
             await assertIdentity();
-            await binding.unlink(tempName);
+            await unlinkOwnedFile(tempName, contentDigest, relativePath);
           } else {
             const recoveryName = `${targetName}.nextstep-recovery-${randomBytes(8).toString("hex")}`;
             let recoveryCreated = false;
@@ -442,15 +620,26 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
               await binding.link(tempName, targetName);
               await assertIdentity();
               await assertInstalledContent(targetName, relativePath, content);
-              await binding.unlink(recoveryName);
-              if (await pathExists(recoveryName)) {
-                fail("WRITE_ACCESS_BLOCKED", `Update recovery cleanup failed: ${relativePath}`);
-              }
+              await unlinkOwnedFile(tempName, contentDigest, relativePath);
+
+              const deletedRecovery = await unlinkOwnedFile(recoveryName, guard.before_digest, relativePath);
               recoveryCreated = false;
-              await binding.unlink(tempName);
+              try {
+                await assertIdentity();
+                await assertInstalledContent(targetName, relativePath, content);
+              } catch (error) {
+                const rebuiltRecovery = await persistRecoveryNoReplace(recoveryName, deletedRecovery, relativePath);
+                await attachRecoveryPath(error, relativePath, rebuiltRecovery);
+                throw error;
+              }
             } catch (error) {
               if (recoveryCreated) {
-                const restored = await restoreRecoveryNoReplace(recoveryName, targetName);
+                const restored = await restoreRecoveryNoReplace(
+                  recoveryName,
+                  targetName,
+                  guard.before_digest!,
+                  relativePath,
+                );
                 recoveryCreated = !restored;
               }
               if (recoveryCreated) {
@@ -472,9 +661,19 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
             }
           }
           try {
-            await binding.unlink(tempName);
-          } catch {
-            // Temp file cleanup is best-effort; the write failure is the primary signal.
+            if (await pathExists(tempName)) {
+              await unlinkOwnedFile(tempName, contentDigest, relativePath);
+            }
+          } catch (cleanupError) {
+            const recoveryPath = (cleanupError as { recovery_path?: unknown })?.recovery_path;
+            if (
+              typeof recoveryPath === "string" &&
+              typeof error === "object" &&
+              error !== null &&
+              !("recovery_path" in error)
+            ) {
+              Object.assign(error, { recovery_path: recoveryPath });
+            }
           }
           throw error;
         }
@@ -530,16 +729,18 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
           if (digestBytes(await binding.readFile(recoveryName)) !== expectedDigest) {
             throw mutationError("ESTALE", `Created target changed at the removal boundary: ${relativePath}`);
           }
-          await binding.unlink(recoveryName);
-          if (await pathExists(recoveryName)) {
-            fail("WRITE_ACCESS_BLOCKED", `Removal verification failed: ${relativePath}`);
-          }
+          await unlinkOwnedFile(recoveryName, expectedDigest, relativePath);
           recoveryCreated = false;
           await assertIdentity();
           await fsyncDirectory(".");
         } catch (error) {
           if (recoveryCreated) {
-            const restored = await restoreRecoveryNoReplace(recoveryName, targetName);
+            const restored = await restoreRecoveryNoReplace(
+              recoveryName,
+              targetName,
+              expectedDigest,
+              relativePath,
+            );
             recoveryCreated = !restored;
           }
           if (recoveryCreated) {
