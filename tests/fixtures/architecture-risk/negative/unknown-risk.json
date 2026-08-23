@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "record_type": "architecture-risk-fixture",
+  "fixture_id": "architecture-risk-negative-unknown-risk-001",
+  "fixture_class": "negative",
+  "evidence_scope": "manual-isolated consumer contract",
+  "source_fixture": {
+    "project_id": "community-workshop",
+    "fixture_ref": "positive/community-workshop-write.json",
+    "scenario_id": "wc-community-workshop-positive-001",
+    "record_digest": "sha256:439968591d6272e6ebfe97dc5343ecb3cfdb52e34aa87c6e5c31c6f1668cd96f"
+  },
+  "base_fixture_ref": "positive/community-workshop.json",
+  "negative_kind": "unknown-risk",
+  "mutation": {
+    "operation": "replace",
+    "path": "/candidate/risk_bindings/0/risk_id",
+    "value": "unknown-risk"
+  },
+  "expected": {
+    "outcome": "REJECTED",
+    "error_code": "RISK_SET_MISMATCH"
+  }
+}

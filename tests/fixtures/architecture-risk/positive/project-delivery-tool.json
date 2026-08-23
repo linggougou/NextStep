@@ -1,0 +1,571 @@
+{
+  "schema_version": "1.0",
+  "record_type": "architecture-risk-fixture",
+  "fixture_id": "architecture-risk-project-delivery-tool-positive-001",
+  "fixture_class": "positive",
+  "evidence_scope": "manual-isolated consumer contract",
+  "source_fixture": {
+    "project_id": "project-delivery-tool",
+    "fixture_ref": "positive/project-delivery-tool-write.json",
+    "scenario_id": "wc-project-delivery-tool-positive-003",
+    "record_digest": "sha256:93a5624300700739f5b047da887b29bf2672d2acda86534f287c11ef3a5e1b2a"
+  },
+  "candidate": {
+    "schema_version": "1.0",
+    "record_type": "architecture-risk-assessment-candidate",
+    "project": {
+      "project_id": "project-delivery-tool",
+      "scenario_id": "wc-project-delivery-tool-positive-003",
+      "record_digest": "sha256:93a5624300700739f5b047da887b29bf2672d2acda86534f287c11ef3a5e1b2a"
+    },
+    "stage": "S5/P5/V1/M1.2/S1.6/PC-08",
+    "formal_baseline": "7169e9b019fe2213ca76babb4122a84760bdf112",
+    "evidence_scope": "manual-isolated consumer contract",
+    "project_fixture_bindings": [
+      {
+        "project_id": "community-workshop",
+        "scenario_id": "wc-community-workshop-positive-001",
+        "record_digest": "sha256:439968591d6272e6ebfe97dc5343ecb3cfdb52e34aa87c6e5c31c6f1668cd96f"
+      },
+      {
+        "project_id": "expense-reminder",
+        "scenario_id": "wc-expense-reminder-positive-002",
+        "record_digest": "sha256:ad53d318bc91123c236600ddf9353ee87eaca4688435ca85674f61192676b750"
+      },
+      {
+        "project_id": "project-delivery-tool",
+        "scenario_id": "wc-project-delivery-tool-positive-003",
+        "record_digest": "sha256:93a5624300700739f5b047da887b29bf2672d2acda86534f287c11ef3a5e1b2a"
+      }
+    ],
+    "upstream_source_bindings": [
+      {
+        "source_id": "005",
+        "source_ref": "docs/product-specs/005-stage-document-contracts.md §4.2",
+        "source_raw_sha256": "sha256:d406d2817647b7ddf9286bb285a4b2796736b24b705d57fdd9d2619fd249f586",
+        "signed_off": true
+      },
+      {
+        "source_id": "009",
+        "source_ref": "docs/architecture/009-s4-technical-input-supplement.md §7",
+        "source_raw_sha256": "sha256:51f129d29285bc068674e3b5ade511b5df199a682f0e0ba35464198252730886",
+        "signed_off": true
+      },
+      {
+        "source_id": "S4",
+        "source_ref": "docs/architecture/s4-technical-architecture.md §18",
+        "source_raw_sha256": "sha256:60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+        "signed_off": true
+      },
+      {
+        "source_id": "P3",
+        "source_ref": "docs/exec-plans/completed/p3-version-and-milestone-breakdown.md S1.6",
+        "source_raw_sha256": "sha256:4e8f658d6bd3151211df4b9c5c1112502e836cd97e0a9ca914cf38424901fc4c",
+        "signed_off": true
+      },
+      {
+        "source_id": "P4",
+        "source_ref": "docs/design-docs/p4-execution-mechanism-design.md",
+        "source_raw_sha256": "sha256:edd41dc218f14ba2ae5b0766b6572b528f15e4cf86aafde77e0c2a8789521c75",
+        "signed_off": true
+      }
+    ],
+    "required_field_bindings": [
+      {
+        "binding_key": "technical_goal",
+        "source_ref": "docs/product-specs/005-stage-document-contracts.md §4.2 / technical_goal",
+        "source_raw_sha256": "sha256:d406d2817647b7ddf9286bb285a4b2796736b24b705d57fdd9d2619fd249f586",
+        "binding_status": "bound"
+      },
+      {
+        "binding_key": "candidate_technology_stacks",
+        "source_ref": "docs/product-specs/005-stage-document-contracts.md §4.2 / candidate_technology_stacks",
+        "source_raw_sha256": "sha256:d406d2817647b7ddf9286bb285a4b2796736b24b705d57fdd9d2619fd249f586",
+        "binding_status": "bound"
+      },
+      {
+        "binding_key": "rejection_reasons",
+        "source_ref": "docs/product-specs/005-stage-document-contracts.md §4.2 / rejection_reasons",
+        "source_raw_sha256": "sha256:d406d2817647b7ddf9286bb285a4b2796736b24b705d57fdd9d2619fd249f586",
+        "binding_status": "bound"
+      },
+      {
+        "binding_key": "data_model_draft",
+        "source_ref": "docs/product-specs/005-stage-document-contracts.md §4.2 / data_model_draft",
+        "source_raw_sha256": "sha256:d406d2817647b7ddf9286bb285a4b2796736b24b705d57fdd9d2619fd249f586",
+        "binding_status": "bound"
+      },
+      {
+        "binding_key": "phase_gate_model",
+        "source_ref": "docs/product-specs/005-stage-document-contracts.md §4.2 / phase_gate_model",
+        "source_raw_sha256": "sha256:d406d2817647b7ddf9286bb285a4b2796736b24b705d57fdd9d2619fd249f586",
+        "binding_status": "bound"
+      },
+      {
+        "binding_key": "state_machine_model",
+        "source_ref": "docs/product-specs/005-stage-document-contracts.md §4.2 / state_machine_model",
+        "source_raw_sha256": "sha256:d406d2817647b7ddf9286bb285a4b2796736b24b705d57fdd9d2619fd249f586",
+        "binding_status": "bound"
+      },
+      {
+        "binding_key": "ai_interaction_boundary",
+        "source_ref": "docs/product-specs/005-stage-document-contracts.md §4.2 / ai_interaction_boundary",
+        "source_raw_sha256": "sha256:d406d2817647b7ddf9286bb285a4b2796736b24b705d57fdd9d2619fd249f586",
+        "binding_status": "bound"
+      },
+      {
+        "binding_key": "permissions_and_data_safety",
+        "source_ref": "docs/product-specs/005-stage-document-contracts.md §4.2 / permissions_and_data_safety",
+        "source_raw_sha256": "sha256:d406d2817647b7ddf9286bb285a4b2796736b24b705d57fdd9d2619fd249f586",
+        "binding_status": "bound"
+      },
+      {
+        "binding_key": "risk_validation_plan",
+        "source_ref": "docs/product-specs/005-stage-document-contracts.md §4.2 / risk_validation_plan",
+        "source_raw_sha256": "sha256:d406d2817647b7ddf9286bb285a4b2796736b24b705d57fdd9d2619fd249f586",
+        "binding_status": "bound"
+      },
+      {
+        "binding_key": "rollback_plan",
+        "source_ref": "docs/product-specs/005-stage-document-contracts.md §4.2 / rollback_plan",
+        "source_raw_sha256": "sha256:d406d2817647b7ddf9286bb285a4b2796736b24b705d57fdd9d2619fd249f586",
+        "binding_status": "bound"
+      }
+    ],
+    "technical_stack": {
+      "recommended": "Codex Skill + TypeScript/Node 按需辅助工具 + JSON Schema",
+      "alternatives": [
+        "纯 Codex Skill 人工隔离执行"
+      ],
+      "rejection_reasons": [
+        "不引入 Web/UI、数据库、常驻服务或新技术栈"
+      ]
+    },
+    "architecture_model": {
+      "data_models": [
+        "Project",
+        "Stage",
+        "Deliverable",
+        "Change Request",
+        "Milestone"
+      ],
+      "phase_gate_states": [
+        "通过",
+        "退回",
+        "需讨论",
+        "阻塞"
+      ],
+      "state_machine_model": "只允许依据已会签状态与门禁推进",
+      "ai_interaction_boundary": "主对话仅编排，独立任务产出证据",
+      "permissions_and_data_safety": "只读评估，不改 formal/control/目标项目工作树"
+    },
+    "risk_bindings": [
+      {
+        "risk_id": "project-root-resolution-correct",
+        "source_id": "S4",
+        "source_ref": "docs/architecture/s4-technical-architecture.md §18 行：项目根解析正确",
+        "source_raw_sha256": "sha256:60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+        "section": "18",
+        "row_label": "项目根解析正确",
+        "validation_method": "回放候选根、realpath 与路线锁归属的三点一致性",
+        "failure_standard": "项目根不唯一、越界或路线锁归属不一致",
+        "failure_handling": "阻塞评估并保留解析证据",
+        "tg_bindings": [
+          "TG-01",
+          "TG-05",
+          "TG-19"
+        ],
+        "owner_milestone": "S3.1",
+        "rollback_entry_id": "manual-isolated-fallback"
+      },
+      {
+        "risk_id": "worktree-start-exact",
+        "source_id": "S4",
+        "source_ref": "docs/architecture/s4-technical-architecture.md §18 行：worktree 起点精确",
+        "source_raw_sha256": "sha256:60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+        "section": "18",
+        "row_label": "worktree 起点精确",
+        "validation_method": "比较任务包 working parent、分支父提交与工作树 HEAD",
+        "failure_standard": "三者任一 OID 不一致",
+        "failure_handling": "停止自动写入并重新建立受控工作树",
+        "tg_bindings": [
+          "TG-05",
+          "TG-08",
+          "TG-16",
+          "TG-19"
+        ],
+        "owner_milestone": "S3.3",
+        "rollback_entry_id": "stop-auto-write-and-enter-change-request"
+      },
+      {
+        "risk_id": "read-only-verification-effective",
+        "source_id": "S4",
+        "source_ref": "docs/architecture/s4-technical-architecture.md §18 行：只读验证有效",
+        "source_raw_sha256": "sha256:60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+        "section": "18",
+        "row_label": "只读验证有效",
+        "validation_method": "验证前后比较 formal、control、HEAD、tree 与工作树状态",
+        "failure_standard": "只读验证产生任一状态变化",
+        "failure_handling": "拒绝验证结论并切换人工计划隔离执行",
+        "tg_bindings": [
+          "TG-08",
+          "TG-13",
+          "TG-19"
+        ],
+        "owner_milestone": "S3.3",
+        "rollback_entry_id": "manual-isolated-fallback"
+      },
+      {
+        "risk_id": "task-creation-idempotent",
+        "source_id": "S4",
+        "source_ref": "docs/architecture/s4-technical-architecture.md §18 行：任务创建幂等",
+        "source_raw_sha256": "sha256:60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+        "section": "18",
+        "row_label": "任务创建幂等",
+        "validation_method": "以 packet digest 与 dedup key 重放任务创建",
+        "failure_standard": "同一 dedup key 产生多个任务身份",
+        "failure_handling": "阻塞后续派发并等待台账裁决",
+        "tg_bindings": [
+          "TG-05",
+          "TG-09",
+          "TG-19"
+        ],
+        "owner_milestone": "S3.2",
+        "rollback_entry_id": "blocked-await-external-proof"
+      },
+      {
+        "risk_id": "control-ref-single-writer-fencing",
+        "source_id": "S4",
+        "source_ref": "docs/architecture/s4-technical-architecture.md §18 行：控制 ref 单写与 fencing",
+        "source_raw_sha256": "sha256:60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+        "section": "18",
+        "row_label": "控制 ref 单写与 fencing",
+        "validation_method": "比较 fence 单调性与 expected-old CAS 结果",
+        "failure_standard": "陈旧 writer 能提交或 fence 倒退",
+        "failure_handling": "停止自动写入并进入变更分流",
+        "tg_bindings": [
+          "TG-09",
+          "TG-10",
+          "TG-19"
+        ],
+        "owner_milestone": "S3.2",
+        "rollback_entry_id": "stop-auto-write-and-enter-change-request"
+      },
+      {
+        "risk_id": "host-receiver-atomic-idempotence",
+        "source_id": "S4",
+        "source_ref": "docs/architecture/s4-technical-architecture.md §18 行：宿主接收端原子幂等",
+        "source_raw_sha256": "sha256:60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+        "section": "18",
+        "row_label": "宿主接收端原子幂等",
+        "validation_method": "对相同消息重复接收并比较单一持久化结果",
+        "failure_standard": "重复消息产生多份或部分状态",
+        "failure_handling": "拒绝宿主结果并降级 manual-isolated",
+        "tg_bindings": [
+          "TG-05",
+          "TG-09",
+          "TG-19"
+        ],
+        "owner_milestone": "S3.2",
+        "rollback_entry_id": "manual-isolated-fallback"
+      },
+      {
+        "risk_id": "control-ledger-corruption",
+        "source_id": "S4",
+        "source_ref": "docs/architecture/s4-technical-architecture.md §18 行：控制台账损坏",
+        "source_raw_sha256": "sha256:60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+        "section": "18",
+        "row_label": "控制台账损坏",
+        "validation_method": "重算台账 JCS 摘要并验证父链与引用目标",
+        "failure_standard": "摘要、父链或引用任一不可裁决",
+        "failure_handling": "进入 blocked 并等待外部证据",
+        "tg_bindings": [
+          "TG-10",
+          "TG-15",
+          "TG-17",
+          "TG-19"
+        ],
+        "owner_milestone": "S3.5",
+        "rollback_entry_id": "blocked-await-external-proof"
+      },
+      {
+        "risk_id": "control-generation-monotonicity",
+        "source_id": "S4",
+        "source_ref": "docs/architecture/s4-technical-architecture.md §18 行：控制代际单调",
+        "source_raw_sha256": "sha256:60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+        "section": "18",
+        "row_label": "控制代际单调",
+        "validation_method": "遍历 checkpoint 的 generation 与 attempt 序列",
+        "failure_standard": "代际倒退、跨代复活或 attempt 非单调",
+        "failure_handling": "阻塞状态提升并等待台账裁决",
+        "tg_bindings": [
+          "TG-10",
+          "TG-19"
+        ],
+        "owner_milestone": "S3.5",
+        "rollback_entry_id": "blocked-await-external-proof"
+      },
+      {
+        "risk_id": "multi-file-logical-atomicity",
+        "source_id": "S4",
+        "source_ref": "docs/architecture/s4-technical-architecture.md §18 行：多文件逻辑原子",
+        "source_raw_sha256": "sha256:60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+        "section": "18",
+        "row_label": "多文件逻辑原子",
+        "validation_method": "回放事务 manifest 并逐文件重读摘要",
+        "failure_standard": "出现部分写入、错序或 manifest 不一致",
+        "failure_handling": "停止自动写入并保留失败回执",
+        "tg_bindings": [
+          "TG-11",
+          "TG-17",
+          "TG-19"
+        ],
+        "owner_milestone": "S1.5",
+        "rollback_entry_id": "stop-auto-write-and-enter-change-request"
+      },
+      {
+        "risk_id": "final-verification-precision",
+        "source_id": "S4",
+        "source_ref": "docs/architecture/s4-technical-architecture.md §18 行：最终复验精确",
+        "source_raw_sha256": "sha256:60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+        "section": "18",
+        "row_label": "最终复验精确",
+        "validation_method": "固定 snapshot 后重跑完整门禁并绑定精确 subject",
+        "failure_standard": "结果未绑定精确 snapshot 或验证项不完整",
+        "failure_handling": "保留候选并停止正式提升",
+        "tg_bindings": [
+          "TG-13",
+          "TG-14",
+          "TG-19"
+        ],
+        "owner_milestone": "S3.4",
+        "rollback_entry_id": "awaiting-formal-promotion"
+      },
+      {
+        "risk_id": "credential-and-proof-no-replace",
+        "source_id": "S4",
+        "source_ref": "docs/architecture/s4-technical-architecture.md §18 行：凭证与证明不可替换",
+        "source_raw_sha256": "sha256:60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+        "section": "18",
+        "row_label": "凭证与证明不可替换",
+        "validation_method": "以 create-once 语义安装并重读名称、内容与 link count",
+        "failure_standard": "同名内容可被替换或出现多链接残留",
+        "failure_handling": "拒绝凭证并停止正式提升",
+        "tg_bindings": [
+          "TG-14",
+          "TG-16",
+          "TG-19"
+        ],
+        "owner_milestone": "S3.4",
+        "rollback_entry_id": "awaiting-formal-promotion"
+      },
+      {
+        "risk_id": "credential-crash-durability",
+        "source_id": "S4",
+        "source_ref": "docs/architecture/s4-technical-architecture.md §18 行：凭证崩溃持久性",
+        "source_raw_sha256": "sha256:60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+        "section": "18",
+        "row_label": "凭证崩溃持久性",
+        "validation_method": "验证文件 fsync、父目录 fsync 与崩溃后重读",
+        "failure_standard": "重启后凭证缺失、截断或摘要变化",
+        "failure_handling": "拒绝凭证并停止正式提升",
+        "tg_bindings": [
+          "TG-14",
+          "TG-16",
+          "TG-19"
+        ],
+        "owner_milestone": "S3.4",
+        "rollback_entry_id": "awaiting-formal-promotion"
+      },
+      {
+        "risk_id": "audit-anchor-allowlist",
+        "source_id": "S4",
+        "source_ref": "docs/architecture/s4-technical-architecture.md §18 行：审计锚白名单",
+        "source_raw_sha256": "sha256:60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+        "section": "18",
+        "row_label": "审计锚白名单",
+        "validation_method": "比较 snapshot 到 anchor 的精确 changed paths",
+        "failure_standard": "出现白名单外路径或父提交不唯一",
+        "failure_handling": "保留 snapshot 并停止正式提升",
+        "tg_bindings": [
+          "TG-14",
+          "TG-19"
+        ],
+        "owner_milestone": "S3.4",
+        "rollback_entry_id": "awaiting-formal-promotion"
+      },
+      {
+        "risk_id": "cas-race-safety",
+        "source_id": "S4",
+        "source_ref": "docs/architecture/s4-technical-architecture.md §18 行：CAS 竞争安全",
+        "source_raw_sha256": "sha256:60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+        "section": "18",
+        "row_label": "CAS 竞争安全",
+        "validation_method": "以 expected-old 模拟竞争更新并确认陈旧更新失败",
+        "failure_standard": "陈旧 expected-old 仍能移动 ref",
+        "failure_handling": "停止自动 CAS 并保留候选",
+        "tg_bindings": [
+          "TG-12",
+          "TG-14",
+          "TG-19"
+        ],
+        "owner_milestone": "S3.4",
+        "rollback_entry_id": "awaiting-formal-promotion"
+      },
+      {
+        "risk_id": "formal-history-continuity",
+        "source_id": "S4",
+        "source_ref": "docs/architecture/s4-technical-architecture.md §18 行：正式历史连续",
+        "source_raw_sha256": "sha256:60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+        "section": "18",
+        "row_label": "正式历史连续",
+        "validation_method": "验证新 anchor 为当前 formal 的后代且唯一父链连续",
+        "failure_standard": "formal 非祖先、父链分叉或历史重写",
+        "failure_handling": "停止自动 CAS 并等待正式提升条件恢复",
+        "tg_bindings": [
+          "TG-14",
+          "TG-19"
+        ],
+        "owner_milestone": "S3.4",
+        "rollback_entry_id": "awaiting-formal-promotion"
+      },
+      {
+        "risk_id": "formal-ref-worktree-separation",
+        "source_id": "S4",
+        "source_ref": "docs/architecture/s4-technical-architecture.md §18 行：正式 ref 与工作树分离",
+        "source_raw_sha256": "sha256:60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+        "section": "18",
+        "row_label": "正式 ref 与工作树分离",
+        "validation_method": "比较 formal ref、主工作树 HEAD 与候选工作树身份",
+        "failure_standard": "formal 被工作树直接检出或工作树隐式移动 formal",
+        "failure_handling": "停止自动 CAS 并恢复只读 formal 边界",
+        "tg_bindings": [
+          "TG-12",
+          "TG-19"
+        ],
+        "owner_milestone": "S3.4",
+        "rollback_entry_id": "awaiting-formal-promotion"
+      },
+      {
+        "risk_id": "acceptance-profile-correctness",
+        "source_id": "S4",
+        "source_ref": "docs/architecture/s4-technical-architecture.md §18 行：验收配置正确",
+        "source_raw_sha256": "sha256:60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+        "section": "18",
+        "row_label": "验收配置正确",
+        "validation_method": "重验项目身份、载体裁决与验收配置摘要绑定",
+        "failure_standard": "项目、载体或验收配置任一错绑",
+        "failure_handling": "拒绝当前配置并降级 manual-isolated",
+        "tg_bindings": [
+          "TG-04",
+          "TG-19"
+        ],
+        "owner_milestone": "S1.4",
+        "rollback_entry_id": "manual-isolated-fallback"
+      },
+      {
+        "risk_id": "recovery-independent-of-chat",
+        "source_id": "S4",
+        "source_ref": "docs/architecture/s4-technical-architecture.md §18 行：恢复不依赖聊天",
+        "source_raw_sha256": "sha256:60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+        "section": "18",
+        "row_label": "恢复不依赖聊天",
+        "validation_method": "仅用 Git、control 与项目留痕重建当前状态",
+        "failure_standard": "缺少聊天上下文时无法裁决当前阶段",
+        "failure_handling": "进入 blocked 并等待外部证据",
+        "tg_bindings": [
+          "TG-15",
+          "TG-17",
+          "TG-19"
+        ],
+        "owner_milestone": "S3.5",
+        "rollback_entry_id": "blocked-await-external-proof"
+      },
+      {
+        "risk_id": "sensitive-information-not-persisted",
+        "source_id": "S4",
+        "source_ref": "docs/architecture/s4-technical-architecture.md §18 行：敏感信息不落盘",
+        "source_raw_sha256": "sha256:60a354a73c1f1df22c9cf26f81a68c44dab593682302d219588aa8ae62a2ea4c",
+        "section": "18",
+        "row_label": "敏感信息不落盘",
+        "validation_method": "扫描候选字段、内容与回执的敏感标识和值模式",
+        "failure_standard": "敏感字段、原值或可逆凭据进入持久化证据",
+        "failure_handling": "固定无原值失败回执并停止自动写入",
+        "tg_bindings": [
+          "TG-16",
+          "TG-19"
+        ],
+        "owner_milestone": "S3.2",
+        "rollback_entry_id": "stop-auto-write-and-enter-change-request"
+      },
+      {
+        "risk_id": "archive-failure",
+        "source_id": "009",
+        "source_ref": "docs/architecture/009-s4-technical-input-supplement.md §7 行：归档失败",
+        "source_raw_sha256": "sha256:51f129d29285bc068674e3b5ade511b5df199a682f0e0ba35464198252730886",
+        "section": "7",
+        "row_label": "归档失败",
+        "validation_method": "验证归档目标、回执与正式结论的可追溯绑定",
+        "failure_standard": "归档写入失败、回读缺失或摘要不一致",
+        "failure_handling": "保持正式结论不变并进入待归档",
+        "tg_bindings": [
+          "TG-18",
+          "TG-19"
+        ],
+        "owner_milestone": "S4.3",
+        "rollback_entry_id": "awaiting-archive"
+      }
+    ],
+    "rollback_entries": [
+      {
+        "rollback_id": "stop-auto-write-and-enter-change-request",
+        "trigger": "typescript-runtime-failure",
+        "terminal_state": "停止自动写入",
+        "next_action": "进入 Change Request",
+        "proof_expectation": "固定失败回执且 formal/control/工作树不变"
+      },
+      {
+        "rollback_id": "manual-isolated-fallback",
+        "trigger": "adapter-failure",
+        "terminal_state": "manual-isolated",
+        "next_action": "切换人工计划隔离执行",
+        "proof_expectation": "adapter 拒绝证据与降级模式回执"
+      },
+      {
+        "rollback_id": "blocked-await-external-proof",
+        "trigger": "ledger-undecidable",
+        "terminal_state": "blocked",
+        "next_action": "等待外部证据或人工裁决",
+        "proof_expectation": "缺失或矛盾台账证据且无状态提升"
+      },
+      {
+        "rollback_id": "awaiting-formal-promotion",
+        "trigger": "promotion-unverifiable",
+        "terminal_state": "待正式提升",
+        "next_action": "保留候选并停止自动 CAS",
+        "proof_expectation": "候选与锚证据保留且 formal 不变"
+      },
+      {
+        "rollback_id": "awaiting-archive",
+        "trigger": "archive-failure",
+        "terminal_state": "待归档",
+        "next_action": "重试或人工归档",
+        "proof_expectation": "正式结论与 formal 不变且归档失败可追溯"
+      }
+    ],
+    "scope": {
+      "support_level": "manual-isolated",
+      "interaction_profile": "headless",
+      "web_ui": false,
+      "database": false,
+      "persistent_service": false,
+      "p4_api_schema_frozen": false
+    }
+  },
+  "expected": {
+    "outcome": "ACCEPTED",
+    "q3": "10/10=100%",
+    "q11": "20/20",
+    "rollback_entries": "5/5"
+  }
+}

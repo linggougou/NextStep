@@ -206,7 +206,9 @@ test("architecture-risk index 以 RFC8785 摘要覆盖三类正例与至少十�
   const index = await readJson<FixtureIndex>(join(FIXTURE_DIRECTORY, "index.json"));
   assert.equal(index.schema_version, "1.0");
   assert.equal(index.record_type, "architecture-risk-fixture-index");
-  assert.deepEqual(index.digest_contract, { algorithm: "sha256", canonicalization: "RFC8785", excluded_fields: [] });
+  assert.equal(index.digest_contract.algorithm, "sha256");
+  assert.equal(index.digest_contract.canonicalization, "RFC8785");
+  assert.deepEqual(index.digest_contract.excluded_fields, []);
   assert.equal(index.risk_catalog.name, "risk-catalog.json");
   const catalog = await readJson<unknown>(join(FIXTURE_DIRECTORY, index.risk_catalog.name));
   assert.equal(index.risk_catalog.record_digest, digestJson(catalog));
@@ -233,6 +235,7 @@ test("三类正例回读 S1.5 scenario_id、digest 与项目身份且候选覆�
   const s1_5Index = await readJson<{ readonly scenarios: readonly { readonly name: string; readonly scenario_id: string; readonly record_digest: string }[] }>(
     join(S1_5_FIXTURE_DIRECTORY, "index.json"),
   );
+  const catalog = await readJson<RiskCatalog>(join(FIXTURE_DIRECTORY, "risk-catalog.json"));
 
   for (const [projectId, fixtureRef, scenarioId, recordDigest] of PROJECT_FIXTURE_BINDINGS) {
     const sourceEntry = s1_5Index.scenarios.find((entry) => entry.name === fixtureRef);
@@ -255,20 +258,56 @@ test("三类正例回读 S1.5 scenario_id、digest 与项目身份且候选覆�
     assert.equal(fixture.candidate.formal_baseline, FORMAL_BASELINE);
     assert.equal(fixture.candidate.evidence_scope, EVIDENCE_SCOPE);
     assert.equal(Object.hasOwn(fixture.candidate, "candidate_digest"), false);
-    assert.equal(fixture.candidate.support_level, "manual-isolated");
-    assert.deepEqual((fixture.candidate.project as { readonly project_id: string }).project_id, projectId);
+    assert.deepEqual(fixture.candidate.scope, {
+      support_level: "manual-isolated",
+      interaction_profile: "headless",
+      web_ui: false,
+      database: false,
+      persistent_service: false,
+      p4_api_schema_frozen: false,
+    });
+    assert.equal(Object.hasOwn(fixture.candidate, "support_level"), false);
+    assert.deepEqual(fixture.candidate.project, {
+      project_id: projectId,
+      scenario_id: scenarioId,
+      record_digest: recordDigest,
+    });
+    assert.deepEqual(
+      fixture.candidate.project_fixture_bindings,
+      PROJECT_FIXTURE_BINDINGS.map(([bindingProjectId, , bindingScenarioId, bindingDigest]) => ({
+        project_id: bindingProjectId,
+        scenario_id: bindingScenarioId,
+        record_digest: bindingDigest,
+      })),
+    );
+    assert.deepEqual(
+      (fixture.candidate.upstream_source_bindings as readonly {
+        readonly source_id: string;
+        readonly source_raw_sha256: string;
+        readonly signed_off: boolean;
+      }[]).map(({ source_id, source_raw_sha256, signed_off }) => ({ source_id, source_raw_sha256, signed_off })),
+      Object.entries(SOURCE_DIGESTS).map(([source_id, source_raw_sha256]) => ({ source_id, source_raw_sha256, signed_off: true })),
+    );
     assert.deepEqual(
       (fixture.candidate.required_field_bindings as readonly { readonly binding_key: string }[]).map((binding) => binding.binding_key),
       REQUIRED_FIELD_KEYS,
     );
-    assert.deepEqual(
-      (fixture.candidate.risk_bindings as readonly { readonly risk_id: string }[]).map((binding) => binding.risk_id),
-      RISK_ROWS.map(([riskId]) => riskId),
-    );
-    assert.deepEqual(
-      (fixture.candidate.rollback_entries as readonly { readonly rollback_id: string }[]).map((entry) => entry.rollback_id),
-      ROLLBACK_ROWS.map(([rollbackId]) => rollbackId),
-    );
+    for (const binding of fixture.candidate.required_field_bindings as readonly {
+      readonly source_raw_sha256: string;
+      readonly binding_status: string;
+    }[]) {
+      assert.equal(binding.source_raw_sha256, SOURCE_DIGESTS["005"]);
+      assert.equal(binding.binding_status, "bound");
+    }
+    assert.deepEqual(fixture.candidate.architecture_model, {
+      data_models: ["Project", "Stage", "Deliverable", "Change Request", "Milestone"],
+      phase_gate_states: ["通过", "退回", "需讨论", "阻塞"],
+      state_machine_model: "只允许依据已会签状态与门禁推进",
+      ai_interaction_boundary: "主对话仅编排，独立任务产出证据",
+      permissions_and_data_safety: "只读评估，不改 formal/control/目标项目工作树",
+    });
+    assert.deepEqual(fixture.candidate.risk_bindings, catalog.risk_catalog);
+    assert.deepEqual(fixture.candidate.rollback_entries, catalog.rollback_catalog);
   }
 });
 

@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.0",
+  "record_type": "architecture-risk-fixture-index",
+  "digest_contract": {
+    "algorithm": "sha256",
+    "canonicalization": "RFC8785",
+    "excluded_fields": [],
+    "note": "risk_catalog.record_digest 与 fixtures[].record_digest 均为目标 JSON 完整记录的 digestJson。"
+  },
+  "risk_catalog": {
+    "name": "risk-catalog.json",
+    "record_digest": "sha256:7b147fd1ed9b2c107fcb0eb5d33845a2608cd6b1ec9234f36c419c441d29101f"
+  },
+  "fixtures": [
+    {
+      "name": "negative/cross-project-binding.json",
+      "fixture_id": "architecture-risk-negative-cross-project-binding-001",
+      "fixture_class": "negative",
+      "record_digest": "sha256:7a4b5ae57f6d42cbba9566e227e5952e5220ff8f9ed517f4f02de18a0dc5517b"
+    },
+    {
+      "name": "negative/duplicate-risk.json",
+      "fixture_id": "architecture-risk-negative-duplicate-risk-001",
+      "fixture_class": "negative",
+      "record_digest": "sha256:89210077657fe128a33e5a3d890ca8c5d4a520dfb41e6df842cd1a2327f3901c"
+    },
+    {
+      "name": "negative/extra-field.json",
+      "fixture_id": "architecture-risk-negative-extra-field-001",
+      "fixture_class": "negative",
+      "record_digest": "sha256:fc37ac70d77cf3614228dc42926bdc7f20efe2d45b574256c316e5aa11404b83"
+    },
+    {
+      "name": "negative/forbidden-full-support.json",
+      "fixture_id": "architecture-risk-negative-forbidden-full-support-001",
+      "fixture_class": "negative",
+      "record_digest": "sha256:c8594f4ad2db7c3ef3d194345a81b68e1e0780129673af0a0f13dd5ba57a20a0"
+    },
+    {
+      "name": "negative/forged-candidate-digest.json",
+      "fixture_id": "architecture-risk-negative-forged-candidate-digest-001",
+      "fixture_class": "negative",
+      "record_digest": "sha256:cb1a59c3b71936fb28d42f48e4ce2d33c8f38b289b6fc900ff76cd99ce9decec"
+    },
+    {
+      "name": "negative/missing-required-field.json",
+      "fixture_id": "architecture-risk-negative-missing-required-field-001",
+      "fixture_class": "negative",
+      "record_digest": "sha256:c0b38ca8f29041f71c21b4471dcceca6e927e68320325897479ce1bcf1a9568e"
+    },
+    {
+      "name": "negative/missing-risk.json",
+      "fixture_id": "architecture-risk-negative-missing-risk-001",
+      "fixture_class": "negative",
+      "record_digest": "sha256:60e48962945c01a50a54c310e6d761a5770c327fb92cc76d7ba3fd067b4f83e3"
+    },
+    {
+      "name": "negative/non-f15.json",
+      "fixture_id": "architecture-risk-negative-non-f15-001",
+      "fixture_class": "negative",
+      "record_digest": "sha256:f52eefe5d78436ee8bd3f773f059a921cb1c4f184164488ec956f9ae4dee69cf"
+    },
+    {
+      "name": "negative/rollback-mismatch.json",
+      "fixture_id": "architecture-risk-negative-rollback-mismatch-001",
+      "fixture_class": "negative",
+      "record_digest": "sha256:2e5bdeb62f9e22dfd72c85bdad0ecb30811807bc1ef7fd51b19b1e6106db33fd"
+    },
+    {
+      "name": "negative/sensitive-field.json",
+      "fixture_id": "architecture-risk-negative-sensitive-field-001",
+      "fixture_class": "negative",
+      "record_digest": "sha256:884347835e808342f20e892c2f1799dfb9bbb53371e26c746d9d2e51386c0ef4"
+    },
+    {
+      "name": "negative/source-digest-drift.json",
+      "fixture_id": "architecture-risk-negative-source-digest-drift-001",
+      "fixture_class": "negative",
+      "record_digest": "sha256:7307ac670b8cddc3cc6ab4cf1f86fb1f0a7675c7fb143d429d1c907a0f33ee40"
+    },
+    {
+      "name": "negative/unknown-risk.json",
+      "fixture_id": "architecture-risk-negative-unknown-risk-001",
+      "fixture_class": "negative",
+      "record_digest": "sha256:0ea08694ed5246cb6733d92ce3cfaf654f2ee7660d1f64c770f9c275eb096670"
+    },
+    {
+      "name": "negative/unknown-schema.json",
+      "fixture_id": "architecture-risk-negative-unknown-schema-001",
+      "fixture_class": "negative",
+      "record_digest": "sha256:62abe58545bfdc18c11fd44c8a25a685e33f264b542da3b0dd8cadd4d8997bdb"
+    },
+    {
+      "name": "negative/unsigned-source.json",
+      "fixture_id": "architecture-risk-negative-unsigned-source-001",
+      "fixture_class": "negative",
+      "record_digest": "sha256:ba29f42de6a0787ae028c0836123abbba681982f3a60584646530fff97de0dda"
+    },
+    {
+      "name": "negative/wrong-stage.json",
+      "fixture_id": "architecture-risk-negative-wrong-stage-001",
+      "fixture_class": "negative",
+      "record_digest": "sha256:b629f4fb65fc067373347b16a6c96b48d56f3ff86ebe9266ebc8f73a763d2868"
+    },
+    {
+      "name": "positive/community-workshop.json",
+      "fixture_id": "architecture-risk-community-workshop-positive-001",
+      "fixture_class": "positive",
+      "record_digest": "sha256:04f12d14a84081aa3f9d53a52154d214fc1c3b2c74ac7dd6bc373fc5e26c4c51"
+    },
+    {
+      "name": "positive/expense-reminder.json",
+      "fixture_id": "architecture-risk-expense-reminder-positive-001",
+      "fixture_class": "positive",
+      "record_digest": "sha256:dab788c4a47b25317dafd25132d32d6608a2c1b91f54c514750b83ef2c8e3b21"
+    },
+    {
+      "name": "positive/project-delivery-tool.json",
+      "fixture_id": "architecture-risk-project-delivery-tool-positive-001",
+      "fixture_class": "positive",
+      "record_digest": "sha256:06f2b5d858c25cfd9f5adf1fb770d911e7bbc90021eb9a79a2c7a917a492ec2b"
+    }
+  ]
+}
