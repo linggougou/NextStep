@@ -2275,3 +2275,5 @@
 - 工具缺失：当前运行时未暴露 `spawn_agent` / `wait_agent` 协作入口，原用途是按用户要求把 S1.6 entry review 交给独立子代理执行并等待回收。
 - 替代流程：改用 `judge-harness` 协议 + 专属 review worktree + 只写评审产物的独立提交，严格禁止触碰 `main/formal/control` 与控制工件，再把评审结果并回主线。
 - 替代验证：review worktree 已校验 JSON 可解析、`git diff --check` 通过、相对 subject 精确两路径、提交后工作树 clean；主线随后按 required_fixes 修订 `.codex/exec-plan-s1.6-generation-1.md`，尚未生成 packet、尚未编码、尚未派发。
+- 第二轮结构补强：进一步把三类隐性歧义冻结进计划候选：`project_fixture_bindings` 用于区分 F15 formal 基线与目标项目 fixture digest；每个 field/risk 绑定都必须携带 `source_raw_sha256` 与 `source_excerpt_sha256`；`candidate_digest` 明确采用“排除 candidate_digest 字段自身”的 RFC8785 投影，禁止递归自引用；W1 只提供测试侧原始 catalog，生产侧 allowlist/catalog 落点由 W2 负责。
+- 当前状态：S1.6 仍停在“已通过 entry review、已完成计划冻结修订、尚未生成 packet/control CAS”的治理阶段；在独立复核最后几个结构点闭环前，不推进 `pending dispatch`。
