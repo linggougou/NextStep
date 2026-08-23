@@ -1,0 +1,191 @@
+{
+  "review_id": "p5-v1-m1.2-s1.5-execution-evidence-correction-a3-2026-08-23",
+  "task_id": "S1.5",
+  "task_attempt": 3,
+  "lane": "execution-evidence-correction",
+  "review_level": "execution",
+  "rubric_id": "nextstep-s1.5-execution-evidence-correction-v1",
+  "stage_id": "P5/V1/M1.2/S1.5/execution-evidence-correction",
+  "claim_id": "claim-s1.5-g4-a3-evidence-f86-20260823",
+  "fence_token": 86,
+  "host_task_id": "codex-subagent:/root/s15_evidence_a3",
+  "reviewed_at": "2026-08-23T10:47:07Z",
+  "subject": {
+    "commit_oid": "f226e0fce689284b5f02747784d82c09c47b3ec5",
+    "parent_oid": "e4d10ccd3299ec7d3573254db60afe8b6d48d573",
+    "tree_oid": "c5d2e7c2a22023970d4a73feba856afdd44cd891",
+    "original_working_parent_oid": "a028bb7eccf3df4601cb3655e9e56e56f3c83066",
+    "formal_baseline_oid": "024c1db6d941b6f771746c8d6249fb8a09b816f3",
+    "subject_digest_contract": "sha256(JCS({commit_oid,parent_oid,tree_oid}))",
+    "subject_digest": "sha256:c01eb4ed6cae835e6c282e56b8a4a69c7f5c61adcebc58d14bf89ae0ac382d30"
+  },
+  "control_identity": {
+    "fixed_packet_source_oid": "4dd2b7fd368d64fa440774fbd7a70fefb2e32b00",
+    "packet_ref": "packets/ep-p5-v1-m1.2-s1.5-g4-a3-20260823.json",
+    "packet_digest": "sha256:35f2a9595b108f2fe10aaaf02981c4c60d07e1080e24082128e418e6f2caa139",
+    "packet_digest_recomputed": true,
+    "dedup_key": "sha256:e5bf8635d654d7fc53c21a8c8cd699a8f1f0bccf2aad770812ed4b7d7cc388df",
+    "dedup_key_recomputed": true,
+    "dispatch_ack_ref": "git:c70b34266882a31f140c9e5d07d89e0aafb6e3b2:messages/msg-dispatch-ack-s1.5-g4-a3-f86-20260823.json",
+    "packet_expired_during_review": false
+  },
+  "baseline": {
+    "main_oid_before": "f226e0fce689284b5f02747784d82c09c47b3ec5",
+    "formal_oid_before": "024c1db6d941b6f771746c8d6249fb8a09b816f3",
+    "control_oid_before": "c70b34266882a31f140c9e5d07d89e0aafb6e3b2",
+    "main_oid_after": "f226e0fce689284b5f02747784d82c09c47b3ec5",
+    "formal_oid_after": "024c1db6d941b6f771746c8d6249fb8a09b816f3",
+    "control_oid_after": "c70b34266882a31f140c9e5d07d89e0aafb6e3b2",
+    "subject_tree_after": "c5d2e7c2a22023970d4a73feba856afdd44cd891",
+    "product_code_tests_docs_changed": false,
+    "authoritative_window_note": "主控以 ack-complete 冻结 c70b34266882a31f140c9e5d07d89e0aafb6e3b2；本验证窗口内 main、formal、control、subject tree 与产品代码/测试/文档均未移动。"
+  },
+  "isolated_environment": {
+    "review_worktree_path": "/private/tmp/nextstep-s1-5-evidence-a3-20260823",
+    "branch": "codex/s1.5-evidence-a3-20260823",
+    "node_version": "v24.14.0",
+    "pnpm_version": "10.33.2",
+    "node_modules_before_install": "absent",
+    "install_command": "pnpm install --offline --frozen-lockfile",
+    "install_result": "exit 0; reused 10, downloaded 0, added 10",
+    "check_command": "pnpm check",
+    "check_result": "exit 0",
+    "source_test_files": 36,
+    "compiled_test_files": 36,
+    "tap_top_level_pass": 337,
+    "tap_nested_subtest_pass": 16,
+    "tests_total": 353,
+    "tests_pass": 353,
+    "tests_fail": 0,
+    "tests_cancelled": 0,
+    "tests_skipped": 0,
+    "tests_todo": 0,
+    "coverage_lines_percent": 92.82,
+    "coverage_branches_percent": 87.62,
+    "coverage_functions_percent": 99.0,
+    "coverage_baseline": "91.07/83.80/98.36",
+    "coverage_threshold_met": true
+  },
+  "change_set": {
+    "range": "a028bb7eccf3df4601cb3655e9e56e56f3c83066..f226e0fce689284b5f02747784d82c09c47b3ec5",
+    "actual_changed_path_count": 38,
+    "attempt_2_result_changed_path_count": 38,
+    "path_sets_equal": true,
+    "only_in_actual": [],
+    "only_in_attempt_2_result": [],
+    "review_branch_paths_relative_to_subject": [
+      ".codex/reviews/p5-v1-m1.2-s1.5-execution-evidence-correction-a3-2026-08-23/scorecard.json",
+      ".codex/reviews/p5-v1-m1.2-s1.5-execution-evidence-correction-a3-2026-08-23/verdict.md"
+    ]
+  },
+  "historical_evidence_boundary": {
+    "attempt_2_execution_result_ref": "git:c70b34266882a31f140c9e5d07d89e0aafb6e3b2:results/result-execution-s1.5-g4-a2-f83-20260822.json",
+    "attempt_2_claimed_tests": "374/374",
+    "attempt_2_candidate_verification": "REJECT / 78",
+    "attempt_2_failure_preserved": true,
+    "attempt_3_corrected_tests": "353/353",
+    "correction_scope": "新的隔离执行证据；不回写 attempt 2 Packet、Result 或 review，不把 374/374 改写为已通过。"
+  },
+  "hard_gates": [
+    {
+      "id": "EC-01",
+      "status": "pass",
+      "evidence": "固定 packet 从 4dd2b7f 读取；RFC8785 packet digest、七字段 dedup 与 subject digest 独立复算匹配；attempt=3、claim 与 fence=86、host_task_id 均匹配 ack。"
+    },
+    {
+      "id": "EC-02",
+      "status": "pass",
+      "evidence": "全新隔离 worktree 初始无 node_modules；Node v24.14.0、pnpm 10.33.2；offline frozen install exit 0，下载数为 0。"
+    },
+    {
+      "id": "EC-03",
+      "status": "pass",
+      "evidence": "pnpm check exit 0；36 个 source 与 36 个 compiled 测试文件；337 top-level + 16 nested = 353，353/353 pass、0 fail。"
+    },
+    {
+      "id": "EC-04",
+      "status": "pass",
+      "evidence": "覆盖率 Lines 92.82%、Branches 87.62%、Functions 99.00%，逐项不低于 F14 91.07/83.80/98.36。"
+    },
+    {
+      "id": "EC-05",
+      "status": "pass",
+      "evidence": "原始 working parent a028bb7..subject 的 38 条路径与 attempt 2 immutable Execution Result changed_paths 集合精确恒等，双方差集均为空。"
+    },
+    {
+      "id": "EC-06",
+      "status": "pass",
+      "evidence": "subject/parent/tree/digest、main、formal F14、control 与产品代码、测试、Schema、Skill、依赖和文档在验证前后不变；review 分支相对 subject 只新增允许目录中的两份 review 文件。"
+    },
+    {
+      "id": "EC-07",
+      "status": "pass",
+      "evidence": "attempt 2 的 374/374 不可复现声称及 CV REJECT / 78 作为历史保留；attempt 3 只声明新环境下可复现的 353/353，不复用 attempt 2 CV/I-X-P，不冒领 L3、F15、S1.5/M1.2/V1/P5 或 S1.6。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "identity_and_control_integrity",
+      "score": 15,
+      "max_score": 15,
+      "reason": "packet、dedup、subject、claim/fence 与 ack 全部精确匹配。",
+      "evidence_refs": ["EC-01"]
+    },
+    {
+      "id": "isolated_reproducible_environment",
+      "score": 20,
+      "max_score": 20,
+      "reason": "固定运行时与全新离线 frozen 安装均可复现。",
+      "evidence_refs": ["EC-02"]
+    },
+    {
+      "id": "test_accounting_and_check",
+      "score": 25,
+      "max_score": 25,
+      "reason": "全量 check 退出 0，文件与 TAP 两级计数完整解释 353/353。",
+      "evidence_refs": ["EC-03"]
+    },
+    {
+      "id": "coverage",
+      "score": 15,
+      "max_score": 15,
+      "reason": "三项覆盖率均高于 F14 基线。",
+      "evidence_refs": ["EC-04"]
+    },
+    {
+      "id": "scope_and_immutability",
+      "score": 15,
+      "max_score": 15,
+      "reason": "38 路径恒等，产品候选、refs 与禁止路径均未变化。",
+      "evidence_refs": ["EC-05", "EC-06"]
+    },
+    {
+      "id": "historical_truth_and_gate_discipline",
+      "score": 10,
+      "max_score": 10,
+      "reason": "历史失败未被覆盖，attempt 3 的结论边界与下一门禁清晰。",
+      "evidence_refs": ["EC-07"]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "hard_gates_pass": 7,
+    "hard_gates_fail": 0,
+    "hard_gates_total": 7,
+    "tests": "353/353",
+    "changed_paths": 38
+  },
+  "severity_summary": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [],
+  "evidence_scope_declaration": "本 PASS 仅证明 S1.5 attempt 3 execution evidence correction 在固定 headless/manual-isolated 边界内可复现；它不是 attempt 3 Candidate Verification、I/X/P、L3、Final Verification 或正式提升结论。",
+  "gate_disclaimer": "允许主控据此形成新的 immutable attempt 3 Execution Result，并另行派发新的 Candidate Verification；不得复用 attempt 2 的 CV/I-X-P 结论，不得启动 L3、F14→F15、S1.6，亦不构成 S1.5/M1.2/V1/P5 完成。"
+}
