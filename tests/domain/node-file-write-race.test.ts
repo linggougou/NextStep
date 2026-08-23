@@ -6,10 +6,12 @@ import {
   mkdir,
   mkdtemp,
   readFile,
+  realpath as nodeRealpath,
   readdir,
   rename as nodeRename,
   rm,
   symlink,
+  unlink,
   writeFile,
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -155,5 +157,238 @@ test("父目录在预检后被替换为 symlink 时不会在项目根外落盘",
   } finally {
     await rm(root, { recursive: true, force: true });
     await rm(outside, { recursive: true, force: true });
+  }
+});
+
+test("显式 guard 对畸形结构与初始 create/update 冲突全部 fail closed", async () => {
+  const root = await mkdtemp(join(tmpdir(), "nextstep-guard-contract-"));
+  await writeFile(join(root, "existing.md"), "before");
+
+  try {
+    const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root }));
+    for (const guard of [
+      { mode: "delete", before_digest: null },
+      { mode: "create", before_digest: digest("before") },
+      { mode: "update", before_digest: null },
+      { mode: "update", before_digest: "sha256:not-hex" },
+    ]) {
+      await assert.rejects(
+        fileSystem.atomicWrite("new.md", Buffer.from("nextstep"), guard as never),
+        hasCode("INVALID_WRITE_PLAN"),
+      );
+    }
+
+    await assert.rejects(
+      fileSystem.atomicWrite("existing.md", Buffer.from("nextstep"), {
+        mode: "create",
+        before_digest: null,
+      }),
+      hasCode("EEXIST"),
+    );
+    await assert.rejects(
+      fileSystem.atomicWrite("missing.md", Buffer.from("nextstep"), {
+        mode: "update",
+        before_digest: digest("before"),
+      }),
+      hasCode("ENOENT"),
+    );
+    await assert.rejects(
+      fileSystem.atomicWrite("existing.md", Buffer.from("nextstep"), {
+        mode: "update",
+        before_digest: digest("other"),
+      }),
+      hasCode("ESTALE"),
+    );
+    assert.equal(await readFile(join(root, "existing.md"), "utf8"), "before");
+    assert.deepEqual(await readdir(root), ["existing.md"]);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("规范父路径解析漂移时在创建 temp 前拒绝写入", async () => {
+  const root = await mkdtemp(join(tmpdir(), "nextstep-canonical-parent-root-"));
+  const outside = await mkdtemp(join(tmpdir(), "nextstep-canonical-parent-outside-"));
+  const parent = join(root, "docs");
+  await mkdir(parent);
+  const binding = {
+    realpath: async (path: string) => path === parent ? outside : nodeRealpath(path),
+  } as Partial<NodeWriteFileSystemBinding>;
+
+  try {
+    const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+    await assert.rejects(
+      fileSystem.atomicWrite("docs/result.md", Buffer.from("nextstep"), {
+        mode: "create",
+        before_digest: null,
+      }),
+      hasCode("WRITE_ACCESS_BLOCKED"),
+    );
+    assert.deepEqual(await readdir(parent), []);
+    assert.deepEqual(await readdir(outside), []);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+    await rm(outside, { recursive: true, force: true });
+  }
+});
+
+test("规范 root 与父路径的 symlink、非目录和解析故障均映射访问阻塞", async (t) => {
+  await t.test("root symlink", async () => {
+    const container = await mkdtemp(join(tmpdir(), "nextstep-root-symlink-"));
+    const realRoot = join(container, "real");
+    const alias = join(container, "alias");
+    await mkdir(realRoot);
+    await symlink(realRoot, alias, "dir");
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: alias }));
+      await assert.rejects(
+        fileSystem.atomicWrite("result.md", Buffer.from("x"), { mode: "create", before_digest: null }),
+        hasCode("WRITE_ACCESS_BLOCKED"),
+      );
+    } finally {
+      await rm(container, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("root 非目录", async () => {
+    const container = await mkdtemp(join(tmpdir(), "nextstep-root-file-"));
+    const rootFile = join(container, "root-file");
+    await writeFile(rootFile, "not-a-directory");
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: rootFile }));
+      await assert.rejects(
+        fileSystem.atomicWrite("result.md", Buffer.from("x"), { mode: "create", before_digest: null }),
+        hasCode("WRITE_ACCESS_BLOCKED"),
+      );
+    } finally {
+      await rm(container, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("父路径非目录", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-parent-file-"));
+    await writeFile(join(root, "docs"), "not-a-directory");
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root }));
+      await assert.rejects(
+        fileSystem.atomicWrite("docs/result.md", Buffer.from("x"), { mode: "create", before_digest: null }),
+        hasCode("WRITE_ACCESS_BLOCKED"),
+      );
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("root realpath 故障", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-root-realpath-fault-"));
+    const binding = {
+      realpath: async () => {
+        const error = new Error("injected realpath fault") as NodeJS.ErrnoException;
+        error.code = "EIO";
+        throw error;
+      },
+    } as Partial<NodeWriteFileSystemBinding>;
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      await assert.rejects(
+        fileSystem.atomicWrite("result.md", Buffer.from("x"), { mode: "create", before_digest: null }),
+        hasCode("WRITE_ACCESS_BLOCKED"),
+      );
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+});
+
+test("最终 readback 缺失或内容漂移时拒绝成功并清理 temp", async (t) => {
+  await t.test("readback 内容漂移", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-readback-drift-"));
+    const target = join(root, "result.md");
+    const binding = {
+      readFile: async (path: string) => path === target ? Buffer.from("drifted") : readFile(path),
+    } as Partial<NodeWriteFileSystemBinding>;
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      await assert.rejects(
+        fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), {
+          mode: "create",
+          before_digest: null,
+        }),
+        hasCode("ESTALE"),
+      );
+      assert.equal(await readFile(target, "utf8"), "nextstep");
+      assert.deepEqual(await readdir(root), ["result.md"]);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("readback 前目标消失", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-readback-missing-"));
+    const target = join(root, "result.md");
+    let targetChecks = 0;
+    const binding = {
+      lstat: async (path: string) => {
+        if (path === target && ++targetChecks === 2) {
+          await unlink(target);
+          const error = new Error("injected readback disappearance") as NodeJS.ErrnoException;
+          error.code = "ENOENT";
+          throw error;
+        }
+        return nodeLstat(path);
+      },
+    } as Partial<NodeWriteFileSystemBinding>;
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      await assert.rejects(
+        fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), {
+          mode: "create",
+          before_digest: null,
+        }),
+        hasCode("ENOENT"),
+      );
+      assert.deepEqual(await readdir(root), []);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+});
+
+test("最终安装对象被替换为 symlink 或目录时拒绝 readback", async (t) => {
+  for (const replacement of ["symlink", "directory"] as const) {
+    await t.test(replacement, async () => {
+      const root = await mkdtemp(join(tmpdir(), `nextstep-readback-${replacement}-`));
+      const target = join(root, "result.md");
+      const outside = join(root, "outside.md");
+      await writeFile(outside, "outside");
+      let targetChecks = 0;
+      const binding = {
+        lstat: async (path: string) => {
+          if (path === target && ++targetChecks === 2) {
+            await unlink(target);
+            if (replacement === "symlink") {
+              await symlink(outside, target);
+            } else {
+              await mkdir(target);
+            }
+          }
+          return nodeLstat(path);
+        },
+      } as Partial<NodeWriteFileSystemBinding>;
+      try {
+        const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+        await assert.rejects(
+          fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), {
+            mode: "create",
+            before_digest: null,
+          }),
+          hasCode("WRITE_ACCESS_BLOCKED"),
+        );
+        assert.equal(await readFile(outside, "utf8"), "outside");
+        assert.ok((await readdir(root)).every((entry) => !entry.includes(".nextstep-tmp-")));
+      } finally {
+        await rm(root, { recursive: true, force: true });
+      }
+    });
   }
 });
