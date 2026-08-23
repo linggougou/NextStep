@@ -64,6 +64,10 @@ class MemoryWriteFileSystem implements WriteFileSystemPort {
     readonly path: string;
     readonly guard: WriteMutationGuard;
   }> = [];
+  readonly removalGuards: Array<{
+    readonly path: string;
+    readonly expectedCurrentDigest: WriteTargetSpec["after_digest"] | undefined;
+  }> = [];
   removeFailures = new Map<string, NodeJS.ErrnoException>();
   writeCount = 0;
   removeCount = 0;
@@ -155,11 +159,22 @@ class MemoryWriteFileSystem implements WriteFileSystemPort {
     }
   }
 
-  async removeCreated(path: string): Promise<void> {
+  async removeCreated(
+    path: string,
+    expectedCurrentDigest?: WriteTargetSpec["after_digest"],
+  ): Promise<void> {
+    this.removalGuards.push({ path, expectedCurrentDigest });
     this.removeCount += 1;
     const failure = this.removeFailures.get(path);
     if (failure !== undefined) {
       throw failure;
+    }
+    const current = this.files.get(path);
+    if (
+      expectedCurrentDigest !== undefined &&
+      (current === undefined || digestUtf8Content(current) !== expectedCurrentDigest)
+    ) {
+      throw errnoError("ESTALE", `Memory created target ownership changed: ${path}`);
     }
     this.files.delete(path);
   }
@@ -1030,6 +1045,35 @@ test("rollback restores proven create targets by removal and blocks on vanished 
   assert.match(vanishedResult.detail ?? "", /manual-review/);
   assert.equal(vanishedResult.targets[0]?.status, "rollback-blocked");
   assertNoPromotion(vanishedResult);
+});
+
+test("create rollback passes expected current digest and preserves a mutation-boundary competitor", async () => {
+  const targets = buildTargets([
+    { path: "docs/a.md", mode: "create", content: "transaction-owned" },
+    { path: "docs/b.md", mode: "create", content: "will-fail" },
+  ]);
+  const plan = buildPlan(targets);
+  const fileSystem = new MemoryWriteFileSystem();
+  fileSystem.seedDirectory("docs");
+  fileSystem.writeFaults.set("docs/b.md", { writeError: errnoError("ENOSPC", "full") });
+  const originalRemoveCreated = fileSystem.removeCreated.bind(fileSystem);
+  fileSystem.removeCreated = async (
+    path: string,
+    expectedCurrentDigest?: WriteTargetSpec["after_digest"],
+  ) => {
+    fileSystem.mutateExternally(path, "competitor-owned");
+    await originalRemoveCreated(path, expectedCurrentDigest);
+  };
+
+  const result = await execute(plan, confirmPlan(plan), fileSystem);
+
+  assert.equal(result.code, "WRITE_PARTIAL_BLOCKED");
+  assert.equal(result.targets[0]?.status, "rollback-blocked");
+  assert.equal(fileSystem.files.get("docs/a.md"), "competitor-owned");
+  assert.deepEqual(fileSystem.removalGuards, [
+    { path: "docs/a.md", expectedCurrentDigest: targets[0]?.after_digest },
+  ]);
+  assertNoPromotion(result);
 });
 
 test("rollback failures and unreadable post-write state block instead of reverting", async () => {
