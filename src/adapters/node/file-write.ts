@@ -900,7 +900,7 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
         const tempName = `${targetName}.nextstep-tmp-${randomBytes(8).toString("hex")}`;
         const cleanupContext: CleanupContext = {};
         let handle: FileHandle | undefined;
-        let tempWasCreated = false;
+        let openAttempted = false;
         let tempProof: FileObjectProof | undefined;
         try {
           if (guard.mode === "update") {
@@ -908,8 +908,8 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
           }
 
           await assertLiveCleanupRoot(cleanupContext, anchor, `temp-open:${relativePath}`);
+          openAttempted = true;
           handle = await binding.open(tempName, "wx", existingMode ?? 0o644);
-          tempWasCreated = true;
           tempProof = await proofFromHandle(handle, tempName);
           await assertLiveCleanupRoot(cleanupContext, anchor, `temp-created:${relativePath}`);
           await assertIdentity();
@@ -1014,28 +1014,30 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
               // Closing before cleanup must not mask the write failure.
             }
           }
+          if (tempProof === undefined) {
+            if (openAttempted) {
+              const locatorError = await recoveryError(
+                mutationError("ESTALE", `Primary temporary object proof is unavailable: ${relativePath}`),
+                tempName,
+                anchor,
+                cleanupContext,
+                null,
+              );
+              mergeRecoveryMetadata(error, locatorError);
+            }
+            throw error;
+          }
           try {
             if (await pathExists(tempName)) {
-              if (tempProof === undefined) {
-                const locatorError = await recoveryError(
-                  mutationError("ESTALE", `Primary temporary object proof is unavailable: ${relativePath}`),
-                  tempName,
-                  anchor,
-                  cleanupContext,
-                  null,
-                );
-                mergeRecoveryMetadata(error, locatorError);
-              } else {
-                await cleanupOwnedBasename(
-                  tempName,
-                  contentDigest,
-                  relativePath,
-                  anchor,
-                  cleanupContext,
-                  tempProof,
-                );
-              }
-            } else if (tempWasCreated) {
+              await cleanupOwnedBasename(
+                tempName,
+                contentDigest,
+                relativePath,
+                anchor,
+                cleanupContext,
+                tempProof,
+              );
+            } else {
               const locatorError = await recoveryError(
                 mutationError("ESTALE", `Primary temporary object became unavailable: ${relativePath}`),
                 tempName,
