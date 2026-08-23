@@ -2125,3 +2125,77 @@
 - 三名独立 Qwen3.8 Max Agent 入口评估均 `PASS / 96`：产品/交互、实现/测试、治理/control 三轴 8/8 硬门通过，P0=0；综合 required_fixes=4，已写入 `.codex/exec-plan-s1.5-generation-1.md` 与 entry scorecard。
 - 已吸收的范围决策：七字段 dedup 投影冻结；保留 PROFILE_CONFLICT_REJECTED 兼容并新增写入冲突回执语义；S1.5 只验证 fixture 工作树、不实现 V2/V3 正式 refs；活跃 source_refs 使用 S3/007/008/009/S4/P3/P4，W1 先构造不存在的写入 fixture。
 - 本轮只修改计划、状态、Change Request 索引与评估留痕；未修改生产代码、测试、Schema、依赖、formal/control，未生成 S1.5 packet，未编码、未派发、未 push。
+
+## 2026-08-22 项目当前状态审计
+
+- 任务类型：L1 只读审阅；目标是核对路线锁、里程碑、Git 实况、control/formal refs 和本地门禁，不修改生产代码、路线锁、计划或 refs。
+- 路线与生命周期：继续 `P5 / S5 / V1 / M1.2 / S1.5`；当前阶段出口仍是逐项完成 S1.5、S1.6、M1.2 与 V1 门禁，本轮不涉及新需求、阶段切换或高危动作。
+- 任务前基线：`main=a028bb7eccf3df4601cb3655e9e56e56f3c83066`，工作区 clean，本地 `main` 相当于未实时 fetch 的 `origin/main` 显示 ahead 84 / behind 0。
+- 实时 refs：`formal=024c1db6d941b6f771746c8d6249fb8a09b816f3` (F14)，且为 main 祖先；`control=e1a470c0307d1126cce42b38cf4bc63596facba9`。该 control 值已超过路线锁、README 和 PLANS 记录的 `f358124...`。
+- S1.5 实况：control 链已生成 Execution Packet，领取 fence 82，并记录 W1/W2/W3 phase-1 三路派发；registry 状态为 `running-phase1`，outbox 状态为 `partially-dispatched`，剩余切片为 W4。对应租约已于 2026-08-14 过期，checkpoint 仍保留 pending dispatch message。
+- 切片证据：W1/W2/W3 分支分别存在提交 `900294d...`、`f28f81d...`、`73e4138...`；未发现 W4 分支或主线集成提交。三个对应临时 worktree 目录已不存在，Git 记录为 prunable，分支对象仍可达。
+- 工具与流程：按 `verification-loop` 执行主线类型检查、构建/覆盖率测试和 diff/状态核对；项目无 lint 脚本，以 `pnpm check` 的 typecheck + coverage 门禁为项目真源替代。
+- 审计结论：主线健康，但项目状态存在明显漂移；S1.5 已派发且有三路分支成果，不能再报告为“仅入口评估”，也不能报告为“已完成”。下一安全入口是先做过期 dispatch/lease 恢复与三切片独立复验，再决定 W4 集成；未恢复 control 一致性前不应继续派发。
+- 结束状态：已结束（状态审计完成）；项目阶段门禁结论为“需恢复/需讨论”，不允许宣称 S1.5、M1.2、V1 或 P5 完成。
+
+## 2026-08-22 S1.5 过期执行态恢复与集成启动
+
+- 用户授权：用户在当前状态审计后明确要求“继续执行”，授权在既定 `P5 / V1 / M1.2 / S1.5` 路线内恢复过期执行态并继续实施。
+- 最小闭环：复验 W1/W2/W3 → 更高 fence 恢复 control → TDD 完成 W4 → 集成与全量验证 → 生成精确候选并停在独立 CV/I/X/P/L3 前。
+- 明确非目标：不改产品、主交互载体、技术栈或门禁；不启动 S1.6，不移动 formal F14，不用主控自审代替独立结论。
+- 串行退化：当前运行规则未授权主动派生子 Agent；主控在隔离 worktree 中串行恢复与集成，独立验收保持未通过，不降级为自审。
+- CodeGraph 替代：项目未初始化且路线锁为“需询问”，本轮不写入 `.codegraph/`；使用 `rg`、真源文档、既有测试和 TypeScript 类型检查补偿结构分析。
+
+## 2026-08-22 S1.5 attempt 2 Subagent 集成与候选固化
+
+- 用户明确授权“使用 subagent 模式继续执行”；主控派生 W4 实现、架构契约核对、恢复/验收预审，并在审查发现后追加 W1 fixture 与 W3 candidate digest 窄修复 worker。所有写入按 packet 互斥写集执行，审查代理只读。
+- 集成链：W1/W2/W3 恢复集成提交 `1e67103` / `91f0841` / `11de2bb`；W4 初始提交 `07156f0`；审查修复依次为 W1 `6ee9c2d`、W4 `9a72e01`、W1 `192ab10`、W3 `e4d10cc`、W4 `f226e0f`。
+- 两轮独立只读审查先后阻塞并关闭：真实 CLI preview 误分派、`.git/.GIT` 正式 ref 写入、实时 route-lock/stage、A/B 项目根、formal/HEAD/dirty 基线、preview→plan、完整 Candidate Change digest、confirmation code、结构化失败回执、fixture synthetic 路线锁与 S1.2 freeze 回放等缺口。
+- 精确候选：commit=`f226e0fce689284b5f02747784d82c09c47b3ec5`，tree=`c5d2e7c2a22023970d4a73feba856afdd44cd891`，parent=`e4d10ccd3299ec7d3573254db60afe8b6d48d573`，subject digest=`sha256:c01eb4ed6cae835e6c282e56b8a4a69c7f5c61adcebc58d14bf89ae0ac382d30`。
+- 主控将 main 从 `a028bb7...` 快进到精确候选；`.codex/operations-log.md`、`.codex/verification-report.md` 与本轮恢复摘要保留为候选外治理留痕，不进入 packet 的 38 条产品变更清单。
+- Execution Result：`results/result-execution-s1.5-g4-a2-f83-20260822.json`，Result digest=`sha256:7a0197f807214041402cf6e947b85d1c17494145e01e511d2977fbb5b3d722bd`；registry S1.5 attempt 2=`candidate-ready`。
+- Control CAS：首次命令误用了不存在的展开 OID，Git 在 expected-old 不变时安全拒绝；核实真实提交后以 expected-old=`adb075fb7f8da577bde7362639438425e9ea01ca` 成功推进到 `110e5dc91af4f6ce123b6fef4be5de65447c5518`。formal 保持 F14 `024c1db...`。
+- 状态边界：当前只形成待独立 CV / I-X-P / L3 的 S1.5 候选；不宣称 S1.5、M1.2、V1 或 P5 完成，不启动 S1.6，不移动 formal。
+
+## 2026-08-22 Multica 迁移可行性审查
+
+- 任务类型：L1 只读技术/产品审查；用户询问 NextStep 能否直接移植给 Multica agent team 使用。本轮只读取项目与 Multica 官方资料、运行本地门禁并写 `.codex` 留痕，不修改产品代码、路线锁、里程碑或 refs。
+- 路线判断：当前仍为 `P5 / S5 / V1 / M1.2`；S1.5 attempt 2 仅为 candidate-ready，尚未完成独立验收或正式提升。迁移不是当前阶段出口，若实施必须走 Change Intake / Change Request。
+- 项目判断：领域内核和真源协议具备宿主可替换设计，但当前仓库没有完整 host/dispatch/formal-promotion adapter，P5 也未完成，不能视为完整产品直接部署。
+- Multica 核对：官方文档证明其具备 Codex runtime、Skill 注入、Squad leader 扁平调度、issue/task 历史、会话恢复、MCP、项目资源与 per-task worktree；与 NextStep 架构高度匹配。
+- 关键缺口：官方资料未证明 NextStep `full` 所需的原子 create-or-return + fencing、歧义派发恢复、可信进程内用户确认 verifier、精确正式基线与项目外凭证/正式 CAS。普通评论/状态不能直接替代 NextStep 正式门禁。
+- 分流结论：可作为高潜 `manual-isolated` 候选宿主，不能零改动直接移植，也不能现在声明 `full`。推荐保持 NextStep 内核不变，仅新增 MulticaAdapter，并以真实故障注入探针逐级升级宿主等级。
+- Skill 运行时：使用 `verification-loop` 完成本地 build/typecheck/test/coverage 与差异边界核对；项目无 lint 脚本，沿用 `pnpm check` 真源门禁。
+- 工具替代：当前 shell 未发现 `multica` CLI，无法对用户实际 Multica runtime 现场探针；使用 Multica 官方文档和开源仓库资料进行静态能力核对，最终宿主等级保留为待真实探针确认。
+- 详细摘要：`.codex/context-summary-multica-migration-feasibility-2026-08-22.md`。
+- 结束状态：审查完成；不允许因此进入新阶段、改变路线或宣称迁移完成。
+## 2026-08-23 P5 夜间自主推进授权与执行基线
+
+- 用户授权：休息期间由主控自主规划、持续开发；各功能使用隔离 worktree 派发 subagent，并在验收合格后回收。
+- 路线判断：当前仍为 S5 / P5，依据 `PROJECT_ROUTE_LOCK.md` 的 P5 产品落地路线和 `docs/exec-plans/active/p5-product-implementation-milestones.md`；本授权不改变路线、技术栈、阶段出口或正式提升门禁，不构成 Change Request。
+- 当前阶段出口：继续完成 M1.2 的 S1.5、S1.6 和累计验收，再按顺序进入 V1 后续门禁；不得把单个候选或自动验证冒充 M1.2/V1/P5 完成。
+- 本轮最小闭环：先对精确 S1.5 candidate `f226e0f...` 完成独立 CV 与独立 I/X/P；双门通过后才允许 L3 和最终证据链。
+- 实时身份：main/candidate=`f226e0fce689284b5f02747784d82c09c47b3ec5`，tree=`c5d2e7...`，control=`110e5dc91af4f6ce123b6fef4be5de65447c5518`，formal=F14 `024c1db...`，Execution Result=`sha256:7a0197...`。
+- 工作区保护：主工作区已有 `.codex` 治理留痕及 Multica 可行性摘要，均保留且不混入 S1.5 实现候选；无用户生产代码改动被覆盖或回滚。
+- Skills：使用 `tdd-workflow` 约束后续功能/修复，使用 `verification-loop` 约束每个里程碑的 build/typecheck/test/coverage/security/diff；原生 subagent/worktree 已满足并行需求，未引入 dmux。
+- 项目特化规则：项目根无 `AGENTS.md`，按全局入口和 `PROJECT_ROUTE_LOCK.md` 执行。CodeGraph 未初始化，路线锁仍标记“需询问”；本轮继续使用 `rg`、活动计划、既有测试与 Git 历史作替代，不擅自初始化。
+- 完整计划：`.codex/exec-plan-autonomous-p5-2026-08-23.md`。
+
+## 2026-08-23 S1.5 attempt 2 双门禁与 attempt 3 证据修复
+
+- Control 前置修复：发现 attempt 2 Result CAS 未同步 checkpoint，先以 expected-old=`110e5dc...` 单独推进到 `8bf706f...`，补 `candidate_results.S1.5` 与 candidate-ready 状态；formal 保持 F14。
+- 双门派发：新 gate packet 使用显式七字段 dedup；CV fence 84、I/X/P fence 85。首批重型 reviewer 未及时进入执行，主控中断后以同 fence/claim 做可追溯 host handoff，最终 control ack=`0750150...`，pending=0。
+- 独立结论：CV review commit=`b3a15b1...`，`REJECT / 78`、P0/P1/P2=`1/0/0`；I/X/P review commit=`3e7125c...`，`PASS / 98`、P0/P1/P2=`0/0/1`，13/13 write-consistency、17/17 Profile、Q6=100%。
+- 失败原因：attempt 2 Packet/Result 声称 `374/374`，但 exact subject 在 Node 24.11.1、24.14.0、24.19.0 均稳定为 `353/353`；36 个测试文件为 337 top-level + 16 nested。产品行为、38 路径、PC-06/PC-07、安全/故障、S1.2 freeze、架构与覆盖率均通过，因此判定为 immutable evidence 口径缺陷，不是缺少 21 项产品能力。
+- 双门 Result CAS：control=`76f1f16...`；attempt 2=`superseded-after-review`，历史 Result/review 不覆盖，formal 仍 F14，禁止 L3。
+- Attempt 3：新 packet=`sha256:35f2a959...`、dedup=`sha256:e5bf8635...`，只允许新的 evidence-correction review 两文件，禁止生产代码/测试/文档修改；fence 86，隔离 worktree `/private/tmp/nextstep-s1-5-evidence-a3-20260823`，host=`/root/s15_evidence_a3`，ack 后 control=`c70b342...`、pending=0。
+- Agent/worktree 回收：attempt 2 CV/I-X-P 两个已完成 worktree 已安全移除；对应分支与 review commit 保留，可恢复、可追溯。
+
+## 2026-08-23 S1.5 attempt 3 证据纠偏与双门通过
+
+- Evidence Correction：独立 worktree 只新增指定 review 两文件，`PASS / 100`、7/7 hard gates；review commit=`0d8717901b00f55384fe47ac1b4a14657a2fecb1`，scorecard JCS=`sha256:d86d2061bcc001b389c23ebb362a856700e96d1354d2f88fd42ef5b50ecc98e6`。
+- 新 Execution Result：`results/result-execution-s1.5-g4-a3-f86-20260823.json`，明确冻结 Node 24.14.0 / pnpm 10.33.2、36+36 测试文件、337+16=`353/353` 与覆盖率 92.82/87.62/99.00；Result digest=`sha256:1b17265a0917159aeb0808aa120a220984a436290cc6059124e52ab7c7a6155b`。
+- 第三次双门：CV fence 87 为 `PASS / 100`、8/8、P0/P1/P2=`0/0/0`，review commit=`9eb334a6d7b4e0a062af33557b57fd93b9db0ed4`，scorecard JCS=`sha256:9c208f53108b912c3618294ef22cf551e521058f6f2b5e8d14432d62b756aa4e`；I/X/P fence 88 为 `PASS / 100`、6/6、P0/P1/P2=`0/0/0`，review commit=`7e8a0c80fc039eb142d6e102dbc0e3a23e60ee1e`，scorecard JCS=`sha256:148e8d41914a7fe00473fbd48a82dcc3c8aa36fa1253e9f63ce2f9a40a5f6b10`。
+- 主控复核：三份 scorecard 均使用项目 `canonicalizeJson` 独立复算 RFC8785/JCS 摘要匹配；三个 review 分支相对 subject 都恰好只新增各自两文件，worktree clean。
+- 双门 Results：CV digest=`sha256:6cf89daeac8daf168be6dbe1a4d6cdd9f8c60d1dcf1e879a479180a6edfb4d34`；I/X/P digest=`sha256:56cbe4822ab36e6dbde0b87669e53ce4b260aa4fe349ac7d40d240f7bf862c34`。以 expected-old=`0da2005...` CAS 将 control 推进到 `1c3eb36336da3b34c76d7178362c5e799b0a6427`，formal 保持 F14。
+- 回收：attempt 3 evidence/CV/I-X-P 三个已验收 worktree 已安全移除，分支和完整 commit 仍保留；下一门禁为独立 L3 fence 89。

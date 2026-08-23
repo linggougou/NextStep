@@ -2105,3 +2105,55 @@
 - 入口综合：三名独立 Qwen3.8 Max Agent 均 `PASS / 96`，8/8 前序硬门通过、P0=0；评估 worktree 均已回收且未写入项目。
 - 计划冻结验证：S1.5 计划明确 PC-06/PC-07、四项 P1 修复、W1→W2/W3→W4 互斥写集、fixture-first、V1/V3 边界、七字段 dedup、回执冲突语义、活跃 source_refs 与 F14→F15 正式链；未生成 packet、未编码或派发。
 - 状态卫生：当前文档 control 已统一为实时 `f3581247189e719370f339b0e061e47d8df5556c`；CR-004/CR-005 索引已改为已关闭；历史 `.codex` 记录中的旧 control OID 保留为历史事实。
+
+## 2026-08-22 项目当前状态独立核对
+
+- 基线：审计前 main=`a028bb7eccf3df4601cb3655e9e56e56f3c83066`，工作区 clean；formal=F14 `024c1db6d941b6f771746c8d6249fb8a09b816f3` 且 formal→main ancestry 通过。
+- 实时 control：`e1a470c0307d1126cce42b38cf4bc63596facba9`；相比文档当前值 `f358124...` 已经过 packet `39b0e42...`、dispatch intent `5d9cb37...`、fence 82 claim `d636a33...` 和 phase-1 ack `e1a470c...` 四次 control 推进。
+- S1.5 control 验证：registry=`running-phase1`，outbox=`partially-dispatched`，pending message 仍为 `msg-dispatch-ready-s1.5-g4-a1-20260814`，remaining slices=`S1.5-W4`，租约于 `2026-08-14T21:59:28.224Z` 过期。
+- 分支证据：W1=`900294d82971dcff0fa36378617cd4ffb1f1a693`，W2=`f28f81d54b6791ee222482eb33b03b16910373b3`，W3=`73e413852e82553a54ff7508cefdaf06fe908906`；分支保留，临时 worktree 记录均 prunable。未发现 W4 或 S1.5 主线集成成果。
+- 主线命令：`corepack pnpm check`。
+- 结果：typecheck PASS；206/206 测试 PASS；Lines `91.07%`、Branches `83.80%`、Functions `98.36%`，均超过 80% 门禁。
+- 范围说明：该结果只证明当前 main/F14 基线健康；W1/W2/W3 分支成果未在本次主线门禁中被集成或独立复验，不得将 206/206 作为 S1.5 实现通过的证据。
+- 门禁结论：main 基线通过；S1.5 运行态恢复门禁未通过（control/文档不一致、pending dispatch 与租约过期、W4 未完成、未集成）。综合结论：需恢复，不允许进入 S1.5 验收、formal F15 或 S1.6。
+
+## 2026-08-22 S1.5 attempt 2 候选集成验证
+
+- 精确 subject：`f226e0fce689284b5f02747784d82c09c47b3ec5`；tree=`c5d2e7c2a22023970d4a73feba856afdd44cd891`；parent=`e4d10ccd3299ec7d3573254db60afe8b6d48d573`；三字段 JCS subject digest=`sha256:c01eb4ed6cae835e6c282e56b8a4a69c7f5c61adcebc58d14bf89ae0ac382d30`。
+- 主控命令：`corepack pnpm check`；结果 typecheck/build PASS、374/374 测试 PASS，覆盖率 Lines `92.79%`、Branches `87.55%`、Functions `99.00%`，均高于 F14 `91.07% / 83.80% / 98.36%`。
+- 定向边界：真实二进制 preview、JCS 单回执/stdout-stderr/exit code、主对话拒写、`.git/.GIT` 正式 ref 保护、route-lock/stage 重读、A/B root、formal/HEAD/dirty 漂移、candidate current re-evaluation、完整 candidate digest、confirmation、dry-run 零写、三正例 E2E、access/symlink/partial/unsafe rollback、S1.2 current freeze replay均通过。
+- 范围验证：相对 working parent `a028bb7...` 恰 38 条变更，全部命中 attempt 2 packet `allowed_paths`，禁止路径 0；所有变更 JSON `jq empty` 通过；`git diff --check` 通过；未修改 package/lock/tsconfig 或既有 S1.1-S1.4 fixture。
+- 安全扫描：敏感字符串扫描仅命中既有/新增的故意拒绝型测试样本（private-key 与 api_key），未发现生产秘密；`git fsck --strict` 无损坏，仅报告历史 dangling 对象。
+- 双重只读审查：最终精确 HEAD 上，架构/契约审查与恢复/验收预审均为 `PASS`，P0/P1/P2=0；明确边界仍是 `manual-isolated` 可信宿主，不证明真实 host adapter 或 `full` 支持。
+- Result 复算：Execution Result digest=`sha256:7a0197f807214041402cf6e947b85d1c17494145e01e511d2977fbb5b3d722bd`，registry candidate/result 摘要一致；control CAS 后=`110e5dc91af4f6ce123b6fef4be5de65447c5518`，formal 仍为 F14 `024c1db...`。
+- 结论：`candidate-ready`，不是独立 CV/I-X-P/L3/FV 或 formal promotion；下一步必须针对精确 subject 派发独立 CV 与独立 I/X/P。
+
+## 2026-08-23 S1.5 attempt 2 独立 CV / I-X-P 验证
+
+- Candidate Verification：`REJECT / 78`，P0/P1/P2=`1/0/0`，8 个 hard gates 为 7 PASS / 1 FAIL；失败项 CV-03。Review commit=`b3a15b154cff97e63878b667dfbb5d45deed4e9f`，scorecard JCS digest=`sha256:6d0add4e5da7abaaf51b1b846f9acc51c7afaa30f1834f6c983ab5deee42a400`。
+- I/X/P + Profile：`PASS / 98`，P0/P1/P2=`0/0/1`；13/13 write-consistency、17/17 Acceptance Profile、Q6=100%、定向 165/165。Review commit=`3e7125c91f1ac9793d8bf7946930716f18da6b4f`，scorecard JCS digest=`sha256:98d33fa44f49071452243fa61eae309c93a1aa58b592cba708789c377590ebe3`。
+- 可重复性复核：Node 24.11.1 / 24.14.0 / 24.19.0 对 exact subject 均为 353/353、0 fail；覆盖率分别 92.75/87.49/99.00、92.79/87.54/99.00、92.82/87.62/99.00，全部高于 F14。
+- 证据判断：attempt 2 Execution Result 的 374/374 无可重复运行时或选择口径，不能作为已解释的差异；CV fail closed。产品候选身份、38 路径、allowlist、PC-06/PC-07、安全故障、JCS、S1.2 freeze、架构与 refs 不变均通过。
+- Control Results：CV=`sha256:3e2d5377...`，I/X/P=`sha256:a51c0926...`；control=`76f1f1608e253f70606188b66ce8b2098c567e1c`，formal=F14，L3 不允许启动。
+- 修复门禁：attempt 3 必须以新 immutable Execution Result 明确冻结可重复的 Node 24.14.0 / pnpm 10.33.2 / 353/353 口径，再创建全新的 CV 与 I/X/P gate packet；不得覆盖或口头豁免 attempt 2。
+
+## 2026-08-23 S1.5 attempt 3 独立验证
+
+- Evidence Correction：`PASS / 100`，7/7 hard gates；全新 immutable Execution Result 将真实可重复口径固定为 `353/353`、0 fail、覆盖率 Lines/Branches/Functions=`92.82/87.62/99.00`。
+- Candidate Verification：`PASS / 100`，8/8 hard gates，P0/P1/P2=`0/0/0`；全新 `--no-local` clone、offline frozen install（downloaded 0）、36/36 测试文件、337+16=`353/353`，S1.5 专项 `86/86`，38 路径与安全/JCS/冻结/架构门禁全部通过。
+- I/X/P + Profile：`PASS / 100`，I/X/P/Profile=`25/25/25/25`，P0/P1/P2=`0/0/0`；定向 `166/166`、write-consistency `13/13`、Acceptance Profile `17/17`、Q6=`100%`。
+- 摘要复核：Evidence/CV/I-X-P scorecard JCS 分别为 `d86d2061...`、`9c208f53...`、`148e8d41...`，主控用项目 RFC8785 实现逐份重算 `MATCH`；CV/I-X-P Result digest 分别为 `6cf89dae...`、`56cbe482...`。
+- Ref 与窗口：验证窗口从 control=`0da2005200fb4f64795d584f2ff5fcf26d25d6b2` 冻结到两审查提交完成；期间 main=`f226e0f...`、formal=F14、subject/tree、源工作区指纹均不变。Result CAS 后 control=`1c3eb36336da3b34c76d7178362c5e799b0a6427`。
+- 结论：attempt 3 双门通过，允许进入独立 L3；仍不得宣称 S1.5 正式完成、移动 F15 或启动 S1.6，直到 L3、snapshot、FV、anchor verification 与 formal CAS 全部通过。
+
+## 2026-08-22 Multica 迁移可行性审查验证
+
+- 审查对象：当前 NextStep 仓库、已冻结 S3/S4 宿主边界、当前实现面，以及 Multica 官方 Agents / Squads / Tasks / Skills / Project resources / Providers / Auth / Comments / CLI 文档。
+- 本地门禁：`corepack pnpm check` PASS；353/353 测试通过，0 fail；Lines `92.79%`、Branches `87.54%`、Functions `99.00%`，均超过 80% 门禁。
+- 结构验证：当前实现包含领域内核、Node 文件适配器和 S1.1-S1.5 CLI；未发现完整 Multica/Codex host dispatch adapter 或 formal promotion 实现，符合“部分产品能力、非完整可部署产品”的判断。
+- 外部能力验证：Multica 官方文档明确支持 Codex runtime、per-task Skill 注入、leader-first Squad、独立 task 历史、会话恢复、MCP、Git/local project resource 和 worktree 隔离。
+- 未证实边界：未获得原子 `create-or-return(effect_key, fence_token, payload_digest)`、最高 fence、派发歧义恢复、可信用户 action verifier 与 NextStep formal CAS 的完整证据；因此 `full` 判定失败关闭，只能作为 `manual-isolated` 候选。
+- 工具限制：当前 shell 未发现 `multica` CLI，未执行用户实际 workspace/runtime 的现场探针；以官方文档静态核对替代，不能把静态核对升级为运行时支持声明。
+- 审查评分：88/100。适配价值高、领域复用率高，但不是零改动迁移，且真实宿主安全契约尚未验证。
+- 建议：需讨论。建议先通过 Change Request 建立窄 `MulticaAdapter` 与 `manual-isolated` 纵向探针，不重写 NextStep 内核，不用 Multica issue/status 代替 NextStep 正式真源。
+- 门禁结论：本轮可行性判断通过；迁移实施门禁未开启，不改变 S1.5、M1.2、V1、P5 或 formal 状态。
