@@ -50,6 +50,8 @@ interface MemoryFaultSpec {
   readonly landThenThrow?: NodeJS.ErrnoException;
 }
 
+type ExpectedMutationGuard = Pick<WriteTargetSpec, "mode" | "before_digest">;
+
 class MemoryWriteFileSystem implements WriteFileSystemPort {
   readonly files = new Map<string, string>();
   readonly dirs = new Set<string>();
@@ -59,6 +61,10 @@ class MemoryWriteFileSystem implements WriteFileSystemPort {
   readonly readFaults = new Map<string, { error: NodeJS.ErrnoException; skipCalls: number }>();
   readonly probeFaults = new Map<string, NodeJS.ErrnoException>();
   readonly readCallCounts = new Map<string, number>();
+  readonly mutationGuards: Array<{
+    readonly path: string;
+    readonly guard: ExpectedMutationGuard | undefined;
+  }> = [];
   removeFailures = new Map<string, NodeJS.ErrnoException>();
   writeCount = 0;
   removeCount = 0;
@@ -121,7 +127,8 @@ class MemoryWriteFileSystem implements WriteFileSystemPort {
     return Buffer.from(content, "utf8");
   }
 
-  async atomicWrite(path: string, content: Uint8Array): Promise<void> {
+  async atomicWrite(path: string, content: Uint8Array, guard?: ExpectedMutationGuard): Promise<void> {
+    this.mutationGuards.push({ path, guard });
     this.writeCount += 1;
     const fault = this.writeFaults.get(path);
     if (fault?.writeError !== undefined) {
@@ -832,6 +839,62 @@ test("baseline read race at commit time blocks before any write", async () => {
   assert.equal(unreadable.detail, "baseline-unreadable");
   assert.equal(unreadableFileSystem.writeCount, 0);
   assertNoPromotion(unreadable);
+});
+
+test("second successful baseline read with changed bytes rejects update before mutation", async () => {
+  const targets = buildTargets([
+    { path: "docs/a.md", mode: "update", content: "planned", beforeContent: "old-a" },
+  ]);
+  const plan = buildPlan(targets);
+  const fileSystem = new MemoryWriteFileSystem();
+  fileSystem.seedDirectory("docs");
+  fileSystem.seedFile("docs/a.md", "old-a");
+
+  const originalReadContent = fileSystem.readContent.bind(fileSystem);
+  let targetReads = 0;
+  fileSystem.readContent = async (path: string) => {
+    if (path === "docs/a.md") {
+      targetReads += 1;
+      if (targetReads === 2) {
+        fileSystem.mutateExternally(path, "user-new");
+      }
+    }
+    return originalReadContent(path);
+  };
+
+  const result = await execute(plan, confirmPlan(plan), fileSystem);
+
+  assert.equal(result.code, "WRITE_CONFLICT_REJECTED");
+  assert.equal(result.targets[0]?.status, "conflict");
+  assert.equal(result.detail, "baseline-changed-after-confirmation");
+  assert.equal(fileSystem.files.get("docs/a.md"), "user-new");
+  assert.equal(fileSystem.writeCount, 0);
+  assertNoPromotion(result);
+});
+
+test("mutation boundary receives explicit create and update guards", async () => {
+  const targets = buildTargets([
+    { path: "docs/a.md", mode: "update", content: "new-a", beforeContent: "old-a" },
+    { path: "docs/b.md", mode: "create", content: "new-b" },
+  ]);
+  const plan = buildPlan(targets);
+  const fileSystem = new MemoryWriteFileSystem();
+  fileSystem.seedDirectory("docs");
+  fileSystem.seedFile("docs/a.md", "old-a");
+
+  const result = await execute(plan, confirmPlan(plan), fileSystem);
+
+  assert.equal(result.code, "WRITE_COMMITTED");
+  assert.deepEqual(fileSystem.mutationGuards, [
+    {
+      path: "docs/a.md",
+      guard: { mode: "update", before_digest: targets[0]?.before_digest },
+    },
+    {
+      path: "docs/b.md",
+      guard: { mode: "create", before_digest: null },
+    },
+  ]);
 });
 
 test("rollback restores proven create targets by removal and blocks on vanished update targets", async () => {
