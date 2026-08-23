@@ -1,0 +1,203 @@
+{
+  "review_id": "p5-v1-m1.2-s1.5-ixp-a4-2026-08-23",
+  "task_id": "S1.5-I-X-P",
+  "task_attempt": 4,
+  "subject_task_attempt": 12,
+  "lane": "independent-ixp",
+  "review_level": "L3",
+  "rubric_id": "nextstep-s1.5-independent-ixp-a4-v1",
+  "stage_id": "P5/V1/M1.2/S1.5/product-interaction",
+  "plan_id": "p5-product-implementation",
+  "plan_generation": 4,
+  "claim_id": "claim-s1.5-ixp-g4-a4-f100-20260823",
+  "fence_token": 100,
+  "host_task_id": "codex-subagent:/root/s15_ixp_a3",
+  "gate_packet_ref": "/private/tmp/nextstep-control-s1-5-g4-a2-recovery/gate-requests/gate-product-interaction-s1.5-g4-a4-20260823.json",
+  "control_handoff_oid": "e387bacaa4e97d2215233110ffd23fcc105efbd9",
+  "subject": {
+    "commit_oid": "128e86bc8ecc23dd3f0ce2150bc2744edb3751d9",
+    "tree_oid": "814361368dde1233b788f30545f292a6a3ca0f2e",
+    "parent_oid": "14793d5800e5a3e3d8ed34f0de2331ecbbfc0e59",
+    "subject_digest": "sha256:95e670a8caf0f9c6f36bb1d60a5ad4530b0ea475e4ca204338549cb57c2c3447",
+    "subject_digest_contract": "sha256(RFC8785({commit_oid,parent_oid,tree_oid}))",
+    "subject_digest_independently_recomputed": true,
+    "formal_baseline_oid": "024c1db6d941b6f771746c8d6249fb8a09b816f3"
+  },
+  "identity_digests": {
+    "gate_packet": "sha256:c47f944f4eb1791771ad6704279b7faf2bea18496aaef0a0bb3fcbb66933b12a",
+    "gate_packet_dedup": "sha256:48b6867195a9d11721f1cf7c78c1651fd5c65455cf94460482f2ba9ab68186b0",
+    "execution_packet": "sha256:dff3b88d07914f922e6f81933d803b7808b62d0147a67c007f5a95a94db15894",
+    "execution_packet_dedup": "sha256:c93001774b832d3535345a5292deae666a9034ddd3c44af41cb7bf1c6bccf02c",
+    "execution_result": "sha256:b724253ef695ae9461f21d1f665a23358c84f4c52065087afaa5a118a5c327a9",
+    "all_independently_recomputed": true
+  },
+  "runtime": {
+    "isolated_worktree": "/private/tmp/nextstep-s1-5-ixp-a4-20260823",
+    "worktree_mode": "dedicated isolated Git worktree at exact subject",
+    "node": "v24.14.0",
+    "pnpm": "10.33.2",
+    "install": "pnpm install --offline --frozen-lockfile",
+    "install_downloaded": 0,
+    "check": "pnpm check",
+    "source_test_files": 37,
+    "compiled_test_files": 37,
+    "tests": {
+      "total": 444,
+      "pass": 444,
+      "fail": 0,
+      "skipped": 0
+    },
+    "coverage_percent": {
+      "lines": 93.07,
+      "branches": 88.62,
+      "functions": 99.09
+    },
+    "focused_ixp_profile": {
+      "total": 170,
+      "pass": 170,
+      "fail": 0,
+      "core_suites": "144/144",
+      "fixture_materialization_and_faults": "26/26"
+    }
+  },
+  "artifact_refs": [
+    "git:128e86bc8ecc23dd3f0ce2150bc2744edb3751d9:src/cli/write-consistency.ts",
+    "git:128e86bc8ecc23dd3f0ce2150bc2744edb3751d9:src/domain/command-policy.ts",
+    "git:128e86bc8ecc23dd3f0ce2150bc2744edb3751d9:src/domain/project-context.ts",
+    "git:128e86bc8ecc23dd3f0ce2150bc2744edb3751d9:src/domain/candidate-change.ts",
+    "git:128e86bc8ecc23dd3f0ce2150bc2744edb3751d9:src/domain/confirmation-node.ts",
+    "git:128e86bc8ecc23dd3f0ce2150bc2744edb3751d9:src/domain/write-transaction.ts",
+    "git:128e86bc8ecc23dd3f0ce2150bc2744edb3751d9:src/adapters/node/file-write.ts",
+    "git:128e86bc8ecc23dd3f0ce2150bc2744edb3751d9:skills/nextstep/SKILL.md",
+    "git:128e86bc8ecc23dd3f0ce2150bc2744edb3751d9:tests/cli/write-consistency.test.ts",
+    "git:128e86bc8ecc23dd3f0ce2150bc2744edb3751d9:tests/domain/fs-fault-fixture.test.ts",
+    "git:128e86bc8ecc23dd3f0ce2150bc2744edb3751d9:tests/domain/node-file-write-race.test.ts",
+    "git:128e86bc8ecc23dd3f0ce2150bc2744edb3751d9:tests/fixtures/write-consistency/",
+    "git:128e86bc8ecc23dd3f0ce2150bc2744edb3751d9:tests/fixtures/acceptance-profile/",
+    "control:e387bacaa4e97d2215233110ffd23fcc105efbd9:results/result-execution-s1.5-g4-a12-f98-20260823.json"
+  ],
+  "hard_gates": [
+    {
+      "id": "HG1-I",
+      "status": "pass",
+      "statement": "attempt12 Packet/Result/subject 摘要、固定工具链、444/444、三类目标项目真实闭环、JCS 单回执与 refs 不变全部通过。",
+      "evidence": "subject/parent/tree 与 subject digest 匹配；gate packet、execution packet、execution Result 及两个 dedup 均按独立 RFC8785/JCS 实现复算一致。专用隔离 worktree 在 Node v24.14.0、pnpm 10.33.2 下 offline frozen install（downloaded=0）后 pnpm check=444/444、0 fail，覆盖率 93.07/88.62/99.09；三类正例逐一通过 preview→independent confirmation→dry-run→commit→read-back→fixture Git commit，stdout 始终为单一 JCS 回执。验证窗口 main=8c5e5ae…、formal=024c1db…、control=e387bac… 保持不变。"
+    },
+    {
+      "id": "HG2-X",
+      "status": "pass",
+      "statement": "项目/阶段、候选影响、失败恢复与完整独立确认链可理解，职责隔离和所有自批入口 fail closed。",
+      "evidence": "SKILL S1.5、command-policy、confirmation-node 与 CLI 定向测试证明 challenge/view/display/independent action/envelope/result 全链绑定；主对话没有项目读写能力，execution 只能 dry-run，commit 只接受持有可信同进程 project/candidate/baseline probes、绑定根 file-system port、clock 与确认 envelope 的 integration。伪造职责、跳过预览、篡改 plan/candidate impact/signoff、过期或替换 view、formal/HEAD/dirty 漂移均在触盘前拒绝。"
+    },
+    {
+      "id": "HG3-P",
+      "status": "pass",
+      "statement": "PC-06 唯一项目根/阶段/权限矩阵与 PC-07 写入一致性、故障恢复和 promotion=none 全部成立。",
+      "evidence": "独立矩阵 13/13：3 正例、6 故障、4 布局；13/13 index digest 与 evidence_scope 匹配。project-context 覆盖同名、嵌套、symlink、缺 route lock、越界和权限阻塞；candidate/transaction/Node adapter 覆盖完整 candidate digest、plan、confirmation、原子 no-replace 写、fsync、read-back、formal/HEAD/dirty/目标基线漂移、部分写入、归属证明与安全回退。noProof×root/basename 状态固定 fail closed；成功与失败均不提升状态。"
+    },
+    {
+      "id": "HG4-Profile",
+      "status": "pass",
+      "statement": "Acceptance Profile 17/17、Q6=100%，headless/self-profile 身份连续，UI 与冲突边界零降级。",
+      "evidence": "独立逐 fixture 调用 evaluateAcceptanceProfile：17/17 与 expected 精确一致，Q6=100%；5 accepted、6 rejected、6 contract/identity error。三类 headless 与 self-profile 通过，ui-with-evidence 追加 UI 验收；路线冲突、缺 UI 证据、证据职责违规、kernel UI 冒领全部阻塞，6/6 rejected 均 enabled_acceptances=[] 且不携带 headless 降级输出。"
+    },
+    {
+      "id": "HG5-职责与宿主",
+      "status": "pass",
+      "statement": "13 份 write-consistency 与 17 份 Profile 证据严格限定 manual-isolated consumer contract，不冒领真实宿主、full 或 V3 PC-14/Q7。",
+      "evidence": "13/13 write-consistency 场景与 17/17 Profile fixture 的 evidence_scope 均为 manual-isolated consumer contract。SKILL 明示这些回放不证明真实用户事件、真实宿主适配器、full 支持、V3 PC-14/Q7；直接 shell commit 无可信能力时 fail closed。"
+    },
+    {
+      "id": "HG6-范围",
+      "status": "pass",
+      "statement": "结论只覆盖 S1.5 attempt12 I/X/P 与适用 Profile，且候选与治理 refs 不变。",
+      "evidence": "候选相对 working parent d9632c5…恰为 packet allowlist 的 4 个路径；attempt12 相对 repair parent 79be6a8…只改 W16 两路径，RED/GREEN 各自单文件。git diff --check 通过；review 分支只新增 review_write_set 两文件。未写 registry/snapshot/anchor/promotion，未宣称 L3、F15、S1.5 formal、M1.2、V1、P5 或 S1.6。"
+    }
+  ],
+  "matrix_results": {
+    "write_consistency": {
+      "total": "13/13",
+      "positive": "3/3",
+      "fault": "6/6",
+      "layout": "4/4",
+      "index_digest": "13/13",
+      "evidence_scope": "13/13"
+    },
+    "acceptance_profile": {
+      "total": "17/17",
+      "q6": "100%",
+      "accepted": 5,
+      "rejected": 6,
+      "contract_or_identity_errors": 6,
+      "rejected_without_downgrade": "6/6",
+      "evidence_scope": "17/17"
+    }
+  },
+  "dimensions": [
+    {
+      "id": "I-integration",
+      "score": 25,
+      "max": 25,
+      "reason": "attempt12 精确 subject 的固定工具链、444/444 全量回归、三类端到端写入、JCS 回执及 refs 不变量均可独立复现。",
+      "evidence_refs": ["runtime", "HG1-I", "matrix_results.write_consistency"]
+    },
+    {
+      "id": "X-interaction",
+      "score": 25,
+      "max": 25,
+      "reason": "阶段守卫、独立显式确认、职责隔离、候选影响绑定、阻塞原因与恢复入口均有实现和负例证据。",
+      "evidence_refs": ["HG2-X", "HG5-职责与宿主"]
+    },
+    {
+      "id": "P-product",
+      "score": 25,
+      "max": 25,
+      "reason": "PC-06/PC-07 的根解析、权限、基线绑定、原子 no-replace 写、回读及安全回退覆盖完整，13/13 场景通过。",
+      "evidence_refs": ["HG3-P", "matrix_results.write_consistency"]
+    },
+    {
+      "id": "Profile-adjudication",
+      "score": 25,
+      "max": 25,
+      "reason": "17/17、Q6=100%，headless/self/UI 与冲突、缺证据、职责违规边界全部按预期裁决。",
+      "evidence_refs": ["HG4-Profile", "matrix_results.acceptance_profile"]
+    }
+  ],
+  "penalties": [],
+  "findings": {
+    "P0": [],
+    "P1": [],
+    "P2": [],
+    "counts": {"P0": 0, "P1": 0, "P2": 0}
+  },
+  "totals": {
+    "raw": 100,
+    "penalty_total": 0,
+    "final": 100
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "进入真实宿主或 full 支持时建立独立门禁，不复用本次 manual-isolated 证据。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "六项 hard gate 全部通过；Node/pnpm/444、170/170 定向、13/13、17/17、Q6=100% 与 refs 不变均有本轮一手证据。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "I/X/P/Profile 四维均满分；无缺失证据、行为回归或范围冒领。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "证据来自专用隔离 worktree、真实 fixture 物化、故障注入、CLI/domain 测试、源码审查与独立 RFC8785 复算；无文档冒充实现。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "PASS / 100。P0/P1/P2=0/0/0，required_fixes=[]；只允许进入后续独立 L3，不授权 formal promotion 或阶段完成。"
+    }
+  ],
+  "independence_declaration": "本评审在 fence 100 ACK CAS 完成后，从精确 subject 的专用隔离 Git worktree 全新执行 frozen offline install、全量与定向测试、fixture 矩阵、源码审查和独立 JCS 摘要复算；未复用旧 I/X/P PASS 作为最终判断，未修改候选、main/formal/control 或 review_write_set 外任何 tracked 文件。",
+  "reviewed_at": "2026-08-23T22:57:34+08:00"
+}
