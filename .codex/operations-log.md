@@ -2208,3 +2208,12 @@
 - P1-2：父目录在 precheck 后替换为 symlink 时，Node adapter 的 temp/rename/readback 可越出规范项目根落盘并仍返回成功。
 - Fail closed：未生成 snapshot、未启动 FV/AV、未移动 formal F14；L3 Result digest=`sha256:1604425afd17e84b5e2830e0f389fff815757a245c1f3b936c7758f18afe7e4f`，control CAS=`a4dd468f28930b636e42f20fd4b22b3cdbf72ef5`，attempt 3 标记 `superseded-after-l3`，最低有效 attempt=4。
 - 后续唯一允许动作：新 attempt 4 窄 TDD 修复 mutation boundary、create no-replace、父路径竞态阻断及三类确定性回归；之后完整重跑 Execution Evidence、CV、I/X/P 与 L3。
+
+## 2026-08-23 S1.5 attempt 4 TDD 与独立候选审计
+
+- 并行 TDD：W6 RED=`e00b41d...`、GREEN=`f068721...`，负责领域 mutation guard；W7 RED=`4a65161...`（集成后 `a5b7b99...`）、GREEN=`728f92f...`（集成后 `7d078a1...`）、覆盖补强=`22490a8...`（集成候选 `0a93995...`），负责 Node no-replace/父路径验证。
+- 组合候选：commit=`0a9399507712296918576da1332be510c5730b76`，parent=`b4d2e87172130aac9c4bb59d8d79ee47b0f3f043`，tree=`fa31f5550df86a84444cd6a845c709ef11400f0b`，subject digest=`sha256:b07b3f797d24ab755856c50f2b5db35df16d1efbd37c67cf84feeb430f58b3d7`；相对 working parent 仅四条 packet 允许路径。
+- 自动门禁：主控 `pnpm check` 373/373、覆盖率 92.86/87.75/99.03；两份写事务/竞态定向 48/48；typecheck/build、diff-check、git fsck 与敏感反扫通过。独立 clone 为 373/373、92.92/87.87/99.03。
+- 独立活体审计 fail closed：在 update `rename` 入口注入用户写仍被覆盖；父路径复核后到 temp open 之间替换 symlink 可短暂在根外创建并写 temp；`removeCreated` 可经父目录 symlink 删除根外用户文件。结论 P0/P1/P2=`0/3/1`，attempt 4 不进入 CV/L3。
+- Execution Result：`results/result-execution-s1.5-g4-a4-f90-20260823.json`，outcome=`revision-required`，digest=`sha256:429bd0d3b1e7cbbb31c10ba854e5abdb4e388fd1bb215ea5bc1ff104670ea67e`；control CAS=`0bb0c70a0a2e4c0c62b092bf337bbd08cf41ad28`，formal 仍 F14。
+- 资源回收：W6/W7 已完成 worktree 安全移除，保留分支/提交；清理释放约 1.8 GiB 临时构建空间。最低有效 attempt=5，仅允许继续修复最晚 mutation/install/remove 边界。

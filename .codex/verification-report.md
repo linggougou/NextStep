@@ -2154,6 +2154,15 @@
 - 裁决：`REVISE / 76`，P0/P1/P2=`0/2/0`；Result JCS=`sha256:1604425afd17e84b5e2830e0f389fff815757a245c1f3b936c7758f18afe7e4f`，control=`a4dd468f28930b636e42f20fd4b22b3cdbf72ef5`，formal 仍 F14。
 - 门禁：Final Content Snapshot/FV/AV/F15 全部禁止；attempt 4 必须先以永久 RED→GREEN 回归关闭三类竞态，再重新走完整独立门禁链。
 
+## 2026-08-23 S1.5 attempt 4 组合验证与残余竞态
+
+- RED→GREEN 证据：W6 旧实现 28/30，GREEN 后定向 32/32；W7 旧实现 0/2，GREEN+覆盖补强后组合全量 373/373。
+- 候选自动门：主控 Lines/Branches/Functions=`92.86/87.75/99.03`，独立 clone=`92.92/87.87/99.03`，均超过 packet floor；37/37 测试文件、四路径 allowlist、线性六提交与 refs 不变通过。
+- 阻塞探针 1：在最终 update guard 通过后、普通 rename 入口注入竞争者内容，atomicWrite 仍成功且最终为 planned，竞争者内容被覆盖。
+- 阻塞探针 2：在最后父路径检查后、temp open 前替换父目录为根外 symlink，根外 temp 在 fsync 时已可见；虽随后清理并返回访问阻塞，仍发生禁止的根外创建/写入。
+- 阻塞探针 3：`removeCreated("docs/victim.md")` 在 `docs` 指向 outside 的 symlink 时直接删除根外 victim，未抛错。
+- 结论：P0/P1/P2=`0/3/1`，现有永久测试注入点偏早；attempt 4 Result=`sha256:429bd0d3...`、control=`0bb0c70a...`，不得生成 candidate-ready、CV/I-X-P/L3 或正式证据链。
+
 ## 2026-08-22 Multica 迁移可行性审查验证
 
 - 审查对象：当前 NextStep 仓库、已冻结 S3/S4 宿主边界、当前实现面，以及 Multica 官方 Agents / Squads / Tasks / Skills / Project resources / Providers / Auth / Comments / CLI 文档。
