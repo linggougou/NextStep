@@ -2256,3 +2256,14 @@
 - M1.2 验收矩阵已冻结为 S1.3→S1.6 三类目标项目累计链、PC-04..08、TG 完整并集、Q3=100%、Q6=100%、Q11=20/20、write-consistency 13/13 与五条 rollback。
 - 入口判断：现有 S1.4/S1.5/S1.6 单独 PASS 不能直接拼接为 M1.2 PASS；必须在精确 F16 唯一隔离副本中重跑全量门禁和累计 runner，并独立形成 I/X/P/Profile 结论。
 - 当前只形成状态同步与 Generation 1 计划候选；尚无 M1.2 entry review、packet、claim/fence、Result 或用户会签，因此 M1.2/V1/P5 保持未完成。
+
+## 2026-08-24 M1.2 Attempt 1 累计验收验证
+
+- Subject：formal F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，parent=`5d3ee76a514bda3da38adc8cccbe5ef4550bf30f`，tree=`5b97a4432fbedb3dda189e05052c2e7665a1bea8`，subject digest=`sha256:3e75ad6dffe9a2f5479f0e2c48bea6e45f04593b4e75ac14d48e1e4cbb891672`。
+- Control：packet/dedup、claim/fence112、ready/ACK/outbox/registry 与 host `codex-subagent:/root/m12_truth_map` 一致；ACK `0295efbb...` 的直接父为 claim control `c792bf32...`。
+- 正式回归：唯一 `git clone --no-local` detached F16，offline frozen install downloaded=0；`pnpm check` 474/474、0 fail，覆盖率 93.41/88.84/99.15。
+- 累计矩阵：三项目连续率 3/3；Q6=17/17；write=13/13；Q3=10/10；Q11=20/20；rollback=5/5；architecture negatives=15/15 fail closed。
+- 正式证据链：F13→F14→F15→F16 三段 promotion 与 S1.4-S1.6 的 CV/I-X-P/L3/FV/AV/Credential/Anchor/Proof 绑定、摘要、权限全部匹配；外部 Credential/Proof raw+JCS 6/6。
+- 独立裁决：review commit=`4ca8295fe52b13acc85fed768795fbd4c0ad32d4`，直接父为 F16，三文件写集，`PASS / 100`，I/X/P/Profile=`25/25/25/25`，P0/P1/P2=`0/0/0`。
+- 主控摘要复核：acceptance JCS=`f186c27a...`、scorecard JCS=`665ca1e5...`、verdict raw=`ac1f03cf...`；Result 排除顶层 `result_digest` 后 RFC8785/JCS=`sha256:73daa2141583898a82c64541e9fb96faf4ea5375fcc1cd0a79e4b0c9fa20366a`，存储值匹配。
+- CAS 与边界：control expected-old 从 `0295efbb...` 成功推进到 `89225143...`，pending dispatch=0，formal 未移动。当前只允许会签报告独立终审，不表示用户已会签或 M1.2/V1/P5 完成；UI fixture 不构成 Web/UI 路线恢复。

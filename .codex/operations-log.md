@@ -2302,3 +2302,14 @@
 - 两路只读 subagent 分别梳理 M1.2 真源/证据矩阵与 M1.1 控制面先例；共同结论为：先同步 F16 状态真源，再对 `.codex/exec-plan-m1.2-acceptance-generation-1.md` 做独立 entry review，通过后才允许创建 `M1.2-I-X-P` packet/control CAS。
 - 计划冻结 PC-04..08、TG-01/02/03/04/05/06/11/12/15/16/17/19、Q3/Q6/Q11、三类目标项目从 S1.3 Product Definition 到 S1.6 architecture assessment 的累计连续率 3/3，以及 F13→F16 正式证据链复核。
 - 当前仅同步路线锁、README、PLANS、活动计划、QA 入口和 `.codex` 留痕；不修改生产代码、Schema、依赖或 refs，不形成 M1.2 PASS，不代替用户会签。
+
+## 2026-08-24 M1.2 Attempt 1 累计验收与 Result 固化
+
+- 入口评审提交=`0202555d4d1208fad3d6e9fc498d99906698a601`，`PASS / 100`；随后 control 形成 packet=`sha256:aaf4cc5e10f8d79accd329222ba1d664a6f8819eeaf9978d18333de3a47215e0`、dedup=`sha256:7688757f4f06413338fa2809d2706c588eee01c5b7b325218c67301c16c923f0`、claim/fence=`claim-m1.2-g4-a1-ixp-f112-20260824`/`112`。
+- 首次 ACK 补丁因 `checkpoint.active_host_task_groups` 的紧凑 JSON 格式与预期上下文不同而整体拒绝，零文件落盘；拆分并按实时上下文重做后，ACK control CAS 成功至 `0295efbbbc68bdc7d99fcb1e9612e6052355d4de`。
+- 一次只读摘要循环误用 zsh 特殊变量名 `path`，覆盖命令搜索路径，导致 `git`/`shasum`/`awk` 暂时显示 command not found；命令在写入前退出。改用 `source_file` 并在新 shell 重跑后全部通过，不属于依赖缺失，也未改变工作树或 refs。
+- 独立验收 Agent 在唯一 `--no-local` F16 clone 中执行 offline frozen install 和 `pnpm check`，474/474、0 fail，覆盖率 Lines/Branches/Functions=`93.41/88.84/99.15`；累计矩阵 3/3、Q6 17/17、write 13/13、Q3 10/10、Q11 20/20、rollback 5/5、15/15 架构负例全部通过。
+- 验收 review commit=`4ca8295fe52b13acc85fed768795fbd4c0ad32d4`，直接父为 F16，精确只新增专属三文件；裁决 `PASS / 100`，I/X/P/Profile=`25/25/25/25`，P0/P1/P2=`0/0/0`，`required_fixes=[]`。
+- 主控复算 acceptance/scorecard JCS=`sha256:f186c27a4ce41edf265c5c6f7644c36334544c57051be8db0e6d8dd0456d5856`/`sha256:665ca1e56d0b679daa3646b3c29f3d525d1405872b20f7f4b4abb344da9a77cf`，verdict raw=`sha256:ac1f03cfd5c0e41bd0a1ff2031c10c8922d0fc27e5a083b142a07ae3610f66df`；Git 父链、三文件写集、JSON 与 fsck 通过。
+- immutable Result digest=`sha256:73daa2141583898a82c64541e9fb96faf4ea5375fcc1cd0a79e4b0c9fa20366a`，expected-old control CAS 成功至 `89225143315f44f6b057748be3aa8fc77e123ff9`；registry 状态为 `gate-passed-awaiting-signoff-package-review`，formal 保持 F16。
+- main 已以 `fb2b42ff6b00c45e947f30a9ea349b5bcb8d50e5` 吸收验收三文件，并生成用户会签报告候选。用户尚未会签；M1.2、V1、P5 未完成，下一步只允许独立终审会签包。

@@ -1,6 +1,6 @@
 # QA
 
-当前阶段为 `P5 / V1` 持续落地。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`d87aa015002be21c68135defe769e3339546c382`。M1.1 与 S1.4-S1.6 已正式完成；S1.6 Final Verification/Anchor Verification 均为 `PASS / 100`，474/474 全量回归通过。M1.2、V1、P5 尚未完成；下一步为 M1.2 累计验收入口评估。旧代际结果仅作墓碑历史。
+当前阶段为 `P5 / V1` 持续落地。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`89225143315f44f6b057748be3aa8fc77e123ff9`。M1.2 attempt 1 累计验收本体 `PASS / 100`，474/474 全量回归通过；当前等待会签包独立终审。用户尚未会签，M1.2、V1、P5 仍未完成。旧代际结果仅作墓碑历史。
 
 ## 当前质量状态
 
@@ -22,6 +22,6 @@
 - S1.4 formal promotion：expected-old=F13 CAS 成功，formal=F14 `024c1db6d941b6f771746c8d6249fb8a09b816f3`。
 - S1.5 formal promotion：expected-old=F14 CAS 成功，formal=F15 `7169e9b019fe2213ca76babb4122a84760bdf112`；FV/AV=`PASS / 100`，444/444。
 - S1.6 formal promotion：expected-old=F15 CAS 成功，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`；FV/AV=`PASS / 100`，474/474，Q3=100%、Q11=20/20。
-- M1.2 累计验收尚未执行；不得把三份小里程碑 PASS 直接拼接为 M1.2 PASS，必须在精确 F16 隔离副本中独立复验 S1.4-S1.6 连续性并形成用户会签候选。
+- [M1.2 attempt 1 累计验收与用户会签候选](./p5-v1-m1.2-acceptance-attempt-1-2026-08-24.md)：`PASS / 100`，I/X/P/Profile=`25/25/25/25`，P0/P1/P2=`0/0/0`；会签包尚待独立终审，用户尚未会签。
 
 后续所有验证、阻塞、复测证据和质量缺口记录在本目录或 `.codex/verification-report.md`；当前路线与门禁以 `PROJECT_ROUTE_LOCK.md` 为准。
