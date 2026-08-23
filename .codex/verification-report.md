@@ -2146,6 +2146,14 @@
 - Ref 与窗口：验证窗口从 control=`0da2005200fb4f64795d584f2ff5fcf26d25d6b2` 冻结到两审查提交完成；期间 main=`f226e0f...`、formal=F14、subject/tree、源工作区指纹均不变。Result CAS 后 control=`1c3eb36336da3b34c76d7178362c5e799b0a6427`。
 - 结论：attempt 3 双门通过，允许进入独立 L3；仍不得宣称 S1.5 正式完成、移动 F15 或启动 S1.6，直到 L3、snapshot、FV、anchor verification 与 formal CAS 全部通过。
 
+## 2026-08-23 S1.5 attempt 3 L3 活体竞态验证
+
+- 通过项：Node 24.14.0 / pnpm 10.33.2，offline frozen install；`pnpm check` 353/353、0 fail、覆盖率 92.82/87.62/99.00；15/15 身份摘要、13/13 write-consistency digest、17/17 Profile、Q6=100%。
+- 失败项 HG3/HG4：确定性活体探针复现 update 第二次 baseline 内容变化仍覆盖、create 目标竞态出现仍被 rename 覆盖、父目录竞态变 symlink 后根外落盘且误报 `WRITE_COMMITTED`。
+- 测试缺口：既有 `write-transaction` 回归只覆盖第二次读抛 ENOENT/EACCES，没有覆盖“读取成功但内容变化”、create 原子 no-replace 和父路径替换竞态。
+- 裁决：`REVISE / 76`，P0/P1/P2=`0/2/0`；Result JCS=`sha256:1604425afd17e84b5e2830e0f389fff815757a245c1f3b936c7758f18afe7e4f`，control=`a4dd468f28930b636e42f20fd4b22b3cdbf72ef5`，formal 仍 F14。
+- 门禁：Final Content Snapshot/FV/AV/F15 全部禁止；attempt 4 必须先以永久 RED→GREEN 回归关闭三类竞态，再重新走完整独立门禁链。
+
 ## 2026-08-22 Multica 迁移可行性审查验证
 
 - 审查对象：当前 NextStep 仓库、已冻结 S3/S4 宿主边界、当前实现面，以及 Multica 官方 Agents / Squads / Tasks / Skills / Project resources / Providers / Auth / Comments / CLI 文档。

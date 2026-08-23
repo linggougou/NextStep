@@ -2199,3 +2199,12 @@
 - 主控复核：三份 scorecard 均使用项目 `canonicalizeJson` 独立复算 RFC8785/JCS 摘要匹配；三个 review 分支相对 subject 都恰好只新增各自两文件，worktree clean。
 - 双门 Results：CV digest=`sha256:6cf89daeac8daf168be6dbe1a4d6cdd9f8c60d1dcf1e879a479180a6edfb4d34`；I/X/P digest=`sha256:56cbe4822ab36e6dbde0b87669e53ce4b260aa4fe349ac7d40d240f7bf862c34`。以 expected-old=`0da2005...` CAS 将 control 推进到 `1c3eb36336da3b34c76d7178362c5e799b0a6427`，formal 保持 F14。
 - 回收：attempt 3 evidence/CV/I-X-P 三个已验收 worktree 已安全移除，分支和完整 commit 仍保留；下一门禁为独立 L3 fence 89。
+
+## 2026-08-23 S1.5 attempt 3 L3 修改裁决
+
+- L3：独立 worktree `/private/tmp/nextstep-s1-5-l3-a1-20260823`，fence 89，冻结窗口 control=`2282da4...`；review commit=`216f06d8e8e2ed0bd218abf9327fb0d41e0cb262`，scorecard JCS=`sha256:85240fbea8861528a5ebee4bb5175128922aba072996921886ba183a1e9493e1`。
+- 裁决：`REVISE / 76`，hard gates 3/5，P0/P1/P2=`0/2/0`；353/353、覆盖率 92.82/87.62/99.00、15/15 摘要、13/13 write digest、17/17 Profile、Q6=100% 均通过，但活体并发探针发现现有 fixture 未覆盖的真实缺陷。
+- P1-1：update 在 precheck 后第二次读取 baseline 只保存未重算/比对 digest；确认后的用户内容变化仍可能被覆盖并返回 `WRITE_COMMITTED`。create 使用普通 rename，目标在 precheck 后出现时也可能被覆盖。
+- P1-2：父目录在 precheck 后替换为 symlink 时，Node adapter 的 temp/rename/readback 可越出规范项目根落盘并仍返回成功。
+- Fail closed：未生成 snapshot、未启动 FV/AV、未移动 formal F14；L3 Result digest=`sha256:1604425afd17e84b5e2830e0f389fff815757a245c1f3b936c7758f18afe7e4f`，control CAS=`a4dd468f28930b636e42f20fd4b22b3cdbf72ef5`，attempt 3 标记 `superseded-after-l3`，最低有效 attempt=4。
+- 后续唯一允许动作：新 attempt 4 窄 TDD 修复 mutation boundary、create no-replace、父路径竞态阻断及三类确定性回归；之后完整重跑 Execution Evidence、CV、I/X/P 与 L3。
