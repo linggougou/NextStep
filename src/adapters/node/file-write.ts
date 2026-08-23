@@ -11,7 +11,7 @@ import {
   unlink as nodeUnlink,
   type FileHandle,
 } from "node:fs/promises";
-import { dirname, isAbsolute, resolve, sep } from "node:path";
+import { isAbsolute, resolve, sep } from "node:path";
 import { promisify } from "node:util";
 
 import {
@@ -42,6 +42,32 @@ export interface NodeWriteFileSystemOptions {
 export interface NodeWriteMutationGuard {
   readonly mode: "create" | "update";
   readonly before_digest: Sha256Digest | null;
+}
+
+interface ParentAnchor {
+  readonly lexical_parent: string;
+  readonly canonical_parent: string;
+  readonly target_name: string;
+}
+
+interface AnchoredParent extends ParentAnchor {
+  assertIdentity(): Promise<void>;
+}
+
+let cwdMutationQueue: Promise<void> = Promise.resolve();
+
+async function serializeCwdMutation<T>(operation: () => Promise<T>): Promise<T> {
+  const previous = cwdMutationQueue;
+  let release!: () => void;
+  cwdMutationQueue = new Promise<void>((resolveQueue) => {
+    release = resolveQueue;
+  });
+  await previous;
+  try {
+    return await operation();
+  } finally {
+    release();
+  }
 }
 
 function fail(code: "INVALID_WRITE_PLAN" | "WRITE_ACCESS_BLOCKED", message: string): never {
@@ -140,7 +166,7 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
     return guard;
   }
 
-  async function assertCanonicalRootAndParents(relativePath: string): Promise<void> {
+  async function assertCanonicalRootAndParents(relativePath: string): Promise<ParentAnchor> {
     const lexicalRoot = resolve(projectRoot);
     try {
       const rootStats = await binding.lstat(projectRoot);
@@ -163,6 +189,11 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
           fail("WRITE_ACCESS_BLOCKED", `Write parent escapes the canonical project root: ${relativePath}`);
         }
       }
+      return {
+        lexical_parent: parent,
+        canonical_parent: expectedCanonicalParent,
+        target_name: relativePath.split("/").at(-1)!,
+      };
     } catch (error) {
       if (error instanceof WriteTransactionError) {
         throw error;
@@ -172,6 +203,54 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
         `Cannot validate canonical project root and parents for ${relativePath}: ${errnoOf(error)}`,
       );
     }
+  }
+
+  async function withAnchoredParent<T>(
+    relativePath: string,
+    anchor: ParentAnchor,
+    operation: (anchored: AnchoredParent) => Promise<T>,
+  ): Promise<T> {
+    return serializeCwdMutation(async () => {
+      const previousCwd = process.cwd();
+      let primaryError: unknown;
+
+      const assertIdentity = async (): Promise<void> => {
+        try {
+          const observed = await binding.realpath(".");
+          if (observed !== anchor.canonical_parent) {
+            fail("WRITE_ACCESS_BLOCKED", `Write parent identity changed: ${relativePath}`);
+          }
+        } catch (error) {
+          if (error instanceof WriteTransactionError) {
+            throw error;
+          }
+          fail("WRITE_ACCESS_BLOCKED", `Cannot verify anchored write parent for ${relativePath}: ${errnoOf(error)}`);
+        }
+      };
+
+      try {
+        try {
+          process.chdir(anchor.lexical_parent);
+        } catch (error) {
+          fail("WRITE_ACCESS_BLOCKED", `Cannot anchor write parent for ${relativePath}: ${errnoOf(error)}`);
+        }
+        await assertIdentity();
+        return await operation({ ...anchor, assertIdentity });
+      } catch (error) {
+        primaryError = error;
+        throw error;
+      } finally {
+        try {
+          process.chdir(previousCwd);
+        } catch (restoreError) {
+          if (primaryError !== undefined && typeof primaryError === "object" && primaryError !== null) {
+            Object.assign(primaryError, { cwd_restore_error: errnoOf(restoreError) });
+          } else {
+            fail("WRITE_ACCESS_BLOCKED", `Cannot restore process cwd after writing ${relativePath}: ${errnoOf(restoreError)}`);
+          }
+        }
+      }
+    });
   }
 
   async function assertTargetMatchesGuard(
@@ -252,6 +331,53 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
     }
   }
 
+  function siblingRecoveryPath(relativePath: string, recoveryName: string): string {
+    const parentSegments = relativePath.split("/").slice(0, -1);
+    return parentSegments.length === 0 ? recoveryName : `${parentSegments.join("/")}/${recoveryName}`;
+  }
+
+  async function pathExists(path: string): Promise<boolean> {
+    try {
+      await binding.lstat(path);
+      return true;
+    } catch (error) {
+      if (errnoOf(error) === "ENOENT" || errnoOf(error) === "ENOTDIR") {
+        return false;
+      }
+      throw error;
+    }
+  }
+
+  async function restoreRecoveryNoReplace(recoveryName: string, targetName: string): Promise<boolean> {
+    if (!(await pathExists(recoveryName))) {
+      return true;
+    }
+    if (await pathExists(targetName)) {
+      return false;
+    }
+    try {
+      await binding.link(recoveryName, targetName);
+      await binding.unlink(recoveryName);
+      return !(await pathExists(recoveryName)) && await pathExists(targetName);
+    } catch {
+      return false;
+    }
+  }
+
+  async function attachRecoveryPath(
+    error: unknown,
+    relativePath: string,
+    recoveryName: string,
+  ): Promise<void> {
+    try {
+      if (await pathExists(recoveryName) && typeof error === "object" && error !== null) {
+        Object.assign(error, { recovery_path: siblingRecoveryPath(relativePath, recoveryName) });
+      }
+    } catch {
+      // The primary failure remains authoritative when recovery inspection itself fails.
+    }
+  }
+
   return {
     async probe(relativePath: string): Promise<WriteTargetProbe> {
       const resolved = resolveProjectPath(projectRoot, relativePath);
@@ -276,61 +402,152 @@ export function createNodeWriteFileSystem(options: NodeWriteFileSystemOptions): 
       const guard = mutationGuard === undefined
         ? await inferLegacyGuard(resolved, relativePath)
         : assertGuard(mutationGuard);
-      await assertCanonicalRootAndParents(relativePath);
+      const anchor = await assertCanonicalRootAndParents(relativePath);
       const existingMode = await assertTargetMatchesGuard(resolved, relativePath, guard);
 
-      const tempPath = `${resolved}.nextstep-tmp-${randomBytes(8).toString("hex")}`;
-      let handle: FileHandle | undefined;
-      try {
-        await assertCanonicalRootAndParents(relativePath);
-        handle = await binding.open(tempPath, "wx", existingMode ?? 0o644);
-        await handle.writeFile(content);
-        await binding.fsync(handle.fd);
-        await handle.close();
-        handle = undefined;
-
-        await assertCanonicalRootAndParents(relativePath);
-        if (guard.mode === "create") {
-          await binding.link(tempPath, resolved);
-          await binding.unlink(tempPath);
-        } else {
-          await assertTargetMatchesGuard(resolved, relativePath, guard);
-          await binding.rename(tempPath, resolved);
-        }
-
-        await assertCanonicalRootAndParents(relativePath);
-        await assertInstalledContent(resolved, relativePath, content);
-        await fsyncDirectory(dirname(resolved));
-      } catch (error) {
-        if (handle !== undefined) {
-          try {
-            await handle.close();
-          } catch {
-            // Closing before cleanup must not mask the write failure.
-          }
-        }
+      await withAnchoredParent(relativePath, anchor, async ({ target_name: targetName, assertIdentity }) => {
+        const tempName = `${targetName}.nextstep-tmp-${randomBytes(8).toString("hex")}`;
+        let handle: FileHandle | undefined;
         try {
-          await binding.unlink(tempPath);
-        } catch {
-          // Temp file cleanup is best-effort; the write failure is the primary signal.
+          if (guard.mode === "update") {
+            await assertTargetMatchesGuard(targetName, relativePath, guard);
+          }
+
+          handle = await binding.open(tempName, "wx", existingMode ?? 0o644);
+          await assertIdentity();
+          await handle.writeFile(content);
+          await binding.fsync(handle.fd);
+          await handle.close();
+          handle = undefined;
+          await assertIdentity();
+
+          if (guard.mode === "create") {
+            await binding.link(tempName, targetName);
+            await assertIdentity();
+            await binding.unlink(tempName);
+          } else {
+            const recoveryName = `${targetName}.nextstep-recovery-${randomBytes(8).toString("hex")}`;
+            let recoveryCreated = false;
+            try {
+              await assertTargetMatchesGuard(targetName, relativePath, guard);
+              await binding.rename(targetName, recoveryName);
+              recoveryCreated = true;
+              await assertIdentity();
+
+              const recovered = await binding.readFile(recoveryName);
+              if (digestBytes(recovered) !== guard.before_digest) {
+                throw mutationError("ESTALE", `Update target changed at the installation boundary: ${relativePath}`);
+              }
+
+              await binding.link(tempName, targetName);
+              await assertIdentity();
+              await assertInstalledContent(targetName, relativePath, content);
+              await binding.unlink(recoveryName);
+              if (await pathExists(recoveryName)) {
+                fail("WRITE_ACCESS_BLOCKED", `Update recovery cleanup failed: ${relativePath}`);
+              }
+              recoveryCreated = false;
+              await binding.unlink(tempName);
+            } catch (error) {
+              if (recoveryCreated) {
+                const restored = await restoreRecoveryNoReplace(recoveryName, targetName);
+                recoveryCreated = !restored;
+              }
+              if (recoveryCreated) {
+                await attachRecoveryPath(error, relativePath, recoveryName);
+              }
+              throw error;
+            }
+          }
+
+          await assertIdentity();
+          await assertInstalledContent(targetName, relativePath, content);
+          await fsyncDirectory(".");
+        } catch (error) {
+          if (handle !== undefined) {
+            try {
+              await handle.close();
+            } catch {
+              // Closing before cleanup must not mask the write failure.
+            }
+          }
+          try {
+            await binding.unlink(tempName);
+          } catch {
+            // Temp file cleanup is best-effort; the write failure is the primary signal.
+          }
+          throw error;
         }
-        throw error;
-      }
+      });
     },
 
-    async removeCreated(relativePath: string): Promise<void> {
+    async removeCreated(relativePath: string, expectedCurrentDigest?: Sha256Digest): Promise<void> {
       const resolved = resolveProjectPath(projectRoot, relativePath);
-      try {
-        await binding.unlink(resolved);
-      } catch (error) {
-        if (errnoOf(error) !== "ENOENT") {
+      const anchor = await assertCanonicalRootAndParents(relativePath);
+      let expectedDigest = expectedCurrentDigest;
+
+      // Formal rollback always supplies the post-write digest. The fallback only
+      // preserves the frozen one-argument low-level contract and is revalidated
+      // after acquiring the anchored mutation boundary.
+      if (expectedDigest === undefined) {
+        try {
+          const stats = await binding.lstat(resolved);
+          if (stats.isSymbolicLink() || !stats.isFile()) {
+            fail("WRITE_ACCESS_BLOCKED", `Refusing to remove a non-file target: ${relativePath}`);
+          }
+          expectedDigest = digestBytes(await binding.readFile(resolved));
+        } catch (error) {
+          if (errnoOf(error) === "ENOENT" || errnoOf(error) === "ENOTDIR") {
+            return;
+          }
           throw error;
         }
       }
-      const probe = await probeAdapter.probe(resolved);
-      if (probe.exists) {
-        fail("WRITE_ACCESS_BLOCKED", `Removal verification failed: ${relativePath}`);
-      }
+
+      await withAnchoredParent(relativePath, anchor, async ({ target_name: targetName, assertIdentity }) => {
+        let stats: Awaited<ReturnType<NodeWriteFileSystemBinding["lstat"]>>;
+        try {
+          stats = await binding.lstat(targetName);
+        } catch (error) {
+          if (errnoOf(error) === "ENOENT" || errnoOf(error) === "ENOTDIR") {
+            throw mutationError("ENOENT", `Created target disappeared before rollback: ${relativePath}`);
+          }
+          throw error;
+        }
+        if (stats.isSymbolicLink() || !stats.isFile()) {
+          fail("WRITE_ACCESS_BLOCKED", `Refusing to remove a non-file target: ${relativePath}`);
+        }
+        if (digestBytes(await binding.readFile(targetName)) !== expectedDigest) {
+          throw mutationError("ESTALE", `Created target no longer matches rollback digest: ${relativePath}`);
+        }
+
+        const recoveryName = `${targetName}.nextstep-recovery-${randomBytes(8).toString("hex")}`;
+        let recoveryCreated = false;
+        try {
+          await binding.rename(targetName, recoveryName);
+          recoveryCreated = true;
+          await assertIdentity();
+          if (digestBytes(await binding.readFile(recoveryName)) !== expectedDigest) {
+            throw mutationError("ESTALE", `Created target changed at the removal boundary: ${relativePath}`);
+          }
+          await binding.unlink(recoveryName);
+          if (await pathExists(recoveryName)) {
+            fail("WRITE_ACCESS_BLOCKED", `Removal verification failed: ${relativePath}`);
+          }
+          recoveryCreated = false;
+          await assertIdentity();
+          await fsyncDirectory(".");
+        } catch (error) {
+          if (recoveryCreated) {
+            const restored = await restoreRecoveryNoReplace(recoveryName, targetName);
+            recoveryCreated = !restored;
+          }
+          if (recoveryCreated) {
+            await attachRecoveryPath(error, relativePath, recoveryName);
+          }
+          throw error;
+        }
+      });
     },
   };
 }

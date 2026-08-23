@@ -55,7 +55,7 @@ test("create 在预检后出现竞争目标时执行 no-replace 且保留竞争�
   let injected = false;
 
   const injectCompetitor = async (installedPath: string): Promise<void> => {
-    if (!injected && installedPath === target) {
+    if (!injected && (installedPath === target || installedPath === "result.md")) {
       injected = true;
       await writeFile(target, "competitor", { flag: "wx" });
     }
@@ -307,7 +307,7 @@ test("最终 readback 缺失或内容漂移时拒绝成功并清理 temp", async
     const root = await mkdtemp(join(tmpdir(), "nextstep-readback-drift-"));
     const target = join(root, "result.md");
     const binding = {
-      readFile: async (path: string) => path === target ? Buffer.from("drifted") : readFile(path),
+      readFile: async (path: string) => path === target || path === "result.md" ? Buffer.from("drifted") : readFile(path),
     } as Partial<NodeWriteFileSystemBinding>;
     try {
       const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
@@ -331,7 +331,7 @@ test("最终 readback 缺失或内容漂移时拒绝成功并清理 temp", async
     let targetChecks = 0;
     const binding = {
       lstat: async (path: string) => {
-        if (path === target && ++targetChecks === 2) {
+        if ((path === target || path === "result.md") && ++targetChecks === 2) {
           await unlink(target);
           const error = new Error("injected readback disappearance") as NodeJS.ErrnoException;
           error.code = "ENOENT";
@@ -366,7 +366,7 @@ test("最终安装对象被替换为 symlink 或目录时拒绝 readback", async
       let targetChecks = 0;
       const binding = {
         lstat: async (path: string) => {
-          if (path === target && ++targetChecks === 2) {
+          if ((path === target || path === "result.md") && ++targetChecks === 2) {
             await unlink(target);
             if (replacement === "symlink") {
               await symlink(outside, target);
@@ -517,4 +517,157 @@ test("removeCreated 的父目录被替换为 symlink 时绝不删除根外竞争
     await rm(root, { recursive: true, force: true });
     await rm(outside, { recursive: true, force: true });
   }
+});
+
+test("update 的 no-replace 恢复路径与 remove 摘要归属均 fail closed", async (t) => {
+  await t.test("update 安装位被竞争者占据时保留竞争者与可恢复旧对象", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-update-recovery-"));
+    const target = join(root, "docs", "result.md");
+    await mkdir(join(root, "docs"));
+    await writeFile(target, "before");
+    let injected = false;
+    const binding = {
+      link: async (existingPath: string, newPath: string) => {
+        if (!injected && newPath === "result.md") {
+          injected = true;
+          await writeFile(target, "competitor", { flag: "wx" });
+        }
+        await nodeLink(existingPath, newPath);
+      },
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      const error = await fileSystem.atomicWrite("docs/result.md", Buffer.from("nextstep"), {
+        mode: "update",
+        before_digest: digest("before"),
+      }).then(
+        () => undefined,
+        (caught: unknown) => caught as NodeJS.ErrnoException & { recovery_path?: string },
+      );
+      assert.equal(error?.code, "EEXIST");
+      assert.match(error?.recovery_path ?? "", /^docs\/result\.md\.nextstep-recovery-/);
+      assert.equal(await readFile(target, "utf8"), "competitor");
+      const entries = await readdir(join(root, "docs"));
+      const recovery = entries.find((entry) => entry.includes(".nextstep-recovery-"));
+      assert.ok(recovery);
+      assert.equal(await readFile(join(root, "docs", recovery), "utf8"), "before");
+      assert.ok(entries.every((entry) => !entry.includes(".nextstep-tmp-")));
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("remove 在 quarantine 复核漂移时恢复摘要匹配对象", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-remove-recheck-"));
+    const target = join(root, "result.md");
+    await writeFile(target, "owned");
+    const binding = {
+      readFile: async (path: string) => path.includes(".nextstep-recovery-")
+        ? Buffer.from("drifted")
+        : readFile(path),
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      await assert.rejects(
+        fileSystem.removeCreated("result.md", digest("owned")),
+        hasCode("ESTALE"),
+      );
+      assert.equal(await readFile(target, "utf8"), "owned");
+      assert.deepEqual(await readdir(root), ["result.md"]);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("remove 对缺失、摘要漂移和成功删除分别给出确定性结果", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-remove-digest-"));
+    const target = join(root, "result.md");
+    await writeFile(target, "competitor");
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root }));
+      await assert.rejects(fileSystem.removeCreated("missing.md", digest("owned")), hasCode("ENOENT"));
+      await assert.rejects(fileSystem.removeCreated("result.md", digest("owned")), hasCode("ESTALE"));
+      assert.equal(await readFile(target, "utf8"), "competitor");
+      await fileSystem.removeCreated("result.md", digest("competitor"));
+      await assert.rejects(readFile(target), hasCode("ENOENT"));
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("cwd 锚定后的 realpath 故障在创建 temp 前阻塞", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-anchor-realpath-"));
+    const binding = {
+      realpath: async (path: string) => {
+        if (path === ".") {
+          const error = new Error("injected anchored realpath fault") as NodeJS.ErrnoException;
+          error.code = "EIO";
+          throw error;
+        }
+        return nodeRealpath(path);
+      },
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      await assert.rejects(
+        fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), { mode: "create", before_digest: null }),
+        hasCode("WRITE_ACCESS_BLOCKED"),
+      );
+      assert.deepEqual(await readdir(root), []);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("update 的 recovery 清理无效时保留恢复对象并拒绝成功", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-recovery-cleanup-"));
+    const target = join(root, "result.md");
+    await writeFile(target, "before");
+    const binding = {
+      unlink: async (path: string) => {
+        if (!path.includes(".nextstep-recovery-")) {
+          await unlink(path);
+        }
+      },
+    } as Partial<NodeWriteFileSystemBinding>;
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root, binding }));
+      const error = await fileSystem.atomicWrite("result.md", Buffer.from("nextstep"), {
+        mode: "update",
+        before_digest: digest("before"),
+      }).then(
+        () => undefined,
+        (caught: unknown) => caught as NodeJS.ErrnoException & { recovery_path?: string },
+      );
+      assert.equal(error?.code, "WRITE_ACCESS_BLOCKED");
+      assert.match(error?.recovery_path ?? "", /^result\.md\.nextstep-recovery-/);
+      assert.equal(await readFile(target, "utf8"), "nextstep");
+      assert.equal((await readdir(root)).filter((entry) => entry.includes(".nextstep-recovery-")).length, 1);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  await t.test("remove 的 legacy 与显式摘要入口都拒绝非文件对象", async () => {
+    const root = await mkdtemp(join(tmpdir(), "nextstep-remove-nonfile-"));
+    await mkdir(join(root, "legacy-dir"));
+    await mkdir(join(root, "explicit-dir"));
+
+    try {
+      const fileSystem = asGuardedWriter(createNodeWriteFileSystem({ project_root: root }));
+      await assert.rejects(
+        fileSystem.removeCreated("legacy-dir", digest("unused")),
+        hasCode("WRITE_ACCESS_BLOCKED"),
+      );
+      const legacyWriter = fileSystem as unknown as { removeCreated(path: string): Promise<void> };
+      await assert.rejects(legacyWriter.removeCreated("explicit-dir"), hasCode("WRITE_ACCESS_BLOCKED"));
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
 });
