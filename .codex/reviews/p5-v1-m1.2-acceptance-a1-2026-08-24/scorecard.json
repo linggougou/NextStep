@@ -1,0 +1,87 @@
+{
+  "review_id": "p5-v1-m1.2-acceptance-a1-2026-08-24",
+  "rubric_id": "nextstep-milestone-cumulative-acceptance-v1",
+  "task_id": "M1.2-I-X-P",
+  "review_level": "L2-milestone-acceptance",
+  "reviewed_at": "2026-08-23T19:14:36Z",
+  "subject_ref": "git:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+  "subject_tree": "5b97a4432fbedb3dda189e05052c2e7665a1bea8",
+  "packet_ref": "control:gate-requests/gate-milestone-acceptance-m1.2-g4-a1-20260824.json",
+  "packet_digest": "sha256:aaf4cc5e10f8d79accd329222ba1d664a6f8819eeaf9978d18333de3a47215e0",
+  "dedup_key": "sha256:7688757f4f06413338fa2809d2706c588eee01c5b7b325218c67301c16c923f0",
+  "control_identity": {
+    "claim_id": "claim-m1.2-g4-a1-ixp-f112-20260824",
+    "fence_token": 112,
+    "host_task_id": "codex-subagent:/root/m12_truth_map",
+    "claim_oid": "c792bf32c826e2153244972f67243c61e095cc27",
+    "ack_oid": "0295efbbbc68bdc7d99fcb1e9612e6052355d4de"
+  },
+  "rubric": [
+    {
+      "id": "I",
+      "name": "实现与正式证据链",
+      "weight": 25,
+      "score": 25,
+      "status": "pass",
+      "evidence": "精确 F16 的唯一 --no-local detached clone 完成 offline frozen install 与 pnpm check=474/474；覆盖率 93.41/88.84/99.15。F13→F16 祖先、promotion、CV/I-X-P/L3/FV/AV/Credential/Anchor/Proof 的摘要、父链、tree、权限和绑定逐项匹配。"
+    },
+    {
+      "id": "X",
+      "name": "冲突、故障与 fail-closed",
+      "weight": 25,
+      "score": 25,
+      "status": "pass",
+      "evidence": "Profile 冲突/缺确认、写入职责与失败、用户改动保护、no-replace/父路径替换、摘要/风险/阶段/formal 漂移、敏感内容与 full 冒领均由回归覆盖；15/15 架构负例全部拒绝，无降级放行。"
+    },
+    {
+      "id": "P",
+      "name": "产品语义与用户路径",
+      "weight": 25,
+      "score": 25,
+      "status": "pass",
+      "evidence": "三类项目从 S1.3 Product Definition 经 S1.4 carrier/profile、S1.5 write record 到 S1.6 architecture assessment 的 canonical 内容、身份和摘要连续率 3/3；PC-04..08、12 项 TG、Q3/Q11 与 5 类回滚全部达标。"
+    },
+    {
+      "id": "Profile",
+      "name": "验收 Profile 矩阵",
+      "weight": 25,
+      "score": 25,
+      "status": "pass",
+      "evidence": "17/17 fixture 与 expected 精确一致，Q6=100%；headless、self-profile 与 ui-with-evidence 规则均被验证，且 UI 证据未被解释为 Web/UI 主路线。"
+    }
+  ],
+  "hard_gates": [
+    {"id": "HG1-control", "status": "pass", "reason": "packet/dedup 独立 RFC8785 复算匹配；ready/ACK/outbox/registry 绑定 claim、fence112 与 host；ACK control 是 claim control 的直接子提交。"},
+    {"id": "HG2-subject", "status": "pass", "reason": "subject commit/tree/parent/digest 与 packet 精确匹配；formal=F16。"},
+    {"id": "HG3-regression", "status": "pass", "reason": "正式隔离复跑 474/474、0 fail；覆盖率高于 F15 floor。"},
+    {"id": "HG4-cumulative", "status": "pass", "reason": "三项目连续率 3/3；Q6 17/17、write 13/13、Q3 10/10、Q11 20/20、rollback 5/5、负例 15/15。"},
+    {"id": "HG5-formal-chain", "status": "pass", "reason": "F13→F14→F15→F16 与三阶段完整正式证据链、6 份外部内容寻址证据均复核通过。"},
+    {"id": "HG6-boundary", "status": "pass", "reason": "评审只写专属目录三文件；不移动 main/formal/control/evidence，不触碰用户 Multica 文件，不冒领用户会签、M1.2/V1/P5 完成。"}
+  ],
+  "matrix_results": {
+    "full_regression": "474/474",
+    "coverage": "93.41/88.84/99.15",
+    "project_continuity": "3/3",
+    "profile_q6": "17/17",
+    "write_consistency": "13/13",
+    "required_fields_q3": "10/10",
+    "risk_probe_q11": "20/20",
+    "rollback": "5/5",
+    "architecture_negatives": "15/15 fail closed",
+    "source_refs": "11/11",
+    "formal_stages": "3/3",
+    "external_evidence": "6/6 raw + JCS"
+  },
+  "penalties": [],
+  "required_fixes": [],
+  "severity_summary": {"P0": 0, "P1": 0, "P2": 0},
+  "totals": {"raw_score": 100, "penalty_total": 0, "final_score": 100},
+  "reviewers": [
+    {"role": "verifier", "conclusion": "PASS", "summary": "身份、摘要、正式父链、隔离回归与累计 runner 均可重复且匹配。"},
+    {"role": "strict_judge", "conclusion": "PASS", "summary": "I/X/P/Profile 四维均通过，0 个 required fix，未发现 P0/P1/P2。"},
+    {"role": "anti_slop", "conclusion": "PASS", "summary": "结论由可执行回放、Git 对象、内容寻址证据和 fail-closed 负例支持；已排除的评审器尝试未被计入正式证据。"},
+    {"role": "chief_reviewer", "conclusion": "PASS", "summary": "允许形成 M1.2 Result 与用户会签候选；不等于用户已会签或 M1.2/V1/P5 已完成。"}
+  ],
+  "verdict": "PASS",
+  "verdict_scope": "M1.2 attempt 1 累计验收本体通过。下一步仅允许形成 Result 与用户会签候选；必须经用户明确会签和 control CAS 后才能标记 M1.2 正式完成。"
+}

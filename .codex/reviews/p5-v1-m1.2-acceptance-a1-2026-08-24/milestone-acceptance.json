@@ -1,0 +1,198 @@
+{
+  "schema_version": "1.0",
+  "acceptance_id": "p5-v1-m1.2-acceptance-a1-2026-08-24",
+  "acceptance_kind": "milestone-cumulative-acceptance",
+  "reviewed_at": "2026-08-23T19:14:36Z",
+  "repository_id": "sha256:d11253328d36050bd559844c64b438e9b84e0c13125184e9b01e1e7cf23a8c56",
+  "route_generation": 1,
+  "plan_id": "p5-product-implementation",
+  "plan_generation": 4,
+  "stage_id": "P5/V1/M1.2/acceptance",
+  "milestone_id": "M1.2",
+  "task_id": "M1.2-I-X-P",
+  "task_attempt": 1,
+  "gate_conclusion": "通过",
+  "verdict": "PASS",
+  "score": 100,
+  "dimensions": {
+    "I": {
+      "status": "通过",
+      "score": 25,
+      "evidence": "唯一 git clone --no-local 隔离副本 detached 到精确 F16；Node v24.14.0、pnpm 10.33.2、offline frozen install（downloaded=0）后 pnpm check=474/474、0 fail，覆盖率 Lines/Branches/Functions=93.41/88.84/99.15。F13→F14→F15→F16 单向祖先链、三份 promotion 及每阶段 CV/I-X-P/L3/FV/AV/Credential/Anchor/Proof 绑定与摘要全部匹配。"
+    },
+    "X": {
+      "status": "通过",
+      "score": 25,
+      "evidence": "正式回归与累计 runner 覆盖 Profile 冲突/缺确认、主对话写入、写入失败、用户改动覆盖、create no-replace、父路径替换、摘要漂移、风险缺失/重复/未知、错误阶段、非 F15、敏感内容与冒领 full；15/15 架构负例全部 fail closed，写入故障与布局保护回归全部通过。"
+    },
+    "P": {
+      "status": "通过",
+      "score": 25,
+      "evidence": "PC-04..08 与 TG-01/02/03/04/05/06/11/12/15/16/17/19 均有实现、fixture 与机器回执证据；三项目累计连续率 3/3，write consistency=13/13，Q3=10/10，Q11=20/20，rollback=5/5。"
+    },
+    "Profile": {
+      "status": "通过",
+      "score": 25,
+      "evidence": "17/17 acceptance-profile fixtures 与 expected 精确一致；headless-primary、自描述 Profile、三类目标项目和 ui-with-evidence 规则均被验证。UI fixture 仅证明 Profile 路由规则，不恢复或冒领 Web/UI 主路线。"
+    }
+  },
+  "packet_identity": {
+    "packet_ref": "control:gate-requests/gate-milestone-acceptance-m1.2-g4-a1-20260824.json",
+    "packet_digest": "sha256:aaf4cc5e10f8d79accd329222ba1d664a6f8819eeaf9978d18333de3a47215e0",
+    "packet_digest_recomputed": true,
+    "dedup_key": "sha256:7688757f4f06413338fa2809d2706c588eee01c5b7b325218c67301c16c923f0",
+    "dedup_key_recomputed": true,
+    "claim_id": "claim-m1.2-g4-a1-ixp-f112-20260824",
+    "fence_token": 112,
+    "host_task_id": "codex-subagent:/root/m12_truth_map",
+    "control_claim_oid": "c792bf32c826e2153244972f67243c61e095cc27",
+    "control_ack_oid": "0295efbbbc68bdc7d99fcb1e9612e6052355d4de",
+    "control_ack_direct_parent_matches_claim": true,
+    "ready_ack_outbox_registry_match": true,
+    "packet_not_expired_at_review": true
+  },
+  "subject_identity": {
+    "subject_ref": "git:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "subject_tree": "5b97a4432fbedb3dda189e05052c2e7665a1bea8",
+    "subject_parent": "5d3ee76a514bda3da38adc8cccbe5ef4550bf30f",
+    "subject_digest": "sha256:3e75ad6dffe9a2f5479f0e2c48bea6e45f04593b4e75ac14d48e1e4cbb891672",
+    "identity_recomputed": true,
+    "formal_ref_at_review": "ea04b57de83d6c548dcb1629b1f61832db8375ad"
+  },
+  "isolated_verification": {
+    "clone_path": "/private/tmp/nextstep-m12-verify.Mm6b6u/repo",
+    "clone_mode": "git clone --no-local; detached F16",
+    "node_version": "v24.14.0",
+    "pnpm_version": "10.33.2",
+    "install": "pnpm install --offline --frozen-lockfile --ignore-scripts; downloaded=0",
+    "full_regression": {
+      "passed": 474,
+      "failed": 0,
+      "total": 474
+    },
+    "coverage": {
+      "lines_percent": 93.41,
+      "branches_percent": 88.84,
+      "functions_percent": 99.15
+    },
+    "final_clone_refs": {
+      "HEAD": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+      "refs/nextstep/formal": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+      "refs/nextstep/control": "0295efbbbc68bdc7d99fcb1e9612e6052355d4de"
+    },
+    "worktree_clean": true
+  },
+  "cumulative_metrics": {
+    "cumulative_project_continuity": "3/3",
+    "profile_matrix_q6": "17/17 = 100%",
+    "write_consistency": "13/13",
+    "required_fields_q3": "10/10 = 100%",
+    "risk_probe_q11": "20/20",
+    "rollback_entries": "5/5",
+    "architecture_negative_fixtures": "15/15 fail closed"
+  },
+  "project_continuity": [
+    {
+      "project_id": "community-workshop",
+      "product_definition_id": "pd-01e7fcb155531b2d26bad2c4ccd816235b8140cada8a740dcf26325458acddf0",
+      "product_definition_digest": "sha256:beb239eb765ea06cbcd2e72f77df43abb8627f7aae85e1ced31f64ac0d005c00",
+      "carrier_decision_digest": "sha256:cd10e72a6b703bba1dafd17ff10b033e7e27ecbec91bd48bf7dbdd62c68ae84e",
+      "profile_id": "ap-73ec182f254ff8bbb5eed556c3bb46348ffefdba34dbc7045b2bfbbb9c0aa1b3",
+      "write_scenario_id": "wc-community-workshop-positive-001",
+      "write_record_digest": "sha256:439968591d6272e6ebfe97dc5343ecb3cfdb52e34aa87c6e5c31c6f1668cd96f",
+      "architecture_assessment_digest": "sha256:b0ceef724c8b4167cf06bf96f8f3016bf23daaf8e9fe0678ce87a3b71be31083",
+      "status": "通过"
+    },
+    {
+      "project_id": "expense-reminder",
+      "product_definition_id": "pd-365ef97ff58d06dedf780c5887445fc70c196dfa356be76d4f6fd93b31a95271",
+      "product_definition_digest": "sha256:6a89b9e56d4093a7b032feed62e62d787be6880d7063352fc28674e37d7b550a",
+      "carrier_decision_digest": "sha256:de1db579b3d1313b95e51cd5317054435dac93939cf3f59936566b8b005270a1",
+      "profile_id": "ap-b0cd146496b0f85778c7aa84d7c48c9d65f528b9f3df4df30b583acb8008d03c",
+      "write_scenario_id": "wc-expense-reminder-positive-002",
+      "write_record_digest": "sha256:ad53d318bc91123c236600ddf9353ee87eaca4688435ca85674f61192676b750",
+      "architecture_assessment_digest": "sha256:df82abf126cec5510ee76d7731ca027d1b583107e16278c8318da7417a65bf83",
+      "status": "通过"
+    },
+    {
+      "project_id": "project-delivery-tool",
+      "product_definition_id": "pd-7913f81f17e361f716c1377f2eaf6c9e623da2e32acaf27b81ed25f04acece06",
+      "product_definition_digest": "sha256:096428a49069502de8273c5c470516b0493777352c135bc02fa3b6d1365f7164",
+      "carrier_decision_digest": "sha256:2a58288964d79789f192ec7657bb1dfb78588fd9c98e133aab9d31badcec691f",
+      "profile_id": "ap-e7a916bff67651af419f28438665e97a6312a701c4251903855c83c719aed73b",
+      "write_scenario_id": "wc-project-delivery-tool-positive-003",
+      "write_record_digest": "sha256:93a5624300700739f5b047da887b29bf2672d2acda86534f287c11ef3a5e1b2a",
+      "architecture_assessment_digest": "sha256:dbafe4c73de9e2b86d57e9dade9e18478e4bb15f00ad4c2c1c79cce91c777607",
+      "status": "通过"
+    }
+  ],
+  "formal_evidence_chain": [
+    {
+      "stage": "S1.4",
+      "from": "84c051f7426ec5d2a9bed70aa02a1f321bd81e11",
+      "to": "024c1db6d941b6f771746c8d6249fb8a09b816f3",
+      "promotion_digest": "sha256:c313ba63a171124d5e2448499b747684a9e9a3b0e0b345d1a90af162bcd89937",
+      "gate_scores": {"CV": 100, "I-X-P": 99, "L3": 98, "FV": 98, "AV": 98},
+      "credential_digest": "sha256:c49fb216746a2a51734b2cd171b9c3ea24ce5edf619b3f5f128a8382d4c15e02",
+      "anchor_digest": "sha256:2d9f62d589bb1b0a2d441e4c5840a61470af97e8fee47f307998143d6f9f04dc",
+      "proof_digest": "sha256:8f1ca64045e7c2e8900b7455db86f3503a61473b5fc8652d38a5036e6e0d7475",
+      "verified": true
+    },
+    {
+      "stage": "S1.5",
+      "from": "024c1db6d941b6f771746c8d6249fb8a09b816f3",
+      "to": "7169e9b019fe2213ca76babb4122a84760bdf112",
+      "promotion_digest": "sha256:e5806ef9e508c50a1d408b88bd17bc81b0bccbca2bdcee51fd5867710ebfdc38",
+      "gate_scores": {"CV": 100, "I-X-P": 100, "L3": 98, "FV": 100, "AV": 100},
+      "credential_digest": "sha256:c9e45fb00812c6eeb0b6fd4db08f1cd425af1fcbda307414873ae91d4c0edad4",
+      "anchor_digest": "sha256:ebb333d59bcca54894c70a60999a7ed0d060cb808d1f3b4b336189d9f7968e4b",
+      "proof_digest": "sha256:edcc5b9e7aa6df7775bd1042020c6c5f5ce9accf69a2fab021f35d977a8bf849",
+      "verified": true
+    },
+    {
+      "stage": "S1.6",
+      "from": "7169e9b019fe2213ca76babb4122a84760bdf112",
+      "to": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+      "promotion_digest": "sha256:659d2455929a69ce92dcb05c1abd8980ed8f2913303bf5f28eb035431749c5c6",
+      "gate_scores": {"CV": 100, "I-X-P": 100, "L3": 100, "FV": 100, "AV": 100},
+      "credential_digest": "sha256:e2f6d2c27fcbab7004da12bedd4bf0dd83208e2a0665a0d66157dd5c88d40377",
+      "anchor_digest": "sha256:2270a19e6540f3e271e4b1d794479febebcae5f957d7a61f3438e106d421e3ee",
+      "proof_digest": "sha256:566b1a11d156eb23eaecf788e3c07657204364f31f364ed48dd51e1e79b54205",
+      "verified": true
+    }
+  ],
+  "source_ref_verification": {
+    "matched": 11,
+    "total": 11,
+    "m1_1_result_digest_recomputed": true,
+    "m1_1_user_signoff_ack_raw_digest_matched": true
+  },
+  "external_evidence_verification": {
+    "credential_count": 3,
+    "proof_count": 3,
+    "raw_digest_matches": "6/6",
+    "jcs_digest_matches": "6/6",
+    "file_mode": "0600",
+    "directory_mode": "0700",
+    "link_count": "1/1 each",
+    "stage_specific_temp_residue": "0"
+  },
+  "covered_pcs": ["PC-04", "PC-05", "PC-06", "PC-07", "PC-08"],
+  "covered_tgs": ["TG-01", "TG-02", "TG-03", "TG-04", "TG-05", "TG-06", "TG-11", "TG-12", "TG-15", "TG-16", "TG-17", "TG-19"],
+  "severity_summary": {"P0": 0, "P1": 0, "P2": 0},
+  "penalties": [],
+  "required_fixes": [],
+  "blocking_reasons": [],
+  "incomplete_items": [
+    "M1.2 用户会签尚未发生；本 PASS 只允许主控形成 Result 与用户会签候选。",
+    "M1.2、V1、P5 仍不得标记正式完成；V1 的 S1.1-S1.6 累计验收须在 M1.2 用户会签后单独启动。"
+  ],
+  "excluded_diagnostic_attempts": [
+    "首次命令因未切换目录而在专属 review worktree 运行，结果 474/474；该结果被排除且未造成 tracked 变更。",
+    "首次精确 clone 回归因普通 clone 不携带 refs/nextstep/formal/control 而在 source-validate ref invariant 单点失败（其余 473/474）；按 packet 身份补入只读 custom refs 后重跑并以最终 474/474 为正式结果。",
+    "累计 runner 两次草案分别因评审器误判 metric 字段形状、误把 mutation-only 负例当 candidate 解析而退出；修正后的最终 runner 全部通过，草案未写文件、未改变候选或 refs。",
+    "证据链汇总脚本曾因 registry 顶层字段名假设错误在输出阶段退出；修正后全部摘要与绑定匹配，无写入副作用。"
+  ],
+  "mutation_summary": "评审窗口内产品、docs/qa、main/formal/control/evidence 与用户 Multica 未跟踪文件均未修改；仅在专属 review worktree 的允许目录生成本评审三文件。",
+  "next_allowed_action": "主控复核本评审提交后形成 immutable M1.2 Result 与用户会签报告候选；只有用户明确会签并完成 expected-old control CAS 后，才可标记 M1.2 正式完成并单独评估 V1 累计验收。"
+}
