@@ -1,0 +1,161 @@
+{
+  "review_id": "p5-v1-m1.2-s1.6-final-verification-2026-08-24",
+  "task_id": "S1.6-FV",
+  "task_attempt": 1,
+  "lane": "final-verification",
+  "review_level": "L4",
+  "rubric_id": "nextstep-s1.6-final-verification-v1",
+  "stage_id": "P5/V1/M1.2/S1.6/final-verification",
+  "plan_id": "p5-product-implementation",
+  "plan_generation": 4,
+  "route_generation": 1,
+  "repository_id": "sha256:d11253328d36050bd559844c64b438e9b84e0c13125184e9b01e1e7cf23a8c56",
+  "claim_id": "claim-s1.6-fv-g4-a1-f109-20260824",
+  "fence_token": 109,
+  "host_task_id": "codex-subagent:/root/s16_fv",
+  "verification_run_id": "verification-run-s1.6-g4-a1-20260824",
+  "reviewed_at": "2026-08-23T17:59:26Z",
+  "subject": {
+    "snapshot_ref": "git:5d3ee76a514bda3da38adc8cccbe5ef4550bf30f",
+    "snapshot_tree": "77d419e9aa4ed6f7c1fd080ca1edc8ede6b1cccb",
+    "snapshot_digest": "sha256:fb113c6f64943c7611873493806ca00eda7288955a5a3d1312d6b35728b054bc",
+    "baseline_formal": "7169e9b019fe2213ca76babb4122a84760bdf112",
+    "baseline_formal_tree": "b402135e2cfa8ff72ac7d7d840f53cce3b971b78",
+    "candidate_ref": "git:3937b7be1f18b820f29b9a5af62441d9715f68de",
+    "candidate_digest": "sha256:224fdd4fb5fc9ee9e21d44e9bd249a8fc3cf8c94210f28493fa331685fc5d906"
+  },
+  "isolated_environment": {
+    "clone_command": "git clone --no-local /Volumes/2T/CODE/A_Mine/NextStep <mktemp>/repo",
+    "clone_path": "/private/tmp/nextstep-s1-6-fv-20260824.zhvcOM/repo",
+    "head": "5d3ee76a514bda3da38adc8cccbe5ef4550bf30f (detached)",
+    "tree": "77d419e9aa4ed6f7c1fd080ca1edc8ede6b1cccb",
+    "install": "pnpm install --offline --frozen-lockfile --ignore-scripts",
+    "custom_refs_bootstrap": "read-only fetch formal/control refs into the isolated clone before the accepted check run",
+    "check": "pnpm check",
+    "evidence_scope": "manual-isolated consumer contract"
+  },
+  "artifact_refs": [
+    "refs/nextstep/control:gate-requests/gate-final-verification-s1.6-g4-a1-20260824.json",
+    "refs/nextstep/control:snapshots/final-content-snapshot-s1.6-g4-a1-20260824.json",
+    "refs/nextstep/control:transactions/write-transaction-s1.6-g4-a1-20260824.json",
+    "refs/nextstep/control:manifests/protected-manifest-s1.6-g4-a1-20260824.json",
+    "refs/nextstep/control:results/result-execution-s1.6-g4-a1-f105-20260824.json",
+    "refs/nextstep/control:results/result-candidate-verification-s1.6-g4-a1-f106-20260824.json",
+    "refs/nextstep/control:results/result-product-interaction-s1.6-g4-a1-f107-20260824.json",
+    "refs/nextstep/control:results/result-independent-review-s1.6-g4-a1-f108-20260824.json",
+    "refs/nextstep/control:messages/msg-dispatch-ready-s1.6-fv-g4-a1-20260824.json",
+    "refs/nextstep/control:messages/msg-dispatch-ack-s1.6-fv-g4-a1-f109-20260824.json",
+    "git:a59933df7dd572f71bcd89057165345d4e47c52e:.codex/reviews/p5-v1-m1.2-s1.6-cv-a1-2026-08-24/scorecard.json",
+    "git:8d011d94211253e847cce8a15948248b99708be4:.codex/reviews/p5-v1-m1.2-s1.6-ixp-a1-2026-08-24/scorecard.json",
+    "git:31a5d62be7b0965751e312859aa905f2a7b7c962:.codex/reviews/p5-v1-m1.2-s1.6-l3-a1-2026-08-24/scorecard.json",
+    "evidence:verification-credential-e2f6d2c27fcbab7004da12bedd4bf0dd83208e2a0665a0d66157dd5c88d40377.json"
+  ],
+  "hard_gates": [
+    {
+      "id": "HG1",
+      "result": "pass",
+      "statement": "packet/dedup/dispatch/claim/fence/host、F15、Snapshot、Transaction、manifest、Execution/CV/I-X-P/L3 摘要与 Git 身份精确匹配。",
+      "evidence": "FV packet sha256:5f57db0a…、dedup sha256:4114b227…、snapshot sha256:fb113c6f…、transaction sha256:4a04d1fb…、manifest(entries) sha256:02d8d43e…、Execution/CV/I-X-P/L3 result sha256:290e7771…/84d069a8…/4acd86df…/875451cc… 均由本轮 RFC8785 复算匹配；dispatch ready/ack 绑定 claim-s1.6-fv-g4-a1-f109-20260824、fence 109、host codex-subagent:/root/s16_fv；control=f90c5784… 的直接父为 59ed421a…，formal 保持 F15=7169e9b0…。"
+    },
+    {
+      "id": "HG2",
+      "result": "pass",
+      "statement": "唯一 --no-local 隔离副本 detached snapshot；offline frozen install 与正式 pnpm check 474/474、覆盖率三维高于 F15 floor。",
+      "evidence": "唯一 clone=/private/tmp/nextstep-s1-6-fv-20260824.zhvcOM/repo，detached 5d3ee76a…，no alternates；pnpm install --offline --frozen-lockfile --ignore-scripts 成功。clone 默认不复制自定义 refs 的环境预检为 473/474；只读引入已冻结 formal/control refs 后正式 pnpm check exit 0、474/474，coverage 93.41/88.84/99.15，均不低于 93.07/88.62/99.09。"
+    },
+    {
+      "id": "HG3",
+      "result": "pass",
+      "statement": "架构风险定向矩阵 52/52、正例 3/3、负例 15/15、Q3=10/10、Q11=20/20、rollback=5/5 与只读 CLI 边界全部成立。",
+      "evidence": "六个 S1.6 编译测试文件定向复跑 52/52；三类正例均 ACCEPTED，15 类负例均单回执 REJECTED；三类候选逐一为 required=10、risks=20、rollback=5，五份 source raw SHA 全部 MATCH；成功单一 JCS stdout/exit 0，失败单一 JCS stdout/exit 1 且无敏感原值回显。"
+    },
+    {
+      "id": "HG4",
+      "result": "pass",
+      "statement": "426 条 protected manifest 与 snapshot 精确一致；F15、manual-isolated consumer contract 与用户 Multica 文档边界不变。",
+      "evidence": "snapshot ls-tree 共 428 条，排除仅 operations-log/verification-report 后 manifest 426/426 条 mode/type/oid/path 精确匹配，mismatch=0；三类正例 scope 均为 manual-isolated/headless 且 Web/UI/database/persistent-service/P4 API Schema=false，根级 support_level 不存在；formal/control/main 全程不变，用户未跟踪 Multica 文档保持排除。"
+    },
+    {
+      "id": "HG5",
+      "result": "pass",
+      "statement": "Credential 仅在全部 hard gates PASS 后生成，并以 create-once/no-replace/fsync 方式安装。",
+      "evidence": "credential=verification-credential-e2f6d2c2….json，raw SHA/JCS/文件名一致，6214 bytes；evidence root 0700、file 0600；exclusive temp + file fsync + hard-link no-replace + parent fsync + temp unlink + parent fsync 后重读确认 link_count=1、tmp residue=0。"
+    },
+    {
+      "id": "HG6",
+      "result": "pass",
+      "statement": "评审相对 snapshot 只新增专属 review 三文件；不修改产品代码、formal/control 或完成态声明。",
+      "evidence": "提交前工作树仅新增 .codex/reviews/p5-v1-m1.2-s1.6-final-verification-2026-08-24/{final-verification.json,scorecard.json,verdict.md}；credential 位于项目外 evidence root；本裁决明确保留 Anchor/AV/Proof/F16 及 S1.6/M1.2/V1/P5 未完成状态。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "identity-chain",
+      "score": 25,
+      "max": 25,
+      "reason": "控制面、快照、事务、manifest 与四类上游 Result 摘要均独立复算匹配。",
+      "evidence_refs": ["HG1"]
+    },
+    {
+      "id": "isolated-build-test",
+      "score": 25,
+      "max": 25,
+      "reason": "唯一隔离副本的 offline install、正式 474/474 全量回归与覆盖率三维全部通过。",
+      "evidence_refs": ["HG2"]
+    },
+    {
+      "id": "architecture-risk-matrix",
+      "score": 25,
+      "max": 25,
+      "reason": "52/52、3/3、15/15、10/20/5、五份 source SHA 与只读 CLI 边界均有本轮一手证据。",
+      "evidence_refs": ["HG3"]
+    },
+    {
+      "id": "manifest-boundary-credential",
+      "score": 25,
+      "max": 25,
+      "reason": "426 条 manifest 精确一致，范围边界保持，Credential create-once 安装完成。",
+      "evidence_refs": ["HG4", "HG5", "HG6"]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw": 100,
+    "penalty_total": 0,
+    "final": 100
+  },
+  "severity_counts": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "verdict": "PASS",
+  "gate_conclusion": "通过",
+  "required_fixes": [],
+  "nice_to_have": [
+    "后续扩展 full、trusted-host、Web/UI 或持久服务时建立独立门禁，不复用本次 manual-isolated 证据。"
+  ],
+  "credential": {
+    "ref": "/Users/ling/.codex/nextstep/evidence/sha256-d11253328d36050bd559844c64b438e9b84e0c13125184e9b01e1e7cf23a8c56/verification-credential-e2f6d2c27fcbab7004da12bedd4bf0dd83208e2a0665a0d66157dd5c88d40377.json",
+    "sha256": "e2f6d2c27fcbab7004da12bedd4bf0dd83208e2a0665a0d66157dd5c88d40377",
+    "size_bytes": 6214,
+    "permissions": {
+      "directory": "0700",
+      "file": "0600"
+    },
+    "link_count": 1,
+    "tmp_residue_count": 0,
+    "install": "exclusive temp + file/parent fsync + hard-link no-replace，create-once"
+  },
+  "next_allowed_action": "Audit Anchor 准备与独立 Anchor Verification 链；expected-old=F15 的 F15→F16 CAS 只能在 Anchor Proof 后执行。",
+  "independence_declaration": "本评审在 fence 109 ACK CAS 后，以唯一 git clone --no-local 一次性副本完成 offline install、全量回归、定向矩阵、RFC8785 摘要复算、manifest 逐条核验与项目外 Credential 安装；未修改源仓库业务代码、main、formal、control 或用户 Multica 文档。",
+  "gate_disclaimer": "本裁决仅覆盖 manual-isolated headless consumer contract，不证明 full、trusted-host、Web/UI、数据库、常驻服务或 P4 API/Schema 冻结；不批准 formal promotion。",
+  "reviewers": [
+    {
+      "role": "Final Verifier",
+      "agent": "codex-subagent:/root/s16_fv",
+      "conclusion": "pass",
+      "summary": "六条 hard gate 全部通过；474/474、52/52、3/3、15/15、10/20/5、426/426 与 Credential create-once 均由本轮独立证据支持。"
+    }
+  ]
+}

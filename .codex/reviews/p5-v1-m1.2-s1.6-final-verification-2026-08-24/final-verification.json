@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0",
+  "record_type": "final-verification-record",
+  "review_id": "p5-v1-m1.2-s1.6-final-verification-2026-08-24",
+  "task_id": "S1.6-FV",
+  "task_attempt": 1,
+  "stage_id": "P5/V1/M1.2/S1.6/final-verification",
+  "plan_id": "p5-product-implementation",
+  "plan_generation": 4,
+  "route_generation": 1,
+  "repository_id": "sha256:d11253328d36050bd559844c64b438e9b84e0c13125184e9b01e1e7cf23a8c56",
+  "verification_run_id": "verification-run-s1.6-g4-a1-20260824",
+  "claim_id": "claim-s1.6-fv-g4-a1-f109-20260824",
+  "fence_token": 109,
+  "host_task_id": "codex-subagent:/root/s16_fv",
+  "host_environment": "codex-subagent-disposable-clone-and-exclusive-evidence-write",
+  "host_mode": "codex-subagent-final-verification-no-local-clone",
+  "verdict": "PASS",
+  "score": 100,
+  "gate_conclusion": "通过",
+  "dispatch": {
+    "packet_ref": "gate-requests/gate-final-verification-s1.6-g4-a1-20260824.json",
+    "packet_digest_recomputed": "sha256:5f57db0a27081047a1460e8599f4ae9f195a0c22f09b207a33836c6bd47d953f",
+    "dedup_key_recomputed": "sha256:4114b227df98429841dd4d48883951ed6ed613039de5d9923d85fa41a4a27c80",
+    "dispatch_ready_ref": "messages/msg-dispatch-ready-s1.6-fv-g4-a1-20260824.json",
+    "dispatch_ack_ref": "messages/msg-dispatch-ack-s1.6-fv-g4-a1-f109-20260824.json",
+    "control_at_verification": "git:f90c5784e795e01f12a967ec2d9a23f78710eafd",
+    "control_parent_chain": [
+      "59ed421ad0e80f8b0e299f888a13ab669107bc20",
+      "f90c5784e795e01f12a967ec2d9a23f78710eafd"
+    ]
+  },
+  "snapshot": {
+    "ref": "git:5d3ee76a514bda3da38adc8cccbe5ef4550bf30f",
+    "tree": "77d419e9aa4ed6f7c1fd080ca1edc8ede6b1cccb",
+    "parent": "3937b7be1f18b820f29b9a5af62441d9715f68de",
+    "digest_recomputed": "sha256:fb113c6f64943c7611873493806ca00eda7288955a5a3d1312d6b35728b054bc",
+    "parent_formal_oid": "7169e9b019fe2213ca76babb4122a84760bdf112",
+    "parent_formal_tree": "b402135e2cfa8ff72ac7d7d840f53cce3b971b78",
+    "transaction_ref": "transactions/write-transaction-s1.6-g4-a1-20260824.json",
+    "transaction_digest_recomputed": "sha256:4a04d1fb37a7a1a0ac863e98e74fd3839d93ed1e11018de025c7dcfc85a3cefa",
+    "protected_manifest_ref": "manifests/protected-manifest-s1.6-g4-a1-20260824.json",
+    "protected_manifest_entries_digest_recomputed": "sha256:02d8d43ed5c600952f4c55628857f6cbd06716d3ccbf95c287906e15bb711984",
+    "protected_path_count": 426,
+    "manifest_cross_check": {
+      "entries": 426,
+      "matched": 426,
+      "mismatches": 0,
+      "extra_mutable_only": [
+        ".codex/operations-log.md",
+        ".codex/verification-report.md"
+      ]
+    }
+  },
+  "upstream_gates": {
+    "execution": {
+      "result_digest_recomputed": "sha256:290e7771e12e2b89bf7eb9b955e5c8d202190d3554be4e9ffe77f0d2fd31c43f"
+    },
+    "candidate_verification": {
+      "result_digest_recomputed": "sha256:84d069a8ce3161bb5051ba97546274f6077dec7b462b58b241161b1b92e09cda",
+      "verdict": "PASS",
+      "score": 100
+    },
+    "product_interaction": {
+      "result_digest_recomputed": "sha256:4acd86dfba4b1aa974bd8b06ad0ab893a0ddd8a15d66cec5fc9ae7d3f57fe094",
+      "verdict": "PASS",
+      "score": 100
+    },
+    "independent_review_l3": {
+      "result_digest_recomputed": "sha256:875451cc508d053637d3db8bdcd5e12e7d0df07646cc2ebc4e1358ac06414d15",
+      "verdict": "PASS",
+      "score": 100
+    }
+  },
+  "isolated_rebuild": {
+    "clone_path": "/private/tmp/nextstep-s1-6-fv-20260824.zhvcOM/repo",
+    "clone_mode": "git clone --no-local; detached snapshot; no alternates",
+    "install": "pnpm install --offline --frozen-lockfile --ignore-scripts",
+    "custom_refs_bootstrap": "read-only fetch origin refs/nextstep/formal and refs/nextstep/control into the isolated clone",
+    "preflight_attempt": {
+      "passed": 473,
+      "failed": 1,
+      "reason": "git clone does not copy custom refs by default; no candidate-code failure"
+    },
+    "accepted_check_run": {
+      "check_exit_code": 0,
+      "tests": {
+        "total": 474,
+        "passed": 474,
+        "failed": 0
+      },
+      "coverage": {
+        "lines": 93.41,
+        "branches": 88.84,
+        "functions": 99.15
+      }
+    }
+  },
+  "architecture_risk_replay": {
+    "focused_matrix": "52/52",
+    "positive_binary_replay": "3/3 ACCEPTED",
+    "negative_binary_replay": "15/15 REJECTED",
+    "q3_required_fields": "10/10=100%",
+    "q11_risks": "20/20",
+    "rollback_entries": "5/5",
+    "source_raw_sha256": "5/5",
+    "receipt_boundary": "single JCS stdout; failure exit 1; no sensitive-value echo",
+    "evidence_scope": "manual-isolated consumer contract"
+  },
+  "boundary_and_audit": {
+    "main_before": "5d3ee76a514bda3da38adc8cccbe5ef4550bf30f",
+    "main_after": "5d3ee76a514bda3da38adc8cccbe5ef4550bf30f",
+    "formal_before": "7169e9b019fe2213ca76babb4122a84760bdf112",
+    "formal_after": "7169e9b019fe2213ca76babb4122a84760bdf112",
+    "control_before": "f90c5784e795e01f12a967ec2d9a23f78710eafd",
+    "control_after": "f90c5784e795e01f12a967ec2d9a23f78710eafd",
+    "git_fsck_strict": "clean",
+    "git_diff_check": "clean",
+    "debug_scan_src": "clean",
+    "user_multica_document": "preserved and excluded"
+  },
+  "credential": {
+    "ref": "/Users/ling/.codex/nextstep/evidence/sha256-d11253328d36050bd559844c64b438e9b84e0c13125184e9b01e1e7cf23a8c56/verification-credential-e2f6d2c27fcbab7004da12bedd4bf0dd83208e2a0665a0d66157dd5c88d40377.json",
+    "sha256": "e2f6d2c27fcbab7004da12bedd4bf0dd83208e2a0665a0d66157dd5c88d40377",
+    "size_bytes": 6214,
+    "directory_mode": "0700",
+    "file_mode": "0600",
+    "install": "exclusive temp + file fsync + hard-link no-replace + parent fsync + temp unlink + parent fsync",
+    "post_cleanup_verification": {
+      "raw_sha256": "sha256:e2f6d2c27fcbab7004da12bedd4bf0dd83208e2a0665a0d66157dd5c88d40377",
+      "jcs_sha256": "sha256:e2f6d2c27fcbab7004da12bedd4bf0dd83208e2a0665a0d66157dd5c88d40377",
+      "filename_matches_digest": true,
+      "link_count": 1,
+      "tmp_residue_count": 0
+    }
+  },
+  "incomplete_items": [
+    "Audit Anchor、Anchor Verification、Anchor Proof 与 expected-old=F15 的 F15→F16 正式 CAS 尚未执行。",
+    "S1.6 formal 完成、M1.2、V1、P5 均未完成。"
+  ],
+  "risks": [
+    "验证仅覆盖 manual-isolated headless consumer contract，不证明 full、trusted-host、Web/UI、数据库、常驻服务或 P4 API/Schema 冻结。",
+    "Wall-clock 字段仅信息性；因果顺序只由 refs/nextstep/control Git 父链确立。"
+  ],
+  "time_semantics": "Wall-clock fields are informational; causal ordering established only by refs/nextstep/control Git parent chain.",
+  "created_at": "2026-08-23T17:55:15Z",
+  "completed_at": "2026-08-23T17:59:26Z",
+  "result_digest": "sha256:09629f758eada54265d21dafe10708b24cb7d678f0fab3ea0579f1a1b3c4e8d7"
+}

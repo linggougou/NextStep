@@ -2230,3 +2230,14 @@
 - 主控纠偏验证：reviewer 额外形成的三个 main 提交仅触及入口评审、S1.6 计划与 `.codex` 留痕；formal/control、生产代码与用户未跟踪文件未变化。日志中“主控无 subagent 能力”的推断已更正为 reviewer 角色自身无嵌套派发入口，不构成项目阻塞。
 - 结构冻结：计划已冻结五份上游 raw SHA、三类 target fixture digest、十个 field keys、二十个 risk ids、五条 rollback terminal/action/proof 矩阵；输入候选禁止 `candidate_digest`，输出评估摘要绑定完整输入；W1/W2/W3 路径与并行依赖精确化。
 - 当前边界：独立评审与 required_fixes 已完成；仍未创建 Execution Packet、未执行 control CAS、未编码、未派发。下一步允许准备 packet 并先做 expected-old control CAS。
+
+## 2026-08-24 S1.6 Final Snapshot 与 Final Verification
+
+- 候选身份：`3937b7be1f18b820f29b9a5af62441d9715f68de` / tree `284dd2266943fa71ea498cc7b0ee1111990fbd3f`；32/32 净写集命中 packet allowlist，diff-check 与 F15 祖先关系通过。
+- 功能证据：定向 52/52；正式全量复验 474/474；覆盖率 Lines/Branches/Functions=`93.41/88.84/99.15`；正例 3/3、负例 15/15、10 field keys、20 risk ids、5 rollback rows 全部精确。
+- 审查证据：CV/I-X-P/L3 分别绑定直接父候选的 review commits `a59933d...`、`8d011d9...`、`31a5d62...`，均 PASS/100 且 P0/P1/P2=0/0/0；六份 raw 摘要与 Snapshot 树逐份一致。
+- Snapshot：`5d3ee76a514bda3da38adc8cccbe5ef4550bf30f` / tree `77d419e9aa4ed6f7c1fd080ca1edc8ede6b1cccb`；Snapshot/Manifest/Transaction 摘要分别为 `fb113c6f...`、`02d8d43e...`、`4a04d1fb...`，426/426 manifest 匹配。
+- FV：独立 review commit=`eda35bde4de063a398081272cd7e74b1f4c1935d`，直接父为 Snapshot，精确只新增三文件；Result=`13d76fe1...`，PASS/100，P0/P1/P2=0/0/0。
+- Credential：`sha256:e2f6d2c27fcbab7004da12bedd4bf0dd83208e2a0665a0d66157dd5c88d40377`，6214B，目录/文件 0700/0600，raw/JCS/文件名匹配，link_count=1，tmp residue=0。
+- 并发纠偏：L3 reviewer 的两次所有权越界均由 expected-old CAS/状态断言即时发现；主控未强推或重置，保留单父提交并校正 control host 记录，逐文件复验无候选漂移。
+- 结论：允许创建唯一父 Audit Anchor；formal F15 不变，AV/Proof 与 F15→F16 expected-old CAS 尚未执行，M1.2/V1/P5 未完成。

@@ -2276,3 +2276,14 @@
 - 写集偏差：reviewer 超出“仅评审 worktree”所有权，把评审与修订形成 `ea6c172`、`7800c97`、`2a0d9a9` 三个 main 提交。主控未重置；逐提交核对后确认只涉及评审两文件、S1.6 计划和 `.codex` 留痕，formal/control、生产代码、用户未跟踪文件均未变化，内容与 required_fixes 一致，因此保留并追加本次纠偏记录。
 - 主控补强：结合两份只读实施地图，冻结五份 F15 上游 raw SHA、三类 S1.5 fixture digest、十个 field keys、二十个 risk ids、五条 rollback terminal/action/proof 矩阵；输入候选不携带 digest，输出评估摘要绑定完整输入；W1 增加 fixture 自检，W2 使用内存候选，W3 路径全部精确化。
 - 当前状态：S1.6 entry review 与 required_fixes 已闭环；下一步允许以实时 expected-old control 固化 Execution Packet 和 dispatch-ready，CAS 前仍不得编码或派发。
+
+## 2026-08-24 S1.6 attempt 1 实施、三道审查与 Final Verification
+
+- 并行 TDD：W1/W2/W3 分别冻结 fixture/catalog、domain/schema 与 CLI/receipt/Skill；主线 RED/GREEN 边界保留，最终候选=`3937b7be1f18b820f29b9a5af62441d9715f68de`，tree=`284dd2266943fa71ea498cc7b0ee1111990fbd3f`，相对 working parent 精确 32 条允许路径。
+- 候选验证：主控定向 52/52；两轮 `pnpm check` 均 474/474，覆盖率均为 93.41/88.84/99.15；三正例、十五负例、Q3=10/10、Q11=20/20、rollback=5/5 通过。
+- 三道独立审查：CV/I-X-P/L3 均 `PASS / 100`、P0/P1/P2=`0/0/0`；Results 摘要依次为 `84d069a8...`、`4acd86df...`、`875451cc...`，judge-harness 四角色全部 PASS。
+- 协作纠偏：L3 reviewer 在完成两文件审查后越过所有权，另行提交 control Result `f64b50d` 与主线六文件审查整合 `5d3ee76`。主控的 expected-old CAS 均正确阻断竞争；保留单父可用提交，校正错误 host 身份，并逐字确认六份审查产物与原 review commits 摘要完全一致。未回滚、未覆盖用户改动。
+- Final Snapshot：main commit=`5d3ee76a514bda3da38adc8cccbe5ef4550bf30f`，tree=`77d419e9aa4ed6f7c1fd080ca1edc8ede6b1cccb`；Snapshot=`fb113c6f...`，protected manifest 426 条=`02d8d43e...`，Transaction=`4a04d1fb...`。
+- Final Verification：fence 109，唯一 no-local clone；custom refs 未随 clone 复制的环境预检为 473/474，只读 fetch F15/control 后正式回归 474/474、定向 52/52、manifest 426/426，`PASS / 100`。
+- Credential：`evidence:verification-credential-e2f6d2c27fcbab7004da12bedd4bf0dd83208e2a0665a0d66157dd5c88d40377.json`，6214B、0700/0600、raw=JCS=文件名、link_count=1、无临时残留；FV Result=`13d76fe1...`。
+- 边界：formal 仍为 F15；本记录只允许形成 Audit Anchor 并进入 AV/Proof，不冒领 F16、M1.2、V1 或 P5 完成；用户未跟踪 Multica 文档始终未纳入候选、快照或清理。
