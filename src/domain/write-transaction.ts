@@ -86,7 +86,7 @@ export interface WriteFileSystemPort {
   probe(relativePath: string): Promise<WriteTargetProbe>;
   readContent(relativePath: string): Promise<Uint8Array>;
   atomicWrite(relativePath: string, content: Uint8Array, guard?: WriteMutationGuard): Promise<void>;
-  removeCreated(relativePath: string): Promise<void>;
+  removeCreated(relativePath: string, expectedCurrentDigest?: Sha256Digest): Promise<void>;
 }
 
 export type WriteTargetResultStatus =
@@ -470,7 +470,7 @@ async function rollbackSingleTarget(
   }
   try {
     if (target.mode === "create") {
-      await fileSystem.removeCreated(target.path);
+      await fileSystem.removeCreated(target.path, candidate.expectedCurrentDigest);
       const probe = await fileSystem.probe(target.path);
       return !probe.exists;
     }
