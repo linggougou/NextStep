@@ -1,0 +1,191 @@
+{
+  "review_id": "p5-v1-m1.2-attempt-1-signoff-package-final-review-2026-08-24",
+  "task_id": "M1.2-ATTEMPT-1-USER-SIGNOFF-PACKAGE-FINAL",
+  "lane": "independent-signoff-package-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-milestone-acceptance-signoff-readiness-v2",
+  "subject_identity": {
+    "commit": "6a80b8fd8d701b37738f80eb482af330c79b51dd",
+    "tree": "41a6bc03ceb63809aaae409cdb670d4951ac1729",
+    "parent": "fb2b42ff6b00c45e947f30a9ea349b5bcb8d50e5",
+    "formal": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "control": "89225143315f44f6b057748be3aa8fc77e123ff9"
+  },
+  "artifact_refs": [
+    "git:6a80b8fd8d701b37738f80eb482af330c79b51dd",
+    "formal:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "control:89225143315f44f6b057748be3aa8fc77e123ff9",
+    "control:results/result-milestone-acceptance-m1.2-g4-a1-f112-20260824.json",
+    "control:checkpoint.json",
+    "control:registry.json",
+    "docs/qa/p5-v1-m1.2-acceptance-attempt-1-2026-08-24.md",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/PLANS.md",
+    "docs/exec-plans/active/p5-product-implementation-milestones.md",
+    "review-commit:4ca8295fe52b13acc85fed768795fbd4c0ad32d4:.codex/reviews/p5-v1-m1.2-acceptance-a1-2026-08-24/milestone-acceptance.json",
+    "review-commit:4ca8295fe52b13acc85fed768795fbd4c0ad32d4:.codex/reviews/p5-v1-m1.2-acceptance-a1-2026-08-24/scorecard.json",
+    "review-commit:4ca8295fe52b13acc85fed768795fbd4c0ad32d4:.codex/reviews/p5-v1-m1.2-acceptance-a1-2026-08-24/verdict.md"
+  ],
+  "artifact_digests": {
+    "control_result_jcs_without_result_digest": "sha256:73daa2141583898a82c64541e9fb96faf4ea5375fcc1cd0a79e4b0c9fa20366a",
+    "control_result_file_raw_sha256": "3bef810e16daf27438335c406deb39ccd2238f782b0ce1347c4b4a7c7e383c8a",
+    "acceptance_report_raw_sha256": "e98caaaf4e099bec95e8cebecab52cb0e723699eabb16a350245454093add7b0",
+    "project_route_lock_raw_sha256": "b3e9d050ceceffb1ebbce1f02a1f1d8c6a4b3ae2fa3157c5970a8aabe1e9a356",
+    "plans_index_raw_sha256": "c517613d79f8edf0e8a2d6da6aa53d073ffa5778f7862de5eb8238d0f8c79ee4",
+    "m1_2_exec_plan_raw_sha256": "34880f5be2f65d24b0ffd3e0d711977f1534b896d966afb4c0946854891d93d9",
+    "acceptance_review_milestone_jcs": "sha256:f186c27a4ce41edf265c5c6f7644c36334544c57051be8db0e6d8dd0456d5856",
+    "acceptance_review_scorecard_jcs": "sha256:665ca1e56d0b679daa3646b3c29f3d525d1405872b20f7f4b4abb344da9a77cf",
+    "acceptance_review_verdict_raw_sha256": "sha256:ac1f03cfd5c0e41bd0a1ff2031c10c8922d0fc27e5a083b142a07ae3610f66df"
+  },
+  "hard_gates": [
+    {
+      "id": "subject_formal_control_identity",
+      "status": "pass",
+      "evidence": "专属终审工作树 HEAD 精确为 6a80b8fd8d701b37738f80eb482af330c79b51dd，tree=41a6bc03ceb63809aaae409cdb670d4951ac1729，单父=fb2b42ff6b00c45e947f30a9ea349b5bcb8d50e5；实时 formal=ea04b57de83d6c548dcb1629b1f61832db8375ad（F16），control=89225143315f44f6b057748be3aa8fc77e123ff9，与报告、路线锁、计划和 Result 一致。"
+    },
+    {
+      "id": "result_digest_and_acceptance_facts",
+      "status": "pass",
+      "evidence": "独立移除 Result 顶层 result_digest 后按递归键排序的 JCS 口径重算，得到 sha256:73daa2141583898a82c64541e9fb96faf4ea5375fcc1cd0a79e4b0c9fa20366a，与 Result、registry、checkpoint 和报告登记一致；Result 为 PASS/100，I/X/P/Profile 均 25/25，P0/P1/P2=0/0/0，required_fixes=[]。"
+    },
+    {
+      "id": "acceptance_review_three_file_union",
+      "status": "pass",
+      "evidence": "验收评审提交 4ca8295fe52b13acc85fed768795fbd4c0ad32d4 直接父为 formal F16，且相对 F16 精确新增 milestone-acceptance.json、scorecard.json、verdict.md 三文件；三者摘要独立复算分别为 f186c27a...、665ca1e5...、ac1f03cf...，与 Result 绑定值一致。三文件共同覆盖 TG 完整并集、S1.3→S1.6 三类累计链、F16 subject digest、分数、指标、边界和零严重度结论。"
+    },
+    {
+      "id": "metrics_and_boundary_fidelity",
+      "status": "pass",
+      "evidence": "会签报告与 Result 逐项一致：全量回归 474/474，覆盖率 Lines/Branches/Functions=93.41%/88.84%/99.15%，三类累计连续性=3/3，Q6=17/17，写入语义=13/13，Q3=10/10，Q11=20/20，回滚=5/5，架构负例=15/15；报告保留 headless-primary/manual-isolated 限制，未把 UI fixture 写成 Web/UI 主线证据。"
+    },
+    {
+      "id": "route_plan_and_status_truth",
+      "status": "pass",
+      "evidence": "PROJECT_ROUTE_LOCK.md、docs/PLANS.md、活动执行计划、README、QA 索引和两份 .codex 留痕均维持 formal F16，准确表述 M1.2 验收已通过但尚未用户会签、尚未正式完成；V1/P5 未完成，未宣称或暗示 V2 已获授权。"
+    },
+    {
+      "id": "pre_signoff_control_state",
+      "status": "pass",
+      "evidence": "control 8922514 中 registry 的 M1.2-I-X-P attempt=1、fence=112、status=gate-passed-awaiting-signoff-package-review、milestone_status=not-completed、signoff_status=not-requested；checkpoint 已登记 M1.2 Result 且 completed_milestones 仍仅含 M1.1，pending_dispatch_messages=[]。这与“终审通过后才创建 user-signoff-request”的前置状态一致。"
+    },
+    {
+      "id": "post_approval_cas_semantics",
+      "status": "pass",
+      "evidence": "报告明确区分终审、用户批准与 CAS：本终审只允许生成并提交用户会签请求；用户明确批准后仍须由新的独立身份核验者重读 formal/control/Result 身份，再以实时 expected-old control 执行 CAS；仅 CAS 成功后 M1.2 才正式完成，身份漂移或 CAS 冲突则保持未完成且禁止盲重试。"
+    },
+    {
+      "id": "downstream_authorization_boundary",
+      "status": "pass",
+      "evidence": "M1.2 会签只关闭 M1.2，并仅允许后续单独评估 V1 累计验收入口；不自动完成 V1/P5，不授权 V2，不生成下一阶段 packet，不派发或编码。会签包没有把验收通过、用户批准或 CAS 成功三种效果互相替代。"
+    },
+    {
+      "id": "scope_and_user_change_protection",
+      "status": "pass",
+      "evidence": "subject 相对父提交仅变更八个批准的报告、路线、计划、索引和留痕文件，无 src/tests/schemas/skills/依赖或 refs 变化；终审未读取、修改或纳入用户未跟踪 Multica 文件，也未改 main/formal/control/evidence。"
+    },
+    {
+      "id": "mechanical_integrity",
+      "status": "pass",
+      "evidence": "subject 工作树终审开始时 clean，git diff --check HEAD^ HEAD 通过；未发现陈旧 F15 当前态、分数算术错误、摘要错绑、会签既成化、状态自相矛盾或超范围授权。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "acceptance_result_integrity",
+      "score": 25,
+      "max_score": 25,
+      "reason": "Result 摘要、F16 身份、原始三文件验收评审及全部 I/X/P/Profile 结果可独立复算且互相一致。",
+      "evidence_refs": [
+        "control:results/result-milestone-acceptance-m1.2-g4-a1-f112-20260824.json",
+        "review-commit:4ca8295fe52b13acc85fed768795fbd4c0ad32d4"
+      ]
+    },
+    {
+      "id": "report_and_metric_fidelity",
+      "score": 25,
+      "max_score": 25,
+      "reason": "报告完整呈现 PASS/100、零严重度、TG 并集、三类累计链、全量回归、覆盖率、Q3/Q6/Q11、写入、回滚和架构负例，没有选择性遗漏或夸大。",
+      "evidence_refs": [
+        "docs/qa/p5-v1-m1.2-acceptance-attempt-1-2026-08-24.md",
+        "control:results/result-milestone-acceptance-m1.2-g4-a1-f112-20260824.json"
+      ]
+    },
+    {
+      "id": "signoff_state_safety",
+      "score": 25,
+      "max_score": 25,
+      "reason": "会签请求前、用户批准后身份复核、expected-old CAS、成功与冲突回退四段状态机明确；当前未完成事实和批准后效果均无歧义。",
+      "evidence_refs": [
+        "docs/qa/p5-v1-m1.2-acceptance-attempt-1-2026-08-24.md",
+        "control:checkpoint.json",
+        "control:registry.json"
+      ]
+    },
+    {
+      "id": "scope_and_status_honesty",
+      "score": 15,
+      "max_score": 15,
+      "reason": "路线、计划与状态文档统一维持 formal F16、M1.2 未完成、V1/P5 未完成及 V2 未授权；headless-primary/manual-isolated 和 UI 边界披露准确。",
+      "evidence_refs": [
+        "PROJECT_ROUTE_LOCK.md",
+        "docs/PLANS.md",
+        "docs/exec-plans/active/p5-product-implementation-milestones.md"
+      ]
+    },
+    {
+      "id": "review_traceability_and_protection",
+      "score": 10,
+      "max_score": 10,
+      "reason": "subject/formal/control/Result/原始评审三文件均固定到精确身份与摘要；变更范围合规，用户未跟踪 Multica 文件和所有受保护 refs/证据均未触碰。",
+      "evidence_refs": [
+        "git:6a80b8fd8d701b37738f80eb482af330c79b51dd",
+        ".codex/operations-log.md",
+        ".codex/verification-report.md"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100
+  },
+  "severity_summary": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "后续 control user-signoff-request 应新增独立消息并保留既有 M1.1 用户会签记录；不得用 M1.2 状态覆盖 M1.1 历史。",
+    "用户明确批准后的 pre-CAS identity verification 应由不同于会签包生成者的独立审查身份执行，并把实时 expected-old control 写入固化证据。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "signal": "PASS",
+      "conclusion": "十项硬门全部通过：精确 subject/formal/control 身份、Result JCS 摘要、原始验收三文件摘要、TG 与三类累计链、分数指标、路线状态、会签状态机和保护边界均可复核。"
+    },
+    {
+      "role": "Strict Judge",
+      "signal": "PASS",
+      "score": 100,
+      "conclusion": "当前 6a80 会签包准确反映 control 8922514 的事实，没有会签既成化、指标遗漏、边界漂移或需要修订的缺陷。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "signal": "PASS",
+      "conclusion": "未发现复制粘贴残留、F15 陈旧当前态、M1.1/M1.2 混写、摘要错绑、分数算术错误、空洞完成声明或 V2 越权授权。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "signal": "PASS",
+      "score": 100,
+      "conclusion": "M1.2 attempt 1 用户会签包通过最终独立终审，可进入 control user-signoff-request。此裁决本身不等于用户批准，不完成 M1.2，不移动 control/formal，不启动 V1 累计验收或 V2。"
+    }
+  ],
+  "reviewed_at": "2026-08-24T03:32:39+08:00",
+  "verdict_scope": "PASS 仅针对 commit 6a80b8fd8d701b37738f80eb482af330c79b51dd 上的 M1.2 attempt 1 用户会签候选包及其与 formal F16、control 89225143315f44f6b057748be3aa8fc77e123ff9、Result sha256:73daa214... 的一致性。它只允许生成并提交用户会签请求；在用户明确批准且新的独立身份复核与实时 expected-old control CAS 成功前，M1.2 仍未完成；V1/P5 未完成，V2 未授权。"
+}
