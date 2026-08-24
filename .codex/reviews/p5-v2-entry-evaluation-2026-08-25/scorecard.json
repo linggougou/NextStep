@@ -1,0 +1,160 @@
+{
+  "review_id": "p5-v2-entry-evaluation-2026-08-25",
+  "task_id": "V2-ENTRY-EVALUATION",
+  "lane": "independent-entry-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-v2-entry-readiness-v1",
+  "artifact_refs": [
+    "git:f697758742dd473d30718c2b7ce13ad552e624a3",
+    "formal:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "control:48cff32bbb03b4814813cd97086a3f789cd17b72",
+    "control:9ec9d45de5c973f1d3904bcfd3817e6103bbd324",
+    "control:6d5120078a137ecf74b4a4b58cbcba37a61b7148",
+    "control:checkpoint.json",
+    "control:registry.json",
+    "control:messages/msg-user-signoff-ack-v1-g4-a5-20260824.json",
+    "control:messages/msg-version-completion-v1-g4-a5-f117-20260825.json",
+    "control:results/result-version-acceptance-v1-g4-a5-f117-20260824.json",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/PLANS.md",
+    "docs/exec-plans/active/p5-product-implementation-milestones.md"
+  ],
+  "hard_gates": [
+    {
+      "id": "V1-FORMAL-COMPLETION-REAL",
+      "status": "pass",
+      "evidence": "control parent chain 48cff32 -> 9ec9d45 -> 6d512007 精确对应 signoff request、ACK、independent completion；formal 始终固定为 F16 ea04b57de83d6c548dcb1629b1f61832db8375ad。"
+    },
+    {
+      "id": "DOCS-CONTROL-STATE-CONSISTENT",
+      "status": "pass",
+      "evidence": "PROJECT_ROUTE_LOCK、docs/PLANS、活动计划、checkpoint、registry 当前一致声明 V1 formally-completed、P5 未完成、V2 仅允许 entry evaluation 后的后续门禁准备。"
+    },
+    {
+      "id": "NO-PENDING-DISPATCH",
+      "status": "pass",
+      "evidence": "checkpoint.pending_dispatch_messages=[]；registry 中 V1 attempt 5 当前条目无 pending dispatch，latest_message_id=msg-version-completion-v1-g4-a5-f117-20260825。"
+    },
+    {
+      "id": "NO-OPEN-P0-P1",
+      "status": "pass",
+      "evidence": "V1 immutable PASS Result severity_summary 为 P0=0、P1=0、P2=3；required_fixes=[]。"
+    },
+    {
+      "id": "PLAN-GENERATION-STABLE",
+      "status": "pass",
+      "evidence": "checkpoint、registry、ACK message、completion message 均绑定 plan_generation=4，未见 generation 漂移。"
+    },
+    {
+      "id": "P2-CARRY-FORWARD-PRESERVED",
+      "status": "pass",
+      "evidence": "completion message carry_forward_risk_ids 与 V1 Result risks 精确保留 P2-MANUAL-ISOLATED-NOT-FULL、P2-CONTROL-PARENT-CHAIN-CAUSALITY、P2-TRUSTED-HOST-REGISTRY-LIFETIME。"
+    },
+    {
+      "id": "NEXT-ACTION-BOUNDARY-STRICT",
+      "status": "pass",
+      "evidence": "completion message next_allowed_action、route lock 当前状态、PLANS 当前阶段共同限定下一步仅为 V2 规划或首个 packet 前的后续门禁准备，不授权 V2 packet/claim/fence/dispatch/coding。"
+    },
+    {
+      "id": "CONTROL-COMPLETION-WRITESET-AND-TIME-SEMANTICS",
+      "status": "pass",
+      "evidence": "completion control 6d512007 的 exact-3 写集仅为 checkpoint.json、registry.json、messages/msg-version-completion-v1-g4-a5-f117-20260825.json；message 绑定 control_expected_old_oid=9ec9d45de5c973f1d3904bcfd3817e6103bbd324、completed_at=2026-08-24T17:28:06Z，且 time_semantics 明确以 control Git parent chain 为因果真源。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "control_causality_and_identity",
+      "score": 25,
+      "max_score": 25,
+      "reason": "V1 formal completion 的 request/ACK/completion 父链、formal 身份与 result binding 全部闭环，无状态冒领。",
+      "evidence_refs": [
+        "V1-FORMAL-COMPLETION-REAL",
+        "PLAN-GENERATION-STABLE"
+      ]
+    },
+    {
+      "id": "state_machine_readiness",
+      "score": 25,
+      "max_score": 25,
+      "reason": "docs 与 control 当前状态一致，pending dispatch=0，V1 已完成且 P5/V2 仍保持正确门禁边界。",
+      "evidence_refs": [
+        "DOCS-CONTROL-STATE-CONSISTENT",
+        "NO-PENDING-DISPATCH",
+        "NEXT-ACTION-BOUNDARY-STRICT"
+      ]
+    },
+    {
+      "id": "risk_and_severity_discipline",
+      "score": 25,
+      "max_score": 25,
+      "reason": "没有未闭合 P0/P1，三项既有 P2 风险被正确 carry-forward，未被误清零或误扩大。",
+      "evidence_refs": [
+        "NO-OPEN-P0-P1",
+        "P2-CARRY-FORWARD-PRESERVED"
+      ]
+    },
+    {
+      "id": "completion_cas_and_boundary_clarity",
+      "score": 25,
+      "max_score": 25,
+      "reason": "V1 completion 以 exact-3 control 写集、合法 UTC completed_at 与 Git parent chain 因果语义闭环固化，且不会被错误解释为放宽 V2 实施授权。",
+      "evidence_refs": [
+        "CONTROL-COMPLETION-WRITESET-AND-TIME-SEMANTICS",
+        "NEXT-ACTION-BOUNDARY-STRICT"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100
+  },
+  "severity_summary": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "下一轮 V2 规划或首个 packet 前门禁可复用 V1 completion 的 exact-3 control 写集与 time_semantics 核验模板，减少后续审查歧义。",
+    "V2 规划候选中继续显式引用三项 carry-forward P2，避免在新版本材料里被分数覆盖。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "signal": "PASS",
+      "conclusion": "8/8 hard gates 通过，V1 completion、docs/control 一致性、风险承接与下一步边界成立。"
+    },
+    {
+      "role": "Strict Judge",
+      "signal": "PASS",
+      "score": 100,
+      "conclusion": "V2 入口可放行到后续规划/首个 packet 前门禁准备，但不能直接进入 V2 实施。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "signal": "PASS",
+      "conclusion": "未发现把 V1 formally-completed 误扩展成 V2 已授权，或把 completion control 的写集与时间语义写错。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "signal": "PASS",
+      "score": 100,
+      "conclusion": "允许结束本次独立 V2 entry evaluation，并把下一步严格限制在 V2 规划/首个 packet 的后续门禁准备。"
+    }
+  ],
+  "next_allowed_action": "仅允许进入 V2 规划或首个 packet 前的后续门禁准备；V2 packet、claim/fence、dispatch、coding 仍未授权",
+  "forbidden_actions": [
+    "generate or dispatch a V2 packet",
+    "create any V2 claim or fence",
+    "start V2 dispatch or coding",
+    "declare V2 complete",
+    "declare P5 complete",
+    "move formal",
+    "rewrite V1 historical result or signoff evidence"
+  ],
+  "reviewed_at": "2026-08-25T01:40:27+08:00"
+}
