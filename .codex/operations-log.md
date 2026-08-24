@@ -2339,3 +2339,7 @@
 - Orca orchestration 运行时缺失：`zsh: command not found: orca`。原用途为结构化 subagent 协调；替代流程为本会话原生 subagent + 两个只读专属 worktree，主控独占 control 写入与 expected-old CAS，后续以摘要、父链、写集和 refs 复核替代验证。
 - 本轮授权边界仅含首次 V1 packet、dispatch-ready/outbox intent、registry/checkpoint 与一次 expected-old control CAS；不含 claim/fence、host task、dispatch-ack、正式验收、Result、formal 移动、V1/P5 完成或 V2。
 - 只读 subagent 发现 `docs/PRODUCT_SENSE.md` 的阶段镜像仍停在 F14/S1.5；该文件明确把路线锁和 PLANS 作为正式状态真源，但为避免 packet working context 内部状态漂移，已最小同步到 F16/V1 packet-freeze，不修改任何产品原则正文。
+- 两路只读审计分别冻结 control 先例与实时身份：task=`V1-I-X-P-Profile`、stage=`P5/V1/cumulative-acceptance`、全局 plan_generation=4、attempt=1；Generation 1 由已评审计划 ref 表达。审计同时发现 M1.2 历史 outbox 曾误用 dedup 作为 ready payload digest，本轮未复制该缺陷。
+- control 候选 commit=`ca0c5303805e66df0280f1c69b8b6a0db0ce1b84`，直接父=`a99593f940c6f38fba2147fc9b2c5bb5594c93a7`，精确五文件。packet=`sha256:60d11c2d2c8f69464e4fd3edf4f60ead8137eb510e56e71795383016d04ad471`，七字段 dedup=`sha256:eaff48cb8edb4d31fc7e47ad3e77cca585d1aba67bfe41e29520dba65a94852f`，ready JCS/outbox payload=`sha256:1dcac82531e8927691b3993a6b5473f641a3b5f75e728935dfec32081d9fc197`。
+- 独立 CAS 前复核 `PASS`、`CAS_ALLOWED=true`、`required_fixes=[]`；五文件写集、source refs、PC/TG/Q/三项目全链、负例/风险/回滚并集与不授权范围全部匹配。expected-old CAS 已成功推进 control 到 `ca0c530...`，formal 保持 F16。
+- CAS 后 registry=`dispatch-pending`、pending=1、outbox=pending；claim/fence/host/ack/Result 均不存在。下一步必须取得新的明确派发授权，不得把本次 packet CAS 扩张为派发授权。

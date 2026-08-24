@@ -4,8 +4,8 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：V1 累计验收 Generation 1 packet 固化（入口与计划独立评审均 `PASS / 100`，当前 formal=F16）
-- 当前状态：formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`；packet CAS 前 control=`a99593f940c6f38fba2147fc9b2c5bb5594c93a7`。用户已授权生成首次 V1 packet 并执行对应 control CAS；本轮不授权 claim/fence、派发或运行正式验收。V1、P5 尚未完成，V2 未授权。
+- 当前活动里程碑：V1 累计验收 attempt 1 派发授权门禁（首次 packet/control CAS 已完成，当前 formal=F16）
+- 当前状态：formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`；control=`ca0c5303805e66df0280f1c69b8b6a0db0ce1b84`。V1 attempt 1=`dispatch-pending`，pending=1，尚无 claim/fence/host/ack/Result；继续派发需要新的明确授权。V1、P5 尚未完成，V2 未授权。
 
 ## 当前活动计划
 
@@ -27,7 +27,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。M1.1、M1.2 与 S1.4-S1.6 已正式完成，CR-004/CR-005 已关闭。V1 入口与 Generation 1 计划评审已通过，当前只允许首次 packet/control CAS；CAS 后仍须另行授权 claim/fence 与派发。V1 仍需 S1.1-S1.6 累计验收和用户会签，P5 尚未完成。
+P5 已于 2026-08-08 单独启动。M1.1、M1.2 与 S1.4-S1.6 已正式完成，CR-004/CR-005 已关闭。V1 入口、Generation 1 计划评审与首次 packet/control CAS 已完成；当前等待另行授权 claim/fence 与派发。V1 仍需 S1.1-S1.6 累计验收和用户会签，P5 尚未完成。
 
 实施顺序保持 P3 已会签结构：
 

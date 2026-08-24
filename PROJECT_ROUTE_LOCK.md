@@ -31,7 +31,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - Change Intake、恢复、Final Acceptance、交付和宿主归档边界通过故障注入和反扫验证。
   - V1..V4 与 Final Acceptance 分别完成本地验证、适用验收和用户会签。
 - 阶段出口：V1..V4 和 Final Acceptance 全部通过；正式 OID、交付清单、风险、回滚和 PC-20.AR 状态可追溯，并由用户明确确认 P5 产品落地完成。
-- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；S1.2/F12、S1.3/F13、S1.4/F14、S1.5/F15、S1.6/F16 已正式提升，M1.1 attempt 2 与 M1.2 attempt 1 用户会签均已完成。M1.2 在精确 F16 独立完成 I/X/P/Profile 累计验收，结论 `PASS / 100`，Result digest=`sha256:73daa2141583898a82c64541e9fb96faf4ea5375fcc1cd0a79e4b0c9fa20366a`；独立身份核验 `CAS_ALLOWED=true` 后，control 从 `eaefc1b...` 原子推进到 `a99593f940c6f38fba2147fc9b2c5bb5594c93a7`，formal 保持 F16。M1.2 已正式完成；V1 累计验收入口与 Generation 1 计划分别通过独立 `PASS / 100` 评审，用户已授权生成首次 packet 并执行对应 control CAS。
+- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；S1.2/F12、S1.3/F13、S1.4/F14、S1.5/F15、S1.6/F16 已正式提升，M1.1 attempt 2 与 M1.2 attempt 1 用户会签均已完成。M1.2 在精确 F16 独立完成 I/X/P/Profile 累计验收，结论 `PASS / 100`。V1 累计验收入口与 Generation 1 计划分别通过独立 `PASS / 100` 评审；首次 packet digest=`sha256:60d11c2d2c8f69464e4fd3edf4f60ead8137eb510e56e71795383016d04ad471`，control 已从 `a99593f...` 原子推进到 `ca0c5303805e66df0280f1c69b8b6a0db0ce1b84`，formal 保持 F16。
 - 明确非目标：
   - 不恢复 NextStep Web/UI 候选分支。
   - 不引入常驻服务、数据库、远程控制面或通用多 Agent 编排平台。
@@ -43,7 +43,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - 不改变已会签产品、交互、S4/P3/P4 或验收边界；需要改变时先进入 Change Request。
 - 禁止提前进入的阶段：S7 最终发布判断和 S8 交付归档；V1..V4 也不得跳过前序门禁并行宣告完成。
 - 允许进入下一阶段的条件：P5 Final Acceptance 通过本地可重复验证、独立验收和用户会签；若实现要求改变已会签产品、交互、技术、版本范围、正式提升或验收边界，必须先完成 Change Request。
-- 当前状态：进行中；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，packet CAS 前 control=`a99593f940c6f38fba2147fc9b2c5bb5594c93a7`。M1.2 attempt 1 已 `PASS / 100` 并完成用户会签 CAS，状态 `formally-completed`；V1 入口与计划评审已通过。当前只允许生成首次 V1 Generation 1 packet 并以该 control 为 expected-old 执行一次 CAS；不得创建 claim/fence、派发或运行验收，不得进入 V2。V1、P5 尚未完成，V2 未授权。
+- 当前状态：进行中；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`ca0c5303805e66df0280f1c69b8b6a0db0ce1b84`。V1 attempt 1 packet 已固化，registry=`dispatch-pending`，pending dispatch=1；claim/fence、host task、dispatch-ack 与 Result 均不存在。下一步必须取得新的明确派发授权，才可按 expected-old control CAS 形成 claim/fence 并派发；V1、P5 尚未完成，V2 未授权。
 
 ## 2.1 里程碑路线图
 
@@ -109,7 +109,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
 
 - Backlog：待建立。
 - Change Request：`docs/change-requests/index.md`
-- 当前阶段缺口：M1.2 attempt 1 已正式完成；V1 累计验收入口与 Generation 1 计划均已独立评审通过。用户已授权首次 V1 packet/control CAS，但尚未授权 claim/fence、派发或执行；V1 仍需 S1.1-S1.6 同一 F16 累计验收、独立审查、Result、报告和用户会签。V1/P5 未完成，不得直接进入 V2。
+- 当前阶段缺口：M1.2 attempt 1 已正式完成；V1 累计验收入口、Generation 1 计划和首次 packet/control CAS 均已完成。当前 packet 仅为 dispatch-pending，尚未授权 claim/fence、派发或执行；V1 仍需 S1.1-S1.6 同一 F16 累计验收、独立审查、Result、报告和用户会签。V1/P5 未完成，不得直接进入 V2。
 - 后续阶段需求：V1..V4 和 Final Acceptance 按活动计划顺序推进；P4 第 12 节“运行集成验收”只允许落实为集成诊断预检，正式 I/X/P 四态结论仍由独立门禁和最终复验链产生。若未来恢复 `Web / UI` 分支，需重新确认其与当前 Skill 主路线的关系。
 - 已拒绝需求：无。
 

@@ -2294,3 +2294,8 @@
 - 实时身份：main=`a3378c391ff58b4667699f34a83cba9c3d2cce45`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad` / tree=`5b97a443...` / parent=`5d3ee76a...`，control expected-old=`a99593f940c6f38fba2147fc9b2c5bb5594c93a7`，plan_generation=4，pending=0。
 - 工作区仅保留用户既有未跟踪 Multica 文档；该文件不读取、不修改、不提交、不验收、不清理。状态同步只涉及路线锁、README、PLANS、活动计划、QA 索引与 `.codex` 留痕，不涉及生产代码、Schema、依赖或 refs。
 - Orca CLI 不可用，采用原生 subagent 只读审计与主控独占 CAS；若任一身份、摘要、pending 或 expected-old 漂移，必须零推进并重新核验。
+- 五文件候选：commit=`ca0c5303805e66df0280f1c69b8b6a0db0ce1b84` / tree=`f26bd9048172e40163dd84f0a5f34215f3c25890` / parent=`a99593f940c6f38fba2147fc9b2c5bb5594c93a7`；写集仅为 packet、ready、outbox、checkpoint、registry，`git diff --check` 与 `git fsck --strict --no-dangling` 通过。
+- 摘要复算：packet=`sha256:60d11c2d2c8f69464e4fd3edf4f60ead8137eb510e56e71795383016d04ad471`；七字段 dedup=`sha256:eaff48cb8edb4d31fc7e47ad3e77cca585d1aba67bfe41e29520dba65a94852f`；ready 完整 RFC8785/JCS 与 outbox payload=`sha256:1dcac82531e8927691b3993a6b5473f641a3b5f75e728935dfec32081d9fc197`。全部 main/control source refs 与 digest 匹配。
+- 独立 CAS 前复核：`PASS`、`CAS_ALLOWED=true`、`required_fixes=[]`；实时 expected-old 与 formal 再确认后，`git update-ref refs/nextstep/control ca0c530... a99593f...` 原子成功。
+- CAS 后：control=`ca0c5303805e66df0280f1c69b8b6a0db0ce1b84`、formal=F16；checkpoint pending 精确一条，registry=`dispatch-pending`，outbox=pending 且 claim/owner/lease/fence/host 全为 null；无 dispatch-ack、Result 或会签对象。
+- 边界：本轮 packet/control CAS 已完成，不代表派发或 V1 通过。下一步只能请求或等待新的明确 claim/fence/dispatch 授权；V1/P5 未完成，V2 未授权。
