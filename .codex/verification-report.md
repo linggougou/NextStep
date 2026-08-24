@@ -2276,3 +2276,11 @@
 - CAS：control expected-old `eaefc1b92f9248ae9d07562d3c1284e82c409202` 原子推进到 `a99593f940c6f38fba2147fc9b2c5bb5594c93a7`；formal 仍为 `ea04b57de83d6c548dcb1629b1f61832db8375ad`。
 - 状态验证：registry M1.2=`gate-passed/formally-completed/approved`；checkpoint `milestone_signoffs.M1.2=approved` 且 `completed_milestones.M1.2` 已登记；M1.1 历史保持不变，pending dispatch=0。
 - 边界：该会签只完成 M1.2。V1/P5 仍未完成，V2 未授权；下一步仅允许独立评估 V1 的 S1.1-S1.6 累计验收入口。
+
+## 2026-08-24 V1 累计验收入口与计划候选静态验证
+
+- 入口评估：独立 review commit=`dfec11ad81c8155048688b953f5aa8e5ff9689d7` / tree=`255d1bafa240543e1c2fa78c9dd8781f3efa676b` / parent=`ba7cb6c003bf7f4f11bde33f94f0cb5e6dcf3702`；精确两文件、`PASS / 100`、P0/P1/P2=`0/0/0`。
+- 摘要复核：scorecard RFC8785/JCS=`sha256:a905f12332a2a3864f7a474f9a159f1d0d9add296c200e9315ec2391c10e5842`，verdict raw=`sha256:19548b634dfe105b5886e236261e1a61c724b03b4e5552fc46168515eed46ce6`；diff-check 与 `git fsck --strict --no-dangling` 通过。
+- 实时边界：formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`a99593f940c6f38fba2147fc9b2c5bb5594c93a7`，pending=0；M1.1/M1.2 已完成，V1/P5 未完成，V2 未授权。
+- 计划候选已将入口 scorecard 的完整 frozen union 映射为机器可核验 evidence slots，并限定唯一 no-local exact-F16 隔离运行、frozen/offline 全量回归、独立 Result/评审/报告与用户会签。
+- 当前尚未形成计划独立裁决；packet、dedup、claim/fence、dispatch、正式 V1 验收和 control/formal CAS 均不得执行。

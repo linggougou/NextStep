@@ -2322,3 +2322,10 @@
 - 新独立身份核验 commit=`18ab4101bb50513d84f497f2b2b026f5548b4b6e`，直接父为 `cc4f4c15da60322dd1b0fc1f0397947e7798712e`，精确两文件；`PASS / 100`、`CAS_ALLOWED=true`，唯一 expected-old=`eaefc1b...`，scorecard JCS=`sha256:e80feb3747454aaf3a302cba9f6078e3256824cb9668a92b22c6c0b73bda52b8`。
 - 主控在提交前再次确认 control=`eaefc1b...`、formal=F16、Result digest=`sha256:73daa214...`、plan generation=4 与 pending=0；user-signoff commit=`a99593f940c6f38fba2147fc9b2c5bb5594c93a7`，expected-old CAS 原子成功，formal 未移动。
 - 结果：M1.2 attempt 1=`formally-completed/approved`；M1.1/M1.2 历史均保留。V1/P5 未完成，V2 未授权；下一步只允许单独评估 V1 累计验收入口。
+
+## 2026-08-24 V1 累计验收入口与 Generation 1 计划候选
+
+- 独立入口评估 commit=`dfec11ad81c8155048688b953f5aa8e5ff9689d7`，直接父=`ba7cb6c003bf7f4f11bde33f94f0cb5e6dcf3702`，精确两份评审文件；裁决 `PASS / 100`、P0/P1/P2=`0/0/0`、`required_fixes=[]`。
+- 主控复算 scorecard JCS=`sha256:a905f12332a2a3864f7a474f9a159f1d0d9add296c200e9315ec2391c10e5842`，父链、写集、diff-check、worktree clean 与 `git fsck --strict --no-dangling` 均通过；评审以 `d9bd61f80875fa3716f0004d6bfe34d70bc01300` 纳入 main，专属 worktree 已回收。
+- 按入口裁决形成 `.codex/exec-plan-v1-cumulative-acceptance-generation-1.md` 候选，冻结 exact F16、PC-01..08、十二个适用 TG、I/X/P/Profile、三项目 S1.1→S1.6 同上下文连续性、Q1/Q2/Q3/Q6/Q11、完整 fail-closed、15/15 架构负例、5/5 回滚入口与 M1.1 三项 P2 风险。
+- 当前只允许对计划候选做另一轮独立评审；未创建 packet/claim/fence/Result，未派发或运行正式 V1 验收，formal/control 未移动，V1/P5 未完成，V2 未授权。
