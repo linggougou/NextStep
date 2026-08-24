@@ -2343,3 +2343,15 @@
 - control 候选 commit=`ca0c5303805e66df0280f1c69b8b6a0db0ce1b84`，直接父=`a99593f940c6f38fba2147fc9b2c5bb5594c93a7`，精确五文件。packet=`sha256:60d11c2d2c8f69464e4fd3edf4f60ead8137eb510e56e71795383016d04ad471`，七字段 dedup=`sha256:eaff48cb8edb4d31fc7e47ad3e77cca585d1aba67bfe41e29520dba65a94852f`，ready JCS/outbox payload=`sha256:1dcac82531e8927691b3993a6b5473f641a3b5f75e728935dfec32081d9fc197`。
 - 独立 CAS 前复核 `PASS`、`CAS_ALLOWED=true`、`required_fixes=[]`；五文件写集、source refs、PC/TG/Q/三项目全链、负例/风险/回滚并集与不授权范围全部匹配。expected-old CAS 已成功推进 control 到 `ca0c530...`，formal 保持 F16。
 - CAS 后 registry=`dispatch-pending`、pending=1、outbox=pending；claim/fence/host/ack/Result 均不存在。下一步必须取得新的明确派发授权，不得把本次 packet CAS 扩张为派发授权。
+
+## 2026-08-24 V1 attempt 1 fence 113 派发与独立累计验收
+
+- 用户明确授权原文：`我确认并授权为 V1-I-X-P-Profile attempt 1 创建 claim/fence 113，派发唯一独立验收 subagent，并执行对应 control CAS 与 dispatch ACK。`
+- claim/fence：`claim-v1-g4-a1-ixp-profile-f113-20260824` / `113`，claim control commit=`57fec07e1016cb7994d40b9a2bbda91c35641e85`，直接父为 packet control `ca0c5303805e66df0280f1c69b8b6a0db0ce1b84`。
+- 唯一执行宿主：`codex-subagent:/root/v1_acceptance_a1_f113`，隔离副本=`git clone --no-local`，detached exact F16。ACK commit=`2e4351c0a2ea8e28a043504c8b5bcc658bdf2e07`，直接父为 claim commit；expected-old control CAS 成功，registry=`running`、outbox=`closed`、pending=0，formal 保持 F16。
+- `judge-harness` 用于 L3 累计验收评分；验收者完整执行冻结离线安装、fresh 全量回归与三项目累计 runner，只允许写专属 review 目录三文件。
+- 验收提交=`933a72dc97a0bb38a65326333dc3d26593d4814e`，tree=`72ea0434f1f11151900c1aa2b1107c2d48b92687`，直接父为 F16；精确新增 `version-acceptance.json`、`scorecard.json`、`verdict.md` 三文件，worktree clean，裁决 `PASS / 100`。
+- 验收数据：offline frozen `downloaded=0`；`pnpm check`=`474/474`、0 fail；coverage=`93.41/88.84/99.15`；三项目 S1.1→S1.6=`3/3`；Q1/Q2/Q3/Q6=`100%`、Q11=`20/20`；write=`13/13`、architecture negatives=`15/15`、rollback=`5/5`、fail-closed union=`32`。
+- 三项 P2 风险继续承接：manual-isolated/headless 不证明 trusted-host/full 或真实用户动作；dispatch 因果只以 control Git 父链为准；长驻 trusted-host registry 生命周期与容量上界未证明。P0/P1/P2=`0/0/3`，`required_fixes=[]`。
+- 主控独立复核：三文件 raw SHA 分别为 `99df759a...`、`e39dade9...`、`432db566...`；scorecard RFC8785/JCS=`sha256:3e3a67cabc0c66fa4eaf15a9ea09ed73cdf3900764eba172b5fc4f0648296ae9`；17/17 source refs 全部按 raw/JCS/stored 契约重算匹配。主控另跑 `pnpm check` 仍为 474/474、0 fail，coverage=`93.44/88.92/99.15`，高于冻结下限。
+- 授权边界：未生成或注册 V1 Result，未移动 formal/control，未声明 V1/P5 完成，也未授权 V2。下一步必须取得单独的 Result 创建、独立复核与 control CAS 授权。

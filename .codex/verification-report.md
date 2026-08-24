@@ -2299,3 +2299,14 @@
 - 独立 CAS 前复核：`PASS`、`CAS_ALLOWED=true`、`required_fixes=[]`；实时 expected-old 与 formal 再确认后，`git update-ref refs/nextstep/control ca0c530... a99593f...` 原子成功。
 - CAS 后：control=`ca0c5303805e66df0280f1c69b8b6a0db0ce1b84`、formal=F16；checkpoint pending 精确一条，registry=`dispatch-pending`，outbox=pending 且 claim/owner/lease/fence/host 全为 null；无 dispatch-ack、Result 或会签对象。
 - 边界：本轮 packet/control CAS 已完成，不代表派发或 V1 通过。下一步只能请求或等待新的明确 claim/fence/dispatch 授权；V1/P5 未完成，V2 未授权。
+
+## 2026-08-24 V1 attempt 1 fence 113 派发与累计验收验证
+
+- 控制身份：packet=`sha256:60d11c2d2c8f69464e4fd3edf4f60ead8137eb510e56e71795383016d04ad471`、dedup=`sha256:eaff48cb8edb4d31fc7e47ad3e77cca585d1aba67bfe41e29520dba65a94852f`、claim/fence=`claim-v1-g4-a1-ixp-profile-f113-20260824`/`113`、host=`codex-subagent:/root/v1_acceptance_a1_f113` 全部匹配。
+- ACK 父链：claim commit=`57fec07e1016cb7994d40b9a2bbda91c35641e85`；ACK commit=`2e4351c0a2ea8e28a043504c8b5bcc658bdf2e07` 且唯一父为 claim commit。control expected-old CAS 成功；registry running、outbox closed、pending=0，formal 保持 F16。
+- Review 身份：commit=`933a72dc97a0bb38a65326333dc3d26593d4814e`，tree=`72ea0434f1f11151900c1aa2b1107c2d48b92687`，唯一父=`ea04b57de83d6c548dcb1629b1f61832db8375ad`；相对 F16 精确只新增专属三文件，JSON、`git diff --check` 与工作区 clean 验证通过。
+- 摘要：version acceptance raw=`sha256:99df759a332b6a2d28c3f3e74421cb36182ff83765ab5c46c5acc0fcd93f2d90`；scorecard raw=`sha256:e39dade9240588fe32ed948be768efc4633ee0be4d667b583207180706878bb7`、JCS=`sha256:3e3a67cabc0c66fa4eaf15a9ea09ed73cdf3900764eba172b5fc4f0648296ae9`；verdict raw=`sha256:432db56689240bcc1064615837ca1a6a6ad39f3a2f5f1ce6474606b0684d332b`。
+- 独立全量复验：主控再次运行 `pnpm check`，474/474、0 fail、0 skipped，coverage Lines/Branches/Functions=`93.44/88.92/99.15`，均达到或超过 packet floor `93.41/88.84/99.15`。
+- 累计断言：continuity=3/3；PC-01..08=8/8；适用 TG=12/12；Q1/Q2/Q3/Q6=100%，Q11=20/20；write=13/13；architecture negatives=15/15；rollback=5/5；fail-closed union=32/32；八项 hard gates 与 I/X/P/Profile 四维均 PASS。
+- Source refs：packet 的 17 项来源分别按 raw SHA-256、RFC8785/JCS、排除顶层 `result_digest` 的 JCS、stored promotion digest 规则独立重算，17/17 匹配。
+- 风险与结论：P0/P1/P2=`0/0/3`，三个 P2 均显式 carry forward，`required_fixes=[]`。当前只确认验收三文件候选通过复核；Result 尚未创建或注册，V1/P5 未正式完成，formal/control 未移动，V2 未授权。
