@@ -2448,3 +2448,9 @@
 - 裁决：L3 `PASS / 100`，penalties=0，required fixes=0；reviewed_at=`2026-08-25T01:40:27+08:00`，晚于 completion `2026-08-24T17:28:06Z`。
 - 全量门禁：`corepack pnpm check` 通过；474/474，fail/skipped/cancelled/todo=0，coverage=`93.44/88.92/99.15`。
 - 最终边界：V2 入口评估通过，只允许准备 V2 规划或首个 packet 前门禁；V2 packet、claim/fence、dispatch、coding、formal 移动和 P5 完成声明均未获授权。
+
+## 2026-08-25 Agent 回收验证
+
+- 三份隔离 clone 回收前 `git status --porcelain` 均为空；有效 V1/V2 评审 commit 均已由共享分支可达。
+- 临时 clone 已可恢复地移动到 `/Users/ling/.Trash/nextstep-v1-v2-gate-reclaim-20260825-0145/`，control worktree 未移动。
+- `git fsck --strict --no-progress` exit 0，仅有历史 dangling objects；main、formal、control 与两条有效 review 分支对象均保持可读。

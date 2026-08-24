@@ -2501,6 +2501,13 @@
 - 裁决：`PASS / 99`，8/8 hard gates，P0/P1=0，required fixes=0；建议用户同意精确会签文本。审查产物位于 `.codex/reviews/p5-v1-user-signoff-decision-2026-08-25/`。
 - 保护：未读取、修改、暂存、摘要、验收或清理受保护的 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`。
 
+## 2026-08-25 V1/V2 门禁 Agent 可恢复回收
+
+- 回收前逐一确认三份隔离 clone 工作树 clean，且有效审查提交已由共享分支 `codex/v1-a5-signoff-identity-review-20260824` 与 `codex/v2-entry-evaluation-20260825` 可达。
+- 已将两个 V1 空转/替换 clone 与一个已完成 V2 review clone 移入 `/Users/ling/.Trash/nextstep-v1-v2-gate-reclaim-20260825-0145/`；未永久删除，可从废纸篓恢复。
+- control worktree 保留；`git fsck --strict --no-progress` exit 0，仅报告历史 dangling objects，无对象完整性错误。
+- 主工作树仅保留受保护用户文件 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md` 为未跟踪状态，未读取或处理。
+
 ## 2026-08-25 V2 入口独立评估与收口
 
 - 隔离工作树：`/private/tmp/nextstep-v2-entry-review-20260825.y7uPC4/review`，冻结 main=`f697758742dd473d30718c2b7ce13ad552e624a3`、formal=F16、control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`、plan_generation=`4`。
