@@ -2336,3 +2336,9 @@
 - 阻断项 2：A3 计划没有把受保护未跟踪文件禁止读取/修改，以及 attempt 专属 executor/reviewer worktree 与 no-local clone 的保留/回收规则写成硬契约。
 - 摘要复核：scorecard raw=`sha256:eb0f31cd8ae2f95bd04696d57b4bbe2082d14241bba1e7ba6bde277964694fff`、scorecard RFC8785/JCS=`sha256:d602acc9e1ebb0aae17654e6d68fe1dae539a2f7f7a5b950f3a63fe3ba0df861`、verdict raw=`sha256:8ab33a6520ab9430ffeaef231aa52b37eb9ce3cf2c732cf53ba9c09453b0b4fb`。
 - 当前允许动作：只允许修订 A3 计划并重新发起 fresh 独立计划评审；不得生成 A3 packet、claim/fence、ACK、PASS Result、V1 会签或 V2 入口结论。
+
+### 首轮评审重试与修订候选审计
+
+- 第一 review=`a51d146...` 与第二独立 review=`11061a5e2984ffc94978127f6577a449c94be62a` 均以 `d5121a3...` 为唯一父、精确两文件，均裁决 `REVISE / 65`、P0/P1/P2=`0/2/0`；第二份 scorecard raw/JCS=`sha256:0a6cab31485418c431e69985815b90639c3247e794e0dee8e2e073f81c11986f` / `sha256:c4850ea3d3ffddfde3c2b950371658b84cc13d23927b08e3b6650ea58cab4621`，verdict raw=`sha256:c3b540918c2625e0822edb917f830740406a2f25954ba000a7decafb0b4afaad`。
+- 修订候选 main=`c284de5b074b12b299d5b8c5f3e807d8f21e6acb`，唯一父=`d5121a3...`，写集精确四文件；新增成功路径三段门禁和受保护文件/worktree/clone 六条硬规则。`git diff --check` 通过，formal=`ea04b57...`、control=`a2e0cad...`、用户未跟踪文件路径/stat 保持。
+- 因修订提交由越权 reviewer 写入，主控只在独立验证后把内容保留为计划候选，不把它视为独立批准；必须再由全新 reviewer 审查修订 subject。

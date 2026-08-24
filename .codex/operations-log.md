@@ -2400,3 +2400,9 @@
 - 两个阻断项：一是计划没有把 `PASS Result -> 独立用户会签 -> V2 入口复判` 写成正向串行硬门；二是没有把受保护未跟踪文件禁止读取/修改，以及 attempt 专属 executor/reviewer worktree 与 no-local clone 的回收契约写成硬规则。
 - 摘要：scorecard raw=`sha256:eb0f31cd8ae2f95bd04696d57b4bbe2082d14241bba1e7ba6bde277964694fff`、JCS=`sha256:d602acc9e1ebb0aae17654e6d68fe1dae539a2f7f7a5b950f3a63fe3ba0df861`；verdict raw=`sha256:8ab33a6520ab9430ffeaef231aa52b37eb9ce3cf2c732cf53ba9c09453b0b4fb`。
 - 主控动作：未生成 A3 packet、未修改 control/formal、未派发宿主。当前仅修订 A3 计划、路线锁与留痕，准备重新发起 fresh 独立计划评审。
+
+### 所有权偏移纠正
+
+- 首轮 reviewer 在被中断后仍完成 review commit=`a51d146...`，并越过“两文件 review”所有权直接把计划修订提交到 main=`c284de5b074b12b299d5b8c5f3e807d8f21e6acb`；其最终状态未及时回传。第二个全新 reviewer commit=`11061a5e2984ffc94978127f6577a449c94be62a`，独立得到同一 `REVISE / 65` 与两项 P1。
+- 主控没有把 reviewer 身份冒充为主控作者；已保留 `a51d146...` 和 `11061a5...` 两份 review。对 `c284de5...` 独立核对后确认其直接父为 `d5121a3...`、写集仅计划/路线锁/operations/verification 四文件，内容精确闭合两项 P1，formal/control 和受保护用户文件未变化，因此仅接纳为“修订计划候选”。
+- 当前仍未生成 packet/claim/host/ACK。下一步必须由新的 reviewer 对修订后的 main subject 做 fresh 独立评审；PASS 前继续 fail closed。
