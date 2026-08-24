@@ -2267,3 +2267,12 @@
 - 独立裁决：review commit=`4ca8295fe52b13acc85fed768795fbd4c0ad32d4`，直接父为 F16，三文件写集，`PASS / 100`，I/X/P/Profile=`25/25/25/25`，P0/P1/P2=`0/0/0`。
 - 主控摘要复核：acceptance JCS=`f186c27a...`、scorecard JCS=`665ca1e5...`、verdict raw=`ac1f03cf...`；Result 排除顶层 `result_digest` 后 RFC8785/JCS=`sha256:73daa2141583898a82c64541e9fb96faf4ea5375fcc1cd0a79e4b0c9fa20366a`，存储值匹配。
 - CAS 与边界：control expected-old 从 `0295efbb...` 成功推进到 `89225143...`，pending dispatch=0，formal 未移动。当前只允许会签报告独立终审，不表示用户已会签或 M1.2/V1/P5 完成；UI fixture 不构成 Web/UI 路线恢复。
+
+## 2026-08-24 M1.2 用户会签 CAS 验证
+
+- 会签包终审：`18178a7ef7e89f9274022be3b39a2884fec64049` / tree `60b769b8649d5f4aa2d0f8eb269844e8e940ebd9`，直接父为 `6a80b8f...`，精确两文件；scorecard JCS=`sha256:444b6c8a189cfc7225e564076d5483cd7134922b28f6d9fbaffbc45fa38b7eba`，verdict raw=`sha256:c0a619437f924557dc91d81ff1796d36ad6c7a1c48e9cbe121abaf5bac7a46ea`。
+- CAS 前独立身份核验：commit=`18ab4101bb50513d84f497f2b2b026f5548b4b6e`，直接父=`cc4f4c15da60322dd1b0fc1f0397947e7798712e`，精确两文件、worktree clean；`PASS / 100`、`CAS_ALLOWED=true`、expected-old=`eaefc1b...`，scorecard JCS=`sha256:e80feb3747454aaf3a302cba9f6078e3256824cb9668a92b22c6c0b73bda52b8`。
+- 身份复核：Result JCS=`sha256:73daa214...`、报告 raw=`sha256:e98caaaf...`、终审 scorecard/verdict=`444b6c8a...`/`c0a61943...`、formal F16、plan generation=4、pending=0、M1.1 历史与 M1.2 pending 状态全部匹配。
+- CAS：control expected-old `eaefc1b92f9248ae9d07562d3c1284e82c409202` 原子推进到 `a99593f940c6f38fba2147fc9b2c5bb5594c93a7`；formal 仍为 `ea04b57de83d6c548dcb1629b1f61832db8375ad`。
+- 状态验证：registry M1.2=`gate-passed/formally-completed/approved`；checkpoint `milestone_signoffs.M1.2=approved` 且 `completed_milestones.M1.2` 已登记；M1.1 历史保持不变，pending dispatch=0。
+- 边界：该会签只完成 M1.2。V1/P5 仍未完成，V2 未授权；下一步仅允许独立评估 V1 的 S1.1-S1.6 累计验收入口。

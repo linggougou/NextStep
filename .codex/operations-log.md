@@ -2313,3 +2313,12 @@
 - 主控复算 acceptance/scorecard JCS=`sha256:f186c27a4ce41edf265c5c6f7644c36334544c57051be8db0e6d8dd0456d5856`/`sha256:665ca1e56d0b679daa3646b3c29f3d525d1405872b20f7f4b4abb344da9a77cf`，verdict raw=`sha256:ac1f03cfd5c0e41bd0a1ff2031c10c8922d0fc27e5a083b142a07ae3610f66df`；Git 父链、三文件写集、JSON 与 fsck 通过。
 - immutable Result digest=`sha256:73daa2141583898a82c64541e9fb96faf4ea5375fcc1cd0a79e4b0c9fa20366a`，expected-old control CAS 成功至 `89225143315f44f6b057748be3aa8fc77e123ff9`；registry 状态为 `gate-passed-awaiting-signoff-package-review`，formal 保持 F16。
 - main 已以 `fb2b42ff6b00c45e947f30a9ea349b5bcb8d50e5` 吸收验收三文件，并生成用户会签报告候选。用户尚未会签；M1.2、V1、P5 未完成，下一步只允许独立终审会签包。
+
+## 2026-08-24 M1.2 用户会签与正式完成
+
+- 会签包最终独立终审 commit=`18178a7ef7e89f9274022be3b39a2884fec64049`，直接父为报告 subject `6a80b8fd8d701b37738f80eb482af330c79b51dd`，精确两文件；`PASS / 100`，P0/P1/P2=`0/0/0`，scorecard JCS=`sha256:444b6c8a189cfc7225e564076d5483cd7134922b28f6d9fbaffbc45fa38b7eba`。
+- control 会签请求 CAS 成功至 `eaefc1b92f9248ae9d07562d3c1284e82c409202`，registry=`awaiting-user-signoff`、M1.2=`not-completed`、pending dispatch=0；M1.1 历史未覆盖。
+- 用户明确批准原文：`我确认并批准 M1.2 attempt 1 会签，授权执行 user-signoff control CAS。`
+- 新独立身份核验 commit=`18ab4101bb50513d84f497f2b2b026f5548b4b6e`，直接父为 `cc4f4c15da60322dd1b0fc1f0397947e7798712e`，精确两文件；`PASS / 100`、`CAS_ALLOWED=true`，唯一 expected-old=`eaefc1b...`，scorecard JCS=`sha256:e80feb3747454aaf3a302cba9f6078e3256824cb9668a92b22c6c0b73bda52b8`。
+- 主控在提交前再次确认 control=`eaefc1b...`、formal=F16、Result digest=`sha256:73daa214...`、plan generation=4 与 pending=0；user-signoff commit=`a99593f940c6f38fba2147fc9b2c5bb5594c93a7`，expected-old CAS 原子成功，formal 未移动。
+- 结果：M1.2 attempt 1=`formally-completed/approved`；M1.1/M1.2 历史均保留。V1/P5 未完成，V2 未授权；下一步只允许单独评估 V1 累计验收入口。
