@@ -2375,3 +2375,10 @@
 - P1-03：三文件由同一验收者一次生成，内含四角色 scorecard 只能视为自检，不能替代 separate independent review。
 - 裁决：`REVISE`。原始字节无法恢复，attempt 1 不得生成 immutable PASS Result；保留提交 `933a72d...` 作为 rejected evidence，必须创建 attempt 2、新 claim/fence 并持久化可重放行级证据。
 - 路线锁、context summary 与自主执行计划已同步到该真实状态；V2 继续关闭。
+
+## 2026-08-24 V1 attempt 2 可重放证据计划候选
+
+- 重试控制审计确认：attempt 1 必须以非通过 Result 单独 CAS 终结；attempt 2 packet、claim/fence、真实宿主副作用、ACK 必须形成四个独立父链边界，不能合并。
+- 实时最高 fence=113；若创建 claim 前无并发漂移，attempt 2 预期使用 fence 114，但必须在 CAS 前按 `max(stored fence)+1` 重算。
+- 已新增 `.codex/exec-plan-v1-cumulative-acceptance-attempt-2.md`，冻结四类内嵌原始证据、3×6 continuity、Q/write/negative/rollback/fail-closed/source 行数、执行者自检非独立和体积停止条件。
+- 当前仅为计划候选；必须先完成独立 plan review 与 attempt 1 非通过 Result，才允许生成 attempt 2 packet。
