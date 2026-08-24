@@ -2479,3 +2479,10 @@
 - 唯一 P1：报告第 7 节把 pre-request 状态误写为 `awaiting-user-signoff`，并遗漏 `终审 PASS → signoff-request CAS → 精确用户 ACK CAS` 中独立的 request 边界；Result、验收指标、三项 P2 与建议会签原文绑定本身均通过。
 - 最小修订只调整第 7 节状态机：当前保持 `gate-passed-awaiting-signoff-package-review/signoff_status=not-requested`；终审 PASS 后先创建 signoff-request CAS，成功后才进入 `awaiting-user-signoff`，随后依次为精确用户 ACK、独立 V1 completion CAS 与 V2 entry evaluation。
 - 首轮 review 分支保留审计；修订报告必须交由新的独立 reviewer 复审。当前不得创建 signoff request。
+
+### 会签包 replacement 终审与 signoff request
+
+- 修订 subject=`af04a0fcb9d7dd870d8d5dde4150da3b9580c3cb`；replacement review=`593cf4841cd1b51036426dd8876ceae46103b78d`，tree=`bf07eef91540e4251972ec6dc486b600c3fabae1`，唯一父=subject、精确两文件。
+- 终审裁决 `PASS / 99`、8/8 hard gates、P0/P1/P2=`0/0/0`、required fixes=0；scorecard raw/JCS=`sha256:7361b3024f470b7c8f9cd845a434d8f1bd9a58c449280e2f9ab81ba4425ace44` / `sha256:ecacd96fc43834eefbc29926c8abbe744f6087af46391492d0e626e3bcd8cc07`，verdict raw=`sha256:5c8760dcc290a78c7431ce68efd9a4c645e8559e2f0f28cb1be0d020343b1eaf`。
+- signoff-request control=`48cff32bbb03b4814813cd97086a3f789cd17b72`，唯一父=PASS Result `07fb99f61202972a0d04ec30afab2bc883a8c42d`；registry=`awaiting-user-signoff`、signoff=`pending`、formal=F16。
+- 当前 broad autonomy 不能替代针对 Result digest=`sha256:fd5e6c09a20ad35c25261bf0b0ace81da14767576ebb84361701cb01594c881b` 的新用户语义会签。用户批准前不得创建 ACK、V1 completion 或 V2 entry 结论。

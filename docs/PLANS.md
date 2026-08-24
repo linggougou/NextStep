@@ -4,8 +4,8 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：V1 累计验收 attempt 5 会签包门禁（PASS Result 已完成，当前 formal=F16）
-- 当前状态：formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`；control=`07fb99f61202972a0d04ec30afab2bc883a8c42d`。V1 attempt 5 已通过独立 L3 并固化 PASS Result，当前生成会签报告候选并等待独立终审。用户精确会签、V1 completion CAS 与 V2 entry evaluation 尚未发生；V1、P5 尚未完成，V2 未授权。
+- 当前活动里程碑：V1 累计验收 attempt 5 用户会签门禁（signoff request 已完成，当前 formal=F16）
+- 当前状态：formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`；control=`48cff32bbb03b4814813cd97086a3f789cd17b72`。V1 attempt 5 已通过独立 L3、固化 PASS Result并完成会签包 replacement 终审，registry=`awaiting-user-signoff`。当前只等待用户精确会签；user ACK、V1 completion CAS 与 V2 entry evaluation 尚未发生，V1/P5 未完成，V2 未授权。
 
 ## 当前活动计划
 
@@ -27,7 +27,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。M1.1、M1.2 与 S1.4-S1.6 已正式完成，CR-004/CR-005 已关闭。V1 S1.1-S1.6 累计验收 attempt 5 已通过唯一 fresh 执行、独立 L3 与 immutable PASS Result；当前只推进独立会签包、精确用户会签、V1 completion CAS 和后续独立 V2 入口评估，P5 尚未完成。
+P5 已于 2026-08-08 单独启动。M1.1、M1.2 与 S1.4-S1.6 已正式完成，CR-004/CR-005 已关闭。V1 S1.1-S1.6 累计验收 attempt 5 已通过唯一 fresh 执行、独立 L3、immutable PASS Result 与会签包终审，signoff request 已创建；当前只等待精确用户会签，之后依次执行独立 ACK、V1 completion CAS 和 V2 入口评估，P5 尚未完成。
 
 实施顺序保持 P3 已会签结构：
 

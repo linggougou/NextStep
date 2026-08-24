@@ -1,6 +1,6 @@
 # QA
 
-当前阶段为 `P5 / V1` 持续落地。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`07fb99f61202972a0d04ec30afab2bc883a8c42d`。M1.2 已正式完成；V1 attempt 5 累计验收与独立 L3 均 `PASS / 100`，immutable Result 已完成。当前等待会签报告独立终审与用户针对精确 Result 的明确会签；V1、P5 仍未完成，V2 未授权，旧 attempt 仅作墓碑历史。
+当前阶段为 `P5 / V1` 持续落地。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`48cff32bbb03b4814813cd97086a3f789cd17b72`。M1.2 已正式完成；V1 attempt 5 累计验收与独立 L3 均 `PASS / 100`，会签包 replacement 终审=`PASS / 99`，signoff request 已创建。当前等待用户针对精确 Result 的明确会签；V1、P5 仍未完成，V2 未授权，旧 attempt 仅作墓碑历史。
 
 ## 当前质量状态
 

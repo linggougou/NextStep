@@ -2411,3 +2411,10 @@
 - 裁决=`REVISE / 92`、P0/P1/P2=`0/1/0`、7/8 hard gates；scorecard raw/JCS=`sha256:d6b453a1bc657532afcf22beb9c7f5721b5901243a10fd5f60fec18cd44047a1` / `sha256:263e1a023a08607c1d46f60d1a2c2236df01c65f1e72d50daa49882c050c3e51`，verdict raw=`sha256:642b08cc5cc9623b12dd6376deb5c6732e1040e2a43a27b997d888ab4499f170`。
 - 唯一 P1 为报告状态机遗漏独立 signoff-request CAS，并把 request 前状态误写成 `awaiting-user-signoff`。其余 Result 父链/JCS、报告指标、路线状态、三项 P2、建议批准文本和保护边界全部通过。
 - 修订后必须 fresh 独立复审；PASS 前 signoff request 仍不存在，control 保持 Result，用户会签仍未请求。
+
+### 会签包 replacement 复审与请求边界
+
+- replacement review=`593cf4841cd1b51036426dd8876ceae46103b78d`，tree=`bf07eef91540e4251972ec6dc486b600c3fabae1`，唯一 parent=`af04a0fcb9d7dd870d8d5dde4150da3b9580c3cb`，exact-2、JSON、diff-check、fsck、clean 全部通过。
+- 裁决=`PASS / 99`、8/8 hard gates、P0/P1/P2=`0/0/0`；首轮 P1 已闭合，approval_effect=none，scope=`signoff-package-only-awaiting-control-request-and-exact-user-ack`。
+- signoff-request CAS=`48cff32bbb03b4814813cd97086a3f789cd17b72`，直接父为 Result control=`07fb99f61202972a0d04ec30afab2bc883a8c42d`；message、registry、checkpoint 绑定精确 Result、report digest=`sha256:715260d6da8b8391e9b1ba6daa7346062906d0619575f890d8f6d68d5085306a` 与 review JCS digest。
+- 当前真实状态：registry=`awaiting-user-signoff`、signoff=`pending`、formal=F16、V1 not-completed。只等待用户精确语义批准；不得自动 ACK、完成 V1 或进入 V2。
