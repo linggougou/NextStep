@@ -2327,3 +2327,12 @@
 - 独立 L3=`f585c6c...`，直接父为 candidate、精确两文件，裁决 `REVISE / 80`：`PC-07 -> S1.7`、`PC-08 -> S1.8` 为悬空引用；Q11 真实绑定 TG-08/09/10/13/14/18，但顶层 TG evidence 未闭合。
 - reviewer 额外生成的 `9aba06b...` 属越权 control draft，ref 从未指向它。主控独立重算 candidate/review raw+JCS、复现两个 P1、纠正 control parent 与真实 reviewer host 后，形成直接父为 ACK 的非通过 Result commit=`a2e0cad094a5600c1309acb51b3a28069dfd08c2`。
 - Result 排除顶层 `result_digest` 后为 `sha256:bcab36b863fe1d3418d0474866aa4501be847da9fba0bcd72a526bf324b8c518`；registry attempt2=`revision-required-after-audit`、minimum valid attempt=3、pending=0、active V1 host/group 清零。不得创建 PASS Result、会签或进入 V2。
+
+## 2026-08-24 V1 Attempt 3 计划独立评审
+
+- review commit=`a51d1463cac8c10ac8248652767cfc1790517278`，direct parent=`d5121a3db2cf2f5360f0c02450ed0e6ab1fa914e`，tree=`ac073a5aeb9d5a35b48ec71abd9ab835c5ed7fca`；写集精确为 `.codex/reviews/p5-v1-cumulative-acceptance-a3-plan-review-2026-08-24/{scorecard.json,verdict.md}`。
+- 评审结论：`REVISE / 65`，P0/P1/P2=`0/2/0`。基础边界通过：attempt=3、exact F16、A2 REVISE Result 入口、PC-07/08 不再映射到 `continuity:S1.7/S1.8`、18 项 TG 并集、fresh no-local replay、四 artifact、四段 control 父链、执行者非独立和 reviewer 两文件所有权均已写清。
+- 阻断项 1：A3 计划没有把 `PASS Result -> 独立用户会签 -> V2 入口复判` 写成正向串行硬门，因此成功路径仍可能被未来执行压缩。
+- 阻断项 2：A3 计划没有把受保护未跟踪文件禁止读取/修改，以及 attempt 专属 executor/reviewer worktree 与 no-local clone 的保留/回收规则写成硬契约。
+- 摘要复核：scorecard raw=`sha256:eb0f31cd8ae2f95bd04696d57b4bbe2082d14241bba1e7ba6bde277964694fff`、scorecard RFC8785/JCS=`sha256:d602acc9e1ebb0aae17654e6d68fe1dae539a2f7f7a5b950f3a63fe3ba0df861`、verdict raw=`sha256:8ab33a6520ab9430ffeaef231aa52b37eb9ce3cf2c732cf53ba9c09453b0b4fb`。
+- 当前允许动作：只允许修订 A3 计划并重新发起 fresh 独立计划评审；不得生成 A3 packet、claim/fence、ACK、PASS Result、V1 会签或 V2 入口结论。

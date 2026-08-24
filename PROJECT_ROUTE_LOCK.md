@@ -43,7 +43,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - 不改变已会签产品、交互、S4/P3/P4 或验收边界；需要改变时先进入 Change Request。
 - 禁止提前进入的阶段：S7 最终发布判断和 S8 交付归档；V1..V4 也不得跳过前序门禁并行宣告完成。
 - 允许进入下一阶段的条件：P5 Final Acceptance 通过本地可重复验证、独立验收和用户会签；若实现要求改变已会签产品、交互、技术、版本范围、正式提升或验收边界，必须先完成 Change Request。
-- 当前状态：进行中；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`a2e0cad094a5600c1309acb51b3a28069dfd08c2`。V1 attempt 1/2 registry 均为 `revision-required-after-audit`，pending=0，active V1 host 已清零；attempt 2 Result digest=`sha256:bcab36b863fe1d3418d0474866aa4501be847da9fba0bcd72a526bf324b8c518`。下一步只允许独立评审 attempt 3 证据修复计划，再按 packet/claim/host/ACK 严格父链重跑；不得登记 PASS Result、会签、声明 V1/P5 完成或进入 V2。
+- 当前状态：进行中；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`a2e0cad094a5600c1309acb51b3a28069dfd08c2`。V1 attempt 1/2 registry 均为 `revision-required-after-audit`，pending=0，active V1 host 已清零；attempt 2 Result digest=`sha256:bcab36b863fe1d3418d0474866aa4501be847da9fba0bcd72a526bf324b8c518`。A3 首轮计划评审 `a51d146...` 裁决 `REVISE / 65`，原因是缺少 `PASS Result -> 独立用户会签 -> V2 入口复判` 成功路径硬门，以及缺少受保护未跟踪文件与 attempt 专属 worktree/no-local clone 的回收契约。下一步只允许补齐这两项后重新做 fresh 独立计划评审；评审通过前不得生成 A3 packet、不得 claim/fence、不得登记 PASS Result、不得会签、不得声明 V1/P5 完成或进入 V2。
 
 ## 2.1 里程碑路线图
 
@@ -109,7 +109,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
 
 - Backlog：待建立。
 - Change Request：`docs/change-requests/index.md`
-- 当前阶段缺口：V1 attempt 1/2 已分别以证据不可重放和 PC/TG 引用闭环缺陷形成非通过 Result。attempt 3 必须在 exact F16 上 fresh 重跑并保留四类原始内容与固定机器行，同时将 PC-07/08 映射到真实 write/architecture/risk/rollback section，并使顶层 TG evidence 精确覆盖 packet TG 与 Q11 实际绑定的 18 项并集。之后仍需全新独立审查、immutable PASS Result、报告和用户会签；V1/P5 未完成，不得直接进入 V2。
+- 当前阶段缺口：V1 attempt 1/2 已分别以证据不可重放和 PC/TG 引用闭环缺陷形成非通过 Result。attempt 3 必须在 exact F16 上 fresh 重跑并保留四类原始内容与固定机器行，同时将 PC-07/08 映射到真实 write/architecture/risk/rollback section，并使顶层 TG evidence 精确覆盖 packet TG 与 Q11 实际绑定的 18 项并集。计划层还必须明确 `PASS Result -> 独立用户会签 -> V2 入口复判` 三段成功路径，以及受保护未跟踪文件与 attempt 专属 worktree/no-local clone 的保护和回收契约。之后仍需全新独立审查、immutable PASS Result、报告和用户会签；V1/P5 未完成，不得直接进入 V2。
 - 后续阶段需求：V1..V4 和 Final Acceptance 按活动计划顺序推进；P4 第 12 节“运行集成验收”只允许落实为集成诊断预检，正式 I/X/P 四态结论仍由独立门禁和最终复验链产生。若未来恢复 `Web / UI` 分支，需重新确认其与当前 Skill 主路线的关系。
 - 已拒绝需求：无。
 

@@ -76,6 +76,27 @@ attempt 3 不得复制 attempt 2 的 fresh 数字或原始内容。必须在新�
 
 任何 reviewer 越过两文件所有权写 control/main/formal，只能作为未接纳审计草稿保留；`refs/nextstep/control` 仅由主控在独立复算后执行 expected-old CAS。
 
-## 6. 停止条件
+## 6. 成功路径与后续门禁
+
+attempt 3 的成功路径必须拆成三个独立且不可合并的正向门禁：
+
+1. executor 候选通过 fresh 独立 L3 review 后，只允许主控创建 immutable PASS Result；
+2. PASS Result 固化后，才允许发起单独的 V1 用户会签请求与精确 `user signoff ack`；
+3. 只有在 V1 用户会签明确批准后，才允许单独复判 V2 入口；V2 是否授权必须作为独立判断，不能由 broad autonomy、PASS Result 或会签请求本身自动推出。
+
+不得把 PASS Result、用户会签、V2 入口复判合并到同一 control 边界，不得以 broad autonomy 或历史会签代替未出现的精确 V1 会签，也不得在 V1 会签前宣称 V1/P5 完成或进入 V2。
+
+## 7. 受保护文件与 worktree/clone 回收契约
+
+受保护未跟踪文件与 attempt 专属工作副本必须遵守以下硬规则：
+
+1. 已登记为受保护的未跟踪文件只允许做路径与 stat 层确认，不得读取内容、修改、暂存、删除、挪动、纳入验证输入或写入任何摘要；
+2. executor no-local clone、executor worktree、reviewer worktree 都必须是 attempt 专属隔离副本，不得复用到别的 attempt；
+3. 在本 attempt 的 candidate、independent review、Result/control CAS 未全部固化前，不得回收对应 worktree/clone；
+4. 若 attempt `REVISE/REJECT/BLOCKED`，必须保留审计分支与必要 worktree 直到主控确认父链、写集、digest 与 registry/checkpoint 已完整留痕，再决定是否回收本地副本；
+5. 若 attempt `PASS`，也必须在 PASS Result、用户会签和后续需要保留的审计对象固化后，才允许按最小范围回收对应 no-local clone/worktree；
+6. 任何回收都不得影响 formal/control/main、不得删除需要审计的提交或分支，也不得触碰受保护用户未跟踪文件。
+
+## 8. 停止条件
 
 任一身份、摘要、artifact、行数、PC/TG closure、runner 实质、测试、覆盖率、敏感扫描、体积、source ref 或独立性失败，必须 `REVISE/REJECT/BLOCKED`。不得创建 PASS Result、发起会签、移动 formal、声明 V1/P5 完成或进入 V2。

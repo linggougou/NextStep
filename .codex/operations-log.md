@@ -2392,3 +2392,11 @@
 - reviewer 越过两文件所有权生成 control draft `9aba06b...`，但没有移动 control ref。主控保留该 draft 分支供审计，纠正 checkpoint parent、review host identity 和 Result digest 后，以当前 ACK 为直接父形成 `a2e0cad...` 并执行 expected-old CAS；Result digest=`sha256:bcab36b863fe1d3418d0474866aa4501be847da9fba0bcd72a526bf324b8c518`。
 - A2 executor clone 已移入废纸篓，可恢复；候选、review 与越权 draft 分支均保留。formal 仍为 F16，pending=0，V1/P5 未完成，V2 未授权。
 - 已新增 attempt 3 计划候选，固定 PC-07/08 的真实 section 映射和 18 项 TG 并集闭环；下一步仅允许全新独立计划评审。
+
+## 2026-08-24 V1 attempt 3 计划独立评审与修订
+
+- 独立计划评审提交：`a51d1463cac8c10ac8248652767cfc1790517278` / tree=`ac073a5aeb9d5a35b48ec71abd9ab835c5ed7fca` / parent=`d5121a3db2cf2f5360f0c02450ed0e6ab1fa914e`，精确两文件，分支=`codex/v1-cumulative-acceptance-a3-plan-review-20260824`。
+- 评审结论：`REVISE / 65`，P0/P1/P2=`0/2/0`。A3 已修复 PC-07/08 与 18 项 TG 并集目标，fresh replay、四 artifact、四段 control 父链、执行者非独立与 reviewer 两文件所有权均通过。
+- 两个阻断项：一是计划没有把 `PASS Result -> 独立用户会签 -> V2 入口复判` 写成正向串行硬门；二是没有把受保护未跟踪文件禁止读取/修改，以及 attempt 专属 executor/reviewer worktree 与 no-local clone 的回收契约写成硬规则。
+- 摘要：scorecard raw=`sha256:eb0f31cd8ae2f95bd04696d57b4bbe2082d14241bba1e7ba6bde277964694fff`、JCS=`sha256:d602acc9e1ebb0aae17654e6d68fe1dae539a2f7f7a5b950f3a63fe3ba0df861`；verdict raw=`sha256:8ab33a6520ab9430ffeaef231aa52b37eb9ce3cf2c732cf53ba9c09453b0b4fb`。
+- 主控动作：未生成 A3 packet、未修改 control/formal、未派发宿主。当前仅修订 A3 计划、路线锁与留痕，准备重新发起 fresh 独立计划评审。
