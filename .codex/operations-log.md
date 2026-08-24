@@ -2435,3 +2435,8 @@
 - P1-1：clone 在 ACK 前创建，计划缺少把随后生成的 exact ACK commit 对象导入 clone 的机械步骤；对象不可读时不能安全 `update-ref`。P1-2：路线锁最小闭环和阶段缺口仍残留 A2/A3 旧 control/状态。
 - 主控用一次性 no-local probe 验证 `git fetch --no-write-fetch-head <repo> <exact-control-oid>` 可在不创建目标 ref 的前提下导入原本不可读的 control commit，对象随后可由 `cat-file -e` 读取；probe 已移入废纸篓，不作为 A4 fresh 证据。
 - 计划已增加 object-only fetch、ref 清单/FETCH_HEAD/shared ref 前后断言，再允许创建两个 clone-local refs；路线锁两处旧状态已统一到 control 6145820/A4。fresh 复审 PASS 前仍禁止 A4 packet。
+
+### attempt 4 计划 fresh 复审
+
+- review=`763af0313d3d30aadeeded2e70f3ed9d5228e0d4`，唯一父=`6744eb8c5481ee8e1b75ab39558f42bfce1e172f`，精确两文件；裁决 `PASS / 98`、P0/P1/P2=`0/0/0`。
+- 首轮两个 P1 均已闭合；fresh 474/474、四 artifact、fixed rows、PC/TG/P2、独立性、六段会签、保护/回收均未弱化。仅放行独立 A4 packet CAS，不放行合并 claim/ACK/执行。

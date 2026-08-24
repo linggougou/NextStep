@@ -2371,3 +2371,9 @@
 - scorecard raw/JCS=`sha256:a8853ea6f1e5ed238f5f47a508cac481bb6b8da4749dc20b0ef3a842c2e1463a` / `sha256:5f084f69bb49f78e079045011755ca1a266528e218519320fe927b955629b8c7`；verdict raw=`sha256:a47add565bd54a2c459fca3b6137e0fc18dc32a7ec469020e3c762714c8d6a39`。
 - 裁决 `REVISE / 76`、0/2/0；阻断为 ACK 对象可达机制缺失与路线锁两处旧状态。一次性 probe 已实证 exact-OID `fetch --no-write-fetch-head` 可只导入对象；修订计划进一步冻结 ref-list/FETCH_HEAD/shared-ref 前后断言。
 - 当前 formal/control 仍为 F16/`6145820b9c90113723584385dffc5f4bb59f111d`；修订计划必须 fresh 独立复审，PASS 前不得生成 A4 packet。
+
+### Attempt 4 计划 fresh 复审
+
+- review=`763af0313d3d30aadeeded2e70f3ed9d5228e0d4`，tree=`c82924967f9aaed3f8fadac512b4b074c69f7080`，唯一 parent=`6744eb8c5481ee8e1b75ab39558f42bfce1e172f`，写集精确两文件、clean。
+- scorecard raw/JCS=`sha256:fa219302b522ba673bdb0e5135de68f126e24ec9c79e7f57a3fda9e670abac2c` / `sha256:05b83cb1908929a39258e9b5c459a1a41845063ee086b9fa4b8df4a9af214f33`；verdict raw=`sha256:e12fa42c0a5a08afc0493a465b7e887950da5debc057e14a44bd63b7ef56f8fe`。
+- 裁决 `PASS / 98`、0/0/0；仅允许进入 A4 packet CAS。
