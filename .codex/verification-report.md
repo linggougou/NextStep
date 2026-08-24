@@ -2404,3 +2404,10 @@
 - closure：固定 rows=`18/15/3/18/17/20/13/15/5/32/5/17`；17/17 source projections、40 个 PC/TG evidence refs、PC-01..08 与精确 18 项 TG/Q11 join 全部通过。
 - 裁决：独立 L3 `PASS / 100`，12/12 hard gates、P0/P1/P2=`0/0/3`、required fixes=0。Result control=`07fb99f61202972a0d04ec30afab2bc883a8c42d`，唯一父 ACK=`502479091b5ed9d8d385d92bc4e0aefb0d6f3126`；Result digest=`sha256:fd5e6c09a20ad35c25261bf0b0ace81da14767576ebb84361701cb01594c881b`。
 - 边界：formal=F16、pending=0；当前只生成会签报告候选并进行独立终审，不得以 broad autonomy 替代用户针对该精确 Result 的新语义会签，也不得提前完成 V1/P5 或进入 V2。
+
+### 会签包首轮独立终审
+
+- review=`d7b82099acec2f6a6991b87324bd20dbe8b2b8b8`，tree=`bcbd2d80bccca5d5292e3592a185c5ce6e67ee2d`，唯一 parent=`d27991c421218e34451d2c6cd50e20b8c5f6e775`，exact-2、diff-check、fsck、clean 通过。
+- 裁决=`REVISE / 92`、P0/P1/P2=`0/1/0`、7/8 hard gates；scorecard raw/JCS=`sha256:d6b453a1bc657532afcf22beb9c7f5721b5901243a10fd5f60fec18cd44047a1` / `sha256:263e1a023a08607c1d46f60d1a2c2236df01c65f1e72d50daa49882c050c3e51`，verdict raw=`sha256:642b08cc5cc9623b12dd6376deb5c6732e1040e2a43a27b997d888ab4499f170`。
+- 唯一 P1 为报告状态机遗漏独立 signoff-request CAS，并把 request 前状态误写成 `awaiting-user-signoff`。其余 Result 父链/JCS、报告指标、路线状态、三项 P2、建议批准文本和保护边界全部通过。
+- 修订后必须 fresh 独立复审；PASS 前 signoff request 仍不存在，control 保持 Result，用户会签仍未请求。

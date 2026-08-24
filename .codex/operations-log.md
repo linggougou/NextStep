@@ -2472,3 +2472,10 @@
 - 独立 L3=`a7d9471b370165d822cfd698765f317503ec4681`，唯一父=candidate、精确两文件；裁决 `PASS / 100`、12/12 hard gates、P0/P1/P2=`0/0/3`。scorecard raw/JCS=`sha256:8f54f610b6b49a11fb40276c0b3dca490fbcd9e66fdee8d17bfc6fad5bef032d` / `sha256:377c0f42f8c8bf3656e9825a5d426d95c24498f5590574f25b02df93969d40ed`。
 - 已披露的 post-run scanner 修订只发生在临时候选封装器，未改变 frozen runner SHA=`sha256:726db7e80aa2d07503b423a98b515c66a4077aad813c8072aff01d1600d2ef69`，未重跑 install/check/runner；独立 L3 接受该事件不影响 freshness。
 - immutable PASS Result digest=`sha256:fd5e6c09a20ad35c25261bf0b0ace81da14767576ebb84361701cb01594c881b`；registry=`gate-passed-awaiting-signoff-package-review`、pending=0，formal 未移动。V1 用户会签尚未请求或发生，V1/P5 未完成，V2 未授权。
+
+### 会签包首轮终审退回与最小修订
+
+- 会签报告 subject=`d27991c421218e34451d2c6cd50e20b8c5f6e775`；独立 review=`d7b82099acec2f6a6991b87324bd20dbe8b2b8b8`，唯一父=subject、精确两文件，裁决 `REVISE / 92`、P0/P1/P2=`0/1/0`、7/8 hard gates。
+- 唯一 P1：报告第 7 节把 pre-request 状态误写为 `awaiting-user-signoff`，并遗漏 `终审 PASS → signoff-request CAS → 精确用户 ACK CAS` 中独立的 request 边界；Result、验收指标、三项 P2 与建议会签原文绑定本身均通过。
+- 最小修订只调整第 7 节状态机：当前保持 `gate-passed-awaiting-signoff-package-review/signoff_status=not-requested`；终审 PASS 后先创建 signoff-request CAS，成功后才进入 `awaiting-user-signoff`，随后依次为精确用户 ACK、独立 V1 completion CAS 与 V2 entry evaluation。
+- 首轮 review 分支保留审计；修订报告必须交由新的独立 reviewer 复审。当前不得创建 signoff request。

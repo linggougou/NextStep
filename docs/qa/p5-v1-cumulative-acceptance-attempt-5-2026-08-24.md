@@ -57,8 +57,9 @@ V1-I-X-P-Profile attempt 5 累计验收本体与独立 L3 均为 **`PASS / 100`*
 
 ## 7. 会签后的精确状态效果
 
-1. 用户批准前：V1 保持 `awaiting-user-signoff`，P5 保持未完成，V2 保持未授权。
-2. 用户明确批准后：主控重新读取 formal、control、Result digest 与 `plan_generation=4`，并以实时 expected-old 创建 user-signoff ACK CAS。
-3. ACK CAS 成功后，主控在独立下一父链边界创建 V1 completion CAS；只有该 CAS 成功后，V1 才标记为 `formally-completed`。
-4. 任一 CAS 冲突均保持 pending，不标记完成、不使用旧 expected-old 盲目重试。
-5. V1 完成后只允许独立评估 V2 entry；本次会签不直接生成 V2 packet、dispatch、代码或完成结论，也不表示 P5 完成。
+1. 本报告终审通过前：registry 保持 `gate-passed-awaiting-signoff-package-review`，`signoff_status=not-requested`；P5 保持未完成，V2 保持未授权。
+2. 会签包终审 PASS 后：主控先以 Result control 为 expected-old，创建独立 signoff-request CAS；只有该 CAS 成功后，V1 才进入 `awaiting-user-signoff`。
+3. signoff request 已存在且用户针对本报告绑定的精确 Result/control 给出新语义批准后：主控重新读取 formal、实时 control、Result digest 与 `plan_generation=4`，并以实时 expected-old 创建独立 user-signoff ACK CAS。
+4. ACK CAS 成功后：主控在独立下一父链边界创建 V1 completion CAS；只有该 CAS 成功后，V1 才标记为 `formally-completed`。
+5. 任一 CAS 冲突均保持对应阶段 pending，不标记完成、不使用旧 expected-old 盲目重试。
+6. V1 completion CAS 成功后只允许独立评估 V2 entry；本次会签不直接生成 V2 packet、dispatch、代码或完成结论，也不表示 P5 完成。
