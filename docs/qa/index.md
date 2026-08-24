@@ -1,6 +1,6 @@
 # QA
 
-当前阶段为 `P5 / V1` 持续落地。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`a99593f940c6f38fba2147fc9b2c5bb5594c93a7`。M1.2 attempt 1 累计验收 `PASS / 100`，474/474 全量回归通过，用户会签 CAS 已固化，M1.2 正式完成。V1、P5 仍未完成，V2 未授权；下一步只允许独立评估 V1 累计验收入口。旧代际结果仅作墓碑历史。
+当前阶段为 `P5 / V1` 持续落地。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，packet CAS 前 control=`a99593f940c6f38fba2147fc9b2c5bb5594c93a7`。M1.2 已正式完成；V1 累计验收入口与 Generation 1 计划独立评审均 `PASS / 100`。用户已授权首次 packet/control CAS，但尚未授权 claim/fence、派发或运行验收。V1、P5 仍未完成，V2 未授权；旧代际结果仅作墓碑历史。
 
 ## 当前质量状态
 

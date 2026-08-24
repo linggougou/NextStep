@@ -2331,3 +2331,10 @@
 - 当前只允许对计划候选做另一轮独立评审；未创建 packet/claim/fence/Result，未派发或运行正式 V1 验收，formal/control 未移动，V1/P5 未完成，V2 未授权。
 - 计划独立 L3 评审 commit=`5ee3755d75d1909851d5c95950cbda72f1c8a0fe`，直接父=`556e17d8eeb5e5e6f56f2a56f55d0d0c3b95f10f`，精确两文件；`PASS / 100`、P0/P1/P2=`0/0/0`、`required_fixes=[]`。主控复算 scorecard JCS=`sha256:6f5686a56df2cd6be48f4ef57290ccdf7f823adfa99203ca3a366b756304279a`、verdict raw=`sha256:fb6309a460fec501c651b4a413ddaebe9381591a80f2f0bba109afed3ef0f582`，父链、写集、diff-check 与 fsck 均通过；专属 worktree 已回收。
 - 计划门禁已关闭在唯一下一动作：请求或等待新的明确控制授权，以生成首次 V1 packet；在授权到达前不得创建控制对象、派发/执行验收、移动 refs 或声明 V1/P5 完成。
+
+## 2026-08-24 首次 V1 Generation 1 packet/CAS 授权与路线检查
+
+- 用户明确授权原文：`我确认并授权生成首次 V1 cumulative acceptance Generation 1 packet，并执行对应 control CAS。`
+- 生命周期保持 `S5 / P5 / V1 / cumulative-acceptance`，服务 V1 阶段出口；不改变产品路线、技术栈、Profile 或验收门禁。packet CAS 前 main=`a3378c391ff58b4667699f34a83cba9c3d2cce45`、formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`、control expected-old=`a99593f940c6f38fba2147fc9b2c5bb5594c93a7`、plan_generation=4、pending=0。
+- Orca orchestration 运行时缺失：`zsh: command not found: orca`。原用途为结构化 subagent 协调；替代流程为本会话原生 subagent + 两个只读专属 worktree，主控独占 control 写入与 expected-old CAS，后续以摘要、父链、写集和 refs 复核替代验证。
+- 本轮授权边界仅含首次 V1 packet、dispatch-ready/outbox intent、registry/checkpoint 与一次 expected-old control CAS；不含 claim/fence、host task、dispatch-ack、正式验收、Result、formal 移动、V1/P5 完成或 V2。

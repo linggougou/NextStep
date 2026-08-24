@@ -1,6 +1,6 @@
 # P5 产品落地实施里程碑
 
-状态：进行中；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`a99593f940c6f38fba2147fc9b2c5bb5594c93a7`。M1.2 attempt 1 已 `PASS / 100` 并完成用户会签 CAS，M1.2 正式完成；V1、P5 尚未完成，V2 未授权。下一步只允许独立评估 V1 累计验收入口
+状态：进行中；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，packet CAS 前 control=`a99593f940c6f38fba2147fc9b2c5bb5594c93a7`。M1.2 已正式完成；V1 入口与 Generation 1 计划评审均 `PASS / 100`。用户已授权首次 packet/control CAS，但未授权 claim/fence、派发或运行验收；V1、P5 尚未完成，V2 未授权
 启动日期：2026-08-08
 
 ## 1. 阶段目标
@@ -11,9 +11,9 @@
 
 - 生命周期阶段：`S5 开发落地`。
 - 项目里程碑：`P5 产品落地`。
-- 当前活动里程碑：`V1 / cumulative-acceptance / entry-evaluation`（M1.1、M1.2 均已正式完成；正式 V1 累计验收尚未启动）。
+- 当前活动里程碑：`V1 / cumulative-acceptance / packet-freeze`（M1.1、M1.2 均已正式完成；正式 V1 累计验收尚未派发）。
 - 本轮启动授权：用户于 2026-08-08 在 P4 会签归档后明确要求继续，授权单独启动 P5 并建立实施里程碑。
-- 路线性质：沿用已会签路线，不改变产品定位、主交互载体、技术栈、版本范围或验收门禁。M1.2 已完成状态同步、独立累计验收、会签包终审、用户明确会签与 expected-old control CAS。当前只允许独立评估 V1 的 S1.1-S1.6 累计验收入口；入口评估通过前不得生成 packet、派发或执行正式 V1 验收，V2 保持未授权。
+- 路线性质：沿用已会签路线，不改变产品定位、主交互载体、技术栈、版本范围或验收门禁。M1.2 已完成，V1 入口与计划独立评审已通过；当前只允许生成首次 V1 packet 并执行一次 expected-old control CAS。CAS 不等于派发，不授权 claim/fence、运行正式验收或进入 V2。
 
 ## 3. 正式上游
 
@@ -158,4 +158,4 @@ P5-M0 不是新增产品版本，不改变 P3 的 PC 主版本归属，也不能
 
 P5 的最终阶段出口是：V1..V4 和 Final Acceptance 全部通过本地可重复验证、独立 I/X/P、适用 Profile 验收和用户会签；交付清单、正式 OID、已知风险、回滚与 PC-20.AR 状态可追溯。此前 P5 保持进行中，不得归档本计划或宣告完整产品完成。
 
-当前 M1.1 attempt 1 为历史 `退回 / 73`，attempt 2 已会签并正式完成。formal=F16，control=`a99593f940c6f38fba2147fc9b2c5bb5594c93a7`，pending dispatch=0；S1.4-S1.6 与 M1.2 已正式完成。M1.2 attempt 1 累计验收 `PASS / 100`，用户会签已固化。下一步只允许单独评估 V1 累计验收入口；V1/P5 未完成，V2 未授权。
+当前 M1.1 attempt 1 为历史 `退回 / 73`，attempt 2 已会签并正式完成。formal=F16，packet CAS 前 control=`a99593f940c6f38fba2147fc9b2c5bb5594c93a7`，pending dispatch=0；S1.4-S1.6 与 M1.2 已正式完成。V1 入口与计划评审通过，用户已授权首次 packet/control CAS；派发仍未授权。V1/P5 未完成，V2 未授权。

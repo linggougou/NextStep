@@ -2287,3 +2287,10 @@
 - 计划独立裁决：review commit=`5ee3755d75d1909851d5c95950cbda72f1c8a0fe` / tree=`4a2b80486f2725542cabe992bbc1ce35d911b651` / parent=`556e17d8eeb5e5e6f56f2a56f55d0d0c3b95f10f`，精确两文件、worktree clean；`PASS / 100`、P0/P1/P2=`0/0/0`、`required_fixes=[]`。
 - 摘要复核：scorecard RFC8785/JCS=`sha256:6f5686a56df2cd6be48f4ef57290ccdf7f823adfa99203ca3a366b756304279a`，verdict raw=`sha256:fb6309a460fec501c651b4a413ddaebe9381591a80f2f0bba109afed3ef0f582`；父链、两文件净写集、`git diff --check` 与 `git fsck --strict --no-dangling` 通过。
 - 最终边界：唯一 `next_allowed_action=REQUEST_OR_WAIT_FOR_NEW_EXPLICIT_CONTROL_AUTHORIZATION_TO_GENERATE_FIRST_V1_PACKET`。本轮不生成 packet/control 对象、不派发正式验收、不移动 formal/control；V1/P5 未完成，V2 未授权。
+
+## 2026-08-24 首次 V1 Generation 1 packet/CAS 前置验证
+
+- 授权、入口评审 `dfec11ad...` 与计划评审 `5ee3755d...` 三者范围一致：允许生成首次 V1 packet 并执行对应 control CAS；不授权 claim/fence、派发或正式验收。
+- 实时身份：main=`a3378c391ff58b4667699f34a83cba9c3d2cce45`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad` / tree=`5b97a443...` / parent=`5d3ee76a...`，control expected-old=`a99593f940c6f38fba2147fc9b2c5bb5594c93a7`，plan_generation=4，pending=0。
+- 工作区仅保留用户既有未跟踪 Multica 文档；该文件不读取、不修改、不提交、不验收、不清理。状态同步只涉及路线锁、README、PLANS、活动计划、QA 索引与 `.codex` 留痕，不涉及生产代码、Schema、依赖或 refs。
+- Orca CLI 不可用，采用原生 subagent 只读审计与主控独占 CAS；若任一身份、摘要、pending 或 expected-old 漂移，必须零推进并重新核验。
