@@ -2387,3 +2387,11 @@
 - 独立 L3=`febef3a905a3795a4b19dde14ea80837f897bd9a`、tree=`94241bf37b2280c6522947d7f2b2897ca6d54ac1`、唯一父=candidate、精确两文件；裁决 `REVISE / 65`、0/1/3，scorecard raw/JCS=`sha256:4c6d9d7c8dfb62bd6230185a09b9bbe8620aa8c552e2fd5b1b3133636471b045` / `sha256:57d11e9cec28a2511c7435671ac79a39eff0357e2da81eea33b64ce1a83f6bc8`。
 - Result 排除顶层 `result_digest` 后 RFC8785/JCS=`sha256:35b9ff2da30351c2beaf8e812c17bfed7b76bb4d1a098466529f885acdb68139`，control CAS=`25a770ef6e47647e0e12d5bd8abb1288d1007e5b`，直接父 ACK；checkpoint/registry、active/pending 清零、formal F16 一致。
 - 结论：attempt 4 不通过且不得重跑；attempt 5 必须在新 clone 中 fresh 修复 coverage parser，生成非空 runner JCS 并闭合固定 rows、17/17 source、PC/TG 后再交独立 L3。
+
+## 2026-08-24 V1 Attempt 5 恢复计划 replacement 独立评审
+
+- subject=`c769344e836f581e8d652b2111da3ff81e52a960`；路线锁三个当前状态点均绑定 control=`25a770ef6e47647e0e12d5bd8abb1288d1007e5b`、A4 Result digest=`sha256:35b9ff2da30351c2beaf8e812c17bfed7b76bb4d1a098466529f885acdb68139` 与 minimum valid attempt=5。
+- review=`39e804e7581647a7f057523c8ebbca9f52a57b95`，tree=`ee3c4fbf312580dc9dfc734811751cd970fbcacf`，唯一父=subject，相对 subject 精确新增 scorecard/verdict 两文件，JSON、diff-check、敏感扫描和 clean 通过。
+- 裁决 `PASS / 99`、12/12 hard gates、P0/P1/P2=`0/0/0`、required fixes=0；`all files` parser 区块/零多匹配/抗伪造、直接进程退出码、single-run、fresh clone/ref、四 artifact、fixed rows/source/PC/TG、串行控制链、六段会签和回收保护均被计划机械冻结。
+- scorecard raw/JCS=`sha256:e97278034334cc297f2b40f83aab2a37afe1000375a8ed395aa28b158bdc85dd` / `sha256:7a1be4118bf5387c942f1696874afcde2dcad567b51f2ef2df6708724ffdce7f`；verdict raw=`sha256:4339ee18ef6d52c25fc7c07be9f7d53aff3a9a16d8b1f0ed69ef732c31cd575d`。
+- 当前只允许 A5 packet expected-old control CAS；不得合并 fence、ACK、执行、PASS Result 或会签。

@@ -2456,3 +2456,10 @@
 - 主控已删除 automation `nextstep-a5`、归档误建 task `A5 计划独立评审`，并在确认 worktree clean/HEAD=`166a261...`/无进程后移除其 app worktree；main/control/formal 未变化。
 - reviewer 指出的路线锁第 46 行 A3 旧 control 漂移经主控独立复核成立，现已更新为 A4 Result control=`25a770e...` 与 A5 计划评审入口。旧 subject `166a261...` 不作为 A5 放行依据；必须从纠偏后的新 main subject 重新进行独立两文件计划评审。
 - A4 candidate/review 分支已命名可达且对象/fsck/clean 通过；三个 A4 no-local clone 已移动到废纸篓可恢复路径，A4 计划 rereview worktree 已移除且分支保留。
+
+### A5 replacement 计划独立评审通过
+
+- replacement review=`39e804e7581647a7f057523c8ebbca9f52a57b95`，tree=`ee3c4fbf312580dc9dfc734811751cd970fbcacf`，唯一父=`c769344e836f581e8d652b2111da3ff81e52a960`，精确两文件、worktree clean。
+- 裁决 `PASS / 99`、P0/P1/P2=`0/0/0`、12/12 hard gates、required fixes=0；scorecard raw/JCS=`sha256:e97278034334cc297f2b40f83aab2a37afe1000375a8ed395aa28b158bdc85dd` / `sha256:7a1be4118bf5387c942f1696874afcde2dcad567b51f2ef2df6708724ffdce7f`，verdict raw=`sha256:4339ee18ef6d52c25fc7c07be9f7d53aff3a9a16d8b1f0ed69ef732c31cd575d`。
+- 仅放行从 exact control=`25a770e...` 创建独立 A5 packet CAS；packet 不得与 claim/fence117、host/ACK 或执行合并。
+- 先前误建的旧 A4 app review task 已完成后归档；其 alternative review=`ee867f763bcaa4b6644e3397039445f3f104079c` 仅作为非采用审计分支保留，正式 A4 Result 仍唯一引用 `febef3a...`。其重建 clone 与 app worktree 已可恢复回收。
