@@ -31,7 +31,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - Change Intake、恢复、Final Acceptance、交付和宿主归档边界通过故障注入和反扫验证。
   - V1..V4 与 Final Acceptance 分别完成本地验证、适用验收和用户会签。
 - 阶段出口：V1..V4 和 Final Acceptance 全部通过；正式 OID、交付清单、风险、回滚和 PC-20.AR 状态可追溯，并由用户明确确认 P5 产品落地完成。
-- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；S1.2/F12、S1.3/F13、S1.4/F14、S1.5/F15、S1.6/F16 已正式提升，M1.1 attempt 2 与 M1.2 attempt 1 用户会签均已完成。V1 attempt 1/2 分别因原始执行证据不可重放与 PC/TG 闭环缺陷以 `REVISE / 70`、`REVISE / 80` 终结；attempt 3 在 fence115 的 fresh check 因 no-local clone 缺 local formal/control refs 以 `REVISE / 52` 终结，未重跑、未运行 runner。三份非通过 Result 均已固化，当前 control=`6145820b9c90113723584385dffc5f4bb59f111d`；下一闭环是独立评审并执行 attempt 4 local-only ref 镜像恢复计划，formal 保持 F16。
+- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；S1.2/F12、S1.3/F13、S1.4/F14、S1.5/F15、S1.6/F16 已正式提升，M1.1 attempt 2 与 M1.2 attempt 1 用户会签均已完成。V1 attempt 1/2/3/4 分别因原始执行证据不可重放、PC/TG 闭环缺陷、no-local clone 缺 local formal/control refs、runner coverage parser 不识别 Node 24 `all files` 聚合行，以 `REVISE / 70`、`REVISE / 80`、`REVISE / 52`、`REVISE / 65` 终结且均未同 attempt 重跑。四份非通过 Result 已固化，当前 control=`25a770ef6e47647e0e12d5bd8abb1288d1007e5b`；下一闭环是独立评审 attempt 5 runner parser 恢复计划，formal 保持 F16。
 - 明确非目标：
   - 不恢复 NextStep Web/UI 候选分支。
   - 不引入常驻服务、数据库、远程控制面或通用多 Agent 编排平台。
@@ -109,7 +109,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
 
 - Backlog：待建立。
 - Change Request：`docs/change-requests/index.md`
-- 当前阶段缺口：V1 attempt 1/2/3 已分别以证据不可重放、PC/TG 引用闭环缺陷、no-local clone 缺 local formal/control refs 形成非通过 Result。attempt 4 只允许在 ACK 后按精确 OID object-only 导入 ACK commit，并在新 clone 内建立 local-only formal/control 镜像；之后必须 fresh 完成 474/474、四 artifact、固定 rows、PC-01..08 与 18 项 TG join。仍需全新独立 L3、immutable PASS Result、独立会签包、精确新用户 ACK，V1/P5 未完成，不得直接进入 V2。
+- 当前阶段缺口：V1 attempt 1/2/3/4 已形成四份非通过 Result。attempt 5 只允许 fresh 修复 runner coverage parser 对 Node 24 `all files` 聚合行的解析，并改用直接进程退出码采集；必须完整保留 A4 已通过的 exact-OID object import、ref/FETCH_HEAD 不变、clone-local formal/control、shared refs 不变门禁，再 fresh 完成 474/474、四 artifact、固定 rows、17/17 source、PC-01..08 与 18 项 TG join。仍需全新独立 L3、immutable PASS Result、独立会签包、精确新用户 ACK，V1/P5 未完成，不得直接进入 V2。
 - 后续阶段需求：V1..V4 和 Final Acceptance 按活动计划顺序推进；P4 第 12 节“运行集成验收”只允许落实为集成诊断预检，正式 I/X/P 四态结论仍由独立门禁和最终复验链产生。若未来恢复 `Web / UI` 分支，需重新确认其与当前 Skill 主路线的关系。
 - 已拒绝需求：无。
 

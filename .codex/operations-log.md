@@ -2440,3 +2440,12 @@
 
 - review=`763af0313d3d30aadeeded2e70f3ed9d5228e0d4`，唯一父=`6744eb8c5481ee8e1b75ab39558f42bfce1e172f`，精确两文件；裁决 `PASS / 98`、P0/P1/P2=`0/0/0`。
 - 首轮两个 P1 均已闭合；fresh 474/474、四 artifact、fixed rows、PC/TG/P2、独立性、六段会签、保护/回收均未弱化。仅放行独立 A4 packet CAS，不放行合并 claim/ACK/执行。
+
+## 2026-08-24 V1 attempt 4 执行、独立 L3 与非通过 Result
+
+- control 父链：packet=`f8a073673d3b010ad0cee5c434d8feaec4dd153e` → claim/fence116=`402d9549b53c4b9d20cf9a91ce1a88a540091f43` → ACK=`7aae705abe926f1f80aba94c6b44745afcbcf589`；唯一 executor=`codex-subagent:/root/v1_acceptance_a4_f116`，formal 始终为 F16。
+- 新 no-local clone 的 object-only ACK import、完整 ref/FETCH_HEAD 不变、clone-local formal/control、shared refs 不变全部通过；fresh install `downloaded=0`，fresh check exit0、474/474、coverage=`93.41/88.84/99.15`。
+- 唯一 cumulative runner exit1、stdout=0B、stderr=474B；其 coverage regex 只接受 Unicode ellipsis 聚合标签，而 Node 24 实际 check log 为 `all files`，在生成 rows 前 fail closed。未修补、未重跑。
+- candidate=`904e8684587749ae0cd5a41dad6f2746e6233daf`，唯一父 F16、精确三文件；replacement 独立 L3=`febef3a905a3795a4b19dde14ea80837f897bd9a`，唯一父 candidate、精确两文件，裁决 `REVISE / 65`、P0/P1/P2=`0/1/3`。
+- 主控 Result CAS=`25a770ef6e47647e0e12d5bd8abb1288d1007e5b`，Result digest=`sha256:35b9ff2da30351c2beaf8e812c17bfed7b76bb4d1a098466529f885acdb68139`；registry attempt4=`revision-required-after-audit`、minimum valid attempt=5、pending/active V1 清零，formal 未移动。
+- 已创建 attempt 5 计划候选，只允许 fresh 修复 `all files` parser 和直接进程退出码采集；独立计划评审 PASS 前禁止 A5 packet/claim/ACK/执行。

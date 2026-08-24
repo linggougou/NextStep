@@ -2377,3 +2377,13 @@
 - review=`763af0313d3d30aadeeded2e70f3ed9d5228e0d4`，tree=`c82924967f9aaed3f8fadac512b4b074c69f7080`，唯一 parent=`6744eb8c5481ee8e1b75ab39558f42bfce1e172f`，写集精确两文件、clean。
 - scorecard raw/JCS=`sha256:fa219302b522ba673bdb0e5135de68f126e24ec9c79e7f57a3fda9e670abac2c` / `sha256:05b83cb1908929a39258e9b5c459a1a41845063ee086b9fa4b8df4a9af214f33`；verdict raw=`sha256:e12fa42c0a5a08afc0493a465b7e887950da5debc057e14a44bd63b7ef56f8fe`。
 - 裁决 `PASS / 98`、0/0/0；仅允许进入 A4 packet CAS。
+
+## 2026-08-24 V1 Attempt 4 执行与独立 L3
+
+- 执行身份：packet/dedup=`sha256:fb35ded442ad32868abd7c403dbbde99a9785f281e2c27741987e53cc99e84c6` / `sha256:eed249c4b262eae189462c415c14d064198bd2d4bb99f2268ac49f1f54e8a995`，claim/fence116、ACK=`7aae705abe926f1f80aba94c6b44745afcbcf589` 与唯一 host 匹配。
+- 环境门禁：exact ACK object-only import、完整 refs/FETCH_HEAD 前后相等、clone-local formal/control、shared refs 不变均通过；fresh install downloaded=0，fresh check=474/474、0 fail/skip/cancel/todo，coverage=`93.41/88.84/99.15`。
+- runner 证据：唯一一次 exit1，stdout=0B，stderr=474B/raw SHA=`sha256:046d5748c338dd44ac221cbb307b255830976ed1b2ce80133a9f3b80fdad602e`；source regex 只匹配 `… |`，fresh check 原始行精确为 `ℹ all files | 93.41 | 88.84 | 99.15 |`，错误为 `coverage summary missing`。
+- candidate=`904e8684587749ae0cd5a41dad6f2746e6233daf`、tree=`bd8c3cc58f5e0295597382033e806ebd30006b59`、parent=F16、精确三文件；version raw/JCS=`sha256:ae9f7b793afbfb5f745a2f7b6b060c7235249e97dfe62f0f16ba006562cc0b88` / `sha256:2305392cc6b840fa90af796527ec17b73c72adec371d7a6d19ad260291779fa1`。
+- 独立 L3=`febef3a905a3795a4b19dde14ea80837f897bd9a`、tree=`94241bf37b2280c6522947d7f2b2897ca6d54ac1`、唯一父=candidate、精确两文件；裁决 `REVISE / 65`、0/1/3，scorecard raw/JCS=`sha256:4c6d9d7c8dfb62bd6230185a09b9bbe8620aa8c552e2fd5b1b3133636471b045` / `sha256:57d11e9cec28a2511c7435671ac79a39eff0357e2da81eea33b64ce1a83f6bc8`。
+- Result 排除顶层 `result_digest` 后 RFC8785/JCS=`sha256:35b9ff2da30351c2beaf8e812c17bfed7b76bb4d1a098466529f885acdb68139`，control CAS=`25a770ef6e47647e0e12d5bd8abb1288d1007e5b`，直接父 ACK；checkpoint/registry、active/pending 清零、formal F16 一致。
+- 结论：attempt 4 不通过且不得重跑；attempt 5 必须在新 clone 中 fresh 修复 coverage parser，生成非空 runner JCS 并闭合固定 rows、17/17 source、PC/TG 后再交独立 L3。
