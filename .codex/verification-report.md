@@ -2439,3 +2439,12 @@
 - Completion：control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`，唯一父 ACK=`9ec9d45...`；exact-3 写集，expected-old CAS 成功。registry=`gate-passed / approved / formally-completed`，checkpoint `completed_versions.V1.status=formally-completed`。
 - 不变量：formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，plan_generation=`4`，Result 未改写，pending dispatch=0；P5=`not-completed`，V2=`not-authorized`。
 - JSON 与 Git：control 三份 completion 文件 `jq empty`、`git diff --check` 通过；control 父链和对象均可读。后续仍需独立 V2 entry evaluation，且该评估不等于 V2 packet/dispatch/coding 授权。
+
+## 2026-08-25 V2 Entry Evaluation
+
+- 评审提交：`5be7ff254f898cee7887df9a15b48b8d21f2c1ed`，tree=`8d3aea700cd40c9b9bb77607d35f0df5a1bd83f9`，parent=`f697758742dd473d30718c2b7ce13ad552e624a3`，exact-2 写集，工作树 clean。
+- 摘要：scorecard raw=`sha256:076346956d9f1c0906f0a92c96b3a5e26233c857078b63abc0249604f056f41d`；verdict raw=`sha256:d52642c5ef2a31cf9102679f37c6d678e7029210c66b1d77edea00470694ba93`。
+- 硬门：V1 formally-completed 真实父链、docs/control 一致、pending dispatch=0、P0/P1=0、plan_generation=4、三项 P2 carry-forward、next-action 边界、completion exact-3/time semantics 共 8/8 PASS。
+- 裁决：L3 `PASS / 100`，penalties=0，required fixes=0；reviewed_at=`2026-08-25T01:40:27+08:00`，晚于 completion `2026-08-24T17:28:06Z`。
+- 全量门禁：`corepack pnpm check` 通过；474/474，fail/skipped/cancelled/todo=0，coverage=`93.44/88.92/99.15`。
+- 最终边界：V2 入口评估通过，只允许准备 V2 规划或首个 packet 前门禁；V2 packet、claim/fence、dispatch、coding、formal 移动和 P5 完成声明均未获授权。

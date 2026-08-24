@@ -2501,6 +2501,17 @@
 - 裁决：`PASS / 99`，8/8 hard gates，P0/P1=0，required fixes=0；建议用户同意精确会签文本。审查产物位于 `.codex/reviews/p5-v1-user-signoff-decision-2026-08-25/`。
 - 保护：未读取、修改、暂存、摘要、验收或清理受保护的 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`。
 
+## 2026-08-25 V2 入口独立评估与收口
+
+- 隔离工作树：`/private/tmp/nextstep-v2-entry-review-20260825.y7uPC4/review`，冻结 main=`f697758742dd473d30718c2b7ce13ad552e624a3`、formal=F16、control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`、plan_generation=`4`。
+- 唯一独立 reviewer 使用 `judge-harness` L3，只写 `.codex/reviews/p5-v2-entry-evaluation-2026-08-25/{scorecard.json,verdict.md}`；没有创建 V2 packet、claim/fence、dispatch 或代码。
+- 评审验收中发现首版把 2026-08-25 误报为 future date，第一次 replacement 又使用了早于 completion 的 reviewed_at；主控均未接受，退回同一 reviewer 最小修订。最终 replacement commit=`5be7ff254f898cee7887df9a15b48b8d21f2c1ed`、tree=`8d3aea700cd40c9b9bb77607d35f0df5a1bd83f9`、parent=`f697758...`、exact-2，时间晚于 completion。
+- 最终裁决：`PASS / 100`，8/8 hard gates，P0/P1=0，required fixes=0；V1 completion 父链、docs/control 状态、pending dispatch=0、plan generation 与三项 P2 carry-forward 均通过。
+- next_allowed_action：只允许准备 V2 规划或首个 packet 前的后续门禁；入口 PASS 不直接授权 V2 packet、claim/fence、dispatch、coding、formal 移动或 P5 完成声明。
+- 本地验证：`corepack pnpm check` 通过，474/474，fail/skipped/cancelled/todo=`0/0/0/0`，coverage lines/branches/functions=`93.44/88.92/99.15`。
+- 回收准备：最终评审 commit 已导入共享分支 `codex/v2-entry-evaluation-20260825` 并 fast-forward 合入 main；空转与废弃 replacement 不计入有效验收。
+- 保护：未读取、修改、暂存、摘要、验收或清理受保护的 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`。
+
 ## 2026-08-25 V1 Attempt 5 会签 ACK 与独立 Completion CAS
 
 - 用户授权：精确确认 Result=`sha256:fd5e6c09a20ad35c25261bf0b0ace81da14767576ebb84361701cb01594c881b`、Result control=`07fb99f61202972a0d04ec30afab2bc883a8c42d` 与三项 P2 carry-forward；授权先 ACK、再以独立下一 control CAS 标记 V1 formally-completed。`plan\_generation` 按 Markdown 转义规范化为 `plan_generation`，与请求文本逐字一致。
