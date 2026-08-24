@@ -43,7 +43,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - 不改变已会签产品、交互、S4/P3/P4 或验收边界；需要改变时先进入 Change Request。
 - 禁止提前进入的阶段：S7 最终发布判断和 S8 交付归档；V1..V4 也不得跳过前序门禁并行宣告完成。
 - 允许进入下一阶段的条件：P5 Final Acceptance 通过本地可重复验证、独立验收和用户会签；若实现要求改变已会签产品、交互、技术、版本范围、正式提升或验收边界，必须先完成 Change Request。
-- 当前状态：进行中；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`a2e0cad094a5600c1309acb51b3a28069dfd08c2`。V1 attempt 1/2 registry 均为 `revision-required-after-audit`，pending=0，active V1 host 已清零；attempt 2 Result digest=`sha256:bcab36b863fe1d3418d0474866aa4501be847da9fba0bcd72a526bf324b8c518`。A3 首轮计划评审 `a51d146...` 与独立重试 `11061a5...` 均裁决 `REVISE / 65`，共同指出成功路径和受保护资源回收两项硬门；修订候选 `c284de5...` 已补齐两项。下一步只允许对该修订候选做 fresh 独立计划评审；评审通过前不得生成 A3 packet、不得 claim/fence、不得登记 PASS Result、不得会签、不得声明 V1/P5 完成或进入 V2。
+- 当前状态：进行中；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`a2e0cad094a5600c1309acb51b3a28069dfd08c2`。V1 attempt 1/2 registry 均为 `revision-required-after-audit`，pending=0，active V1 host 已清零；attempt 2 Result digest=`sha256:bcab36b863fe1d3418d0474866aa4501be847da9fba0bcd72a526bf324b8c518`。A3 首轮两份计划评审均为 `REVISE / 65`；第二轮 fresh 复审 `63565a8...` 为 `REVISE / 71`，继续要求把成功链拆为六段并增加分支可达/clean/可恢复回收机械断言。再修订本已补齐，下一步只允许第三次 fresh 独立计划评审；评审通过前不得生成 A3 packet、claim/fence、PASS Result、会签或 V2 入口。
 
 ## 2.1 里程碑路线图
 

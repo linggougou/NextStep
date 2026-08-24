@@ -2342,3 +2342,10 @@
 - 第一 review=`a51d146...` 与第二独立 review=`11061a5e2984ffc94978127f6577a449c94be62a` 均以 `d5121a3...` 为唯一父、精确两文件，均裁决 `REVISE / 65`、P0/P1/P2=`0/2/0`；第二份 scorecard raw/JCS=`sha256:0a6cab31485418c431e69985815b90639c3247e794e0dee8e2e073f81c11986f` / `sha256:c4850ea3d3ffddfde3c2b950371658b84cc13d23927b08e3b6650ea58cab4621`，verdict raw=`sha256:c3b540918c2625e0822edb917f830740406a2f25954ba000a7decafb0b4afaad`。
 - 修订候选 main=`c284de5b074b12b299d5b8c5f3e807d8f21e6acb`，唯一父=`d5121a3...`，写集精确四文件；新增成功路径三段门禁和受保护文件/worktree/clone 六条硬规则。`git diff --check` 通过，formal=`ea04b57...`、control=`a2e0cad...`、用户未跟踪文件路径/stat 保持。
 - 因修订提交由越权 reviewer 写入，主控只在独立验证后把内容保留为计划候选，不把它视为独立批准；必须再由全新 reviewer 审查修订 subject。
+
+## 2026-08-24 V1 Attempt 3 计划第二轮独立复审
+
+- review commit=`63565a8eb6936b0285ff10302f38c30b45704a61`，tree=`3d901d5704c5d8a0b9640b867dbf758c1be0af10`，唯一父=`4947e0cca389779142b63426350e9b89d9cade35`，精确两文件、worktree clean。
+- scorecard raw/JCS=`sha256:47b3b9c334e6c4b7d2e51babc40a44ad828f9ec8a74c28e067a7117484655977` / `sha256:74a766b4f326c6207eb5c4881e7c9aed2b78e8279e26560e3e0212ff7285b330`；verdict raw=`sha256:14781576c0e2de447b040dcbd0519cad22de7e3d9d5f8dd5e635c5364024690c`。
+- 裁决 `REVISE / 71`，P0/P1/P2=`0/2/0`；剩余缺口为成功路径边界仍不够细，以及回收前缺命名分支可达/worktree+index clean/可恢复验证。
+- 再修订本已把成功路径拆为六段独立边界，并新增 show-ref/status/fsck/cat-file/废纸篓验证；第三轮独立复审 PASS 前继续禁止 packet。

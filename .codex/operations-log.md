@@ -2406,3 +2406,10 @@
 - 首轮 reviewer 在被中断后仍完成 review commit=`a51d146...`，并越过“两文件 review”所有权直接把计划修订提交到 main=`c284de5b074b12b299d5b8c5f3e807d8f21e6acb`；其最终状态未及时回传。第二个全新 reviewer commit=`11061a5e2984ffc94978127f6577a449c94be62a`，独立得到同一 `REVISE / 65` 与两项 P1。
 - 主控没有把 reviewer 身份冒充为主控作者；已保留 `a51d146...` 和 `11061a5...` 两份 review。对 `c284de5...` 独立核对后确认其直接父为 `d5121a3...`、写集仅计划/路线锁/operations/verification 四文件，内容精确闭合两项 P1，formal/control 和受保护用户文件未变化，因此仅接纳为“修订计划候选”。
 - 当前仍未生成 packet/claim/host/ACK。下一步必须由新的 reviewer 对修订后的 main subject 做 fresh 独立评审；PASS 前继续 fail closed。
+
+## 2026-08-24 V1 attempt 3 计划第二轮复审与再修订
+
+- fresh review commit=`63565a8eb6936b0285ff10302f38c30b45704a61`，唯一父=`4947e0cca389779142b63426350e9b89d9cade35`，精确两文件、worktree clean；裁决 `REVISE / 71`，P0/P1/P2=`0/2/0`。
+- 已通过：exact F16/A2 nonpass 入口、PC/TG closure 与 18 项集合、fresh replay/四 artifact/固定 rows、fence115 父链、executor/reviewer 独立性和用户文件 no-read/no-modify/no-cleanup。
+- 剩余 P1：成功链仍需拆分为 Result、会签报告终审、signoff request、精确用户 ACK、V1 完成、V2 entry 六段；回收仍需命名分支可达、worktree/index clean、fsck/cat-file 与废纸篓可恢复的机械断言。
+- 计划已按上述精确门禁再修订。仍不得生成 A3 packet，必须进行第三次 fresh 独立复审。

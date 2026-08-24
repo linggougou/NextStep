@@ -78,13 +78,16 @@ attempt 3 不得复制 attempt 2 的 fresh 数字或原始内容。必须在新�
 
 ## 6. 成功路径与后续门禁
 
-attempt 3 的成功路径必须拆成三个独立且不可合并的正向门禁：
+attempt 3 的成功路径必须拆成下列独立且不可合并的正向门禁：
 
-1. executor 候选通过 fresh 独立 L3 review 后，只允许主控创建 immutable PASS Result；
-2. PASS Result 固化后，才允许发起单独的 V1 用户会签请求与精确 `user signoff ack`；
-3. 只有在 V1 用户会签明确批准后，才允许单独复判 V2 入口；V2 是否授权必须作为独立判断，不能由 broad autonomy、PASS Result 或会签请求本身自动推出。
+1. executor 候选通过 fresh 独立 L3 review 后，主控独立复算并创建 immutable PASS Result；Result 以实时 expected-old 形成单独 control CAS。
+2. Result CAS 成功后，主控才可生成绑定精确 Result digest/commit/control OID 的 V1 会签报告；会签报告必须由另一个全新 reviewer 形成独立会签包终审提交。
+3. 会签包终审 PASS 后，主控以单独 control CAS 写入 signoff request，状态仅进入 `awaiting-user-signoff`，不得预填 ACK 或 V1 完成状态。
+4. 只有用户针对该精确 V1 Result 的新语义确认出现后，主控才可生成精确 user-signoff ACK，并以另一单独 expected-old control CAS 固化；broad autonomy、历史会签或 PASS Result 均不能代替该确认。
+5. user-signoff ACK CAS 成功后，才允许在 control/registry/checkpoint 中标记 V1 formally-completed；该状态变化不得与 signoff request 或 ACK 创建合并。
+6. V1 正式完成后，主控必须重新读取路线锁、formal/control 和版本里程碑真源，单独执行 V2 entry evaluation；V1 会签只允许入口复判，不自动授权 V2 packet、编码、claim/fence 或派发。
 
-不得把 PASS Result、用户会签、V2 入口复判合并到同一 control 边界，不得以 broad autonomy 或历史会签代替未出现的精确 V1 会签，也不得在 V1 会签前宣称 V1/P5 完成或进入 V2。
+不得把 PASS Result、会签报告/终审、signoff request、精确用户 ACK、V1 完成和 V2 入口复判中的任意两段合并到同一 control 边界或同一授权效果。
 
 ## 7. 受保护文件与 worktree/clone 回收契约
 
@@ -96,6 +99,14 @@ attempt 3 的成功路径必须拆成三个独立且不可合并的正向门禁�
 4. 若 attempt `REVISE/REJECT/BLOCKED`，必须保留审计分支与必要 worktree 直到主控确认父链、写集、digest 与 registry/checkpoint 已完整留痕，再决定是否回收本地副本；
 5. 若 attempt `PASS`，也必须在 PASS Result、用户会签和后续需要保留的审计对象固化后，才允许按最小范围回收对应 no-local clone/worktree；
 6. 任何回收都不得影响 formal/control/main、不得删除需要审计的提交或分支，也不得触碰受保护用户未跟踪文件。
+
+回收前必须机械通过以下断言：
+
+- candidate、独立 review、计划 review 的 commit 均可由各自命名的 `refs/heads/codex/*` 到达，Result/packet/claim/ACK 可由实时 `refs/nextstep/control` 到达；只在日志中出现的裸 OID 不算可达。
+- `git status --porcelain=v1 --untracked-files=all` 在待回收 executor/reviewer worktree 中为空，index 与工作树均 clean；HEAD/parent/tree 和精确写集已复核。
+- `git fsck --strict` 不报告破损对象；回收 worktree 后再次以 `git cat-file -e` 验证保留提交可读。
+- no-local clone 只允许在上述断言通过后移入唯一废纸篓路径；必须验证源路径消失、废纸篓目标存在且可恢复，不直接永久删除。
+- 若任一断言失败，回收必须停止并保留现场；不得用强制删除、reset、checkout 覆盖或清理用户文件来消除失败。
 
 ## 8. 停止条件
 
