@@ -2420,3 +2420,11 @@
 - 终审裁决 `PASS / 100`，P0/P1/P2=`0/0/0`；exact F16、A2 nonpass 入口、PC-01..08、18 项 TG、fresh replay/四 artifact、固定 rows、fence115 串行父链、executor/reviewer 独立、六段成功边界与可恢复回收断言全部通过。
 - 主控复算 scorecard raw/JCS=`sha256:6db00f00111b4530c6185deabe923e986c79ab1e592901f8c8ecc12d43efb688` / `sha256:7e85d95eb98ce876d50dfa5da2f4ed45fe97af25f6ee670407a80c8c495f3106`，verdict raw=`sha256:261d23236fad96aab6c95f811bfcb427ce3773e5817c135c54ed8c1d9fbe6e10`，均匹配 reviewer 报告。
 - review 分支保持命名可达；worktree 在 clean、fsck/cat-file 通过后回收。当前仅放行独立 A3 packet CAS；packet 不得与 claim/fence 或 ACK 合并。
+
+## 2026-08-24 V1 attempt 3 执行失败与非通过 Result
+
+- control 串行父链：packet=`29467725f2a49ddee0da105d7cddc2bbdc2a4b22` → claim/fence115=`ef33647e4ced81ed21dc181b28a96355ded9bc54` → ACK=`cc378c94457a3bc34b89c84f568effa982cc9d23`；pending 已清零，唯一 host=`codex-subagent:/root/v1_acceptance_a3_f115`。
+- executor candidate=`adba304e4757221527bec6b9175de14e39eb8b1d`，唯一父 F16、精确三文件；fresh install downloaded=0，fresh check=474/473/1，coverage=93.44/88.92/99.15。唯一失败因 no-local clone 未携带 local `refs/nextstep/formal/control`，identity-freeze 测试的 `git rev-parse` 失败；未重跑、未运行 runner，rows/PC/TG 明确 incomplete。
+- 独立 L3=`2b892452f052dc4e608df4491707e5f831f77a2c`，唯一父 candidate、精确两文件；裁决 `REVISE / 52`、P0/P1/P2=`0/1/3`，确认四 artifact 总解码 84223B，length/SHA/blob/scan 全匹配，失败日志真实。
+- 主控非通过 Result control=`6145820b9c90113723584385dffc5f4bb59f111d`，直接父 ACK；Result digest=`sha256:358a98e78deffa4c5d87e7dcb17186cb9e5f4a4f0773f7df33b187fec2246dec`。A3 状态=`revision-required-after-audit`，minimum valid attempt=4，active V1 host 已清零，formal 未移动。
+- A4 只允许修复新 no-local clone 的 local-only formal/control ref 镜像；不得修改业务实现或放宽任何 V1 门禁。

@@ -2356,3 +2356,11 @@
 - 裁决 `PASS / 100`，P0/P1/P2=`0/0/0`；所有计划硬门均有机械证据且无 required fixes。
 - scorecard raw/JCS=`sha256:6db00f00111b4530c6185deabe923e986c79ab1e592901f8c8ecc12d43efb688` / `sha256:7e85d95eb98ce876d50dfa5da2f4ed45fe97af25f6ee670407a80c8c495f3106`，verdict raw=`sha256:261d23236fad96aab6c95f811bfcb427ce3773e5817c135c54ed8c1d9fbe6e10`；主控独立复算完全匹配。
 - formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control=`a2e0cad094a5600c1309acb51b3a28069dfd08c2` 未移动；主工作区仅保留受保护用户未跟踪文件。允许进入 A3 packet CAS，仍禁止把 packet、claim/fence 与 ACK 合并。
+
+## 2026-08-24 V1 Attempt 3 执行与独立 L3
+
+- packet/dedup=`sha256:8aeff57645cf81762aaa0842e9b3c6ae063524e0d89fec3a7442947252644400` / `sha256:928ae272f86573c4e065d612a8cff128687a739156d8669cb3099ea1bc0b0e86`，17/17 source refs 匹配；control 三段父链与 fence115/host/ACK 匹配。
+- candidate=`adba304e4757221527bec6b9175de14e39eb8b1d`，version raw/JCS=`sha256:a63728d8ad8499d835a50ef72430a39ef902b26b24a30b3abb7ed19a111ac6e4` / `sha256:29af9ea88a52aeab24b75fb4425306aa3bc09edf872a34dea09a34356c520cba`；scorecard raw/JCS=`sha256:fd4ad8466136a61b4092eef974a6e7c81ef8d6e0ca51940ac346229d55089edc` / `sha256:24fcd721d5ca283e134baff31440e87f965d8b48b01fb0485876c6a103350c93`。
+- 独立 review=`2b892452f052dc4e608df4491707e5f831f77a2c`，raw/JCS=`sha256:83add2ac62f9fe499fa35dc8a60ea97ad112f72ed001851104dc4b4fc0bdf896` / `sha256:079c56296560c1d02ca1dd217eb6c50ab61fcd80c94c8414f518fd21d08c01b1`，verdict raw=`sha256:c0d214cf600202a9765a22203358ffb0aa21ce39025abcf67fb0e2be54aaa3f0`；结论 `REVISE / 52`、0/1/3。
+- 非通过 Result digest 主控复算=`sha256:358a98e78deffa4c5d87e7dcb17186cb9e5f4a4f0773f7df33b187fec2246dec`，control CAS=`6145820b9c90113723584385dffc5f4bb59f111d`，父=`cc378c94457a3bc34b89c84f568effa982cc9d23`；registry/checkpoint、pending=0、active V1 清空、formal F16 全部一致。
+- 根因是 clone 环境缺失 local custom refs，不是产品代码回归。A4 必须在 ACK 后、首个 fresh check 前建立 clone 内 local-only formal/control 镜像并验证；A3 不得重跑。
