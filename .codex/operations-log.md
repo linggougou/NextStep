@@ -2356,3 +2356,13 @@
 - 主控独立复核：三文件 raw SHA 分别为 `99df759a...`、`e39dade9...`、`432db566...`；scorecard RFC8785/JCS=`sha256:3e3a67cabc0c66fa4eaf15a9ea09ed73cdf3900764eba172b5fc4f0648296ae9`；17/17 source refs 全部按 raw/JCS/stored 契约重算匹配。主控另跑 `pnpm check` 仍为 474/474、0 fail，coverage=`93.44/88.92/99.15`，高于冻结下限。
 - 授权边界：未生成或注册 V1 Result，未移动 formal/control，未声明 V1/P5 完成，也未授权 V2。下一步必须取得单独的 Result 创建、独立复核与 control CAS 授权。
 - 资源回收：验收提交已固化到 `codex/v1-cumulative-acceptance-a1-f113-20260824`；ACK worktree 在 clean 状态移除；一次性 clone 移入 `/Users/ling/.Trash/nextstep-v1-a1-f113.MXciRJ-20260824`，仍可恢复。唯一验收 subagent 已完成回收。
+
+## 2026-08-24 自主持续开发总授权与计划启动
+
+- 用户明确要求后续由主代理自主规划并持续开发，无需逐步等待指示；各功能使用隔离 worktree 分派 subagent 并行执行，验收合格后回收对应 agent/worktree。
+- 路线判断：当前仍属于 `S5 / P5 / V1`，最近阶段出口是 V1 Result、独立审查、control CAS 和会签闭环；V1 未正式完成前不实施 V2，不触发路线变更或 Change Request。
+- 最小可验收闭环：`V1 PASS 提交 933a72d -> immutable Result -> 独立 Result review -> expected-old control CAS -> 会签包/终审 -> V1 状态同步`。
+- 当前 main/formal/control=`7c66ce5`/`ea04b57`/`2e4351c`；工作区只含受保护的用户 Multica 未跟踪文件，继续排除在读取、写入、提交、验收和清理之外。
+- 已新增 `.codex/context-summary-autonomous-continuous-development-2026-08-24.md` 与 `.codex/exec-plan-autonomous-continuous-development-2026-08-24.md`，冻结版本循环、串并行所有权、独立审查和停止条件。
+- 三个专属 worktree 已建立并派发只读 subagent：`v1_result_control_map`、`v1_acceptance_evidence_audit`、`post_v1_route_map`；分别负责 Result/CAS 先例、验收证据反扫和 V1 后续路线，零共享写集。主代理独占 main、control/formal refs 与所有 CAS。
+- Orca CLI 仍不可用；替代流程继续使用 Codex 原生 collaboration subagent + Git worktree/no-local clone，并以父链、写集、摘要、refs 和本地复验收口。
