@@ -2486,3 +2486,4 @@
 - 终审裁决 `PASS / 99`、8/8 hard gates、P0/P1/P2=`0/0/0`、required fixes=0；scorecard raw/JCS=`sha256:7361b3024f470b7c8f9cd845a434d8f1bd9a58c449280e2f9ab81ba4425ace44` / `sha256:ecacd96fc43834eefbc29926c8abbe744f6087af46391492d0e626e3bcd8cc07`，verdict raw=`sha256:5c8760dcc290a78c7431ce68efd9a4c645e8559e2f0f28cb1be0d020343b1eaf`。
 - signoff-request control=`48cff32bbb03b4814813cd97086a3f789cd17b72`，唯一父=PASS Result `07fb99f61202972a0d04ec30afab2bc883a8c42d`；registry=`awaiting-user-signoff`、signoff=`pending`、formal=F16。
 - 当前 broad autonomy 不能替代针对 Result digest=`sha256:fd5e6c09a20ad35c25261bf0b0ace81da14767576ebb84361701cb01594c881b` 的新用户语义会签。用户批准前不得创建 ACK、V1 completion 或 V2 entry 结论。
+- 回收：candidate、独立 L3、首轮 REVISE、replacement PASS 的四条审计分支均已在共享仓库命名可达；对应 clone 及 runner runtime 在 clean/fsck/cat-file 通过后移动到 `/Users/ling/.Trash/nextstep-a5-reclaim-20260824-1040/`。一个无文件、无阶段产出的空转 rereview 实例被中断，其 clean clone 同路径可恢复保留。control worktree 未回收，受保护用户文件未读取或处理。
