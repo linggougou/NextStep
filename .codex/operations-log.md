@@ -2355,3 +2355,4 @@
 - 三项 P2 风险继续承接：manual-isolated/headless 不证明 trusted-host/full 或真实用户动作；dispatch 因果只以 control Git 父链为准；长驻 trusted-host registry 生命周期与容量上界未证明。P0/P1/P2=`0/0/3`，`required_fixes=[]`。
 - 主控独立复核：三文件 raw SHA 分别为 `99df759a...`、`e39dade9...`、`432db566...`；scorecard RFC8785/JCS=`sha256:3e3a67cabc0c66fa4eaf15a9ea09ed73cdf3900764eba172b5fc4f0648296ae9`；17/17 source refs 全部按 raw/JCS/stored 契约重算匹配。主控另跑 `pnpm check` 仍为 474/474、0 fail，coverage=`93.44/88.92/99.15`，高于冻结下限。
 - 授权边界：未生成或注册 V1 Result，未移动 formal/control，未声明 V1/P5 完成，也未授权 V2。下一步必须取得单独的 Result 创建、独立复核与 control CAS 授权。
+- 资源回收：验收提交已固化到 `codex/v1-cumulative-acceptance-a1-f113-20260824`；ACK worktree 在 clean 状态移除；一次性 clone 移入 `/Users/ling/.Trash/nextstep-v1-a1-f113.MXciRJ-20260824`，仍可恢复。唯一验收 subagent 已完成回收。
