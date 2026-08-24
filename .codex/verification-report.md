@@ -2310,3 +2310,11 @@
 - 累计断言：continuity=3/3；PC-01..08=8/8；适用 TG=12/12；Q1/Q2/Q3/Q6=100%，Q11=20/20；write=13/13；architecture negatives=15/15；rollback=5/5；fail-closed union=32/32；八项 hard gates 与 I/X/P/Profile 四维均 PASS。
 - Source refs：packet 的 17 项来源分别按 raw SHA-256、RFC8785/JCS、排除顶层 `result_digest` 的 JCS、stored promotion digest 规则独立重算，17/17 匹配。
 - 风险与结论：P0/P1/P2=`0/0/3`，三个 P2 均显式 carry forward，`required_fixes=[]`。当前只确认验收三文件候选通过复核；Result 尚未创建或注册，V1/P5 未正式完成，formal/control 未移动，V2 未授权。
+
+## 2026-08-24 V1 attempt 1 独立证据可重放性审计
+
+- 已通过：F16/tree/parent/subject digest、packet/dedup、claim/fence 113、ACK/control 父链、17/17 source refs、三文件写集与 PC/TG/fail-closed/write/architecture/rollback 集合完整性。
+- 未通过：install/check/runner 四类 fresh 证据只有不可寻址 raw SHA；原始 clone 与废纸篓副本均找不到匹配内容，无法独立复算 `downloaded=0`、474/474 或累计 runner 输出。
+- 未通过：Q1/Q2/Q3/Q6/Q11、三项目 S1.1-S1.6 连续性和 20 项 risk probes 缺逐项机器行；汇总值不能替代计划冻结的 evidence slots。
+- 职责边界：attempt 1 scorecard 与验收产物同一生成提交，不构成 separate independent review。
+- 审计结论：`REVISE`，存在 3 个 P1 evidence defects。不得生成 immutable PASS Result、不得进入会签或 V2。最小修复是以 attempt 2、新 claim/fence 在 exact F16 上重新执行并把原始内容和行级证据持久化，再交由全新 reviewer 独立复核。

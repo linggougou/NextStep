@@ -22,7 +22,9 @@
 
 - S1.1-S1.6 已正式提升至 F16；M1.1、M1.2 已完成。
 - V1 entry review、Generation 1 计划评审、packet、claim/fence 113、唯一独立验收与 dispatch ACK 已完成。
-- V1 验收候选为 `PASS / 100`；主控独立复跑 474/474，并重算 17/17 source refs 与 scorecard JCS。
+- V1 attempt 1 三文件自评为 `PASS / 100`；主控独立复跑 474/474，并重算 17/17 source refs 与 scorecard JCS。
+- 后续独立证据审计裁决 `REVISE`：fresh install/check/runner 只保存不可寻址摘要，Q/逐阶段连续性/20 项风险探针缺少行级机器证据，同一提交内 scorecard 不能替代 separate independent review。
+- 原始字节无法恢复，attempt 1 不得生成 PASS Result；必须保留 rejected evidence，创建 attempt 2、新 claim/fence，并在允许产物中直接持久化可重放证据。
 - 尚未形成 immutable V1 Result、Result 独立审查、Result control CAS、版本会签闭环和 V1 正式完成状态。
 - 路线锁的状态镜像仍停在 packet-pending，必须在 V1 控制链闭合时同步，不能据旧镜像跳过当前门禁。
 
@@ -42,6 +44,6 @@
 
 ## 当前最小可验收闭环
 
-`V1 验收提交 -> immutable Result 候选 -> 独立 Result 审查 -> expected-old control CAS -> 会签包/终审 -> V1 状态同步`。
+`attempt 1 REVISE 终结 -> attempt 2 packet/claim/fence/ACK -> 可重放累计验收 -> 全新独立审查 -> immutable PASS Result -> expected-old control CAS -> 会签包/终审 -> V1 状态同步`。
 
 在该闭环通过前不得实施 V2；通过后按 P3/P5 真源冻结 V2 的精确 PC/里程碑/非目标和并行写集。

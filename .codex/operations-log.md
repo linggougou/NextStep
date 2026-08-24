@@ -2366,3 +2366,12 @@
 - 已新增 `.codex/context-summary-autonomous-continuous-development-2026-08-24.md` 与 `.codex/exec-plan-autonomous-continuous-development-2026-08-24.md`，冻结版本循环、串并行所有权、独立审查和停止条件。
 - 三个专属 worktree 已建立并派发只读 subagent：`v1_result_control_map`、`v1_acceptance_evidence_audit`、`post_v1_route_map`；分别负责 Result/CAS 先例、验收证据反扫和 V1 后续路线，零共享写集。主代理独占 main、control/formal refs 与所有 CAS。
 - Orca CLI 仍不可用；替代流程继续使用 Codex 原生 collaboration subagent + Git worktree/no-local clone，并以父链、写集、摘要、refs 和本地复验收口。
+
+## 2026-08-24 V1 attempt 1 独立证据反扫与 REVISE
+
+- 独立只读 agent 在专属 acceptance worktree 复算 F16、packet、dedup、ACK/control 父链和 17/17 source refs，全部匹配；三文件写集、PC 8 项、TG 12 项、fail-closed 32 项、write 13 项、architecture negatives 15 项、rollback 5 项及三项 P2 集合无缺号。
+- P1-01：`version-acceptance.json` 仅保存 install/check/runner source/output 的 raw SHA，没有 artifact ref、Git blob、字节数或原始内容；已回收 clone 的 1990 个文件中也无对应哈希，fresh `downloaded=0`、474/474 和 runner 输出不可重放。
+- P1-02：Q1/Q2/Q3/Q6/Q11、三项目逐阶段 continuity 和 20 项 risk probes 只有汇总，缺稳定 ID、expected/actual、canonical/digest/外键/语义行，且未使用计划冻结的机器 evidence slots。
+- P1-03：三文件由同一验收者一次生成，内含四角色 scorecard 只能视为自检，不能替代 separate independent review。
+- 裁决：`REVISE`。原始字节无法恢复，attempt 1 不得生成 immutable PASS Result；保留提交 `933a72d...` 作为 rejected evidence，必须创建 attempt 2、新 claim/fence 并持久化可重放行级证据。
+- 路线锁、context summary 与自主执行计划已同步到该真实状态；V2 继续关闭。

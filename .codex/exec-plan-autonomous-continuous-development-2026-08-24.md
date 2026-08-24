@@ -9,12 +9,14 @@ P5 的最终出口仍以 `PROJECT_ROUTE_LOCK.md` 为准：V1-V4 与 Final Accept
 ## 2. Phase A：V1 控制链收口
 
 1. 实时重读 main/formal/control、fence 113、packet/ACK、验收提交和用户受保护文件状态。
-2. 按历史 Result schema 生成唯一 immutable V1 Result 候选；摘要采用项目冻结的 RFC8785/JCS 投影契约。
-3. 用全新独立 reviewer 在专属 worktree 审查 Result、验收三文件、17/17 source refs、PC/TG/Q/fail-closed/P2 与授权边界。
-4. reviewer 为 PASS、P0/P1=0、required_fixes=[] 后，主控才可提交 control 候选并执行 expected-old CAS。
-5. 将验收三文件和必要状态真源以小步提交纳入 main；不得纳入用户 Multica 未跟踪文件。
-6. 形成 V1 会签包与独立终审；只在项目会签规则和用户总授权可共同满足时完成 control 会签，否则保留到明确的用户确认边界。
-7. 同步 `PROJECT_ROUTE_LOCK.md`、活动计划、README/PLANS/QA 与 `.codex` 留痕，使镜像与真实 refs 一致。
+2. 将 attempt 1 的独立证据审计 `REVISE` 固化为不可变 rejected evidence；按既有重试协议终结 attempt 1，不得生成 PASS Result。
+3. 为 attempt 2 固化新的 packet/dedup/claim/fence/ACK；仍绑定 exact F16，但不得复用 attempt 1 的 fresh 运行汇总。
+4. 在唯一 no-local clone 中重跑 offline install、`pnpm check` 和累计 runner；把原始内容、字节数、raw SHA、runner source/output、逐阶段连续链、Q 行和 20 项风险探针直接持久化到允许产物。
+5. 用全新独立 reviewer 在专属 worktree 审查 attempt 2 三文件、可重放原始证据、17/17 source refs、PC/TG/Q/fail-closed/P2 与授权边界。
+6. reviewer 为 PASS、P0/P1=0、required_fixes=[] 后，主控才生成 immutable V1 Result 并执行 expected-old control CAS。
+7. 将合格验收三文件和必要状态真源以小步提交纳入 main；不得纳入用户 Multica 未跟踪文件。
+8. 形成 V1 会签包与独立终审；总授权不回填为对尚未展示精确 Result 的用户会签，停在明确用户确认边界。
+9. 同步 `PROJECT_ROUTE_LOCK.md`、活动计划、README/PLANS/QA 与 `.codex` 留痕，使镜像与真实 refs 一致。
 
 Phase A 出口：V1 registry/checkpoint、Result、审查、会签状态和 main 文档完全一致；formal 是否移动只由既有版本协议决定，不自行发明提升动作。
 
