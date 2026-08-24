@@ -2418,3 +2418,24 @@
 - 裁决=`PASS / 99`、8/8 hard gates、P0/P1/P2=`0/0/0`；首轮 P1 已闭合，approval_effect=none，scope=`signoff-package-only-awaiting-control-request-and-exact-user-ack`。
 - signoff-request CAS=`48cff32bbb03b4814813cd97086a3f789cd17b72`，直接父为 Result control=`07fb99f61202972a0d04ec30afab2bc883a8c42d`；message、registry、checkpoint 绑定精确 Result、report digest=`sha256:715260d6da8b8391e9b1ba6daa7346062906d0619575f890d8f6d68d5085306a` 与 review JCS digest。
 - 当前真实状态：registry=`awaiting-user-signoff`、signoff=`pending`、formal=F16、V1 not-completed。只等待用户精确语义批准；不得自动 ACK、完成 V1 或进入 V2。
+
+## 2026-08-25 V1 Attempt 5 用户会签可同意性审查
+
+- 审查级别：L3 只读会签判断；`judge-harness` scorecard/verdict 位于 `.codex/reviews/p5-v1-user-signoff-decision-2026-08-25/`。
+- 实时 refs：main=`6be44f3e622dbfa909c730ecc97e57258b4eb052`；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`；current control=`48cff32bbb03b4814813cd97086a3f789cd17b72`；plan_generation=`4`。
+- 控制父链：signoff-request `48cff32...` 直接父为 Result control `07fb99f6...`，后者直接父为 ACK `50247909...`。`07fb...` 与 `48cff...` 分别表示 Result 固化边界和当前请求边界，不构成身份冲突。
+- 摘要复算：Result JCS（排除 `result_digest`）=`sha256:fd5e6c09a20ad35c25261bf0b0ace81da14767576ebb84361701cb01594c881b`；candidate acceptance JCS=`sha256:68825af5d92734546630c595ebda31468f34d005573c177225f6e6e6cd0ede42`；独立 L3 JCS=`sha256:377c0f42f8c8bf3656e9825a5d426d95c24498f5590574f25b02df93969d40ed`；会签包终审 JCS=`sha256:ecacd96fc43834eefbc29926c8abbe744f6087af46391492d0e626e3bcd8cc07`。
+- 状态门禁：registry=`awaiting-user-signoff`、signoff=`pending`、V1=`not-completed`、pending dispatch=0；未发现提前 completion 或 V2 授权。
+- P2 处置：manual-isolated 不证明 trusted-host/full；Git control 父链是因果真源；长生命周期 trusted-host registry 容量/寿命未证明。这三项继续由宿主相关里程碑承接，V3 的 `full` 退出门禁保持有效。
+- 完整性：`git diff --check` 通过；`git fsck --strict --no-progress` exit 0，仅有历史 dangling objects；所需审计对象均可读。
+- 最终裁决：`PASS / 99`；8/8 hard gates，P0/P1=0，`required_fixes=[]`。建议用户同意报告内绑定精确 Result/Result control 的会签原文。
+- 授权边界：本审查不替代用户会签，不执行 ACK CAS 或 V1 completion CAS，不移动 formal/control，不进入或授权 V2，不表示 P5 完成。
+
+## 2026-08-25 V1 Attempt 5 会签与 Completion 验证
+
+- 用户文本：Result digest、Result control、attempt、三项 P2 与请求文本一致；`plan\_generation` 仅为 Markdown 转义，规范化后精确匹配。
+- Result JCS：移除顶层 `result_digest` 后使用 `dist/src/domain/canonical-json.js` 复算=`sha256:fd5e6c09a20ad35c25261bf0b0ace81da14767576ebb84361701cb01594c881b`，与声明及用户会签相同。
+- ACK：control=`9ec9d45de5c973f1d3904bcfd3817e6103bbd324`，唯一父=`48cff32bbb03b4814813cd97086a3f789cd17b72`；exact-3 写集，独立身份复核 `eddab356306d8cda54b0f1640a25397f5c9bc54b` 为 exact-2、父 main `6be44f3e622dbfa909c730ecc97e57258b4eb052`、`PASS / 100`、8/8 hard gates。
+- Completion：control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`，唯一父 ACK=`9ec9d45...`；exact-3 写集，expected-old CAS 成功。registry=`gate-passed / approved / formally-completed`，checkpoint `completed_versions.V1.status=formally-completed`。
+- 不变量：formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，plan_generation=`4`，Result 未改写，pending dispatch=0；P5=`not-completed`，V2=`not-authorized`。
+- JSON 与 Git：control 三份 completion 文件 `jq empty`、`git diff --check` 通过；control 父链和对象均可读。后续仍需独立 V2 entry evaluation，且该评估不等于 V2 packet/dispatch/coding 授权。

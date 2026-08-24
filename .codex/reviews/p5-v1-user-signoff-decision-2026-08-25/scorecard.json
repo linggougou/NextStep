@@ -1,0 +1,133 @@
+{
+  "review_id": "p5-v1-user-signoff-decision-2026-08-25",
+  "task_id": "V1-ATTEMPT-5-USER-SIGNOFF-DECISION",
+  "lane": "user-signoff-readiness-independent-readonly-audit",
+  "review_level": "L3",
+  "rubric_id": "nextstep-version-user-signoff-readiness-v1",
+  "artifact_refs": [
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/exec-plans/active/p5-product-implementation-milestones.md",
+    "docs/qa/p5-v1-cumulative-acceptance-attempt-5-2026-08-24.md",
+    "control:07fb99f61202972a0d04ec30afab2bc883a8c42d",
+    "control:48cff32bbb03b4814813cd97086a3f789cd17b72",
+    "git:3f0b394fc610b7e9259e1f593fc86468588aac49",
+    "git:a7d9471b370165d822cfd698765f317503ec4681",
+    "git:593cf4841cd1b51036426dd8876ceae46103b78d"
+  ],
+  "hard_gates": [
+    {
+      "id": "LIVE-IDENTITY",
+      "status": "pass",
+      "evidence": "HEAD=6be44f3e622dbfa909c730ecc97e57258b4eb052，formal=ea04b57de83d6c548dcb1629b1f61832db8375ad，current control=48cff32bbb03b4814813cd97086a3f789cd17b72，plan_generation=4。"
+    },
+    {
+      "id": "CONTROL-PARENT-CHAIN",
+      "status": "pass",
+      "evidence": "signoff-request control 48cff32bbb03b4814813cd97086a3f789cd17b72 的唯一父为 Result control 07fb99f61202972a0d04ec30afab2bc883a8c42d；Result control 的唯一父为 ACK 502479091b5ed9d8d385d92bc4e0aefb0d6f3126。"
+    },
+    {
+      "id": "RESULT-DIGEST",
+      "status": "pass",
+      "evidence": "移除 Result 顶层 result_digest 后使用项目 RFC8785 canonicalizer 复算得到 sha256:fd5e6c09a20ad35c25261bf0b0ace81da14767576ebb84361701cb01594c881b。"
+    },
+    {
+      "id": "ACCEPTANCE-EVIDENCE",
+      "status": "pass",
+      "evidence": "candidate exact-3、独立 L3 exact-2；candidate acceptance JCS=sha256:68825af5d92734546630c595ebda31468f34d005573c177225f6e6e6cd0ede42，独立 L3 scorecard JCS=sha256:377c0f42f8c8bf3656e9825a5d426d95c24498f5590574f25b02df93969d40ed。"
+    },
+    {
+      "id": "SIGNOFF-PACKAGE",
+      "status": "pass",
+      "evidence": "报告 raw sha256=715260d6da8b8391e9b1ba6daa7346062906d0619575f890d8f6d68d5085306a；replacement 终审 PASS/99，scorecard JCS=sha256:ecacd96fc43834eefbc29926c8abbe744f6087af46391492d0e626e3bcd8cc07。"
+    },
+    {
+      "id": "CURRENT-STATE",
+      "status": "pass",
+      "evidence": "registry=awaiting-user-signoff，signoff=pending，version_status=not-completed，pending dispatch=0；没有 V1 completion 或 V2 授权。"
+    },
+    {
+      "id": "RISK-CARRY-FORWARD",
+      "status": "pass",
+      "evidence": "三项 P2 被显式保留；V1 范围是 PC-01..08，trusted-host/full 与宿主生命周期风险继续由后续宿主里程碑承接，V3 退出门禁仍要求至少一个主宿主为 full。"
+    },
+    {
+      "id": "APPROVAL-SCOPE",
+      "status": "pass",
+      "evidence": "请求文本只授权实时复核后的 user-signoff ACK CAS 与独立 V1 completion CAS；明确不跳过 V2 入口独立评估，且不表示 P5 完成。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "identity_and_control_integrity",
+      "score": 25,
+      "max_score": 25,
+      "reason": "实时 refs、Result/ACK/signoff-request 父链和计划代际一致。",
+      "evidence_refs": ["LIVE-IDENTITY", "CONTROL-PARENT-CHAIN"]
+    },
+    {
+      "id": "result_and_acceptance_evidence",
+      "score": 25,
+      "max_score": 25,
+      "reason": "Result、candidate 与独立 L3 摘要可机械复算且匹配。",
+      "evidence_refs": ["RESULT-DIGEST", "ACCEPTANCE-EVIDENCE"]
+    },
+    {
+      "id": "signoff_package_fidelity",
+      "score": 20,
+      "max_score": 20,
+      "reason": "会签报告与 replacement 终审均绑定精确 Result、formal、风险和后续状态机。",
+      "evidence_refs": ["SIGNOFF-PACKAGE", "CURRENT-STATE"]
+    },
+    {
+      "id": "risk_disclosure_and_user_clarity",
+      "score": 19,
+      "max_score": 20,
+      "reason": "三项 P2 均被完整披露并有后续门禁承接；唯一可读性成本是会签原文中的 control 指 Result control，而当前 control 已推进到 signoff request，需要用户理解二者区别。",
+      "evidence_refs": ["CONTROL-PARENT-CHAIN", "RISK-CARRY-FORWARD"]
+    },
+    {
+      "id": "authorization_boundary",
+      "score": 10,
+      "max_score": 10,
+      "reason": "会签范围没有扩张到 V2 实施或 P5 完成。",
+      "evidence_refs": ["APPROVAL-SCOPE"]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 99,
+    "penalty_total": 0,
+    "final_score": 99,
+    "max_score": 100
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "用户发送会签前应理解：07fb99f6 是 Result control，48cff32b 是当前 signoff-request control；二者的直接父子关系已验证。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "signal": "PASS",
+      "conclusion": "8/8 hard gates 通过，精确身份、摘要、父链与当前状态成立。"
+    },
+    {
+      "role": "Strict Judge",
+      "signal": "PASS",
+      "score": 99,
+      "conclusion": "可以建议用户同意精确会签文本；三项 P2 是后续承接风险，不是 V1 的未披露阻塞项。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "signal": "PASS",
+      "conclusion": "未发现把 Result control 冒充 current control、把历史 autonomy 冒充用户会签或提前声明 V1/P5 完成。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "signal": "PASS",
+      "score": 99,
+      "conclusion": "建议同意；本裁决仅回答会签是否合理，不替代用户本人授权，也不执行任何 CAS。"
+    }
+  ],
+  "reviewed_at": "2026-08-25T01:10:03+08:00"
+}

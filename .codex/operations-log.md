@@ -2487,3 +2487,26 @@
 - signoff-request control=`48cff32bbb03b4814813cd97086a3f789cd17b72`，唯一父=PASS Result `07fb99f61202972a0d04ec30afab2bc883a8c42d`；registry=`awaiting-user-signoff`、signoff=`pending`、formal=F16。
 - 当前 broad autonomy 不能替代针对 Result digest=`sha256:fd5e6c09a20ad35c25261bf0b0ace81da14767576ebb84361701cb01594c881b` 的新用户语义会签。用户批准前不得创建 ACK、V1 completion 或 V2 entry 结论。
 - 回收：candidate、独立 L3、首轮 REVISE、replacement PASS 的四条审计分支均已在共享仓库命名可达；对应 clone 及 runner runtime 在 clean/fsck/cat-file 通过后移动到 `/Users/ling/.Trash/nextstep-a5-reclaim-20260824-1040/`。一个无文件、无阶段产出的空转 rereview 实例被中断，其 clean clone 同路径可恢复保留。control worktree 未回收，受保护用户文件未读取或处理。
+
+## 2026-08-25 V1 Attempt 5 用户会签可同意性只读审查
+
+- 目标：回答用户是否可以同意 V1 attempt 5 精确会签；不代签、不执行 ACK/completion CAS、不移动 formal/control、不进入 V2。
+- 路线与生命周期：项目仍为 `S5 / P5`，本轮属于 V1 验收/会签判断；里程碑真源为路线锁与 P5 活动计划，最小闭环是只读核对精确 Result、实时 refs、plan generation、会签包和三项 P2 后给出判断。
+- 工具与组织：使用 `judge-harness`；未启用子 Agent，因为本轮是严格串行的控制父链与不可变证据审查，且未获主动委派授权。RTK 可用；需要完整原始对象与摘要复算的命令使用原生 Git/Node。
+- 实时身份：HEAD/main=`6be44f3e622dbfa909c730ecc97e57258b4eb052`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，current control=`48cff32bbb03b4814813cd97086a3f789cd17b72`，plan_generation=`4`。
+- 父链：`48cff32...` 的唯一父是 Result control `07fb99f6...`；`07fb99f6...` 的唯一父是 ACK `50247909...`。所以会签原文中的 `07fb...` 是 Result control，和状态摘要中的 current control `48cff...` 不冲突。
+- 机械复算：Result JCS（排除顶层 `result_digest`）=`sha256:fd5e6c09a20ad35c25261bf0b0ace81da14767576ebb84361701cb01594c881b`；candidate acceptance JCS=`sha256:68825af5d92734546630c595ebda31468f34d005573c177225f6e6e6cd0ede42`；独立 L3 scorecard JCS=`sha256:377c0f42f8c8bf3656e9825a5d426d95c24498f5590574f25b02df93969d40ed`；会签包终审 scorecard JCS=`sha256:ecacd96fc43834eefbc29926c8abbe744f6087af46391492d0e626e3bcd8cc07`。
+- 仓库检查：`git diff --check` 通过；`git fsck --strict --no-progress` exit 0，仅报告历史 dangling objects，无对象完整性错误；candidate、独立 L3、会签包终审对象均可读且父链成立。
+- 风险判断：三项 P2 为显式 carry-forward；不阻塞 V1 的 PC-01..08，但不会被本会签清零。trusted-host/full 与 registry 生命周期继续由宿主相关里程碑承接，V3 仍要求至少一个主宿主为 `full`。
+- 裁决：`PASS / 99`，8/8 hard gates，P0/P1=0，required fixes=0；建议用户同意精确会签文本。审查产物位于 `.codex/reviews/p5-v1-user-signoff-decision-2026-08-25/`。
+- 保护：未读取、修改、暂存、摘要、验收或清理受保护的 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`。
+
+## 2026-08-25 V1 Attempt 5 会签 ACK 与独立 Completion CAS
+
+- 用户授权：精确确认 Result=`sha256:fd5e6c09a20ad35c25261bf0b0ace81da14767576ebb84361701cb01594c881b`、Result control=`07fb99f61202972a0d04ec30afab2bc883a8c42d` 与三项 P2 carry-forward；授权先 ACK、再以独立下一 control CAS 标记 V1 formally-completed。`plan\_generation` 按 Markdown 转义规范化为 `plan_generation`，与请求文本逐字一致。
+- 实时重核：formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`、plan_generation=`4`、signoff-request control=`48cff32bbb03b4814813cd97086a3f789cd17b72`，其唯一父为 Result control `07fb99f6...`；Result 排除顶层 `result_digest` 后按项目 canonicalizer 复算精确匹配。
+- 并发审计：执行期间 live control 从 `48cff32...` 推进到 `9ec9d45de5c973f1d3904bcfd3817e6103bbd324`。未覆盖或重复 CAS；审计确认该提交唯一父为 `48cff32...`、写集 exact-3、会签消息绑定用户原文，独立身份复核 `eddab356306d8cda54b0f1640a25397f5c9bc54b` 为 exact-2、L3 `PASS / 100`，因此接受为合法 ACK 边界。
+- Completion CAS：在 control worktree 以 expected-old=`9ec9d45...` 创建 direct-child `6d5120078a137ecf74b4a4b58cbcba37a61b7148`，写集仅 `registry.json`、`checkpoint.json`、`messages/msg-version-completion-v1-g4-a5-f117-20260825.json`；`git update-ref` CAS 成功，formal 未移动。
+- 完成状态：registry V1 attempt 5=`gate-passed / approved / formally-completed`；checkpoint 新增 `completed_versions.V1`，pending dispatch=0。三项 P2 继续 carry-forward，P5 未完成；下一步只允许独立 V2 entry evaluation，V2 packet、claim/fence、dispatch 与编码保持未授权。
+- Agent 处置：一个 replacement 前的复核实例在隔离 clone 中空转且零写入，已中断；其工作树保持 clean，未计入验收。既有有效独立身份复核分支固定为 `codex/v1-a5-signoff-identity-review-20260824`。
+- 保护：未读取、修改、暂存、摘要、验收或清理受保护的 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`。
