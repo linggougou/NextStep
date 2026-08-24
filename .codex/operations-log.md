@@ -2329,3 +2329,5 @@
 - 主控复算 scorecard JCS=`sha256:a905f12332a2a3864f7a474f9a159f1d0d9add296c200e9315ec2391c10e5842`，父链、写集、diff-check、worktree clean 与 `git fsck --strict --no-dangling` 均通过；评审以 `d9bd61f80875fa3716f0004d6bfe34d70bc01300` 纳入 main，专属 worktree 已回收。
 - 按入口裁决形成 `.codex/exec-plan-v1-cumulative-acceptance-generation-1.md` 候选，冻结 exact F16、PC-01..08、十二个适用 TG、I/X/P/Profile、三项目 S1.1→S1.6 同上下文连续性、Q1/Q2/Q3/Q6/Q11、完整 fail-closed、15/15 架构负例、5/5 回滚入口与 M1.1 三项 P2 风险。
 - 当前只允许对计划候选做另一轮独立评审；未创建 packet/claim/fence/Result，未派发或运行正式 V1 验收，formal/control 未移动，V1/P5 未完成，V2 未授权。
+- 计划独立 L3 评审 commit=`5ee3755d75d1909851d5c95950cbda72f1c8a0fe`，直接父=`556e17d8eeb5e5e6f56f2a56f55d0d0c3b95f10f`，精确两文件；`PASS / 100`、P0/P1/P2=`0/0/0`、`required_fixes=[]`。主控复算 scorecard JCS=`sha256:6f5686a56df2cd6be48f4ef57290ccdf7f823adfa99203ca3a366b756304279a`、verdict raw=`sha256:fb6309a460fec501c651b4a413ddaebe9381591a80f2f0bba109afed3ef0f582`，父链、写集、diff-check 与 fsck 均通过；专属 worktree 已回收。
+- 计划门禁已关闭在唯一下一动作：请求或等待新的明确控制授权，以生成首次 V1 packet；在授权到达前不得创建控制对象、派发/执行验收、移动 refs 或声明 V1/P5 完成。

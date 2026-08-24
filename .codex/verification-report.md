@@ -2284,3 +2284,6 @@
 - 实时边界：formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`a99593f940c6f38fba2147fc9b2c5bb5594c93a7`，pending=0；M1.1/M1.2 已完成，V1/P5 未完成，V2 未授权。
 - 计划候选已将入口 scorecard 的完整 frozen union 映射为机器可核验 evidence slots，并限定唯一 no-local exact-F16 隔离运行、frozen/offline 全量回归、独立 Result/评审/报告与用户会签。
 - 当前尚未形成计划独立裁决；packet、dedup、claim/fence、dispatch、正式 V1 验收和 control/formal CAS 均不得执行。
+- 计划独立裁决：review commit=`5ee3755d75d1909851d5c95950cbda72f1c8a0fe` / tree=`4a2b80486f2725542cabe992bbc1ce35d911b651` / parent=`556e17d8eeb5e5e6f56f2a56f55d0d0c3b95f10f`，精确两文件、worktree clean；`PASS / 100`、P0/P1/P2=`0/0/0`、`required_fixes=[]`。
+- 摘要复核：scorecard RFC8785/JCS=`sha256:6f5686a56df2cd6be48f4ef57290ccdf7f823adfa99203ca3a366b756304279a`，verdict raw=`sha256:fb6309a460fec501c651b4a413ddaebe9381591a80f2f0bba109afed3ef0f582`；父链、两文件净写集、`git diff --check` 与 `git fsck --strict --no-dangling` 通过。
+- 最终边界：唯一 `next_allowed_action=REQUEST_OR_WAIT_FOR_NEW_EXPLICIT_CONTROL_AUTHORIZATION_TO_GENERATE_FIRST_V1_PACKET`。本轮不生成 packet/control 对象、不派发正式验收、不移动 formal/control；V1/P5 未完成，V2 未授权。
