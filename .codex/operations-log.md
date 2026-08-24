@@ -2338,3 +2338,4 @@
 - 生命周期保持 `S5 / P5 / V1 / cumulative-acceptance`，服务 V1 阶段出口；不改变产品路线、技术栈、Profile 或验收门禁。packet CAS 前 main=`a3378c391ff58b4667699f34a83cba9c3d2cce45`、formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`、control expected-old=`a99593f940c6f38fba2147fc9b2c5bb5594c93a7`、plan_generation=4、pending=0。
 - Orca orchestration 运行时缺失：`zsh: command not found: orca`。原用途为结构化 subagent 协调；替代流程为本会话原生 subagent + 两个只读专属 worktree，主控独占 control 写入与 expected-old CAS，后续以摘要、父链、写集和 refs 复核替代验证。
 - 本轮授权边界仅含首次 V1 packet、dispatch-ready/outbox intent、registry/checkpoint 与一次 expected-old control CAS；不含 claim/fence、host task、dispatch-ack、正式验收、Result、formal 移动、V1/P5 完成或 V2。
+- 只读 subagent 发现 `docs/PRODUCT_SENSE.md` 的阶段镜像仍停在 F14/S1.5；该文件明确把路线锁和 PLANS 作为正式状态真源，但为避免 packet working context 内部状态漂移，已最小同步到 F16/V1 packet-freeze，不修改任何产品原则正文。
