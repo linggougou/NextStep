@@ -1,0 +1,285 @@
+{
+  "review_id": "p5-v1-cumulative-acceptance-entry-evaluation-2026-08-24",
+  "task_id": "V1-CUMULATIVE-ACCEPTANCE-ENTRY-EVALUATION",
+  "lane": "independent-entry-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-v1-cumulative-acceptance-entry-readiness-v1",
+  "subject_identity": {
+    "commit": "ba7cb6c003bf7f4f11bde33f94f0cb5e6dcf3702",
+    "tree": "a18432964e7b7f537b38ba976ad5c4bc6421c114",
+    "parent": "df9d843d4b2a6ab6855b9c4d75e5ca33101187f1",
+    "formal": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "control": "a99593f940c6f38fba2147fc9b2c5bb5594c93a7"
+  },
+  "artifact_refs": [
+    "git:ba7cb6c003bf7f4f11bde33f94f0cb5e6dcf3702",
+    "formal:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "control:a99593f940c6f38fba2147fc9b2c5bb5594c93a7",
+    "control:checkpoint.json",
+    "control:registry.json",
+    "control:results/result-milestone-acceptance-m1.1-g4-a2-f72-20260813.json",
+    "control:results/result-milestone-acceptance-m1.2-g4-a1-f112-20260824.json",
+    "control:messages/msg-user-signoff-ack-m1.1-g4-a2-20260814.json",
+    "control:messages/msg-user-signoff-ack-m1.2-g4-a1-20260824.json",
+    "control:promotions/formal-promotion-s1.1-g1-a2.json",
+    "control:promotions/formal-promotion-s1.2-g4-a3.json",
+    "control:promotions/formal-promotion-s1.3-g4-a3.json",
+    "control:promotions/formal-promotion-s1.4-g4-a2.json",
+    "control:promotions/formal-promotion-s1.5-g4-a12.json",
+    "control:promotions/formal-promotion-s1.6-g4-a1.json",
+    "docs/exec-plans/completed/p3-version-and-milestone-breakdown.md",
+    "docs/exec-plans/active/p5-product-implementation-milestones.md",
+    "docs/qa/p5-v1-m1.1-acceptance-attempt-2-2026-08-13.md",
+    "docs/qa/p5-v1-m1.2-acceptance-attempt-1-2026-08-24.md",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/PLANS.md"
+  ],
+  "artifact_digests": {
+    "m1_1_result_jcs_without_result_digest": "sha256:341d36aae080320d546b10b939f0dfd23356f69fdfdce4e17a6570434e2466ea",
+    "m1_2_result_jcs_without_result_digest": "sha256:73daa2141583898a82c64541e9fb96faf4ea5375fcc1cd0a79e4b0c9fa20366a",
+    "m1_1_signoff_identity_scorecard_jcs": "sha256:9cffd19db7bae3cd5e5063ef6ccb03b7e0e65cab1ac1e32e3c2c82eeced9f40d",
+    "m1_2_signoff_identity_scorecard_jcs": "sha256:e80feb3747454aaf3a302cba9f6078e3256824cb9668a92b22c6c0b73bda52b8",
+    "checkpoint_raw_sha256": "fa969f1c4e2210be4e37d73df669e9f5ee62dee1061ae4f1e11de03ae18ea7cc",
+    "registry_raw_sha256": "4b6d7dcd2571ebdfeb27359444cfb7ae2ed3c7b9d1a82b536ef1c267b3dba1e6",
+    "project_route_lock_raw_sha256": "6abb77fe99ac79ebd1a2e71c415fd5d0f0a7b6583a0a2b751ca76ed50ebf2df4",
+    "p5_active_plan_raw_sha256": "d85d65e56bb40e8eabbe8b53b2c52e543e18ce6a06969bb8e4da880853e67f32",
+    "p3_milestone_contract_raw_sha256": "4e8f658d6bd3151211df4b9c5c1112502e836cd97e0a9ca914cf38424901fc4c"
+  },
+  "hard_gates": [
+    {
+      "id": "exact_subject_formal_control_identity",
+      "status": "pass",
+      "evidence": "专属工作树 HEAD=ba7cb6c003bf7f4f11bde33f94f0cb5e6dcf3702、tree=a18432964e7b7f537b38ba976ad5c4bc6421c114、单父=df9d843d4b2a6ab6855b9c4d75e5ca33101187f1；实时 formal=F16 ea04b57de83d6c548dcb1629b1f61832db8375ad、control=a99593f940c6f38fba2147fc9b2c5bb5594c93a7。工作树开始时 clean，subject 相对父提交仅同步八个批准的状态/报告/路线/计划/索引/留痕文件。"
+    },
+    {
+      "id": "m1_1_formally_completed_and_identity_bound",
+      "status": "pass",
+      "evidence": "registry、checkpoint.completed_milestones 与 milestone_signoffs 均记录 M1.1 attempt 2=gate-passed/formally-completed/approved；ack 绑定 formal F13=84c051f7426ec5d2a9bed70aa02a1f321bd81e11 与 Result sha256:341d36aa...。Result 排除 result_digest 后独立 JCS 复算匹配；CAS 前身份核验 scorecard 独立复算为 sha256:9cffd19d...，PASS/100。F13 是当前 F16 的祖先。"
+    },
+    {
+      "id": "m1_2_formally_completed_and_identity_bound",
+      "status": "pass",
+      "evidence": "registry、checkpoint.completed_milestones 与 milestone_signoffs 均记录 M1.2 attempt 1=gate-passed/formally-completed/approved；ack 绑定精确 F16/tree、Result sha256:73daa214...、会签包终审 18178a7... 与身份核验 18ab410...。Result 与身份核验 scorecard 的 JCS 摘要均独立复算匹配，CAS_ALLOWED=true，control expected-old eaefc1b... 已原子推进到 a99593f...。"
+    },
+    {
+      "id": "s1_1_through_s1_6_formal_evidence_chain",
+      "status": "pass",
+      "evidence": "六份当前 promotion 的 promotion_digest、new_formal_tree、expected-old ancestry 与 cas_outcome=success 均独立校验通过。S1.1 F11=8ffaf658... 是 F16 祖先；generation 4 修复链为 F0=f3fdd265...→F12=8540763a...→F13=84c051f7...，随后 F13→F14=024c1db6...→F15=7169e9b0...→F16=ea04b57d...。checkpoint 对 S1.1-S1.6 均登记 Final Snapshot、FV、Credential、Audit Anchor、AV、Anchor Proof 与 promotion。"
+    },
+    {
+      "id": "v1_scope_union_is_complete",
+      "status": "pass",
+      "evidence": "P3 已会签矩阵把 V1 唯一冻结为 S1.1-S1.6、M1.1/M1.2、PC-01..08；PC 反向映射得完整适用 TG 并集 TG-01/02/03/04/05/06/11/12/15/16/17/19。M1.1/M1.2 Result 的 covered_tasks/pcs/tgs 合并后与该真源精确一致，无 PC 或 TG 漏项。"
+    },
+    {
+      "id": "v1_acceptance_dimensions_and_profile_are_frozen",
+      "status": "pass",
+      "evidence": "V1 正式累计验收必须在精确 F16 上独立形成 I/X/P/Profile 四维结论；NextStep 主路线保持 headless-primary/manual-isolated consumer contract，Profile 必须覆盖 headless、ui-with-evidence 与路线冲突三类，UI fixture 仅证明规则，不恢复或宣称 Web/UI 主线。"
+    },
+    {
+      "id": "three_project_end_to_end_continuity_is_required",
+      "status": "pass",
+      "evidence": "后续计划必须对 community-workshop、expense-reminder、project-delivery-tool 在同一个精确 F16 隔离验证上下文中执行 S1.1→S1.2→S1.3→S1.4→S1.5→S1.6 端到端回放，并逐项目证明身份、完整 canonical 内容、digest 与产品语义连续。现有 M1.1 的 S1.1→S1.3 3/3 与 M1.2 的 S1.3→S1.6 3/3 只作为入口证据，不得相加替代该全链新结论。"
+    },
+    {
+      "id": "q_metric_union_is_frozen",
+      "status": "pass",
+      "evidence": "V1 适用量化并集已按 P3 冻结为 Q1 需求入口完整率=100%、Q2 冻结前阻断率=100%、Q3 PC-03..08 上游真源必填字段完整率=100%、Q6 Profile 规则正确率=100%、Q11 S4 19 项风险加 009 归档风险承接率=20/20。M1.1/M1.2 的旧分段结果不得替代在 F16 上统一重算。"
+    },
+    {
+      "id": "fail_closed_and_rollback_union_is_frozen",
+      "status": "pass",
+      "evidence": "后续计划必须同时覆盖：缺字段/未知版本/未知字段/敏感内容/摘要与外键错绑拒绝；未确认/未冻结/过期或终态 replay 阻断；跨项目与 canonical 内容换料拒绝；同名/嵌套/symlink/越界/权限项目解析阻断；主对话不读写项目；Profile 冲突与 UI 缺证据拒绝；基线漂移、只读/不可写、中途写失败、symlink escape 与 unsafe rollback 不提升 formal；15/15 架构负例 fail closed、20/20 风险探针及 5/5 回滚入口。"
+    },
+    {
+      "id": "existing_milestone_passes_are_not_v1_pass",
+      "status": "pass",
+      "evidence": "路线锁、PLANS、活动计划、QA 报告、checkpoint 与 ack 均明确 M1.1/M1.2 已完成但 V1/P5 未完成、V2 未授权。F13 上的 M1.1 PASS/97 与 F16 上的 M1.2 PASS/100 不得直接拼接为 V1 PASS；正式 V1 验收必须产生新的固定 packet/claim/fence、同一 F16 全链复验、独立 Result、报告与用户会签。"
+    },
+    {
+      "id": "entry_only_no_execution_or_ref_movement",
+      "status": "pass",
+      "evidence": "当前 subject 不存在 V1 cumulative acceptance 计划或 packet，pending_dispatch_messages=[]；本评估未生成计划/packet、未派发或执行正式 V1 验收、未移动 formal/control、未修改 main/evidence。允许的下一动作被限制为准备 Generation 1 计划候选并另行独立评审。"
+    },
+    {
+      "id": "risk_carry_forward_and_user_change_protection",
+      "status": "pass",
+      "evidence": "后续计划必须保留 M1.1 的三个 P2：不构成 trusted-host/full 或真实用户动作证明、dispatch-ack 因果顺序以 control Git 父链为准、长驻 trusted-host session registry 生命周期/容量上界未证明；不得在 V1 入口静默清零。本轮未读取、修改或纳入用户未跟踪 Multica 文件。"
+    }
+  ],
+  "frozen_acceptance_union": {
+    "formal_subject": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "milestones": [
+      "M1.1",
+      "M1.2"
+    ],
+    "small_milestones": [
+      "S1.1",
+      "S1.2",
+      "S1.3",
+      "S1.4",
+      "S1.5",
+      "S1.6"
+    ],
+    "product_capabilities": [
+      "PC-01",
+      "PC-02",
+      "PC-03",
+      "PC-04",
+      "PC-05",
+      "PC-06",
+      "PC-07",
+      "PC-08"
+    ],
+    "test_groups": [
+      "TG-01",
+      "TG-02",
+      "TG-03",
+      "TG-04",
+      "TG-05",
+      "TG-06",
+      "TG-11",
+      "TG-12",
+      "TG-15",
+      "TG-16",
+      "TG-17",
+      "TG-19"
+    ],
+    "dimensions": [
+      "I",
+      "X",
+      "P",
+      "Profile"
+    ],
+    "target_projects": [
+      "community-workshop",
+      "expense-reminder",
+      "project-delivery-tool"
+    ],
+    "continuity_span": "S1.1→S1.2→S1.3→S1.4→S1.5→S1.6 in one exact-F16 isolated run",
+    "metrics": {
+      "Q1": "100%",
+      "Q2": "100% blocked before freeze",
+      "Q3": "100% required fields for PC-03..08",
+      "Q6": "100% profile decisions",
+      "Q11": "20/20 risk probes"
+    },
+    "mandatory_regeneration": [
+      "fresh exact-F16 no-local isolated full regression and coverage",
+      "fresh three-project S1.1-S1.6 end-to-end continuity",
+      "fresh I/X/P/Profile conclusions bound to one subject and one control identity",
+      "fresh V1 Result, independent review, report and user sign-off"
+    ],
+    "carry_forward_risks": [
+      "manual-isolated/headless evidence does not prove trusted-host/full or real user action",
+      "dispatch causality follows the control Git parent chain",
+      "long-lived trusted-host session registry capacity and lifetime remain unproven"
+    ]
+  },
+  "dimensions": [
+    {
+      "id": "milestone_signoff_identity_integrity",
+      "score": 25,
+      "max_score": 25,
+      "reason": "M1.1 与 M1.2 的正式完成、用户批准、formal 身份、Result 摘要与 CAS 前身份核验均相互绑定并可独立复算。",
+      "evidence_refs": [
+        "control:checkpoint.json",
+        "control:registry.json",
+        "control:messages/msg-user-signoff-ack-m1.1-g4-a2-20260814.json",
+        "control:messages/msg-user-signoff-ack-m1.2-g4-a1-20260824.json"
+      ]
+    },
+    {
+      "id": "formal_and_evidence_chain_readiness",
+      "score": 20,
+      "max_score": 20,
+      "reason": "S1.1-S1.6 的当前 promotion、tree、摘要、ancestry 与 CAS 成功链完整，F16 足以作为 V1 累计验收规划的唯一 subject。",
+      "evidence_refs": [
+        "control:promotions/formal-promotion-s1.1-g1-a2.json",
+        "control:promotions/formal-promotion-s1.2-g4-a3.json",
+        "control:promotions/formal-promotion-s1.3-g4-a3.json",
+        "control:promotions/formal-promotion-s1.4-g4-a2.json",
+        "control:promotions/formal-promotion-s1.5-g4-a12.json",
+        "control:promotions/formal-promotion-s1.6-g4-a1.json"
+      ]
+    },
+    {
+      "id": "acceptance_union_completeness",
+      "score": 25,
+      "max_score": 25,
+      "reason": "PC-01..08、十二个适用 TG、I/X/P/Profile、三目标项目全链和 Q1/Q2/Q3/Q6/Q11 的精确并集已由 P3 真源与两份里程碑 Result 双向核对，无漏项。",
+      "evidence_refs": [
+        "docs/exec-plans/completed/p3-version-and-milestone-breakdown.md",
+        "control:results/result-milestone-acceptance-m1.1-g4-a2-f72-20260813.json",
+        "control:results/result-milestone-acceptance-m1.2-g4-a1-f112-20260824.json"
+      ]
+    },
+    {
+      "id": "negative_rollback_and_risk_boundary",
+      "score": 15,
+      "max_score": 15,
+      "reason": "fail-closed、写入原子性、Profile 冲突、架构风险、回滚入口与 M1.1 三个 P2 的承接边界均已冻结，后续计划不能选择性遗漏或静默清零。",
+      "evidence_refs": [
+        "docs/qa/p5-v1-m1.1-acceptance-attempt-2-2026-08-13.md",
+        "docs/qa/p5-v1-m1.2-acceptance-attempt-1-2026-08-24.md",
+        "docs/exec-plans/completed/p3-version-and-milestone-breakdown.md"
+      ]
+    },
+    {
+      "id": "lifecycle_and_next_action_discipline",
+      "score": 15,
+      "max_score": 15,
+      "reason": "所有当前真源均维持 V1/P5 未完成、V2 未授权；入口通过不会被误写为 V1 PASS，只开放 Generation 1 计划候选及其独立评审。",
+      "evidence_refs": [
+        "PROJECT_ROUTE_LOCK.md",
+        "docs/PLANS.md",
+        "docs/exec-plans/active/p5-product-implementation-milestones.md"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100
+  },
+  "severity_summary": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "Generation 1 计划候选可把每个 PC/TG/Q/负例映射成机器可核验的 evidence slot，减少后续 Result 生成时的人工拼接。",
+    "正式 V1 验收时可将 M1.1 三个 P2 单列为 carry-forward risks，并明确其 V3 宿主能力承接位置，避免被新分数掩盖。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "signal": "PASS",
+      "conclusion": "十二项入口硬门全部通过：两次里程碑完成与会签身份、两份 Result JCS、六阶段 formal/evidence 链、完整验收并集、风险承接和生命周期边界均可复核。"
+    },
+    {
+      "role": "Strict Judge",
+      "signal": "PASS",
+      "score": 100,
+      "conclusion": "F16 具备进入 V1 累计验收规划的充分前提，且验收并集已精确到 PC/TG/Q/三项目连续性与 fail-closed/rollback，不需要在入口层补事实。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "signal": "PASS",
+      "conclusion": "未发现把 M1.1/M1.2 分段 PASS 拼成 V1 PASS、把 F13 旧测试当 F16 新结论、遗漏 M1.1 P2、恢复 Web/UI 主线、完成 V1/P5 或越权授权 V2 的模板衰减。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "signal": "PASS",
+      "score": 100,
+      "conclusion": "V1 S1.1-S1.6 累计验收入口通过。唯一 next_allowed_action 是准备 V1 cumulative acceptance Generation 1 计划候选并另行独立评审；本裁决不授权直接生成 packet、claim/fence、派发或执行正式验收。"
+    }
+  ],
+  "reviewed_at": "2026-08-24T08:33:45+08:00",
+  "next_allowed_action": "prepare one V1 cumulative acceptance Generation 1 plan candidate and submit that plan candidate to a separate independent review; do not generate packet/claim/fence, dispatch, run formal V1 acceptance, move formal/control, declare V1/P5 complete, or authorize V2",
+  "verdict_scope": "PASS 只证明精确 F16 与当前 control 已具备制定 V1 S1.1-S1.6 累计验收 Generation 1 计划候选的入口条件。它不是 V1 验收结论，不把 M1.1 PASS/97 与 M1.2 PASS/100 拼接为 V1 PASS，不生成或授权 packet/claim/fence/dispatch，不移动 formal/control；V1/P5 保持未完成，V2 保持未授权。"
+}
