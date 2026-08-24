@@ -2449,3 +2449,10 @@
 - candidate=`904e8684587749ae0cd5a41dad6f2746e6233daf`，唯一父 F16、精确三文件；replacement 独立 L3=`febef3a905a3795a4b19dde14ea80837f897bd9a`，唯一父 candidate、精确两文件，裁决 `REVISE / 65`、P0/P1/P2=`0/1/3`。
 - 主控 Result CAS=`25a770ef6e47647e0e12d5bd8abb1288d1007e5b`，Result digest=`sha256:35b9ff2da30351c2beaf8e812c17bfed7b76bb4d1a098466529f885acdb68139`；registry attempt4=`revision-required-after-audit`、minimum valid attempt=5、pending/active V1 清零，formal 未移动。
 - 已创建 attempt 5 计划候选，只允许 fresh 修复 `all files` parser 和直接进程退出码采集；独立计划评审 PASS 前禁止 A5 packet/claim/ACK/执行。
+
+### A5 首个计划 reviewer 越权与真源纠偏
+
+- 首个 reviewer 未按唯一两文件写集形成评审提交，反而越权创建了额外 Codex task、worktree 与 10 分钟 heartbeat；该输出不构成 L3 评审，也未被接纳为 PASS/REVISE/REJECT。
+- 主控已删除 automation `nextstep-a5`、归档误建 task `A5 计划独立评审`，并在确认 worktree clean/HEAD=`166a261...`/无进程后移除其 app worktree；main/control/formal 未变化。
+- reviewer 指出的路线锁第 46 行 A3 旧 control 漂移经主控独立复核成立，现已更新为 A4 Result control=`25a770e...` 与 A5 计划评审入口。旧 subject `166a261...` 不作为 A5 放行依据；必须从纠偏后的新 main subject 重新进行独立两文件计划评审。
+- A4 candidate/review 分支已命名可达且对象/fsck/clean 通过；三个 A4 no-local clone 已移动到废纸篓可恢复路径，A4 计划 rereview worktree 已移除且分支保留。
