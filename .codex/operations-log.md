@@ -2463,3 +2463,12 @@
 - 裁决 `PASS / 99`、P0/P1/P2=`0/0/0`、12/12 hard gates、required fixes=0；scorecard raw/JCS=`sha256:e97278034334cc297f2b40f83aab2a37afe1000375a8ed395aa28b158bdc85dd` / `sha256:7a1be4118bf5387c942f1696874afcde2dcad567b51f2ef2df6708724ffdce7f`，verdict raw=`sha256:4339ee18ef6d52c25fc7c07be9f7d53aff3a9a16d8b1f0ed69ef732c31cd575d`。
 - 仅放行从 exact control=`25a770e...` 创建独立 A5 packet CAS；packet 不得与 claim/fence117、host/ACK 或执行合并。
 - 先前误建的旧 A4 app review task 已完成后归档；其 alternative review=`ee867f763bcaa4b6644e3397039445f3f104079c` 仅作为非采用审计分支保留，正式 A4 Result 仍唯一引用 `febef3a...`。其重建 clone 与 app worktree 已可恢复回收。
+
+## 2026-08-24 V1 Attempt 5 执行、独立 L3 与 PASS Result
+
+- control 父链：A4 Result `25a770e...` → A5 packet `681b715...` → claim/fence117 `00523d1...` → ACK `5024790...` → PASS Result `07fb99f61202972a0d04ec30afab2bc883a8c42d`；每段均为单父 expected-old CAS，formal 始终为 F16。
+- executor candidate=`3f0b394fc610b7e9259e1f593fc86468588aac49`，tree=`584dfaba6f2fad06196038f66386a0ebcfee1aee`，唯一父=F16、精确三文件。offline install/check/runner 各唯一一次：downloaded=0、474/474、coverage=`93.44/88.92/99.15`、runner exit0/stdout665356B/stderr0。
+- runner parser 识别 Node 24 字面量 `all files`；固定 rows=`18/15/3/18/17/20/13/15/5/32/5/17`，source=17/17、PC=8/8、TG=18/18。四 artifact length/SHA/blob/scan 与 runner JCS/section equality 全部由主控复算通过。
+- 独立 L3=`a7d9471b370165d822cfd698765f317503ec4681`，唯一父=candidate、精确两文件；裁决 `PASS / 100`、12/12 hard gates、P0/P1/P2=`0/0/3`。scorecard raw/JCS=`sha256:8f54f610b6b49a11fb40276c0b3dca490fbcd9e66fdee8d17bfc6fad5bef032d` / `sha256:377c0f42f8c8bf3656e9825a5d426d95c24498f5590574f25b02df93969d40ed`。
+- 已披露的 post-run scanner 修订只发生在临时候选封装器，未改变 frozen runner SHA=`sha256:726db7e80aa2d07503b423a98b515c66a4077aad813c8072aff01d1600d2ef69`，未重跑 install/check/runner；独立 L3 接受该事件不影响 freshness。
+- immutable PASS Result digest=`sha256:fd5e6c09a20ad35c25261bf0b0ace81da14767576ebb84361701cb01594c881b`；registry=`gate-passed-awaiting-signoff-package-review`、pending=0，formal 未移动。V1 用户会签尚未请求或发生，V1/P5 未完成，V2 未授权。

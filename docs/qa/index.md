@@ -1,6 +1,6 @@
 # QA
 
-当前阶段为 `P5 / V1` 持续落地。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`ca0c5303805e66df0280f1c69b8b6a0db0ce1b84`。M1.2 已正式完成；V1 累计验收入口与 Generation 1 计划独立评审均 `PASS / 100`，首次 packet/control CAS 已完成。V1 attempt 1=`dispatch-pending`，尚未授权 claim/fence、派发或运行验收。V1、P5 仍未完成，V2 未授权；旧代际结果仅作墓碑历史。
+当前阶段为 `P5 / V1` 持续落地。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`07fb99f61202972a0d04ec30afab2bc883a8c42d`。M1.2 已正式完成；V1 attempt 5 累计验收与独立 L3 均 `PASS / 100`，immutable Result 已完成。当前等待会签报告独立终审与用户针对精确 Result 的明确会签；V1、P5 仍未完成，V2 未授权，旧 attempt 仅作墓碑历史。
 
 ## 当前质量状态
 
@@ -23,5 +23,6 @@
 - S1.5 formal promotion：expected-old=F14 CAS 成功，formal=F15 `7169e9b019fe2213ca76babb4122a84760bdf112`；FV/AV=`PASS / 100`，444/444。
 - S1.6 formal promotion：expected-old=F15 CAS 成功，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`；FV/AV=`PASS / 100`，474/474，Q3=100%、Q11=20/20。
 - [M1.2 attempt 1 累计验收与用户会签结果](./p5-v1-m1.2-acceptance-attempt-1-2026-08-24.md)：`PASS / 100`，I/X/P/Profile=`25/25/25/25`，P0/P1/P2=`0/0/0`；终审与用户会签 CAS 均已完成，M1.2 正式完成。
+- [V1 cumulative acceptance attempt 5 与用户会签候选](./p5-v1-cumulative-acceptance-attempt-5-2026-08-24.md)：`PASS / 100`，474/474、12 sections、17/17 source、PC=8/8、TG=18/18；当前仅为会签候选，用户尚未会签。
 
 后续所有验证、阻塞、复测证据和质量缺口记录在本目录或 `.codex/verification-report.md`；当前路线与门禁以 `PROJECT_ROUTE_LOCK.md` 为准。

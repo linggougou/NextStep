@@ -2395,3 +2395,12 @@
 - 裁决 `PASS / 99`、12/12 hard gates、P0/P1/P2=`0/0/0`、required fixes=0；`all files` parser 区块/零多匹配/抗伪造、直接进程退出码、single-run、fresh clone/ref、四 artifact、fixed rows/source/PC/TG、串行控制链、六段会签和回收保护均被计划机械冻结。
 - scorecard raw/JCS=`sha256:e97278034334cc297f2b40f83aab2a37afe1000375a8ed395aa28b158bdc85dd` / `sha256:7a1be4118bf5387c942f1696874afcde2dcad567b51f2ef2df6708724ffdce7f`；verdict raw=`sha256:4339ee18ef6d52c25fc7c07be9f7d53aff3a9a16d8b1f0ed69ef732c31cd575d`。
 - 当前只允许 A5 packet expected-old control CAS；不得合并 fence、ACK、执行、PASS Result 或会签。
+
+## 2026-08-24 V1 Attempt 5 正式累计验收
+
+- 身份：candidate=`3f0b394fc610b7e9259e1f593fc86468588aac49`/tree=`584dfaba6f2fad06196038f66386a0ebcfee1aee`/parent=F16；independent L3=`a7d9471b370165d822cfd698765f317503ec4681`/tree=`affa15258034d935d1ec48fdc05ff59e177e8464`/parent=candidate，分别为 exact-3/exact-2 写集。
+- fresh 执行：install exit0/downloaded0；check exit0、474/474、0 fail/skip/cancel/todo；coverage Lines/Branches/Functions=`93.44/88.92/99.15`；唯一 runner exit0、stdout=665356B、stderr=0，parser label=`all files`。
+- 证据复算：version/scorecard 为 canonical JCS；四 artifact 的 raw length/SHA/blob/scan 全匹配；runner output canonical JCS 与 candidate sections 完全相等，section digest=`sha256:5d7856d5a4cad08490c4e60a4f5c141a1e99ad21ba304fadc43ca020ab8e37a2`。
+- closure：固定 rows=`18/15/3/18/17/20/13/15/5/32/5/17`；17/17 source projections、40 个 PC/TG evidence refs、PC-01..08 与精确 18 项 TG/Q11 join 全部通过。
+- 裁决：独立 L3 `PASS / 100`，12/12 hard gates、P0/P1/P2=`0/0/3`、required fixes=0。Result control=`07fb99f61202972a0d04ec30afab2bc883a8c42d`，唯一父 ACK=`502479091b5ed9d8d385d92bc4e0aefb0d6f3126`；Result digest=`sha256:fd5e6c09a20ad35c25261bf0b0ace81da14767576ebb84361701cb01594c881b`。
+- 边界：formal=F16、pending=0；当前只生成会签报告候选并进行独立终审，不得以 broad autonomy 替代用户针对该精确 Result 的新语义会签，也不得提前完成 V1/P5 或进入 V2。
