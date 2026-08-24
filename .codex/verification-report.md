@@ -2349,3 +2349,10 @@
 - scorecard raw/JCS=`sha256:47b3b9c334e6c4b7d2e51babc40a44ad828f9ec8a74c28e067a7117484655977` / `sha256:74a766b4f326c6207eb5c4881e7c9aed2b78e8279e26560e3e0212ff7285b330`；verdict raw=`sha256:14781576c0e2de447b040dcbd0519cad22de7e3d9d5f8dd5e635c5364024690c`。
 - 裁决 `REVISE / 71`，P0/P1/P2=`0/2/0`；剩余缺口为成功路径边界仍不够细，以及回收前缺命名分支可达/worktree+index clean/可恢复验证。
 - 再修订本已把成功路径拆为六段独立边界，并新增 show-ref/status/fsck/cat-file/废纸篓验证；第三轮独立复审 PASS 前继续禁止 packet。
+
+## 2026-08-24 V1 Attempt 3 计划第三轮独立终审
+
+- review commit=`33e5ff3a524d81bed8e9b068d2e43d18bbbf94a0`，tree=`46a91184f2e366ab8fee99f70929062bce7f4885`，唯一 parent=`6c3c68593571ec8cf5bdea9128385c757dccdd65`；相对 subject 精确新增 scorecard/verdict 两文件，worktree/index clean，`git diff --check` 通过。
+- 裁决 `PASS / 100`，P0/P1/P2=`0/0/0`；所有计划硬门均有机械证据且无 required fixes。
+- scorecard raw/JCS=`sha256:6db00f00111b4530c6185deabe923e986c79ab1e592901f8c8ecc12d43efb688` / `sha256:7e85d95eb98ce876d50dfa5da2f4ed45fe97af25f6ee670407a80c8c495f3106`，verdict raw=`sha256:261d23236fad96aab6c95f811bfcb427ce3773e5817c135c54ed8c1d9fbe6e10`；主控独立复算完全匹配。
+- formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control=`a2e0cad094a5600c1309acb51b3a28069dfd08c2` 未移动；主工作区仅保留受保护用户未跟踪文件。允许进入 A3 packet CAS，仍禁止把 packet、claim/fence 与 ACK 合并。

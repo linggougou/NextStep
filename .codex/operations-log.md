@@ -2413,3 +2413,10 @@
 - 已通过：exact F16/A2 nonpass 入口、PC/TG closure 与 18 项集合、fresh replay/四 artifact/固定 rows、fence115 父链、executor/reviewer 独立性和用户文件 no-read/no-modify/no-cleanup。
 - 剩余 P1：成功链仍需拆分为 Result、会签报告终审、signoff request、精确用户 ACK、V1 完成、V2 entry 六段；回收仍需命名分支可达、worktree/index clean、fsck/cat-file 与废纸篓可恢复的机械断言。
 - 计划已按上述精确门禁再修订。仍不得生成 A3 packet，必须进行第三次 fresh 独立复审。
+
+## 2026-08-24 V1 attempt 3 计划第三轮终审通过
+
+- subject=`6c3c68593571ec8cf5bdea9128385c757dccdd65`；fresh 独立 review=`33e5ff3a524d81bed8e9b068d2e43d18bbbf94a0`，tree=`46a91184f2e366ab8fee99f70929062bce7f4885`，唯一父精确等于 subject，写集仅两份 review 文件，worktree/index clean。
+- 终审裁决 `PASS / 100`，P0/P1/P2=`0/0/0`；exact F16、A2 nonpass 入口、PC-01..08、18 项 TG、fresh replay/四 artifact、固定 rows、fence115 串行父链、executor/reviewer 独立、六段成功边界与可恢复回收断言全部通过。
+- 主控复算 scorecard raw/JCS=`sha256:6db00f00111b4530c6185deabe923e986c79ab1e592901f8c8ecc12d43efb688` / `sha256:7e85d95eb98ce876d50dfa5da2f4ed45fe97af25f6ee670407a80c8c495f3106`，verdict raw=`sha256:261d23236fad96aab6c95f811bfcb427ce3773e5817c135c54ed8c1d9fbe6e10`，均匹配 reviewer 报告。
+- review 分支保持命名可达；worktree 在 clean、fsck/cat-file 通过后回收。当前仅放行独立 A3 packet CAS；packet 不得与 claim/fence 或 ACK 合并。
