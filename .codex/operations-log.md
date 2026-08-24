@@ -2428,3 +2428,10 @@
 - 独立 L3=`2b892452f052dc4e608df4491707e5f831f77a2c`，唯一父 candidate、精确两文件；裁决 `REVISE / 52`、P0/P1/P2=`0/1/3`，确认四 artifact 总解码 84223B，length/SHA/blob/scan 全匹配，失败日志真实。
 - 主控非通过 Result control=`6145820b9c90113723584385dffc5f4bb59f111d`，直接父 ACK；Result digest=`sha256:358a98e78deffa4c5d87e7dcb17186cb9e5f4a4f0773f7df33b187fec2246dec`。A3 状态=`revision-required-after-audit`，minimum valid attempt=4，active V1 host 已清零，formal 未移动。
 - A4 只允许修复新 no-local clone 的 local-only formal/control ref 镜像；不得修改业务实现或放宽任何 V1 门禁。
+
+## 2026-08-24 V1 attempt 4 计划首轮评审与修订
+
+- 独立 review=`d4f4ca1802c88675b9c8ff896b3d17ab670874bf`，唯一父=`3720bc290fa6c97762d6c257642e94b35751a677`，精确两文件；裁决 `REVISE / 76`、P0/P1/P2=`0/2/0`。
+- P1-1：clone 在 ACK 前创建，计划缺少把随后生成的 exact ACK commit 对象导入 clone 的机械步骤；对象不可读时不能安全 `update-ref`。P1-2：路线锁最小闭环和阶段缺口仍残留 A2/A3 旧 control/状态。
+- 主控用一次性 no-local probe 验证 `git fetch --no-write-fetch-head <repo> <exact-control-oid>` 可在不创建目标 ref 的前提下导入原本不可读的 control commit，对象随后可由 `cat-file -e` 读取；probe 已移入废纸篓，不作为 A4 fresh 证据。
+- 计划已增加 object-only fetch、ref 清单/FETCH_HEAD/shared ref 前后断言，再允许创建两个 clone-local refs；路线锁两处旧状态已统一到 control 6145820/A4。fresh 复审 PASS 前仍禁止 A4 packet。

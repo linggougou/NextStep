@@ -20,17 +20,27 @@ attempt 4 只修复 A3 的 `RF-P1-03-NO-LOCAL-REF-MIRROR`。不得修改业务�
 2. 主控以 packet control 为 expected-old 单独领取 next fence，预期为 `116`。
 3. claim CAS 成功后才创建唯一新的 `git clone --no-local` 和唯一 executor host；先只核验 exact F16、分支、clean、packet/claim/expiry 与工具链。
 4. readiness 通过后，主控单独创建 ACK CAS；ACK 必须绑定 fence116、唯一 host 和 clone 路径。
-5. ACK CAS 成功后，主控把精确 ACK control OID 发送给 executor。executor 仅在该 attempt 专属 clone 内执行：
+5. ACK CAS 成功后，主控把精确 ACK control OID 发送给 executor。由于 clone 在 ACK 前创建，必须先把该 commit 对象按精确 OID 导入 clone 的 object database，且不得隐式或显式写任何 ref：
+
+   ```text
+   git fetch --no-write-fetch-head <shared-repository-absolute-path> <exact-attempt-4-ack-control-oid>
+   git cat-file -e <exact-attempt-4-ack-control-oid>^{commit}
+   ```
+
+   fetch 前后必须对 clone 内完整 `for-each-ref` 清单做 JCS/摘要比较并保持相等，`.git/FETCH_HEAD` 不得由此命令创建或变化；主控在 fetch 前后分别确认 shared `refs/nextstep/control` 仍精确等于 ACK OID、shared formal 仍为 F16。任何对象缺失、ref 清单变化、FETCH_HEAD 变化或 shared ref 漂移都立即 `BLOCKED`。
+6. exact ACK 对象可读且 object-only import 机械通过后，executor 才可仅在该 attempt 专属 clone 内执行：
 
    ```text
    git update-ref refs/nextstep/formal ea04b57de83d6c548dcb1629b1f61832db8375ad
    git update-ref refs/nextstep/control <exact-attempt-4-ack-control-oid>
    ```
 
-6. executor 必须机械确认两个 local-only ref 的 OID、`HEAD=F16`、index/worktree clean；该动作不得触碰共享仓库的同名 refs，不得通过 fetch/push 更新 shared control/formal，也不得进入提交写集。
-7. 只有上述 post-ACK preflight 全部通过，才允许本 attempt 的首次 fresh install/check/runner。
+7. executor 必须机械确认两个 local-only ref 的 OID、`HEAD=F16`、index/worktree clean；除这两个明确允许的 local-only ref 外，clone ref 清单不得变化。该动作不得触碰共享仓库的同名 refs，不得通过 fetch refspec/push 更新 shared control/formal，也不得进入提交写集。
+8. 只有上述 post-ACK object import 与 local ref preflight 全部通过，才允许本 attempt 的首次 fresh install/check/runner。
 
 clone 内 local-only refs 是测试环境身份镜像，不是 control CAS、formal promotion 或共享 ref 移动。任何 OID 不一致、shared ref 漂移或工作树变脏均立即 `REVISE/BLOCKED`。
+
+上述 object-only fetch 语义已用一次性 no-local probe 验证：目标 control commit 在 clone 初始不可读，执行 `fetch --no-write-fetch-head <repo> <exact-oid>` 后可由 `cat-file -e` 读取，且不需要创建目标 ref。probe 仅验证 Git 机制，不作为 A4 fresh 证据；A4 仍须在自己的新 clone 中重新完成全部 preflight。
 
 ## 3. Fresh 重放与证据
 

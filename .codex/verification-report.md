@@ -2364,3 +2364,10 @@
 - 独立 review=`2b892452f052dc4e608df4491707e5f831f77a2c`，raw/JCS=`sha256:83add2ac62f9fe499fa35dc8a60ea97ad112f72ed001851104dc4b4fc0bdf896` / `sha256:079c56296560c1d02ca1dd217eb6c50ab61fcd80c94c8414f518fd21d08c01b1`，verdict raw=`sha256:c0d214cf600202a9765a22203358ffb0aa21ce39025abcf67fb0e2be54aaa3f0`；结论 `REVISE / 52`、0/1/3。
 - 非通过 Result digest 主控复算=`sha256:358a98e78deffa4c5d87e7dcb17186cb9e5f4a4f0773f7df33b187fec2246dec`，control CAS=`6145820b9c90113723584385dffc5f4bb59f111d`，父=`cc378c94457a3bc34b89c84f568effa982cc9d23`；registry/checkpoint、pending=0、active V1 清空、formal F16 全部一致。
 - 根因是 clone 环境缺失 local custom refs，不是产品代码回归。A4 必须在 ACK 后、首个 fresh check 前建立 clone 内 local-only formal/control 镜像并验证；A3 不得重跑。
+
+## 2026-08-24 V1 Attempt 4 计划首轮独立评审
+
+- review=`d4f4ca1802c88675b9c8ff896b3d17ab670874bf`，tree=`e5c5286c7b793a58a80d578779356dbc8378f155`，唯一 parent=`3720bc290fa6c97762d6c257642e94b35751a677`，写集精确两文件、worktree clean。
+- scorecard raw/JCS=`sha256:a8853ea6f1e5ed238f5f47a508cac481bb6b8da4749dc20b0ef3a842c2e1463a` / `sha256:5f084f69bb49f78e079045011755ca1a266528e218519320fe927b955629b8c7`；verdict raw=`sha256:a47add565bd54a2c459fca3b6137e0fc18dc32a7ec469020e3c762714c8d6a39`。
+- 裁决 `REVISE / 76`、0/2/0；阻断为 ACK 对象可达机制缺失与路线锁两处旧状态。一次性 probe 已实证 exact-OID `fetch --no-write-fetch-head` 可只导入对象；修订计划进一步冻结 ref-list/FETCH_HEAD/shared-ref 前后断言。
+- 当前 formal/control 仍为 F16/`6145820b9c90113723584385dffc5f4bb59f111d`；修订计划必须 fresh 独立复审，PASS 前不得生成 A4 packet。
