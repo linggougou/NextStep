@@ -2382,3 +2382,13 @@
 - 实时最高 fence=113；若创建 claim 前无并发漂移，attempt 2 预期使用 fence 114，但必须在 CAS 前按 `max(stored fence)+1` 重算。
 - 已新增 `.codex/exec-plan-v1-cumulative-acceptance-attempt-2.md`，冻结四类内嵌原始证据、3×6 continuity、Q/write/negative/rollback/fail-closed/source 行数、执行者自检非独立和体积停止条件。
 - 当前仅为计划候选；必须先完成独立 plan review 与 attempt 1 非通过 Result，才允许生成 attempt 2 packet。
+
+## 2026-08-24 V1 attempt 1/2 非通过终结与 attempt 3 计划
+
+- attempt 1 非通过 Result CAS=`13c10d887ca6fc4f33c6d95c577ab98e98b57b8e`，`REVISE / 70`；A2 计划独立评审=`2eda3b09d01cfec02d956f9f6c6915964e99cc04`，`PASS / 100`。
+- attempt 2 控制链依次为 packet `0c01a76...`、claim/fence114 `4a502c8...`、ACK `5242533...`；唯一 no-local host=`codex-subagent:/root/v1_acceptance_a2_f114`。
+- A2 fresh 证据：offline downloaded=0、474/474、coverage=93.41/88.84/99.15，四类原始内容与固定 12 section 全部可重放；candidate=`e6e2e05...`。
+- 独立 L3 review=`f585c6c...`，`REVISE / 80`，P0/P1/P2=`0/2/3`：PC-07/08 悬空引用 S1.7/S1.8；Q11 使用的 TG-08/09/10/13/14/18 缺顶层 evidence closure。
+- reviewer 越过两文件所有权生成 control draft `9aba06b...`，但没有移动 control ref。主控保留该 draft 分支供审计，纠正 checkpoint parent、review host identity 和 Result digest 后，以当前 ACK 为直接父形成 `a2e0cad...` 并执行 expected-old CAS；Result digest=`sha256:bcab36b863fe1d3418d0474866aa4501be847da9fba0bcd72a526bf324b8c518`。
+- A2 executor clone 已移入废纸篓，可恢复；候选、review 与越权 draft 分支均保留。formal 仍为 F16，pending=0，V1/P5 未完成，V2 未授权。
+- 已新增 attempt 3 计划候选，固定 PC-07/08 的真实 section 映射和 18 项 TG 并集闭环；下一步仅允许全新独立计划评审。

@@ -11,20 +11,21 @@
 - 项目根：`/Volumes/2T/CODE/A_Mine/NextStep`
 - 生命周期：`S5 / P5 产品落地`
 - 路线：`P5-M0 -> V1 -> V2 -> V3 -> V4 -> Final Acceptance`
-- main：`7c66ce52b3e1537fe9c0b0d2bdad523a9bc2763d`
+- main：本次 attempt 3 计划与状态同步提交
 - formal F16：`ea04b57de83d6c548dcb1629b1f61832db8375ad`
-- control ACK：`2e4351c0a2ea8e28a043504c8b5bcc658bdf2e07`
-- V1 验收提交：`933a72dc97a0bb38a65326333dc3d26593d4814e`
-- V1 验收分支：`codex/v1-cumulative-acceptance-a1-f113-20260824`
+- control：`a2e0cad094a5600c1309acb51b3a28069dfd08c2`
+- V1 attempt 1/2：均已形成非通过 Result；最低有效 attempt 为 3
+- 最新验收候选/独立审查：`e6e2e05b80bfe6f7468acc11ea377790658467d7` / `f585c6cda64a6b767a2f41637f142f0e36b6691b`
 - 受保护用户改动：`.codex/context-summary-multica-migration-feasibility-2026-08-22.md`，不得读取、修改、提交、验收或清理。
 
 ## 已完成与当前缺口
 
 - S1.1-S1.6 已正式提升至 F16；M1.1、M1.2 已完成。
 - V1 entry review、Generation 1 计划评审、packet、claim/fence 113、唯一独立验收与 dispatch ACK 已完成。
-- V1 attempt 1 三文件自评为 `PASS / 100`；主控独立复跑 474/474，并重算 17/17 source refs 与 scorecard JCS。
-- 后续独立证据审计裁决 `REVISE`：fresh install/check/runner 只保存不可寻址摘要，Q/逐阶段连续性/20 项风险探针缺少行级机器证据，同一提交内 scorecard 不能替代 separate independent review。
-- 原始字节无法恢复，attempt 1 不得生成 PASS Result；必须保留 rejected evidence，创建 attempt 2、新 claim/fence，并在允许产物中直接持久化可重放证据。
+- V1 attempt 1 独立证据审计为 `REVISE / 70`：原始字节不可寻址、缺行级证据、执行者同提交自批；非通过 Result 已固化。
+- V1 attempt 2 已在 fence 114 fresh 重跑，四类原始内容、474/474、固定机器行和 17/17 source refs 均可重放；独立 L3 仍因 `PC-07/08 -> continuity:S1.7/S1.8` 悬空和 Q11 六个 TG 缺顶层闭环裁决 `REVISE / 80`。
+- attempt 2 非通过 Result 已由主控独立校正并 CAS 到 control；reviewer 越权生成的 control draft `9aba06b...` 未进入 ref，保留分支仅供审计。
+- 当前必须创建 attempt 3：fresh 重跑全部证据，并纠正 PC/TG 生成逻辑，旧 PASS 数值不得直接复用。
 - 尚未形成 immutable V1 Result、Result 独立审查、Result control CAS、版本会签闭环和 V1 正式完成状态。
 - 路线锁的状态镜像仍停在 packet-pending，必须在 V1 控制链闭合时同步，不能据旧镜像跳过当前门禁。
 
@@ -44,6 +45,6 @@
 
 ## 当前最小可验收闭环
 
-`attempt 1 REVISE 终结 -> attempt 2 packet/claim/fence/ACK -> 可重放累计验收 -> 全新独立审查 -> immutable PASS Result -> expected-old control CAS -> 会签包/终审 -> V1 状态同步`。
+`attempt 3 计划独立评审 -> packet/claim/fence/ACK -> fresh 可重放累计验收 -> 全新独立审查 -> immutable PASS Result -> expected-old control CAS -> 会签包/终审 -> V1 状态同步`。
 
 在该闭环通过前不得实施 V2；通过后按 P3/P5 真源冻结 V2 的精确 PC/里程碑/非目标和并行写集。

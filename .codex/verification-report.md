@@ -2318,3 +2318,12 @@
 - 未通过：Q1/Q2/Q3/Q6/Q11、三项目 S1.1-S1.6 连续性和 20 项 risk probes 缺逐项机器行；汇总值不能替代计划冻结的 evidence slots。
 - 职责边界：attempt 1 scorecard 与验收产物同一生成提交，不构成 separate independent review。
 - 审计结论：`REVISE`，存在 3 个 P1 evidence defects。不得生成 immutable PASS Result、不得进入会签或 V2。最小修复是以 attempt 2、新 claim/fence 在 exact F16 上重新执行并把原始内容和行级证据持久化，再交由全新 reviewer 独立复核。
+
+## 2026-08-24 V1 Attempt 2 可重放证据与独立闭环审查
+
+- 控制父链：A1 nonpass Result `13c10d8...` → A2 packet `0c01a76...` → claim/fence114 `4a502c8...` → ACK `5242533...`，全部单父 expected-old CAS；formal 始终为 F16。
+- 候选身份：`e6e2e05b80bfe6f7468acc11ea377790658467d7`，唯一父为 F16，tree=`e3cfbb4...`，相对 F16 精确三文件。
+- 机械复算通过：四 artifact 共 728172 raw bytes，base64/长度/raw+encoded SHA/blob OID/敏感扫描均匹配；runner output 为 JCS 且与报告 sections 相等；固定 section 行数 `18/15/3/18/17/20/13/15/5/32/5/17`、IDs、summary 与 rows digest 全部匹配；474/474 和 coverage 93.41/88.84/99.15 成立。
+- 独立 L3=`f585c6c...`，直接父为 candidate、精确两文件，裁决 `REVISE / 80`：`PC-07 -> S1.7`、`PC-08 -> S1.8` 为悬空引用；Q11 真实绑定 TG-08/09/10/13/14/18，但顶层 TG evidence 未闭合。
+- reviewer 额外生成的 `9aba06b...` 属越权 control draft，ref 从未指向它。主控独立重算 candidate/review raw+JCS、复现两个 P1、纠正 control parent 与真实 reviewer host 后，形成直接父为 ACK 的非通过 Result commit=`a2e0cad094a5600c1309acb51b3a28069dfd08c2`。
+- Result 排除顶层 `result_digest` 后为 `sha256:bcab36b863fe1d3418d0474866aa4501be847da9fba0bcd72a526bf324b8c518`；registry attempt2=`revision-required-after-audit`、minimum valid attempt=3、pending=0、active V1 host/group 清零。不得创建 PASS Result、会签或进入 V2。

@@ -31,7 +31,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - Change Intake、恢复、Final Acceptance、交付和宿主归档边界通过故障注入和反扫验证。
   - V1..V4 与 Final Acceptance 分别完成本地验证、适用验收和用户会签。
 - 阶段出口：V1..V4 和 Final Acceptance 全部通过；正式 OID、交付清单、风险、回滚和 PC-20.AR 状态可追溯，并由用户明确确认 P5 产品落地完成。
-- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；S1.2/F12、S1.3/F13、S1.4/F14、S1.5/F15、S1.6/F16 已正式提升，M1.1 attempt 2 与 M1.2 attempt 1 用户会签均已完成。V1 attempt 1 已完成 packet、claim/fence 113 与 ACK，control=`2e4351c0a2ea8e28a043504c8b5bcc658bdf2e07`；验收提交 `933a72dc...` 的身份、17/17 source refs 和集合证据匹配，但独立证据审计因 fresh install/check/runner 原始字节未持久化、Q/连续性/风险仅有汇总而裁决 `REVISE`。当前闭环改为终结 attempt 1，并以 attempt 2、新 claim/fence 和可重放行级证据重新验收；formal 保持 F16。
+- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；S1.2/F12、S1.3/F13、S1.4/F14、S1.5/F15、S1.6/F16 已正式提升，M1.1 attempt 2 与 M1.2 attempt 1 用户会签均已完成。V1 attempt 1 因原始执行字节不可寻址和独立性不足以 `REVISE / 70` 终结；attempt 2 已在 fence 114 形成完整可重放证据，但独立 L3 因 PC-07/08 悬空 stage ref 与六个 Q11 TG 缺顶层闭环裁决 `REVISE / 80`。两次非通过 Result 均已固化，当前 control=`a2e0cad094a5600c1309acb51b3a28069dfd08c2`；下一闭环是 attempt 3 重新生成 PC/TG 闭环、fresh 执行和全新独立审查，formal 保持 F16。
 - 明确非目标：
   - 不恢复 NextStep Web/UI 候选分支。
   - 不引入常驻服务、数据库、远程控制面或通用多 Agent 编排平台。
@@ -43,7 +43,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - 不改变已会签产品、交互、S4/P3/P4 或验收边界；需要改变时先进入 Change Request。
 - 禁止提前进入的阶段：S7 最终发布判断和 S8 交付归档；V1..V4 也不得跳过前序门禁并行宣告完成。
 - 允许进入下一阶段的条件：P5 Final Acceptance 通过本地可重复验证、独立验收和用户会签；若实现要求改变已会签产品、交互、技术、版本范围、正式提升或验收边界，必须先完成 Change Request。
-- 当前状态：进行中；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`2e4351c0a2ea8e28a043504c8b5bcc658bdf2e07`。V1 attempt 1 registry=`running`、pending=0、outbox=`closed`，claim/fence=`claim-v1-g4-a1-ixp-profile-f113-20260824`/`113`、host 与 ACK 已固定；独立证据审计为 `REVISE`，immutable Result 尚不存在。下一步只允许按重试协议终结 attempt 1 并创建 attempt 2，不得登记 PASS Result、会签、声明 V1/P5 完成或进入 V2。
+- 当前状态：进行中；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`a2e0cad094a5600c1309acb51b3a28069dfd08c2`。V1 attempt 1/2 registry 均为 `revision-required-after-audit`，pending=0，active V1 host 已清零；attempt 2 Result digest=`sha256:bcab36b863fe1d3418d0474866aa4501be847da9fba0bcd72a526bf324b8c518`。下一步只允许独立评审 attempt 3 证据修复计划，再按 packet/claim/host/ACK 严格父链重跑；不得登记 PASS Result、会签、声明 V1/P5 完成或进入 V2。
 
 ## 2.1 里程碑路线图
 
@@ -109,7 +109,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
 
 - Backlog：待建立。
 - Change Request：`docs/change-requests/index.md`
-- 当前阶段缺口：M1.2 attempt 1 已正式完成；V1 attempt 1 的 packet/claim/fence/ACK 和首次三文件验收提交均已形成，但 fresh 原始证据不可重放，独立审计 `REVISE`。必须保留 attempt 1 rejected evidence，按控制协议创建 attempt 2，并在同一 exact F16 上持久化 install/check/runner 原始内容、逐阶段连续链、Q 指标与风险探针行，再经过全新独立审查、immutable Result、报告和用户会签。V1/P5 未完成，不得直接进入 V2。
+- 当前阶段缺口：V1 attempt 1/2 已分别以证据不可重放和 PC/TG 引用闭环缺陷形成非通过 Result。attempt 3 必须在 exact F16 上 fresh 重跑并保留四类原始内容与固定机器行，同时将 PC-07/08 映射到真实 write/architecture/risk/rollback section，并使顶层 TG evidence 精确覆盖 packet TG 与 Q11 实际绑定的 18 项并集。之后仍需全新独立审查、immutable PASS Result、报告和用户会签；V1/P5 未完成，不得直接进入 V2。
 - 后续阶段需求：V1..V4 和 Final Acceptance 按活动计划顺序推进；P4 第 12 节“运行集成验收”只允许落实为集成诊断预检，正式 I/X/P 四态结论仍由独立门禁和最终复验链产生。若未来恢复 `Web / UI` 分支，需重新确认其与当前 Skill 主路线的关系。
 - 已拒绝需求：无。
 
