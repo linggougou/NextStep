@@ -1,5 +1,14 @@
 # Verification Report
 
+## 2026-08-26 CR-006 generation 5 advance/ack control CAS 验证
+
+- 授权身份：固定 candidate=`82efe16f978b0269b7034a856643b7fea24abda0`、独立 review=`8e77ccec90c98445c5cbfd6d435f72fb5c24b4b0`、expected-old control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`、formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`；用户只授权两个分离 CAS。
+- preflight：candidate tree=`068f6da861ed181eca7864c1ae190a4a26fde60c`；review 是 candidate 的唯一子提交、L3=`PASS / 100`、P0/P1/P2=`0/0/0`；control 的 `plan_generation=4`、unconfirmed tombstone=0、pending dispatch=0、活动任务=0。
+- generation-advance：control=`11cfbf71dfb4b8cd691588ea12a19bb32f759d9c`，唯一父=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`；写集仅 `checkpoint.json`、`registry.json`、`messages/msg-generation-advance-p5-g5-20260826.json`。checkpoint/registry 进入 generation 5，SG-1/SG-2/SG-3 tombstone 尚未确认。
+- generation-ack：control=`83ef8b4361c96641e54d85acda6134a1cc75420e`，唯一父=`11cfbf71dfb4b8cd691588ea12a19bb32f759d9c`；写集仅 `checkpoint.json`、`registry.json`、`messages/msg-generation-ack-p5-g5-20260826.json`。tombstone 已确认，unconfirmed/pending 均为 0。
+- 不变量：formal 未移动；V1 `formally-completed` 与 Result digest 保留；registry 的 81 条历史任务在 expected-old 与最终 control 间逐字节等价，活动任务为 0；反扫未发现 packet、claim/fence、dispatch、gate request、Result 或 promotion 新对象。
+- 结论：两个 expected-old CAS 均成功，父链为 `6d51200 -> 11cfbf7 -> 83ef8b4`，`plan_generation=5`。当前唯一下一入口是请求 SG-1 generation 5 attempt 1 packet 的精确 control 授权；本轮未创建 SG-1/V2 packet、未编码、未移动 formal、未声明 P5 完成。
+
 ## 2026-08-26 CR-006 generation 5 replacement 规划验证
 
 - 验证范围：固定 replacement `d8d2d4ffec068186dad0dcf24e7193734bae3cef` 的真实写集共 11 个文档/留痕路径：context summary、operations/verification、route lock、PLANS、PRODUCT_SENSE、CR-006/index、技术设计、P5 主计划和护栏活动计划。

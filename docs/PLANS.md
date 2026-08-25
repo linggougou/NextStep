@@ -4,8 +4,8 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：CR-006 generation 5 control 授权门禁；V2 产品 packet 暂停在入口评估通过状态
-- 当前状态：formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`；control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`；`plan_generation=4`。generation 5 replacement=`PASS / 100`，规划门禁已通过；当前只允许请求并等待 generation-advance/ack 精确 control 授权。generation 5 ACK 前不得创建 SG/V2 packet、claim/fence、dispatch 或代码。
+- 当前活动里程碑：CR-006 SG-1 generation 5 packet 授权门禁；V2 产品 packet 暂停在入口评估通过状态
+- 当前状态：formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`；control=`83ef8b4361c96641e54d85acda6134a1cc75420e`；`plan_generation=5`。generation 5 replacement=`PASS / 100`，generation-advance/ack 已按两个分离单父 expected-old CAS 完成；当前只允许请求 SG-1 generation 5 attempt 1 packet 的精确 control 授权。SG-1 packet、claim/fence、dispatch、编码与 V2 packet 均未授权。
 
 ## 当前活动计划
 
@@ -28,7 +28,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。V2 入口独立评估已 `PASS / 100`。CR-006 generation 5 replacement 已独立 `PASS / 100`；当前等待 generation-advance/ack 精确 control 授权，V2 产品 packet 保持暂停，P5 尚未完成。
+P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。V2 入口独立评估已 `PASS / 100`。CR-006 generation 5 replacement 已独立 `PASS / 100`，generation-advance/ack 已完成；当前等待 SG-1 generation 5 attempt 1 packet 的精确 control 授权，V2 产品 packet 保持暂停，P5 尚未完成。
 
 实施顺序保持 P3 已会签结构：
 

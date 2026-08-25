@@ -1,6 +1,6 @@
 # QA
 
-当前阶段为 `P5 / V2 pre-packet planning gate`。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`。V1 已 formally-completed；V2 入口独立评估 `5be7ff254f898cee7887df9a15b48b8d21f2c1ed`=`PASS / 100`。当前只允许准备 V2 规划或首个 packet 前的后续门禁；P5 未完成，V2 packet、claim/fence、dispatch 与编码未授权，旧 V1 attempt 仅作墓碑历史。
+当前阶段为 `P5 / CR-006 SG-1 generation 5 packet authorization gate`。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`83ef8b4361c96641e54d85acda6134a1cc75420e`，`plan_generation=5`。V1 已 formally-completed；V2 入口独立评估 `5be7ff254f898cee7887df9a15b48b8d21f2c1ed`=`PASS / 100`。generation-advance/ack 已完成；当前只允许请求 SG-1 packet 的精确授权。P5 未完成，SG/V2 packet、claim/fence、dispatch 与编码未授权，旧 V1 attempt 仅作墓碑历史。
 
 ## 当前质量状态
 

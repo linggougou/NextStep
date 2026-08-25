@@ -1,10 +1,10 @@
 # P5 可承受性护栏实施计划
 
-- 状态：planning-gate-passed-awaiting-generation5-control-authorization
+- 状态：generation5-acknowledged-awaiting-sg1-packet-authorization
 - 变更入口：[CR-006](../../change-requests/006-scalability-guardrails.md)
 - 生命周期阶段：S5 开发落地
 - 路线位置：P5 跨版本基础护栏；不新增版本，不改变 V2 首个产品 packet 前门禁
-- 当前授权：用户已批准三个方向及其实施；generation 5 replacement 已独立 `PASS / 100`。当前等待单独的 `plan_generation 4 -> 5` generation-advance/ack 精确 control 授权，generation 5 ACK 前不得生成 SG-1 packet
+- 当前授权：用户已批准三个方向及其实施；generation 5 replacement 已独立 `PASS / 100`，`plan_generation 4 -> 5` generation-advance/ack 已按两个分离单父 expected-old CAS 完成。当前等待 SG-1 generation 5 attempt 1 packet 的单独精确 control 授权；packet、claim/fence、dispatch 与编码均未授权
 
 ## 1. 阶段目标
 

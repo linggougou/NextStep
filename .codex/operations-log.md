@@ -2559,3 +2559,13 @@
 - P1 窄修复：只更新 verification report 的真实写集/验证范围、CR-006 的路线锁同步措辞和本日志；不改 generation 5 规则、SG 范围、formal/control 或代码。该修订必须重新接受纯只读 L3，不得直接沿用 attempt 1 的实质硬门通过结论作放行。
 - generation 5 replacement L3 attempt 2：固定 candidate=`82efe16f978b0269b7034a856643b7fea24abda0`、tree=`068f6da861ed181eca7864c1ae190a4a26fde60c`；独立 reviewer 对上轮唯一证据 P1 窄修复及全部代际/授权/SG 硬门给出 `PASS / 100`，P0/P1/P2=`0/0/0`，`required_fixes=[]`。评审 exact-2 固化提交=`8e77ccec90c98445c5cbfd6d435f72fb5c24b4b0`。
 - 当前停点：规划门禁已通过；下一动作仅为请求用户精确授权 generation-advance/ack 两个分离 CAS。未授权前不写 control，不创建 SG-1 packet、claim/fence、dispatch 或代码。
+
+## 2026-08-26 CR-006 generation 5 advance/ack control CAS
+
+- 用户精确授权边界：candidate=`82efe16f978b0269b7034a856643b7fea24abda0`、独立 review=`8e77ccec90c98445c5cbfd6d435f72fb5c24b4b0`、expected-old control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`；允许 `plan_generation 4 -> 5` 的 generation-advance 与 generation-ack 两个分离单父 expected-old CAS，formal 必须保持 `ea04b57de83d6c548dcb1629b1f61832db8375ad`。
+- 串行原因：两个 CAS 共享严格父链和同一 control ref，按全局 Agent Team 规则由主控单写者串行执行；不把 control 写入分派给并行 Agent。
+- 实时 preflight：candidate tree=`068f6da861ed181eca7864c1ae190a4a26fde60c`；review 唯一父为 candidate、exact-2、L3=`PASS / 100`、P0/P1/P2=`0/0/0`；formal/control、`plan_generation=4`、pending=0、活动任务=0 均与授权一致，受保护未跟踪 Multica 摘要保持不读不改。
+- advance CAS：创建单父 control `11cfbf71dfb4b8cd691588ea12a19bb32f759d9c`，expected-old=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`；exact-3 写集只更新 checkpoint/registry 并新增 `msg-generation-advance-p5-g5-20260826`。SG-1/SG-2/SG-3 tombstone 为 unconfirmed，未创建任务或 packet。
+- ack CAS：创建单父 control `83ef8b4361c96641e54d85acda6134a1cc75420e`，expected-old=`11cfbf71dfb4b8cd691588ea12a19bb32f759d9c`；exact-3 写集只确认 tombstone 并新增 `msg-generation-ack-p5-g5-20260826`。unconfirmed/pending 均为 0。
+- 完成验证：父链精确为 `6d51200 -> 11cfbf7 -> 83ef8b4`；formal 未移动，V1 formally-completed 保持，registry 81 条历史任务逐字节未变，活动任务=0，越界 packet/claim/fence/dispatch/result/promotion 对象=0。
+- 当前停点：control=`83ef8b4361c96641e54d85acda6134a1cc75420e`、`plan_generation=5`。只允许请求 SG-1 generation 5 attempt 1 packet 的新精确 control 授权；不自动创建 packet、claim/fence、dispatch 或代码，V2 packet、formal 移动与 P5 完成仍未授权。
