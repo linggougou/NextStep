@@ -1,10 +1,10 @@
 # P5 可承受性护栏实施计划
 
-- 状态：generation5-acknowledged-awaiting-sg1-packet-authorization
+- 状态：sg1-packet-prepared-awaiting-claim-fence-authorization
 - 变更入口：[CR-006](../../change-requests/006-scalability-guardrails.md)
 - 生命周期阶段：S5 开发落地
 - 路线位置：P5 跨版本基础护栏；不新增版本，不改变 V2 首个产品 packet 前门禁
-- 当前授权：用户已批准三个方向及其实施；generation 5 replacement 已独立 `PASS / 100`，`plan_generation 4 -> 5` generation-advance/ack 已按两个分离单父 expected-old CAS 完成。当前等待 SG-1 generation 5 attempt 1 packet 的单独精确 control 授权；packet、claim/fence、dispatch 与编码均未授权
+- 当前授权：用户已批准三个方向及其实施；generation 5 replacement、advance/ack 与 SG-1 generation 5 attempt 1 packet CAS 已完成。packet=`12ab4aaffda6ee44853d4014230b9a85c1ad8944`，digest=`sha256:04d13a57ce82419534255d126184dc35d6cfce4e35b4c878f0200bf43302be52`。当前等待 claim/fence 的单独精确 control 授权；dispatch、编码与独立验收均未授权
 
 ## 1. 阶段目标
 

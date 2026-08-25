@@ -2569,3 +2569,12 @@
 - ack CAS：创建单父 control `83ef8b4361c96641e54d85acda6134a1cc75420e`，expected-old=`11cfbf71dfb4b8cd691588ea12a19bb32f759d9c`；exact-3 写集只确认 tombstone 并新增 `msg-generation-ack-p5-g5-20260826`。unconfirmed/pending 均为 0。
 - 完成验证：父链精确为 `6d51200 -> 11cfbf7 -> 83ef8b4`；formal 未移动，V1 formally-completed 保持，registry 81 条历史任务逐字节未变，活动任务=0，越界 packet/claim/fence/dispatch/result/promotion 对象=0。
 - 当前停点：control=`83ef8b4361c96641e54d85acda6134a1cc75420e`、`plan_generation=5`。只允许请求 SG-1 generation 5 attempt 1 packet 的新精确 control 授权；不自动创建 packet、claim/fence、dispatch 或代码，V2 packet、formal 移动与 P5 完成仍未授权。
+
+## 2026-08-26 CR-006 SG-1 generation 5 attempt 1 packet CAS
+
+- 用户精确授权：working parent=`a6b3a70a90eae6d26c94ca0cd20ac8cf9c85f95c`、formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、expected-old control=`83ef8b4361c96641e54d85acda6134a1cc75420e`；只允许创建 `P5/CR-006/SG-1` / `SG-1` / g5/a1 唯一 Execution Packet，并限定四类路径。
+- 实时 preflight：working parent tree=`8b2e7ea4331f117d2c2be92910d928f1b56fe6bd`，formal 是 working parent 祖先；generation 5 tombstone 已确认，SG-1/SG-2/SG-3 均不存在，pending/活动任务=0，受保护未跟踪 Multica 摘要保持不读不改。
+- 摘要：沿用项目 RFC8785 与 dedup projection 契约，packet digest=`sha256:04d13a57ce82419534255d126184dc35d6cfce4e35b4c878f0200bf43302be52`，dedup=`sha256:62e7a40290d06d58050d3fff80f9315fa246465f08dc5a5943381386ca8f45c7`；先用既有 S1.6 packet 验证计算公式，再对 temp 与 commit 对象两次复算匹配。
+- packet CAS：创建单父 control=`12ab4aaffda6ee44853d4014230b9a85c1ad8944`，唯一父/expected-old=`83ef8b4361c96641e54d85acda6134a1cc75420e`；写集 exact-3，只新增 packet 并更新 checkpoint/registry。
+- 状态：SG-1 唯一 registry 记录=`packet-prepared`、highest generation=5、attempt=1、host/outbox/claim 均为空；SG-2/SG-3 未创建，pending dispatch=0，活动任务=0，formal/main 未移动。
+- 当前停点：只允许请求 SG-1 claim/fence 的新精确 control 授权。dispatch-ready、outbox、dispatch ACK、宿主任务、编码、独立验收、V2 packet、formal 移动与 P5 完成均不在本授权内。

@@ -1,10 +1,10 @@
 # NextStep 可承受性护栏实施上下文
 
-- 记录时间：2026-08-26T01:29:14+08:00
+- 记录时间：2026-08-26T02:13:23+08:00
 - 用户授权：同意实施“控制复杂度预算、自动状态投影、真实项目价值验证框架”三项改进。
 - 当前生命周期：S5 / P5 产品落地。
-- 当前正式边界：状态同步父 main=`e8f16a378dcc3a8d7fe3fb90ca40a7e8d8f82b6c`，formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`83ef8b4361c96641e54d85acda6134a1cc75420e`，`plan_generation=5`。
-- 当前门禁：V1 已 formally-completed；CR-006 generation-advance/ack 已完成。当前只允许请求 SG-1 generation 5 attempt 1 packet 的精确 control 授权；SG-1/V2 packet、claim/fence、dispatch 与编码均未授权。
+- 当前正式边界：状态同步父 main=`a6b3a70a90eae6d26c94ca0cd20ac8cf9c85f95c`，formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`12ab4aaffda6ee44853d4014230b9a85c1ad8944`，`plan_generation=5`。
+- 当前门禁：V1 已 formally-completed；CR-006 generation-advance/ack 与 SG-1 generation 5 attempt 1 packet 已完成。当前只允许请求 claim/fence 的精确 control 授权；dispatch、编码、独立验收与 V2 packet 均未授权。
 
 ## 变更判断
 
@@ -19,7 +19,7 @@
 - 一份被路线锁引用的 Change Request 和活动执行计划。
 - 三个互斥任务包，每个任务包具有目标、允许路径、非目标、TDD 证据和验收命令。
 - replacement 规划验收已 `PASS / 100`；generation-advance=`11cfbf71dfb4b8cd691588ea12a19bb32f759d9c` 与 generation-ack=`83ef8b4361c96641e54d85acda6134a1cc75420e` 已按两个分离单父 expected-old CAS 完成。
-- SG-1 packet 必须另获精确授权；实施后由独立审查 Agent 使用 Judge Harness 输出 PASS/REVISE/REJECT。
+- SG-1 packet=`12ab4aaffda6ee44853d4014230b9a85c1ad8944` 已按单父 expected-old CAS 完成；claim/fence 与 dispatch 仍需分离授权，实施后由独立审查 Agent 使用 Judge Harness 输出 PASS/REVISE/REJECT。
 
 ## 明确非目标
 

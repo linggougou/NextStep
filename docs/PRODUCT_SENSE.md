@@ -71,9 +71,9 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 
 ## 当前阶段
 
-- 当前里程碑：P5 / CR-006 SG-1 generation 5 packet 授权门禁
+- 当前里程碑：P5 / CR-006 SG-1 generation 5 claim/fence 授权门禁
 - 当前生命周期阶段：S5 开发落地
-- 当前状态：V1 已 formally-completed；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`83ef8b4361c96641e54d85acda6134a1cc75420e`，`plan_generation=5`。V2 入口评估=`PASS / 100`。CR-006 generation 5 replacement 已独立 `PASS / 100`，generation-advance/ack 已完成；当前只允许请求 SG-1 generation 5 attempt 1 packet 的精确 control 授权。SG-1 packet、claim/fence、dispatch、编码与 V2 packet 均未授权，P5 仍未完成。
+- 当前状态：V1 已 formally-completed；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`12ab4aaffda6ee44853d4014230b9a85c1ad8944`，`plan_generation=5`。V2 入口评估=`PASS / 100`。SG-1 generation 5 attempt 1 packet 已创建，digest=`sha256:04d13a57ce82419534255d126184dc35d6cfce4e35b4c878f0200bf43302be52`；当前只允许请求 claim/fence 的精确 control 授权。dispatch、编码、独立验收与 V2 packet 均未授权，P5 仍未完成。
 - 当前正式状态、边界和下一入口以 `PROJECT_ROUTE_LOCK.md` 与 `docs/PLANS.md` 为准；若与本页摘要冲突，以两者为准。
 
 ## S3 已会签交付物
@@ -95,4 +95,4 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 - P5 主路线活动计划：`docs/exec-plans/active/p5-product-implementation-milestones.md`，V1 已 formally-completed，V2 入口评估已通过，但首个产品 packet 尚未授权
 - P5 可承受性护栏计划：`docs/exec-plans/active/p5-scalability-guardrails.md`，当前优先活动计划；只建立三个互斥 SG 包的规划、边界和验收，不提前满足 PC-12、PC-19、V2 或 V4
 - P3 版本与里程碑拆解：`docs/exec-plans/completed/p3-version-and-milestone-breakdown.md`，已会签并归档
-- 当前变更入口：`docs/change-requests/006-scalability-guardrails.md`，状态为 `generation5-acknowledged-awaiting-sg1-packet-authorization`；CR-005 已完成并关闭，历史证据保留
+- 当前变更入口：`docs/change-requests/006-scalability-guardrails.md`，状态为 `sg1-packet-prepared-awaiting-claim-fence-authorization`；CR-005 已完成并关闭，历史证据保留

@@ -1,5 +1,14 @@
 # Verification Report
 
+## 2026-08-26 CR-006 SG-1 generation 5 attempt 1 packet CAS 验证
+
+- 授权身份：working parent=`a6b3a70a90eae6d26c94ca0cd20ac8cf9c85f95c` / tree=`8b2e7ea4331f117d2c2be92910d928f1b56fe6bd`，formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，expected-old control=`83ef8b4361c96641e54d85acda6134a1cc75420e`，stage/task/generation/attempt=`P5/CR-006/SG-1` / `SG-1` / `5` / `1`。
+- packet 身份：`packets/ep-p5-cr006-sg1-g5-a1-20260826.json`，RFC8785 packet digest=`sha256:04d13a57ce82419534255d126184dc35d6cfce4e35b4c878f0200bf43302be52`，dedup=`sha256:62e7a40290d06d58050d3fff80f9315fa246465f08dc5a5943381386ca8f45c7`；提交对象内再次复算匹配。
+- CAS：current control=`12ab4aaffda6ee44853d4014230b9a85c1ad8944`，唯一父=`83ef8b4361c96641e54d85acda6134a1cc75420e`；exact-3 写集为 packet、`registry.json`、`checkpoint.json`。
+- 边界：registry 只新增唯一 SG-1 `packet-prepared`，82 条任务中 SG-1 恰为 1 条；SG-2/SG-3 为 0；checkpoint pending dispatch=0、unconfirmed tombstone=0、活动任务=0。没有 message、outbox、claim/fence、dispatch、Result、gate request、promotion 或代码对象。
+- formal/main：formal 与 working parent 均未移动；V1 formally-completed 证据保持，受保护未跟踪 Multica 摘要未读取或处理。
+- 结论：SG-1 packet CAS 通过。当前只允许请求 SG-1 claim/fence 的新精确 control 授权；本轮不授权或执行 dispatch、编码、独立验收、V2 packet、formal 移动或 P5 完成。
+
 ## 2026-08-26 CR-006 generation 5 advance/ack control CAS 验证
 
 - 授权身份：固定 candidate=`82efe16f978b0269b7034a856643b7fea24abda0`、独立 review=`8e77ccec90c98445c5cbfd6d435f72fb5c24b4b0`、expected-old control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`、formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`；用户只授权两个分离 CAS。
