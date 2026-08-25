@@ -1,0 +1,158 @@
+{
+  "review_id": "l3-cr006-replacement-planning-r2-82efe16-20260826T004056+0800",
+  "task_id": "P5/CR-006/replacement-planning-g5-attempt2",
+  "lane": "planning-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-cr006-replacement-planning-r3",
+  "artifact_refs": {
+    "candidate_commit": "82efe16f978b0269b7034a856643b7fea24abda0",
+    "candidate_tree": "068f6da861ed181eca7864c1ae190a4a26fde60c",
+    "parent_commit": "d8d2d4ffec068186dad0dcf24e7193734bae3cef",
+    "formal_oid": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "control_oid": "6d5120078a137ecf74b4a4b58cbcba37a61b7148",
+    "shell_date": "2026-08-26T00:40:56+0800 (Wednesday)",
+    "changed_paths": [
+      ".codex/operations-log.md",
+      ".codex/verification-report.md",
+      "docs/change-requests/006-scalability-guardrails.md"
+    ]
+  },
+  "hard_gates": [
+    {
+      "id": "PLAN-GENERATION-BOUNDARY",
+      "status": "pass",
+      "evidence": "CR-006 以 plan_id=p5-product-implementation、route_generation=1 把计划范围、任务和 DoD 的变化固定为 plan_generation 4 -> 5。"
+    },
+    {
+      "id": "GENERATION4-HISTORY-READONLY",
+      "status": "pass",
+      "evidence": "generation 4 的 V1 completion、Result、signoff、formal 和失败历史继续只读有效，迟到活动结果不能驱动 generation 5。"
+    },
+    {
+      "id": "THREE-STAGE-CONTROL-AUTHORIZATION",
+      "status": "pass",
+      "evidence": "generation-advance CAS、generation-ack CAS、SG-1 packet CAS 为三个分离单父 expected-old 边界；generation 5 ACK 前无 packet、claim/fence、dispatch 或代码。"
+    },
+    {
+      "id": "SG1-G5-A1-IDENTITY",
+      "status": "pass",
+      "evidence": "SG-1 固定为 stage P5/CR-006/SG-1、task SG-1、plan_generation 5、task_attempt 1，SG-2/SG-3 不因 generation ACK 自动创建。"
+    },
+    {
+      "id": "HISTORICAL-PASS-NOT-FINAL",
+      "status": "pass",
+      "evidence": "b99a82b 只保留为历史 PASS，因遗漏代际 P1 不再作为 generation 5 或 SG-1 放行证据。"
+    },
+    {
+      "id": "SG1-THRESHOLDS-AND-TRISTATE",
+      "status": "pass",
+      "evidence": "SG-1 六项阈值保持 12/24/2/2/1/5，结论只允许 within-budget、exception-required、unmeasurable。"
+    },
+    {
+      "id": "THREE-PACKAGE-BOUNDARIES",
+      "status": "pass",
+      "evidence": "三包路径互斥，规模、TDD、回滚、包级独立验收和累积验收边界完整。"
+    },
+    {
+      "id": "SG2-PC12-AND-SG3-REAL-RUNS",
+      "status": "pass",
+      "evidence": "SG-2 不等于 PC-12；SG-3 真实运行保持 0/3，排除 synthetic、retrospective/backfill、复制改名、重复执行和重复项目身份。"
+    },
+    {
+      "id": "FORMAL-CONTROL-AND-PROTECTED-FILE",
+      "status": "pass",
+      "evidence": "formal/control 保持 ea04b57de83d6c548dcb1629b1f61832db8375ad / 6d5120078a137ecf74b4a4b58cbcba37a61b7148；未跟踪 Multica 摘要不在 candidate tree。"
+    },
+    {
+      "id": "EVIDENCE-PACKAGE-ACCURACY",
+      "status": "pass",
+      "evidence": "verification report 已准确写明 parent d8d2d4f 的 11 路径写集和本次 3 文件窄修复，operations log 同步记录 REVISE / 93 与修复。"
+    },
+    {
+      "id": "ROUTE-SYNC-CLARIFIED",
+      "status": "pass",
+      "evidence": "CR-006 已明确路线结构不变，但 replacement 必须同步 route lock 当前状态字段。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "control_boundary_correctness",
+      "score": 30,
+      "max_score": 30,
+      "reason": "generation 5、三段 control 授权链、generation 4 历史和启动边界完整。",
+      "evidence_refs": [
+        "PLAN-GENERATION-BOUNDARY",
+        "GENERATION4-HISTORY-READONLY",
+        "THREE-STAGE-CONTROL-AUTHORIZATION",
+        "SG1-G5-A1-IDENTITY"
+      ]
+    },
+    {
+      "id": "package_design_quality",
+      "score": 25,
+      "max_score": 25,
+      "reason": "三包路径、规模、TDD、回滚和验收设计具体可执行。",
+      "evidence_refs": [
+        "SG1-THRESHOLDS-AND-TRISTATE",
+        "THREE-PACKAGE-BOUNDARIES"
+      ]
+    },
+    {
+      "id": "scope_discipline",
+      "score": 20,
+      "max_score": 20,
+      "reason": "没有扩张为 V2 packet、PC-12、PC-19、V2/V4/P5 完成。",
+      "evidence_refs": [
+        "SG2-PC12-AND-SG3-REAL-RUNS",
+        "FORMAL-CONTROL-AND-PROTECTED-FILE"
+      ]
+    },
+    {
+      "id": "evidence_fidelity",
+      "score": 25,
+      "max_score": 25,
+      "reason": "上轮唯一 P1 已通过 3 文件窄修复关闭，候选写集与自述一致。",
+      "evidence_refs": [
+        "EVIDENCE-PACKAGE-ACCURACY",
+        "ROUTE-SYNC-CLARIFIED",
+        "HISTORICAL-PASS-NOT-FINAL"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100
+  },
+  "severity_summary": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [],
+  "reviewers": {
+    "verifier": {
+      "conclusion": "PASS",
+      "summary": "上轮唯一 P1 已关闭，全部 generation 5 replacement 硬门保持成立。"
+    },
+    "strict_judge": {
+      "conclusion": "PASS",
+      "score": 100,
+      "summary": "窄修复没有引入新的 P0/P1/P2，也没有回退规划边界。"
+    },
+    "anti_slop_judge": {
+      "conclusion": "PASS",
+      "score": 100,
+      "summary": "修复精确对准证据失真点，内容无模板化膨胀。"
+    },
+    "chief_reviewer": {
+      "conclusion": "PASS",
+      "summary": "replacement 可作为 generation 5 planning PASS；下一动作仅限请求精确 generation-advance/ack control 授权。"
+    }
+  },
+  "reviewed_at": "2026-08-26T00:40:56+08:00"
+}
