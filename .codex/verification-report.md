@@ -11,6 +11,8 @@
 - 后续主控审计：只读 replacement reviewer 对 `46c7ac0` 给出 `PASS / 100`，但评审未覆盖 P4 §6/§8/§17 与 S4 §12.3 的计划代际硬门。CR-006 改变任务范围与 DoD，必须先把 plan_generation 从 4 推进到 5；该缺口为 P1，原 PASS 不构成最终规划放行。
 - 修订门禁：replacement 必须把 generation-advance、generation-ack、SG-1 packet 设为三个分离 control 边界，并重新接受独立 L3。通过前不得请求 control CAS，通过后下一动作也仅限精确 generation 5 advance/ack 授权。
 - replacement L3 attempt 1：固定 `d8d2d4f` 的代际、授权、三包、SG-2/SG-3、formal/control 与保护文件硬门全部通过；`REVISE / 93`，唯一 P1 为本报告误写“仅修改两份文档”，与 11 文件实际写集不一致。当前修订只纠正该证据自述，不改变 generation 5 规则或任务范围。
+- replacement L3 attempt 2：固定 `82efe16f978b0269b7034a856643b7fea24abda0`、tree=`068f6da861ed181eca7864c1ae190a4a26fde60c`；上轮唯一 P1 已关闭，独立裁决 `PASS / 100`、P0/P1/P2=`0/0/0`、`required_fixes=[]`。exact-2 评审提交=`8e77ccec90c98445c5cbfd6d435f72fb5c24b4b0`。
+- 门禁结论：CR-006 generation 5 replacement 规划门禁通过。formal/control 与 `plan_generation=4` 尚未变化；下一步只允许请求 generation-advance/ack 精确授权，不能自动进入 SG-1 packet 或编码。
 
 ## 2026-08-12 CR-005 用户批准边界验证
 

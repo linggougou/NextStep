@@ -2557,3 +2557,5 @@
 - P1 修订：CR-006、活动计划、技术设计与权威状态入口补入 `plan_generation 4 -> 5`，固定 `generation-advance CAS -> generation-ack CAS -> SG-1 packet CAS` 三段分离链。replacement 独立 L3 PASS 前不得请求 control 授权；PASS 后也只允许先请求 generation advance/ack，不得直接创建 packet。
 - generation 5 replacement L3 attempt 1：固定 `d8d2d4ffec068186dad0dcf24e7193734bae3cef` 的九类实质硬门全部通过；独立 reviewer 给出 `REVISE / 93`，唯一 P1 为 `.codex/verification-report.md` 仍声称“仅修改两份文档”，与该候选 11 文件真实写集不一致。
 - P1 窄修复：只更新 verification report 的真实写集/验证范围、CR-006 的路线锁同步措辞和本日志；不改 generation 5 规则、SG 范围、formal/control 或代码。该修订必须重新接受纯只读 L3，不得直接沿用 attempt 1 的实质硬门通过结论作放行。
+- generation 5 replacement L3 attempt 2：固定 candidate=`82efe16f978b0269b7034a856643b7fea24abda0`、tree=`068f6da861ed181eca7864c1ae190a4a26fde60c`；独立 reviewer 对上轮唯一证据 P1 窄修复及全部代际/授权/SG 硬门给出 `PASS / 100`，P0/P1/P2=`0/0/0`，`required_fixes=[]`。评审 exact-2 固化提交=`8e77ccec90c98445c5cbfd6d435f72fb5c24b4b0`。
+- 当前停点：规划门禁已通过；下一动作仅为请求用户精确授权 generation-advance/ack 两个分离 CAS。未授权前不写 control，不创建 SG-1 packet、claim/fence、dispatch 或代码。

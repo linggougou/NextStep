@@ -18,7 +18,7 @@
 
 - 一份被路线锁引用的 Change Request 和活动执行计划。
 - 三个互斥任务包，每个任务包具有目标、允许路径、非目标、TDD 证据和验收命令。
-- replacement 规划验收后先建立 generation 5 控制身份；generation-advance 与 generation-ack 分离，未获得对应精确授权时停在规划门禁。
+- replacement 规划验收已 `PASS / 100`；下一步先建立 generation 5 控制身份，generation-advance 与 generation-ack 分离，未获得对应精确授权时停在 control 授权门禁。
 - SG-1 packet 必须晚于 generation 5 ACK 且另获精确授权；实施后由独立审查 Agent 使用 Judge Harness 输出 PASS/REVISE/REJECT。
 
 ## 明确非目标

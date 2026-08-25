@@ -1,6 +1,6 @@
 # 可承受性护栏：复杂度预算、状态投影与真实项目价值验证
 
-- 状态：revision-required-after-control-generation-audit（用户于 2026-08-25 同意三个方向；规划候选已形成，但必须先闭合 plan_generation 影响并重新通过独立规划验收）
+- 状态：planning-gate-passed-awaiting-generation5-control-authorization（generation 5 replacement 独立 L3=`PASS / 100`；尚未授权 control CAS）
 - 记录日期：2026-08-25
 - 来源：V1 完成后的项目分析与用户对工作膨胀风险的明确反馈
 - 所属阶段：P5 / 跨版本可承受性护栏
@@ -95,3 +95,10 @@ V1 已证明 NextStep 的可靠性内核和证据链可以运行，但控制提�
 - 复杂度预算超限、状态来源不一致、合成价值运行冒充真实运行三类负例均 fail closed。
 - formal/control、用户工作树和既有产品真源未被修改。
 - 关闭本 CR 不得写“PC-12 完成”“PC-19 完成”“V2/V4 完成”或“三个真实项目已验证”。
+
+## 8. Generation 5 replacement 规划验收
+
+- 固定候选：`82efe16f978b0269b7034a856643b7fea24abda0`，tree=`068f6da861ed181eca7864c1ae190a4a26fde60c`。
+- 独立 L3 评审提交：`8e77ccec90c98445c5cbfd6d435f72fb5c24b4b0`，唯一父为固定候选，exact-2 评审写集。
+- 裁决：`PASS / 100`，P0/P1/P2=`0/0/0`，`required_fixes=[]`。
+- 当前下一动作：只允许请求并等待精确 generation 5 advance/ack control 授权；不得自动创建 SG-1 packet、claim/fence、dispatch 或代码。

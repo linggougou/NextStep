@@ -1,6 +1,6 @@
 # P5 产品落地实施里程碑
 
-状态：进行中；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`，`plan_generation=4`。V1 已 formally-completed；V2 入口评估=`PASS / 100`。CR-006 generation 5 replacement 规划优先，V2 产品 packet 暂停；generation 5 ACK 前不得创建 SG/V2 packet、claim/fence、dispatch 或代码
+状态：进行中；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`，`plan_generation=4`。V1 已 formally-completed；V2 入口评估=`PASS / 100`。CR-006 generation 5 replacement 已独立 `PASS / 100`，当前等待 generation-advance/ack 精确授权；generation 5 ACK 前不得创建 SG/V2 packet、claim/fence、dispatch 或代码
 启动日期：2026-08-08
 
 ## 1. 阶段目标
@@ -11,7 +11,7 @@
 
 - 生命周期阶段：`S5 开发落地`。
 - 项目里程碑：`P5 产品落地`。
-- 当前活动里程碑：`CR-006 / generation-5 replacement planning gate`；V2 入口评估已通过，但产品 packet 暂停。
+- 当前活动里程碑：`CR-006 / generation-5 control authorization gate`；V2 入口评估已通过，但产品 packet 暂停。
 - 本轮启动授权：用户于 2026-08-08 在 P4 会签归档后明确要求继续，授权单独启动 P5 并建立实施里程碑。
 - 路线性质：沿用已会签路线，不改变产品定位、主交互载体、技术栈、版本范围或验收门禁。V1 已完成精确用户会签及分离的 ACK/completion CAS，V2 入口独立评估已通过。CR-006 只增加跨版本可承受性护栏，独立计划位于 `docs/exec-plans/active/p5-scalability-guardrails.md`；当前只允许关闭其规划门禁。该方向批准与 V2 入口 PASS 均不直接授权 SG/V2 packet、claim/fence、dispatch 或编码。
 

@@ -31,7 +31,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - Change Intake、恢复、Final Acceptance、交付和宿主归档边界通过故障注入和反扫验证。
   - V1..V4 与 Final Acceptance 分别完成本地验证、适用验收和用户会签。
 - 阶段出口：V1..V4 和 Final Acceptance 全部通过；正式 OID、交付清单、风险、回滚和 PC-20.AR 状态可追溯，并由用户明确确认 P5 产品落地完成。
-- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；S1.2/F12、S1.3/F13、S1.4/F14、S1.5/F15、S1.6/F16 已正式提升，M1.1 attempt 2 与 M1.2 attempt 1 用户会签均已完成。V1 attempt 5 的完整验收、精确会签和 completion CAS 已闭合，V1 已 formally-completed，formal 保持 F16；V2 入口独立评估=`PASS / 100`。用户已批准 CR-006 三项方向和实施；首轮规划 PASS 遗漏强制代际推进 P1，当前只允许完成 generation 5 replacement 规划验收。replacement PASS 后下一动作仅为请求精确 generation-advance/ack control 授权；CR-006 不授权 V2 产品 packet，也不提前满足 PC-12/PC-19。
+- 最小可验收闭环：`P5-M0` 与 V1 已正式完成，formal 保持 F16；V2 入口评估=`PASS / 100`。CR-006 generation 5 replacement 固定候选 `82efe16` 经独立 L3 `8e77cce` 得到 `PASS / 100`、P0/P1/P2=`0/0/0`，规划门禁已关闭。当前下一动作仅为请求精确 generation-advance/ack control 授权；CR-006 不授权 SG-1/V2 packet，也不提前满足 PC-12/PC-19。
 - 明确非目标：
   - 不恢复 NextStep Web/UI 候选分支。
   - 不引入常驻服务、数据库、远程控制面或通用多 Agent 编排平台。
@@ -43,7 +43,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - 不改变已会签产品、交互、S4/P3/P4 或验收边界；需要改变时先进入 Change Request。
 - 禁止提前进入的阶段：S7 最终发布判断和 S8 交付归档；V1..V4 也不得跳过前序门禁并行宣告完成。
 - 允许进入下一阶段的条件：P5 Final Acceptance 通过本地可重复验证、独立验收和用户会签；若实现要求改变已会签产品、交互、技术、版本范围、正式提升或验收边界，必须先完成 Change Request。
-- 当前状态：进行中；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`，`plan_generation=4`。V1 formally-completed，V2 入口评估=`PASS / 100`。CR-006 首轮规划评审包虽记录 `PASS / 100`，但主控随后发现其遗漏“计划范围变化必须推进代际”的 P1，故规划门禁保持未关闭；replacement 必须冻结 generation 5 启动链并重新独立验收。replacement PASS 后的下一步仍只是请求精确 generation-advance/ack control 授权；generation 5 ACK 前不得创建 SG/V2 packet、claim/fence、dispatch 或代码，P5 仍未完成。
+- 当前状态：进行中；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`，`plan_generation=4`。V1 formally-completed，V2 入口评估=`PASS / 100`。CR-006 generation 5 replacement 固定候选 `82efe16` 已由独立 L3 `8e77cce` 评为 `PASS / 100`、P0/P1/P2=`0/0/0`；规划门禁已通过。当前只允许请求并等待精确 generation-advance/ack control 授权；generation 5 ACK 前不得创建 SG/V2 packet、claim/fence、dispatch 或代码，P5 仍未完成。
 
 ## 2.1 里程碑路线图
 
@@ -109,7 +109,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
 
 - Backlog：待建立。
 - Change Request：`docs/change-requests/index.md`
-- 当前阶段缺口：CR-006 replacement 需明确 `plan_generation 4 -> 5` 的 generation-advance/ack 与 SG-1 packet 分离边界，并重新通过独立 L3。随后先请求精确 generation-advance/ack control 授权；SG-1 packet、claim/fence、dispatch 与代码仍需后继分离授权。V2 产品 packet 保持暂停，不得把 CR-006 或 V2 入口 PASS 解释为 packet、dispatch、编码或 PC 完成授权。
+- 当前阶段缺口：CR-006 generation 5 replacement 独立 L3 已 `PASS / 100`；当前缺口是用户对 `plan_generation 4 -> 5` generation-advance/ack 两个分离 CAS 的精确 control 授权。SG-1 packet、claim/fence、dispatch 与代码仍需后继分离授权；V2 产品 packet 保持暂停。
 - 后续阶段需求：V1..V4 和 Final Acceptance 按活动计划顺序推进；P4 第 12 节“运行集成验收”只允许落实为集成诊断预检，正式 I/X/P 四态结论仍由独立门禁和最终复验链产生。若未来恢复 `Web / UI` 分支，需重新确认其与当前 Skill 主路线的关系。
 - 已拒绝需求：无。
 
