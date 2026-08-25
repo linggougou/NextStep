@@ -13,7 +13,7 @@
 
 ## 已接受待实施变更
 
-- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：用户已同意三个方向；仅建立跨版本护栏计划，不授权 V2 packet/dispatch，不提前声明 PC-12、PC-19、V2 或 V4 完成。
+- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：用户已同意三个方向；当前补齐 `plan_generation 4 -> 5` replacement 规划门禁。未获得精确 generation-advance/ack 授权前不创建 SG/V2 packet，不提前声明 PC-12、PC-19、V2 或 V4 完成。
 
 ## 分流规则
 

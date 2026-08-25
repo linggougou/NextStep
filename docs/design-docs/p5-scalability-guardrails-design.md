@@ -19,6 +19,8 @@
 - 本设计和未来实现都不创建 V2 packet/claim/fence/dispatch，不证明 PC-12、PC-19、V2、V4 或 P5 完成；
 - 三包合计遵守上位计划的 9 个生产/Schema 文件、7 个测试文件、16 个 fixture、1,200 行生产代码和 1,800 行测试/fixture/协议正文上限。
 
+控制身份前置：CR-006 改变计划范围、任务和 DoD，因此新任务不得复用 `plan_generation=4`。replacement 规划验收通过后，必须先按两个独立 expected-old CAS 完成 `generation-advance` 与 `generation-ack`，把 `plan_id=p5-product-implementation` 推进到 generation 5；generation 4 的 V1 完成证据保持只读有效。SG-1 首个 packet 使用 `stage_id=P5/CR-006/SG-1`、`task_id=SG-1`、`plan_generation=5`、`task_attempt=1`，且 packet CAS 仍需新的精确授权。SG-2/SG-3 同理，不得借 generation 5 ACK 自动创建。
+
 ## 2. SG-1：复杂度预算纯函数
 
 ### 2.1 精确文件与规模

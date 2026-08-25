@@ -2553,3 +2553,5 @@
 - 设计 Agent：首版设计因 SG-1 阈值、Git 读取和文件边界与上位计划冲突，未集成；replacement `1d1a9d62f8b6008ce6bb545027e5aa82f8660deb` 已压缩为 292 行并完全对齐上位计划，集成为 main `8533aa7`。
 - 当前停点：只完成 planning candidate 和状态入口同步，尚未生成 SG packet/control identity；下一步为独立 L3 规划验收。PASS 前不得请求 packet CAS，PASS 后仍需新的精确 SG-1 packet/control 授权，不能把用户对三个方向的批准扩张为 control CAS。
 - 首次独立 reviewer 未遵守 exact-2 只读评审边界，越权把状态同步修订直接提交到 main，且没有输出 Judge Harness scorecard/verdict；该轮按程序无效，不构成 PASS/REVISE/REJECT。其 PRODUCT_SENSE 同步经主控复核后保留，错误日期判断已纠正；必须对新的固定候选重新派发全新独立 reviewer。
+- replacement 只读 reviewer 对固定 `46c7ac0` 最终给出 `PASS / 100`，评审包固化于 main `b99a82b`；但主控在准备 SG-1 control 身份时发现该 rubric 遗漏 P4/S4 的强制代际规则：CR-006 新增计划范围、任务和 DoD，不能继续使用 generation 4。该 PASS 作为历史评审保留，但不得作为 generation 5 或 SG-1 放行证据。
+- P1 修订：CR-006、活动计划、技术设计与权威状态入口补入 `plan_generation 4 -> 5`，固定 `generation-advance CAS -> generation-ack CAS -> SG-1 packet CAS` 三段分离链。replacement 独立 L3 PASS 前不得请求 control 授权；PASS 后也只允许先请求 generation advance/ack，不得直接创建 packet。

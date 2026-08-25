@@ -1,6 +1,6 @@
 # 可承受性护栏：复杂度预算、状态投影与真实项目价值验证
 
-- 状态：accepted-for-planning（用户于 2026-08-25 同意三个方向；仅授权建立并实施本变更计划，不构成 V2 packet、claim/fence、dispatch、编码或任何 PC 完成授权）
+- 状态：revision-required-after-control-generation-audit（用户于 2026-08-25 同意三个方向；规划候选已形成，但必须先闭合 plan_generation 影响并重新通过独立规划验收）
 - 记录日期：2026-08-25
 - 来源：V1 完成后的项目分析与用户对工作膨胀风险的明确反馈
 - 所属阶段：P5 / 跨版本可承受性护栏
@@ -18,10 +18,18 @@ V1 已证明 NextStep 的可靠性内核和证据链可以运行，但控制提�
 ## 2. 分流结论
 
 - 类型：当前阶段增强项，同时是 V2..V4 的跨版本基础护栏。
-- 是否改变当前路线：否。保持 `P5-M0 -> V1 -> V2 -> V3 -> V4 -> Final Acceptance`，不新增产品版本，不改变 PC 主版本归属、技术栈、主载体、正式提升或验收门禁。
+- 是否改变当前路线：否。保持 `P5-M0 -> V1 -> V2 -> V3 -> V4 -> Final Acceptance`，不新增产品版本，不改变 PC 主版本归属、技术栈、主载体、正式提升或验收门禁；但本 CR 新增计划范围、任务和 DoD，必须按 P4/S4 把 `plan_generation` 从 4 单向推进到 5。
 - 是否影响当前阶段出口：不替代任何既有出口。三个护栏任务包通过，只证明可承受性工具和验证框架可用。
 - 是否需要更新 `PROJECT_ROUTE_LOCK.md`：本变更不改路线，当前不更新。若实施发现必须改变 PC、数据模型、正式 ref、控制协议或门禁，立即停止并另开 Change Request。
-- 与当前入口的关系：V1 仍为 formally-completed；V2 入口评估 PASS 仍只允许规划。本文不创建或授权 V2 首个 packet，不授权 claim/fence、dispatch 或 V2 编码。
+- 与当前入口的关系：V1 仍为 formally-completed；V2 入口评估 PASS 仍只允许规划。replacement 规划验收通过后，下一动作只能请求精确的 generation 5 advance/ack control 授权；generation 5 ACK 固化前不得创建 SG-1 packet，本文不创建或授权 V2 首个产品 packet。
+
+### 2.1 控制代际影响
+
+- 继续使用 `plan_id=p5-product-implementation`、`route_generation=1`；不得建立第二套 control ref 或并行计划身份。
+- `plan_generation=4` 的 V1 完成、Result、signoff、formal 和历史失败保持不可变，不因推进 generation 5 失效或被重写。
+- generation 5 只承接 CR-006 获批后的新 SG 任务及其后续新计划任务；任何迟到 generation 4 活动结果均按既有规则分类，不能驱动 generation 5。
+- 推进顺序固定为：replacement 规划验收 PASS → 用户精确授权 generation-advance CAS → 独立 generation-ack CAS → 用户精确授权 SG-1 packet CAS → 后续 claim/fence/dispatch 仍需各自既有授权边界。
+- generation-advance 与 generation-ack 必须是两个单父 expected-old control CAS；不得与 SG-1 packet、claim/fence、dispatch-ready 或 dispatch ACK 合并。
 
 ## 3. 受影响与不受影响范围
 
@@ -78,6 +86,7 @@ V1 已证明 NextStep 的可靠性内核和证据链可以运行，但控制提�
 - 该授权允许建立本 Change Request 和活动计划，并在后续按精确任务包实施三个护栏。
 - 该授权不扩大为 V2 首个产品 packet、claim/fence/dispatch、PC-12/PC-19 完成、V2/V4 版本验收、formal promotion 或 P5 完成授权。
 - 每个真实执行任务仍需遵守当前 control 身份、不可变 packet、独立验收和正式提升协议；本文不能替代对应 control CAS。
+- 用户对三个方向及实施的批准不自动授权 generation 5 advance/ack；replacement 规划门禁关闭后必须提交精确 control 身份请求。
 
 ## 7. 关闭条件
 
@@ -86,4 +95,3 @@ V1 已证明 NextStep 的可靠性内核和证据链可以运行，但控制提�
 - 复杂度预算超限、状态来源不一致、合成价值运行冒充真实运行三类负例均 fail closed。
 - formal/control、用户工作树和既有产品真源未被修改。
 - 关闭本 CR 不得写“PC-12 完成”“PC-19 完成”“V2/V4 完成”或“三个真实项目已验证”。
-

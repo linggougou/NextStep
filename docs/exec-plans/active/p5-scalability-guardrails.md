@@ -1,10 +1,10 @@
 # P5 可承受性护栏实施计划
 
-- 状态：active-planning
+- 状态：revision-required-after-control-generation-audit
 - 变更入口：[CR-006](../../change-requests/006-scalability-guardrails.md)
 - 生命周期阶段：S5 开发落地
 - 路线位置：P5 跨版本基础护栏；不新增版本，不改变 V2 首个产品 packet 前门禁
-- 当前授权：用户已批准三个方向及其实施；每个真实 packet 仍须绑定独立 control 身份后才可执行
+- 当前授权：用户已批准三个方向及其实施；由于新增计划范围和任务，必须先独立验收本 replacement，再单独授权 `plan_generation 4 -> 5` 的 generation-advance/ack。generation 5 ACK 前不得生成 SG-1 packet
 
 ## 1. 阶段目标
 
@@ -32,6 +32,7 @@
 - 不新增运行时依赖、数据库、服务、远程控制面、新正式 ref 或宿主支持声明。
 - 每包独立验收 PASS 后才可进入累积验收；任一 REVISE/REJECT 只退回该包。
 - SG-3 完成只表示框架可用；三次真实项目运行仍为未完成的后续运营证据。
+- control 先完成 `plan_generation 4 -> 5` 的 generation-advance 与 generation-ack 两个独立 CAS；SG-1 packet 只能绑定已确认的 generation 5。
 
 ### 2.3 明确非目标
 
@@ -43,9 +44,17 @@
 
 ## 3. 公共实施约束
 
+### 3.0 控制身份与启动顺序
+
+- `plan_id=p5-product-implementation`、`route_generation=1` 保持不变；新 SG 任务统一使用 `plan_generation=5`。
+- 任务身份固定为 `P5/CR-006/SG-1`、`P5/CR-006/SG-2`、`P5/CR-006/SG-3`，首次 `task_attempt=1`；不得复用 V2 的 S2.1..S2.4 或 generation 4 任务身份。
+- generation 4 的 V1 完成记录与正式证据保持有效、只读；generation 5 advance 只冻结新的后继计划边界，不反向改写历史完成状态。
+- 启动链固定为：replacement L3 planning PASS → 精确 generation-advance CAS 授权 → generation-advance CAS → 独立 generation-ack CAS → 精确 SG-1 packet CAS 授权 → SG-1 packet CAS。packet、claim/fence、dispatch 和代码仍是分离边界。
+- generation 5 ACK 固化前，三个实现 worktree 可以不存在；不得预写测试或生产候选。SG-2/SG-3 也不得与 SG-1 packet 并行创建。
+
 ### 3.1 并行与互斥
 
-三个包可在独立 worktree 并行实现，唯一共享只读基线为当前主分支。禁止一个包修改另一个包的路径，禁止共享临时 helper；确有公共抽象需求时先停止并修订本计划，不新增第四包。
+三个包在各自 packet、claim/fence 与 dispatch 分别授权后可进入独立 worktree 实现，唯一共享只读基线为对应 packet 冻结的 working parent。禁止一个包修改另一个包的路径，禁止共享临时 helper；确有公共抽象需求时先停止并修订本计划，不新增第四包。
 
 合入顺序不形成产品依赖；建议按 `SG-1 -> SG-2 -> SG-3` 串行整合，每次整合后重跑全量检查。后合入者必须适配主分支，不得回滚先合入内容。
 
@@ -230,4 +239,4 @@ GREEN 只实现 Schema、单次记录验证、去重、聚合与离线 CLI，并
 
 ## 8. 阶段出口
 
-本计划的出口是三个护栏实现和累积验收通过，并明确留下“真实运行 0/3，PC-12/PC-19/V2/V4 均未由本计划完成”的状态。之后是否归档本计划、是否把护栏接入 V2/V4 产品路径，以及是否启动真实项目运行，均需按各自路线入口另行裁决。
+本计划的出口是 generation 5 控制身份可追溯、三个护栏实现和累积验收通过，并明确留下“真实运行 0/3，PC-12/PC-19/V2/V4 均未由本计划完成”的状态。之后是否归档本计划、是否把护栏接入 V2/V4 产品路径，以及是否启动真实项目运行，均需按各自路线入口另行裁决。

@@ -4,8 +4,8 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：CR-006 可承受性护栏首个 SG packet 前规划门禁；V2 产品 packet 暂停在入口评估通过状态
-- 当前状态：formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`；control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`。V1 已 formally-completed，V2 入口独立评估已通过。用户已批准 CR-006 三项方向和实施；当前只允许完成独立规划门禁并准备首个精确 SG packet 身份。P5 未完成，SG/V2 packet、claim/fence、dispatch 与编码尚未获得精确 control 授权。
+- 当前活动里程碑：CR-006 generation 5 replacement 规划门禁；V2 产品 packet 暂停在入口评估通过状态
+- 当前状态：formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`；control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`；`plan_generation=4`。首轮规划评审遗漏代际推进 P1，不构成最终放行。replacement 必须先通过独立 L3；随后只允许请求 generation 5 advance/ack 的精确 control 授权。generation 5 ACK 前不得创建 SG/V2 packet、claim/fence、dispatch 或代码。
 
 ## 当前活动计划
 
@@ -28,7 +28,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。V2 入口独立评估已 `PASS / 100`。用户于 2026-08-25 批准 CR-006 三项可承受性护栏方向和实施；当前优先关闭其独立规划门禁，V2 产品 packet 保持暂停，P5 尚未完成。
+P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。V2 入口独立评估已 `PASS / 100`。用户于 2026-08-25 批准 CR-006 三项方向和实施；主控发现新任务必须推进 `plan_generation`，当前优先关闭 generation 5 replacement 规划门禁，V2 产品 packet 保持暂停，P5 尚未完成。
 
 实施顺序保持 P3 已会签结构：
 
