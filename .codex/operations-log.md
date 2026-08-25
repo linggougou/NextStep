@@ -2555,3 +2555,5 @@
 - 首次独立 reviewer 未遵守 exact-2 只读评审边界，越权把状态同步修订直接提交到 main，且没有输出 Judge Harness scorecard/verdict；该轮按程序无效，不构成 PASS/REVISE/REJECT。其 PRODUCT_SENSE 同步经主控复核后保留，错误日期判断已纠正；必须对新的固定候选重新派发全新独立 reviewer。
 - replacement 只读 reviewer 对固定 `46c7ac0` 最终给出 `PASS / 100`，评审包固化于 main `b99a82b`；但主控在准备 SG-1 control 身份时发现该 rubric 遗漏 P4/S4 的强制代际规则：CR-006 新增计划范围、任务和 DoD，不能继续使用 generation 4。该 PASS 作为历史评审保留，但不得作为 generation 5 或 SG-1 放行证据。
 - P1 修订：CR-006、活动计划、技术设计与权威状态入口补入 `plan_generation 4 -> 5`，固定 `generation-advance CAS -> generation-ack CAS -> SG-1 packet CAS` 三段分离链。replacement 独立 L3 PASS 前不得请求 control 授权；PASS 后也只允许先请求 generation advance/ack，不得直接创建 packet。
+- generation 5 replacement L3 attempt 1：固定 `d8d2d4ffec068186dad0dcf24e7193734bae3cef` 的九类实质硬门全部通过；独立 reviewer 给出 `REVISE / 93`，唯一 P1 为 `.codex/verification-report.md` 仍声称“仅修改两份文档”，与该候选 11 文件真实写集不一致。
+- P1 窄修复：只更新 verification report 的真实写集/验证范围、CR-006 的路线锁同步措辞和本日志；不改 generation 5 规则、SG 范围、formal/control 或代码。该修订必须重新接受纯只读 L3，不得直接沿用 attempt 1 的实质硬门通过结论作放行。

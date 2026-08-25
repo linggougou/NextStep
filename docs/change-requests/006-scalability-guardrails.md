@@ -20,7 +20,7 @@ V1 已证明 NextStep 的可靠性内核和证据链可以运行，但控制提�
 - 类型：当前阶段增强项，同时是 V2..V4 的跨版本基础护栏。
 - 是否改变当前路线：否。保持 `P5-M0 -> V1 -> V2 -> V3 -> V4 -> Final Acceptance`，不新增产品版本，不改变 PC 主版本归属、技术栈、主载体、正式提升或验收门禁；但本 CR 新增计划范围、任务和 DoD，必须按 P4/S4 把 `plan_generation` 从 4 单向推进到 5。
 - 是否影响当前阶段出口：不替代任何既有出口。三个护栏任务包通过，只证明可承受性工具和验证框架可用。
-- 是否需要更新 `PROJECT_ROUTE_LOCK.md`：本变更不改路线，当前不更新。若实施发现必须改变 PC、数据模型、正式 ref、控制协议或门禁，立即停止并另开 Change Request。
+- 是否需要更新 `PROJECT_ROUTE_LOCK.md`：不改变路线结构，但必须同步当前阶段、代际缺口和授权停点；本 replacement 已更新路线锁的状态字段。若实施发现必须改变 PC、数据模型、正式 ref、控制协议或门禁，再停止并另开 Change Request。
 - 与当前入口的关系：V1 仍为 formally-completed；V2 入口评估 PASS 仍只允许规划。replacement 规划验收通过后，下一动作只能请求精确的 generation 5 advance/ack control 授权；generation 5 ACK 固化前不得创建 SG-1 packet，本文不创建或授权 V2 首个产品 packet。
 
 ### 2.1 控制代际影响
