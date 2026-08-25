@@ -1,6 +1,6 @@
 # P5 产品落地实施里程碑
 
-状态：进行中；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`。V1 已 formally-completed；V2 入口独立评估=`PASS / 100`。当前只允许准备 V2 规划或首个 packet 前的后续门禁；P5 未完成，V2 packet、claim/fence、dispatch 与编码尚未授权
+状态：进行中；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`。V1 已 formally-completed；V2 入口独立评估=`PASS / 100`。CR-006 可承受性护栏规划优先，V2 产品 packet 保持暂停；P5 未完成，SG/V2 packet、claim/fence、dispatch 与编码尚未获得精确 control 授权
 启动日期：2026-08-08
 
 ## 1. 阶段目标
@@ -11,9 +11,9 @@
 
 - 生命周期阶段：`S5 开发落地`。
 - 项目里程碑：`P5 产品落地`。
-- 当前活动里程碑：`V2 / pre-packet planning gate`（入口独立评估已通过；首个 packet 尚未获精确 control 授权）。
+- 当前活动里程碑：`CR-006 / scalability guardrails pre-packet planning gate`；V2 入口评估已通过，但产品 packet 暂停。
 - 本轮启动授权：用户于 2026-08-08 在 P4 会签归档后明确要求继续，授权单独启动 P5 并建立实施里程碑。
-- 路线性质：沿用已会签路线，不改变产品定位、主交互载体、技术栈、版本范围或验收门禁。V1 已完成精确用户会签及分离的 ACK/completion CAS，V2 入口独立评估已通过；当前只允许准备后续规划门禁。入口 PASS 不直接授权 V2 packet、claim/fence、dispatch 或编码。
+- 路线性质：沿用已会签路线，不改变产品定位、主交互载体、技术栈、版本范围或验收门禁。V1 已完成精确用户会签及分离的 ACK/completion CAS，V2 入口独立评估已通过。CR-006 只增加跨版本可承受性护栏，独立计划位于 `docs/exec-plans/active/p5-scalability-guardrails.md`；当前只允许关闭其规划门禁。该方向批准与 V2 入口 PASS 均不直接授权 SG/V2 packet、claim/fence、dispatch 或编码。
 
 ## 3. 正式上游
 

@@ -31,7 +31,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - Change Intake、恢复、Final Acceptance、交付和宿主归档边界通过故障注入和反扫验证。
   - V1..V4 与 Final Acceptance 分别完成本地验证、适用验收和用户会签。
 - 阶段出口：V1..V4 和 Final Acceptance 全部通过；正式 OID、交付清单、风险、回滚和 PC-20.AR 状态可追溯，并由用户明确确认 P5 产品落地完成。
-- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；S1.2/F12、S1.3/F13、S1.4/F14、S1.5/F15、S1.6/F16 已正式提升，M1.1 attempt 2 与 M1.2 attempt 1 用户会签均已完成。V1 attempt 1/2/3/4 的四份非通过 Result 均已固化；attempt 5 在新 no-local clone 中以唯一 install/check/runner 形成完整证据，独立 L3=`PASS / 100`，immutable PASS Result digest=`sha256:fd5e6c09a20ad35c25261bf0b0ace81da14767576ebb84361701cb01594c881b`。会签包 replacement 终审=`PASS / 99`，用户精确会签身份复核=`PASS / 100`，ACK control=`9ec9d45de5c973f1d3904bcfd3817e6103bbd324`，独立 completion control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`；V1 已 formally-completed，formal 保持 F16。V2 入口独立评估 `5be7ff254f898cee7887df9a15b48b8d21f2c1ed`=`PASS / 100`；当前只允许准备 V2 规划或首个 packet 前的后续门禁，packet、claim/fence、dispatch 与编码仍未授权。
+- 最小可验收闭环：`P5-M0 实施就绪门禁` 已通过；S1.2/F12、S1.3/F13、S1.4/F14、S1.5/F15、S1.6/F16 已正式提升，M1.1 attempt 2 与 M1.2 attempt 1 用户会签均已完成。V1 attempt 1/2/3/4 的四份非通过 Result 均已固化；attempt 5 在新 no-local clone 中以唯一 install/check/runner 形成完整证据，独立 L3=`PASS / 100`，immutable PASS Result digest=`sha256:fd5e6c09a20ad35c25261bf0b0ace81da14767576ebb84361701cb01594c881b`。会签包 replacement 终审=`PASS / 99`，用户精确会签身份复核=`PASS / 100`，ACK control=`9ec9d45de5c973f1d3904bcfd3817e6103bbd324`，独立 completion control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`；V1 已 formally-completed，formal 保持 F16。V2 入口独立评估 `5be7ff254f898cee7887df9a15b48b8d21f2c1ed`=`PASS / 100`。用户已批准 CR-006 三项可承受性护栏的方向和实施；当前先完成其独立规划门禁，再请求首个精确 SG packet control 授权。CR-006 不授权 V2 产品 packet，也不提前满足 PC-12/PC-19。
 - 明确非目标：
   - 不恢复 NextStep Web/UI 候选分支。
   - 不引入常驻服务、数据库、远程控制面或通用多 Agent 编排平台。
@@ -43,7 +43,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - 不改变已会签产品、交互、S4/P3/P4 或验收边界；需要改变时先进入 Change Request。
 - 禁止提前进入的阶段：S7 最终发布判断和 S8 交付归档；V1..V4 也不得跳过前序门禁并行宣告完成。
 - 允许进入下一阶段的条件：P5 Final Acceptance 通过本地可重复验证、独立验收和用户会签；若实现要求改变已会签产品、交互、技术、版本范围、正式提升或验收边界，必须先完成 Change Request。
-- 当前状态：进行中；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`。V1 attempt 5 registry=`gate-passed`、signoff=`approved`、version=`formally-completed`、pending dispatch=0；V2 入口独立评估=`PASS / 100`、P0/P1=`0/0`、required fixes=0。下一步只允许准备 V2 规划或首个 packet 前的后续门禁；未获得新的精确 control 授权前，不得创建 V2 packet、claim/fence、dispatch 或代码，P5 仍未完成。
+- 当前状态：进行中；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`。V1 attempt 5 registry=`gate-passed`、signoff=`approved`、version=`formally-completed`、pending dispatch=0；V2 入口独立评估=`PASS / 100`、P0/P1=`0/0`、required fixes=0。CR-006=`accepted-for-planning`，活动计划为 `docs/exec-plans/active/p5-scalability-guardrails.md`；当前只允许完成该计划的独立规划门禁并准备首个 SG packet 精确身份。未获得新的精确 control 授权前，不得创建 SG/V2 packet、claim/fence、dispatch 或代码，P5 仍未完成。
 
 ## 2.1 里程碑路线图
 
@@ -109,7 +109,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
 
 - Backlog：待建立。
 - Change Request：`docs/change-requests/index.md`
-- 当前阶段缺口：V1 attempt 5 已 fresh 完成 474/474、coverage=`93.44/88.92/99.15`、四 artifact、固定 rows、17/17 source、PC-01..08 与精确 18 项 TG join；独立 L3、immutable PASS Result、会签包终审、用户精确 ACK 与独立 completion CAS 均已完成，V1 已 formally-completed。V2 入口独立评估已 `PASS / 100`；当前缺口是首个 V2 packet 的独立规划与精确 control 授权，P5 仍未完成，不得把入口 PASS 解释为 packet、dispatch 或编码授权。
+- 当前阶段缺口：V1 attempt 5 已 fresh 完成 474/474、coverage=`93.44/88.92/99.15`、四 artifact、固定 rows、17/17 source、PC-01..08 与精确 18 项 TG join；独立 L3、immutable PASS Result、会签包终审、用户精确 ACK 与独立 completion CAS 均已完成，V1 已 formally-completed。V2 入口独立评估已 `PASS / 100`。为防止后续工作量不可承受，CR-006 先建立复杂度预算、只读状态投影和真实项目价值验证框架；当前缺口是 CR-006 计划独立验收及首个 SG packet 的精确 control 授权。V2 产品 packet 保持暂停，不得把 CR-006 或 V2 入口 PASS 解释为 packet、dispatch、编码或 PC 完成授权。
 - 后续阶段需求：V1..V4 和 Final Acceptance 按活动计划顺序推进；P4 第 12 节“运行集成验收”只允许落实为集成诊断预检，正式 I/X/P 四态结论仍由独立门禁和最终复验链产生。若未来恢复 `Web / UI` 分支，需重新确认其与当前 Skill 主路线的关系。
 - 已拒绝需求：无。
 

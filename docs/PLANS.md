@@ -4,12 +4,13 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：V2 首个 packet 前规划门禁（入口独立评估已 `PASS / 100`，当前 formal=F16）
-- 当前状态：formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`；control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`。V1 已 formally-completed，V2 入口独立评估已通过。当前只允许准备 V2 规划或首个 packet 前的后续门禁；P5 未完成，V2 packet、claim/fence、dispatch 与编码未授权。
+- 当前活动里程碑：CR-006 可承受性护栏首个 SG packet 前规划门禁；V2 产品 packet 暂停在入口评估通过状态
+- 当前状态：formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`；control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`。V1 已 formally-completed，V2 入口独立评估已通过。用户已批准 CR-006 三项方向和实施；当前只允许完成独立规划门禁并准备首个精确 SG packet 身份。P5 未完成，SG/V2 packet、claim/fence、dispatch 与编码尚未获得精确 control 授权。
 
 ## 当前活动计划
 
-- [P5 产品落地实施里程碑](./exec-plans/active/p5-product-implementation-milestones.md)：当前唯一活动计划；按 `P5-M0 -> V1 -> V2 -> V3 -> V4 -> Final Acceptance` 推进
+- [P5 产品落地实施里程碑](./exec-plans/active/p5-product-implementation-milestones.md)：当前主路线活动计划；按 `P5-M0 -> V1 -> V2 -> V3 -> V4 -> Final Acceptance` 推进
+- [P5 可承受性护栏](./exec-plans/active/p5-scalability-guardrails.md)：CR-006 的当前优先活动计划；三个互斥 SG 包只降低跨版本治理膨胀风险，不改变 V2..V4 主路线或提前满足 PC
 
 ## 暂停候选计划
 
@@ -27,7 +28,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。V2 入口独立评估已 `PASS / 100`；当前进入首个 V2 packet 前的规划门禁，P5 尚未完成。
+P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。V2 入口独立评估已 `PASS / 100`。用户于 2026-08-25 批准 CR-006 三项可承受性护栏方向和实施；当前优先关闭其独立规划门禁，V2 产品 packet 保持暂停，P5 尚未完成。
 
 实施顺序保持 P3 已会签结构：
 

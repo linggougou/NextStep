@@ -2528,3 +2528,18 @@
 - 完成状态：registry V1 attempt 5=`gate-passed / approved / formally-completed`；checkpoint 新增 `completed_versions.V1`，pending dispatch=0。三项 P2 继续 carry-forward，P5 未完成；下一步只允许独立 V2 entry evaluation，V2 packet、claim/fence、dispatch 与编码保持未授权。
 - Agent 处置：一个 replacement 前的复核实例在隔离 clone 中空转且零写入，已中断；其工作树保持 clean，未计入验收。既有有效独立身份复核分支固定为 `codex/v1-a5-signoff-identity-review-20260824`。
 - 保护：未读取、修改、暂存、摘要、验收或清理受保护的 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`。
+## 2026-08-25 可承受性护栏变更入口
+
+- 时间：2026-08-25T23:53:04+08:00。
+- 目标：实施控制复杂度预算、自动状态投影、真实项目价值验证框架，避免 NextStep 在继续细化后出现不可承受的控制面和证据膨胀。
+- 路线判断：当前为 S5 / P5，V1 已 formally-completed，V2 entry=`PASS / 100`；现有路线只授权 V2 首个 packet 前规划，尚未授权 V2 packet、claim/fence、dispatch 或编码。
+- 变更判断：三项均为用户新批准的跨版本基础改进；先进入 Change Intake，再形成独立活动计划和精确任务包，不把用户的方向性批准扩大为尚未生成身份的 control CAS、claim/fence 或验收会签。
+- 当前阶段出口：建立三个有复杂度上限、可独立验收的最小闭环，并保持既有 V2/V4 产品门禁不被提前满足或绕过。
+- 最小影响范围：Change Request、活动执行计划、路线/计划索引、后续获精确授权的三个互斥实现包及其测试；不改变产品定位、主载体、技术栈、formal ref 或既有 Result。
+- 非目标：不实现 V2 版本/里程碑生成，不创建真实执行任务，不宣告 PC-12/PC-19/V2/V4/P5 完成，不引入数据库/UI/远程服务，不清理历史证据。
+- 工作区：main=`14f8930f119a0ac3502f3eba00e09558b1f0237d`，formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`；仅有用户未跟踪 Multica 摘要，保持不读不改。
+- Skill：功能实现采用 `tdd-workflow`；候选验收采用 `judge-harness`。CodeGraph 不可调用且未初始化，按路线锁不自动创建，改用 `rg`、真源、源码和架构测试完成影响分析。
+- 并行边界：按用户要求准备互斥 worktree/subagent；主代理保留路线锁、control 身份、集成和最终回归所有权。
+- 规划 Agent：`codex/scalability-plan` 只写 CR-006、Change Request 索引与活动计划，候选 `ccdd65126f116138b52541cc7daca426d9a79a3e` 已集成为 main `fc1e432`；三个任务包 SG-1/SG-2/SG-3 的路径、行数、fixture、TDD、回滚和独立验收边界已冻结。
+- 设计 Agent：首版设计因 SG-1 阈值、Git 读取和文件边界与上位计划冲突，未集成；replacement `1d1a9d62f8b6008ce6bb545027e5aa82f8660deb` 已压缩为 292 行并完全对齐上位计划，集成为 main `8533aa7`。
+- 当前停点：只完成 planning candidate 和状态入口同步，尚未生成 SG packet/control identity；下一步为独立 L3 规划验收。PASS 前不得请求 packet CAS，PASS 后仍需新的精确 SG-1 packet/control 授权，不能把用户对三个方向的批准扩张为 control CAS。
