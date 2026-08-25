@@ -1,6 +1,6 @@
 # 可承受性护栏：复杂度预算、状态投影与真实项目价值验证
 
-- 状态：sg1-packet-prepared-awaiting-claim-fence-authorization（generation 5 replacement、advance/ack 与 SG-1 attempt 1 packet 已完成；claim/fence 尚未授权）
+- 状态：sg1-claim-held-awaiting-dispatch-authorization（generation 5 replacement、advance/ack、SG-1 attempt 1 packet 与 claim/fence 118 已完成；dispatch-ready/outbox 尚未授权）
 - 记录日期：2026-08-25
 - 来源：V1 完成后的项目分析与用户对工作膨胀风险的明确反馈
 - 所属阶段：P5 / 跨版本可承受性护栏
@@ -21,7 +21,7 @@ V1 已证明 NextStep 的可靠性内核和证据链可以运行，但控制提�
 - 是否改变当前路线：否。保持 `P5-M0 -> V1 -> V2 -> V3 -> V4 -> Final Acceptance`，不新增产品版本，不改变 PC 主版本归属、技术栈、主载体、正式提升或验收门禁；但本 CR 新增计划范围、任务和 DoD，必须按 P4/S4 把 `plan_generation` 从 4 单向推进到 5。
 - 是否影响当前阶段出口：不替代任何既有出口。三个护栏任务包通过，只证明可承受性工具和验证框架可用。
 - 是否需要更新 `PROJECT_ROUTE_LOCK.md`：不改变路线结构，但必须同步当前阶段、代际缺口和授权停点；本 replacement 已更新路线锁的状态字段。若实施发现必须改变 PC、数据模型、正式 ref、控制协议或门禁，再停止并另开 Change Request。
-- 与当前入口的关系：V1 仍为 formally-completed；V2 入口评估 PASS 仍只允许规划。generation 5 advance/ack 与 SG-1 generation 5 attempt 1 packet 已按分离单父 expected-old CAS 固化；下一动作只能请求 SG-1 claim/fence 的精确 control 授权，本文不创建或授权 V2 首个产品 packet。
+- 与当前入口的关系：V1 仍为 formally-completed；V2 入口评估 PASS 仍只允许规划。generation 5 advance/ack、SG-1 generation 5 attempt 1 packet 与 claim/fence 118 已按分离单父 expected-old CAS 固化；下一动作只能请求 SG-1 dispatch-ready/outbox 的精确 control 授权，本文不创建或授权 V2 首个产品 packet。
 
 ### 2.1 控制代际影响
 
@@ -103,4 +103,5 @@ V1 已证明 NextStep 的可靠性内核和证据链可以运行，但控制提�
 - 裁决：`PASS / 100`，P0/P1/P2=`0/0/0`，`required_fixes=[]`。
 - generation 5 control 结果：advance=`11cfbf71dfb4b8cd691588ea12a19bb32f759d9c`，唯一父为授权 expected-old `6d5120078a137ecf74b4a4b58cbcba37a61b7148`；ack=`83ef8b4361c96641e54d85acda6134a1cc75420e`，唯一父为 advance。formal 保持 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，`plan_generation=5`，pending dispatch=0。
 - SG-1 packet 结果：control=`12ab4aaffda6ee44853d4014230b9a85c1ad8944`，唯一父=`83ef8b4361c96641e54d85acda6134a1cc75420e`；packet digest=`sha256:04d13a57ce82419534255d126184dc35d6cfce4e35b4c878f0200bf43302be52`，dedup=`sha256:62e7a40290d06d58050d3fff80f9315fa246465f08dc5a5943381386ca8f45c7`，registry=`packet-prepared`，pending/活动任务=0。
-- 当前下一动作：只允许请求并等待 SG-1 claim/fence 的精确 control 授权；不得自动创建 dispatch-ready、outbox、dispatch ACK、宿主任务或代码。
+- SG-1 claim/fence 结果：control=`042e007d5d342c90f6370212549963bae6a2db95`，唯一父/expected-old=`12ab4aaffda6ee44853d4014230b9a85c1ad8944`；claim=`claim-sg1-g5-a1-f118-20260826`，fence=118，lease=`2026-08-26T18:34:25Z`。写集 exact-2，只更新 `checkpoint.json` / `registry.json`；outbox/宿主均为空，pending dispatch=0，formal/main 未移动。
+- 当前下一动作：只允许请求并等待 SG-1 dispatch-ready/outbox 的精确 control 授权；不得自动创建宿主任务、dispatch ACK、编码或验收结果。

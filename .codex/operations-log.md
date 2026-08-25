@@ -1,5 +1,16 @@
 # Operations Log
 
+## 2026-08-25 CR-006 SG-1 claim/fence 118 control CAS
+
+- 生命周期与路线：当前仍为 `S5 / P5`；V1 已 formally-completed，V2 入口独立评估保持 `PASS / 100`。本轮只承接用户对 `SG-1 generation 5 attempt 1 claim/fence` 的精确授权，不扩大到 dispatch-ready/outbox、宿主派发、dispatch ACK、编码、独立验收、V2 packet、formal 移动或 P5 完成。
+- live 身份：working HEAD 仍为 `07c2748bd2132abfa1972c734154ed1bebe17059`，formal 仍为 `ea04b57de83d6c548dcb1629b1f61832db8375ad`；control 已从 packet `12ab4aaffda6ee44853d4014230b9a85c1ad8944` 前进到 claim `042e007d5d342c90f6370212549963bae6a2db95`。该提交对象自身记录的 Git 时间戳为 `2026-08-26 02:37:54 +0800`，直接父为授权 expected-old `12ab4aaffda6ee44853d4014230b9a85c1ad8944`。
+- control 边界：claim CAS 为 exact-2，只更新 `checkpoint.json` 与 `registry.json`；未新增 message、outbox、dispatch-ready、dispatch ACK、Result、gate request、promotion、代码、Schema、测试或 packet 对象。`checkpoint.control_parent_oid=12ab4aa...`，`next_stage` 明确为“claim/fence 118 已持有，等待单独 dispatch-ready/outbox 授权”。
+- SG-1 身份：registry 中唯一 `P5/CR-006/SG-1` 记录仍仅 1 条，`latest_control_object_id=claim-sg1-g5-a1-f118-20260826`，claim=`claim-sg1-g5-a1-f118-20260826`、owner=`codex-root-supervisor-20260826`、fence=`118`、lease=`2026-08-26T18:34:25Z`。`outbox_ref=null`、`host_task_id=null`、`latest_message_id=null`，SG-2/SG-3 仍未创建。
+- packet 与不变量：`packets/ep-p5-cr006-sg1-g5-a1-20260826.json` 的 RFC8785 packet digest 与 dedup 再次复算匹配：`sha256:04d13a57ce82419534255d126184dc35d6cfce4e35b4c878f0200bf43302be52` / `sha256:62e7a40290d06d58050d3fff80f9315fa246465f08dc5a5943381386ca8f45c7`；pending dispatch=0，活动任务=0。fence 集合总数 82、唯一值 81，最大 token 为 118，新增 token 单调成立。
+- 留痕同步：保留已存在的 `PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md`、`docs/PRODUCT_SENSE.md` 未提交状态更新，不覆盖其内容；补齐 P5 主计划、SG 计划、QA 索引与验证留痕，使项目摘要、执行计划、QA 与 control 当前口径一致。
+- 明确未做：未读取或处理受保护未跟踪文件 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`；未创建 dispatch-ready/outbox、未派发宿主任务、未编码实现、未变更 formal/main refs。
+- 当前状态：claim/fence 118 control CAS 已完成，下一入口只允许请求 SG-1 dispatch-ready/outbox 的精确 control 授权；宿主派发、dispatch ACK、编码、独立验收、V2 packet 与 P5 完成仍保持门禁。
+
 ## 2026-08-26 CR-006 规划候选状态入口同步
 
 - 生命周期与路线：当前仍为 `S5 / P5`，live route 已切到 `CR-006 可承受性护栏首个 SG packet 前规划门禁`；在新的精确 control 授权前，不得创建 SG/V2 packet、claim/fence、dispatch 或代码。
@@ -2578,3 +2589,13 @@
 - packet CAS：创建单父 control=`12ab4aaffda6ee44853d4014230b9a85c1ad8944`，唯一父/expected-old=`83ef8b4361c96641e54d85acda6134a1cc75420e`；写集 exact-3，只新增 packet 并更新 checkpoint/registry。
 - 状态：SG-1 唯一 registry 记录=`packet-prepared`、highest generation=5、attempt=1、host/outbox/claim 均为空；SG-2/SG-3 未创建，pending dispatch=0，活动任务=0，formal/main 未移动。
 - 当前停点：只允许请求 SG-1 claim/fence 的新精确 control 授权。dispatch-ready、outbox、dispatch ACK、宿主任务、编码、独立验收、V2 packet、formal 移动与 P5 完成均不在本授权内。
+
+## 2026-08-26 CR-006 SG-1 generation 5 attempt 1 claim/fence 118 CAS
+
+- 用户在上轮明确停点后回复“授权”；主控按最窄紧邻语义执行 claim/fence-only，并在执行前明示不包含 dispatch-ready/outbox、宿主派发、dispatch ACK、编码或验收。
+- 实时 preflight：HEAD=`07c2748bd2132abfa1972c734154ed1bebe17059`，formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`12ab4aaffda6ee44853d4014230b9a85c1ad8944`；SG-1 唯一 registry=`packet-prepared`，host/outbox/claim 为空，pending=0，原最大 fence=117，packet 未过期。受保护未跟踪 Multica 摘要保持不读不改。
+- 构造命令第一次在运行前因包含临时索引清理动作被本地安全包装器拒绝，未写入对象或 ref；移除清理后续行。第二次因 zsh revision/path 变量展开语法在首个只读 `git show` 处终止，亦未写入 ref；改用显式变量边界后成功。最终临时 index 保留于 `/tmp/nextstep-sg1-claim-index.EISo8n`，未执行破坏性清理。
+- control CAS：创建单父 `042e007d5d342c90f6370212549963bae6a2db95`，唯一父/expected-old=`12ab4aaffda6ee44853d4014230b9a85c1ad8944`；exact-2 仅更新 checkpoint/registry。claim=`claim-sg1-g5-a1-f118-20260826`，fence=118，owner=`codex-root-supervisor-20260826`，lease=`2026-08-26T18:34:25Z`。
+- 不变量：registry=`dispatch-claimed`，outbox/host 为空，pending dispatch=0；packet blob 与 `messages/` tree 未变，formal 与 CAS 前 main 未移动，无代码、Result、V2 packet 或 P5 completion 对象。
+- 独立复核：唯一只读评审 subagent `sg1_claim_fence_review` 已完成并回收，结论为通过。它独立复算 packet digest/dedup，并确认单父/exact-2/fence 118/lease/formal/无 dispatch 边界全部成立；`dispatch-claimed` 不扩大为 dispatch 授权。
+- 当前停点：control=`042e007d5d342c90f6370212549963bae6a2db95`，只允许基于同一 packet digest、fence 118 与未过期 lease 请求 dispatch-ready/outbox 的新精确授权。未授权宿主派发、dispatch ACK、编码、独立验收、V2 packet、formal 移动或 P5 完成。

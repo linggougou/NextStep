@@ -1,5 +1,15 @@
 # Verification Report
 
+## 2026-08-26 CR-006 SG-1 generation 5 attempt 1 claim/fence 118 CAS 验证
+
+- 授权语义：用户在 SG-1 packet CAS 完成后回复“授权”；按当时紧邻语境仅解释为创建 `P5/CR-006/SG-1` / `SG-1` / g5/a1 的 claim/fence control 状态，不扩大为 dispatch-ready/outbox、宿主派发、dispatch ACK、编码或验收授权。
+- 实时边界：working HEAD=`07c2748bd2132abfa1972c734154ed1bebe17059`，formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，expected-old control=`12ab4aaffda6ee44853d4014230b9a85c1ad8944`；packet digest=`sha256:04d13a57ce82419534255d126184dc35d6cfce4e35b4c878f0200bf43302be52`，dedup=`sha256:62e7a40290d06d58050d3fff80f9315fa246465f08dc5a5943381386ca8f45c7`，且执行时未过期。
+- CAS：新 control=`042e007d5d342c90f6370212549963bae6a2db95`，唯一父=`12ab4aaffda6ee44853d4014230b9a85c1ad8944`；exact-2 写集仅为 `checkpoint.json` 与 `registry.json`，packet 及 `messages/` tree 与 expected-old 逐对象相同。
+- claim/fence：claim=`claim-sg1-g5-a1-f118-20260826`，owner=`codex-root-supervisor-20260826`，fence=118，leased until=`2026-08-26T18:34:25Z`；原最大 fence=117，新最大 fence=118，SG-1 唯一记录为 `dispatch-claimed`。
+- 无派发不变量：SG-1 `outbox_ref=null`、host 为空，checkpoint pending dispatch=0、unconfirmed tombstone=0；未创建 dispatch-ready、outbox、dispatch ACK、宿主任务、Result 或代码对象。formal 与 CAS 前 working HEAD 均未移动，受保护未跟踪 Multica 摘要未读取或纳入。
+- 独立验收：唯一只读 subagent `sg1_claim_fence_review` 复算 packet digest/dedup 并核对单父、exact-2、fence/lease、formal 与无 dispatch 不变量，结论为通过。registry 的 `dispatch-claimed` 仅表示 claim 已持有；`outbox_ref/host/latest_message_id` 均为空，不构成派发授权。
+- 结论：claim/fence 118 CAS 通过。当前唯一后继入口是基于 control `042e007...`、同一 packet digest 与未过期 lease 请求 dispatch-ready/outbox 的新精确授权；宿主派发/ACK、编码、独立验收、V2 packet、formal 移动与 P5 完成仍未授权。
+
 ## 2026-08-26 CR-006 SG-1 generation 5 attempt 1 packet CAS 验证
 
 - 授权身份：working parent=`a6b3a70a90eae6d26c94ca0cd20ac8cf9c85f95c` / tree=`8b2e7ea4331f117d2c2be92910d928f1b56fe6bd`，formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，expected-old control=`83ef8b4361c96641e54d85acda6134a1cc75420e`，stage/task/generation/attempt=`P5/CR-006/SG-1` / `SG-1` / `5` / `1`。
