@@ -71,10 +71,10 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 
 ## 当前阶段
 
-- 当前里程碑：P5 / V1 累计验收
-- 当前生命周期阶段：S5 开发落地中的版本验收门禁
-- 当前状态：S1.2/F12 至 S1.6/F16、M1.1 与 M1.2 均已正式完成；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`。V1 累计验收入口与 Generation 1 计划独立评审均 `PASS / 100`，首次 packet/control CAS 已完成；当前等待新的 claim/fence/派发授权。V1、P5 尚未完成，V2 未授权。
-- 当前正式状态、边界和下一入口以 `PROJECT_ROUTE_LOCK.md` 与 `docs/PLANS.md` 为准。
+- 当前里程碑：P5 / CR-006 可承受性护栏首个 SG packet 前规划门禁
+- 当前生命周期阶段：S5 开发落地
+- 当前状态：V1 已 formally-completed；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`6d5120078a137ecf74b4a4b58cbcba37a61b7148`。V2 入口独立评估已 `PASS / 100`，但产品 packet 继续暂停。用户已于 2026-08-25 批准 CR-006 三项可承受性护栏方向和实施；当前只允许完成独立规划门禁，并准备首个精确 SG packet 身份。SG/V2 packet、claim/fence、dispatch 与编码尚未获得精确 control 授权，P5 仍未完成。
+- 当前正式状态、边界和下一入口以 `PROJECT_ROUTE_LOCK.md` 与 `docs/PLANS.md` 为准；若与本页摘要冲突，以两者为准。
 
 ## S3 已会签交付物
 
@@ -92,6 +92,7 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 
 ## 当前交付物
 
-- P5 活动计划：`docs/exec-plans/active/p5-product-implementation-milestones.md`，M1.1 attempt 2 `PASS / 97` 用户会签已完成，M1.1 正式完成；V1、P5 尚未完成
+- P5 主路线活动计划：`docs/exec-plans/active/p5-product-implementation-milestones.md`，V1 已 formally-completed，V2 入口评估已通过，但首个产品 packet 尚未授权
+- P5 可承受性护栏计划：`docs/exec-plans/active/p5-scalability-guardrails.md`，当前优先活动计划；只建立三个互斥 SG 包的规划、边界和验收，不提前满足 PC-12、PC-19、V2 或 V4
 - P3 版本与里程碑拆解：`docs/exec-plans/completed/p3-version-and-milestone-breakdown.md`，已会签并归档
-- 当前变更入口：`docs/change-requests/005-product-definition-semantic-contract-gap.md`，已完成并关闭；历史 F0→F12→F13→F14 正式实施、M1.1 attempt 2 `PASS / 97` 验收与会签证据均保留
+- 当前变更入口：`docs/change-requests/006-scalability-guardrails.md`，状态为 `accepted-for-planning`；CR-005 已完成并关闭，历史 F0→F12→F13→F14 正式实施、M1.1 attempt 2 `PASS / 97` 验收与会签证据均保留

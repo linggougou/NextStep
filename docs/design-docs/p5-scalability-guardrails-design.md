@@ -3,7 +3,7 @@
 - 状态：实施候选，不是已会签产品真源
 - 上位真源：`docs/change-requests/006-scalability-guardrails.md`、`docs/exec-plans/active/p5-scalability-guardrails.md`
 - 适用阶段：P5 / S5 开发落地
-- 设计日期：2026-08-26
+- 设计日期：2026-08-25
 
 ## 1. 目标、约束与当前基线
 

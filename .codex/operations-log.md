@@ -1,5 +1,14 @@
 # Operations Log
 
+## 2026-08-25 CR-006 规划候选日期与状态入口同步
+
+- 生命周期与路线：当前仍为 `S5 / P5`，live route 已切到 `CR-006 可承受性护栏首个 SG packet 前规划门禁`；在新的精确 control 授权前，不得创建 SG/V2 packet、claim/fence、dispatch 或代码。
+- 发现的问题：`docs/design-docs/p5-scalability-guardrails-design.md` 使用了未来日期 `2026-08-26`；`docs/PRODUCT_SENSE.md` 仍停留在 `P5 / V1 累计验收` 与“等待新的 claim/fence/派发授权”的旧状态，和 `PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md` 的当前入口不一致。
+- 本轮修正：仅同步规划包文档，不触碰 formal/control、任务包、代码、Schema、测试或既有验收结论。技术设计日期改回 `2026-08-25`；`PRODUCT_SENSE.md` 的当前阶段、当前状态和当前交付物改为 CR-006 规划门禁口径，并明确 route/PLANS 优先于摘要页。
+- 明确未做：未创建 SG packet、未申请/写入 claim/fence、未生成 dispatch、未进入任何生产代码实现；未修改用户未跟踪文件 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`。
+- 本地检查：`git diff --check` 通过；针对 `2026-08-26`、旧 `V1 累计验收` 文案和 `CR-006` 当前口径的 `rg` 一致性检查通过。
+- 当前状态：规划候选文档入口已收敛到同一口径；下一步仍应是独立规划验收和首个精确 SG packet control 授权，而不是直接编码。
+
 ## 2026-08-12 CR-005 用户批准
 
 - 用户明确批准 CR-005 为“高风险基础变更 + 当前阶段缺口”，授权按已通过 `PASS / 98` 独立审查的协议推进 plan_generation 4。
