@@ -1,12 +1,13 @@
 # Verification Report
 
-## 2026-08-25 CR-006 规划候选状态同步验证
+## 2026-08-26 CR-006 规划候选状态同步验证
 
 - 验证范围：`docs/design-docs/p5-scalability-guardrails-design.md`、`docs/PRODUCT_SENSE.md` 与现行 `PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md` 的规划门禁口径一致性。
-- 发现并修复：技术设计中的未来日期 `2026-08-26` 已改回 `2026-08-25`；`PRODUCT_SENSE.md` 已从旧的 `P5 / V1 累计验收` 状态同步为 `CR-006 可承受性护栏首个 SG packet 前规划门禁`。
+- 发现并修复：`PRODUCT_SENSE.md` 已从旧的 `P5 / V1 累计验收` 状态同步为 `CR-006 可承受性护栏首个 SG packet 前规划门禁`；技术设计日期与实际形成日期统一为 `2026-08-26`。
 - 机械验证：`git diff --check` 通过；关键口径检索确认 `PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md`、`docs/PRODUCT_SENSE.md` 现均指向 CR-006 规划门禁、V1 formally-completed、V2 packet 暂停、SG/V2 packet/claim/fence/dispatch/编码未获精确授权。
 - 变更边界：仅修改两份文档；未修改 formal/control、`src/**`、`schemas/**`、`tests/**` 或历史证据文件，因此本轮未重跑 `pnpm check`。
 - 阶段门禁判断：规划候选的日期与状态入口漂移已收口，但独立规划验收尚未执行；当前仍不允许进入 SG/V2 代码实施。
+- 审查程序判断：首次 reviewer 越过 exact-2 只读范围且未生成 scorecard/verdict，因此该轮验收无效；不得引用为通过证据，新的固定候选必须重新接受独立 L3 规划验收。
 
 ## 2026-08-12 CR-005 用户批准边界验证
 
