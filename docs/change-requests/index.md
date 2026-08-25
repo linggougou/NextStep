@@ -11,6 +11,10 @@
 - [M1.1 跨阶段 fixture 连续性缺口](./004-m1-1-cross-stage-fixture-continuity-gap.md)：已完成正式修复、独立验收与 M1.1 会签关闭；历史证据保留。
 - [产品定义非目标与来源角色契约缺口](./005-product-definition-semantic-contract-gap.md)：第四轮独立复审 `PASS / 98` 后获用户批准；generation 4 与 F12/F13/F14 正式链已完成，历史证据保留。
 
+## 已接受待实施变更
+
+- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：用户已同意三个方向；仅建立跨版本护栏计划，不授权 V2 packet/dispatch，不提前声明 PC-12、PC-19、V2 或 V4 完成。
+
 ## 分流规则
 
 新增需求、漏项、二期需求不得直接进入当前版本或当前小里程碑，必须先判断：
