@@ -1,0 +1,187 @@
+{
+  "review_id": "p5-cr006-sg3-independent-acceptance-formal-attempt-1-2026-08-26",
+  "task_id": "SG-3-I-X-P",
+  "lane": "package-acceptance",
+  "review_level": "L3",
+  "rubric_id": "p5-cr006-sg3-package-acceptance-v1",
+  "artifact_refs": [
+    "git:87258c32162875bef16994b2259ad16baf4cb72e",
+    "git-tree:a7b317cec57e61b1cac06f55b6f212bf08a8b02a",
+    "git-parent:44852b2b56849aac48329990c58143dbb2d2a86b",
+    "control:65655e58b0d0b69cb711a9f545b2d64fcb383a3a:gate-requests/gate-package-acceptance-sg3-g5-a1-20260826.json",
+    "control:a4df48979b4f56825e53586bada460d046c80e37",
+    "control:1638f2c3345a6ff08e2bc2a5c6ae1da2e72ae37c",
+    "control:294f04131494894d32c29523b807bf9987a9f075",
+    "formal:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "control:509cbad47e8f33b4df4a2678da833865d47d4f81:messages/msg-dispatch-ack-sg3-g5-a2-f130-20260826.json",
+    "control:294f04131494894d32c29523b807bf9987a9f075:messages/msg-dispatch-ack-sg3-ixp-g5-a1-f131-20260826.json",
+    "result:results/result-execution-sg3-g5-a2-f130-20260826.json",
+    "result:results/result-execution-sg3-g5-a1-f129-contract-audit-20260826.json"
+  ],
+  "subject_identity": {
+    "commit_oid": "87258c32162875bef16994b2259ad16baf4cb72e",
+    "tree_oid": "a7b317cec57e61b1cac06f55b6f212bf08a8b02a",
+    "parent_oid": "44852b2b56849aac48329990c58143dbb2d2a86b",
+    "subject_digest": "sha256:6ff9bb2e7335b438b5d400139e9ea5b1644dc5cce3c347e41f63d8315340c4df"
+  },
+  "control_identity": {
+    "packet_digest": "sha256:63bb6a9c780ddfbc6506eecfa64c887585459b6eaffe3125f1669f3717d2abd6",
+    "dedup_key": "sha256:9f09d73290e31e13b0b3a40c587572bb0533b9dcd1b716745247044030c6ee44",
+    "claim_id": "claim-sg3-ixp-g5-a1-f131-20260826",
+    "fence_token": 131,
+    "dispatch_ack_control_oid": "294f04131494894d32c29523b807bf9987a9f075",
+    "host_task_id": "codex-subagent:/root/sg3_accept_g5_a1_f131",
+    "formal_oid": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "plan_generation": 5
+  },
+  "hard_gates": [
+    {
+      "id": "HG0-attempt1-invalidated-attempt2-only",
+      "status": "pass",
+      "evidence": "attempt1 contract audit Result 固定为 sha256:cd907ffff7cd509bd2744ee2da6fedfa2e70cf42e683d017bc8626d469695199，attempt2 packet/ACK/Result 全部独立存在；本次验收仅消费 corrected attempt2 候选 87258c3 与 result-execution-sg3-g5-a2-f130-20260826.json。"
+    },
+    {
+      "id": "HG1-control-identity",
+      "status": "pass",
+      "evidence": "独立重算 acceptance packet=sha256:63bb6a9c780ddfbc6506eecfa64c887585459b6eaffe3125f1669f3717d2abd6、dedup=sha256:9f09d73290e31e13b0b3a40c587572bb0533b9dcd1b716745247044030c6ee44、subject=sha256:6ff9bb2e7335b438b5d400139e9ea5b1644dc5cce3c347e41f63d8315340c4df、execution Result=sha256:917f0f3f76c941bab1dc4bb16605b0522d98dd860cb0b5e11dba2184190eb6b0；control 链 65655e5 -> a4df489 -> 1638f2c -> 294f041 为逐段单父，attempt2 execution control 为 509cbad。"
+    },
+    {
+      "id": "HG2-clone-isolation-and-preprovision",
+      "status": "pass",
+      "evidence": "no-local clone 中 remote 为空、alternates 缺失、node_modules 为本地目录非 symlink、pnpm exec tsc --version=7.0.2；验证前后 formal/control 保持 ea04b57 / 294f041 不变。"
+    },
+    {
+      "id": "HG3-subject-and-allowlist",
+      "status": "pass",
+      "evidence": "HEAD/tree/parent 精确匹配 87258c3 / a7b317c / 44852b2；相对 parent 的真实写集精确为 docs/qa/real-project-value-validation.md、schemas/v1/project-value-run.schema.json、src/cli/project-value-validation.ts、src/domain/project-value-validation.ts、tests/cli/project-value-validation.test.ts、tests/domain/project-value-validation.test.ts、tests/fixtures/project-value-validation/empty.json、tests/fixtures/project-value-validation/repository-synthetic.json 八条 allowlist 路径。"
+    },
+    {
+      "id": "HG4-targeted-and-full-verification",
+      "status": "pass",
+      "evidence": "定向 build + node --test 为 9/9；full corepack pnpm check 为 discovered=503、pass=503、fail/skip/cancel/todo=0/0/0/0；coverage Lines/Branches/Functions=93.50/88.62/99.22；git diff --check 通过。"
+    },
+    {
+      "id": "HG5-schema-and-batch-reject",
+      "status": "pass",
+      "evidence": "schema additionalProperties=false，冻结 run_kind/collection_mode/project_origin 枚举，数值字段 minimum>=0，false_block_count 与 evidence refs 受条件约束；parseProjectValueInput 额外执行敏感字段/内容检查、ISO 日期与 ended_at>=started_at 校验、duplicate run_id 批拒绝。领域与 CLI 测试覆盖 unknown field、invalid date、NaN/negative、sensitive field/content、duplicate run_id、non-JCS 与 malformed JSON，并验证失败时 stdout 为空且只输出稳定错误码。"
+    },
+    {
+      "id": "HG6-exclusion-priority-and-zero-of-three",
+      "status": "pass",
+      "evidence": "exclusion() 冻结九级优先级：duplicate-project-identity > synthetic > retrospective > nextstep-self > nextstep-derived > used-nextstep-false > missing-user-authorization > missing-user-confirmation > evidence-binding-mismatch；duplicate identity 通过 identityCounts/duplicateIdentities 排除全部匹配记录；领域与 CLI 测试证明 repository fixtures 始终 qualified_real_runs=0、target_qualified_real_runs=3，且 relabel synthetic 为 real 仍被 nextstep-derived 排除。"
+    },
+    {
+      "id": "HG7-binding-aggregate-medians-recovery",
+      "status": "pass",
+      "evidence": "evidence_binding_digest 使用 sha256(JCS({run_id,project_identity,evidence_digest}))；aggregate evidence_digest 使用按 run_id 排序后的 sha256(JCS({runs}))；qualified-only outcomes 与 medians 只消费合格 runs；false_block_count 为 null 时不计入 median；recovery_seconds 展平所有 qualified recovery events；测试验证排序稳定、逆序输入结果恒等、中位数 20/2/1/15、以及 aggregate digest 与 expected sorted runs 一致。"
+    },
+    {
+      "id": "HG8-cli-streams-and-no-io",
+      "status": "pass",
+      "evidence": "CLI 只接受 canonical JSON stdin，无参数时 success=exit0/stderr 空/stdout 恰一份 aggregate JCS；failure=exit1/stdout 空/stderr 恰一行稳定错误码且不泄漏敏感值。纯领域测试显式断言无 node:child_process/fs/http/https/net、execFile/fetch/process/readFile/spawn/update-ref/writeFile；CLI 仅通过 process-io 读 stdin 写 stdout/stderr，不做生产网络/Git/文件系统/遥测收集或写入。"
+    },
+    {
+      "id": "HG9-budget-and-frozen-status",
+      "status": "pass",
+      "evidence": "生产+schema 共 3 文件/261 行，协议 1 文件/58 行，测试 2 文件/254 行，fixtures 2 文件/2 行，tests+fixtures+protocol 合计 314 行，新增依赖 0；协议正文固定“真实项目价值验证框架可用，真实运行 0/3”，并明确不等于 PC-19、V2、V4 或 P5 完成。"
+    },
+    {
+      "id": "HG10-output-boundary",
+      "status": "pass",
+      "evidence": "本次评审仅允许写入 .codex/reviews/p5-cr006-sg3-independent-acceptance-formal-attempt-1-2026-08-26/scorecard.json 与 verdict.md；若 PASS，review commit 必须唯一父=87258c3，且不得创建 Result/control 或修改 main/formal。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "identity-and-control-provenance",
+      "score": 25,
+      "max_score": 25,
+      "reason": "packet/dedup/subject/execution Result 与 packet->claim->ready->ACK 单父链全部独立闭合，attempt1 无效化边界也保持清晰。",
+      "evidence_refs": [
+        "HG0-attempt1-invalidated-attempt2-only",
+        "HG1-control-identity",
+        "HG2-clone-isolation-and-preprovision"
+      ]
+    },
+    {
+      "id": "contract-correctness",
+      "score": 25,
+      "max_score": 25,
+      "reason": "Schema、批拒绝、合法排除优先级、binding/aggregate 摘要、qualified-only medians/outcomes 与 0/3 冻结口径均按 packet 精确实现并被定向测试覆盖。",
+      "evidence_refs": [
+        "HG5-schema-and-batch-reject",
+        "HG6-exclusion-priority-and-zero-of-three",
+        "HG7-binding-aggregate-medians-recovery"
+      ]
+    },
+    {
+      "id": "verification-completeness",
+      "score": 25,
+      "max_score": 25,
+      "reason": "定向 9/9、全量 503/503、coverage 93.50/88.62/99.22 均满足 packet 下限；额外 CLI 烟测也重证实 success/failure stream 契约。",
+      "evidence_refs": [
+        "HG4-targeted-and-full-verification",
+        "HG8-cli-streams-and-no-io"
+      ]
+    },
+    {
+      "id": "scope-discipline",
+      "score": 25,
+      "max_score": 25,
+      "reason": "候选保持 exact-eight allowlist、0 新依赖、预算内实现；评审亦保持 exact-two 输出并不扩大为 SG-3/PC-19/V2/V4/P5 完成结论。",
+      "evidence_refs": [
+        "HG3-subject-and-allowlist",
+        "HG9-budget-and-frozen-status",
+        "HG10-output-boundary"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100
+  },
+  "finding_counts": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Generator",
+      "identity": "codex-subagent:/root/sg3_impl_g5_a2_f130",
+      "conclusion": "submitted",
+      "note": "生成固定候选 87258c3；未参与本次正式批准。"
+    },
+    {
+      "role": "Verifier",
+      "identity": "codex-subagent:/root/sg3_accept_g5_a1_f131",
+      "conclusion": "PASS",
+      "note": "11/11 hard gates 通过。"
+    },
+    {
+      "role": "Strict Judge",
+      "identity": "codex-subagent:/root/sg3_accept_g5_a1_f131",
+      "conclusion": "PASS",
+      "note": "100/100；无 P0/P1/P2。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "identity": "codex-subagent:/root/sg3_accept_g5_a1_f131",
+      "conclusion": "PASS",
+      "note": "无范围膨胀、无 attempt1 证据复用、无将 0/3 框架包装为完成。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "identity": "codex-subagent:/root/sg3_accept_g5_a1_f131",
+      "conclusion": "PASS",
+      "note": "只放行 SG-3 attempt1 package acceptance Result 固化与后续主控整合；不放行 cumulative acceptance、formal 移动、PC-19、V2、V4 或 P5 完成。"
+    }
+  ],
+  "reviewed_at": "2026-08-26T16:32:32+08:00"
+}
