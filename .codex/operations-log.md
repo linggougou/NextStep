@@ -2747,3 +2747,11 @@
 - 测量修复：累计验收 historical snapshot=`503/503`、coverage Lines/Branches/Functions=`93.50/88.62/99.22`；首次复评 snapshot=`503/503`、`93.48/88.59/99.22`；主线 `7a579dd...` 复跑 snapshot=`503/503`、`93.53/88.69/99.22`。该差异证明末两位存在运行波动，current gate 只固定 tests=`503/503`、fail/skip/cancel/todo=`0/0/0/0`、各 coverage 维度 `>=80%`；live 百分比只能由 fresh run 生成，不再作为提交身份字段。
 - 门禁保持：formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control=`1ac071b0087514390238381fa71cc4b4182983bc`、`plan_generation=5` 均不变；`change_request_closed=false`，CR-006 未关闭，无 V2 packet/claim/fence/dispatch/coding，P5 未完成。修复合入后的下一唯一动作仅为再次独立 V2 entry reassessment。
 - 用户改动保护：未读取、修改、暂存或清理受保护 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`；未移动 refs、未 push。
+
+## 2026-08-26 CR-006 详细状态文档尾差修复
+
+- 任务边界：在首次 V2 入口复评 P1 修复已合入后，继续做一处 L2 文档尾差收口；仅修正 `docs/change-requests/006-scalability-guardrails.md` 中残留的“把 `813e9fd...` 写成当前 `main`”旧表述，并同步追加 `.codex/operations-log.md`、`.codex/verification-report.md`。不改代码、Schema、测试、依赖、review artifact 或 formal/control refs。
+- 发现的问题：主状态页、路线锁、P5 主计划、QA 索引和摘要页都已改为“身份拆分 + live main 运行时解析”，但 CR-006 详细文档第 8 节仍写 `当前控制身份：main=813e9fd...`，与当前权威口径不一致。
+- 修复内容：把该行改为 `accepted_subject_main`、`cumulative_review_commit`、`cumulative_state_sync_commit`、`first_reassessment_review_commit` 四项历史固定身份，并明确 live `main` 必须运行时 `git rev-parse refs/heads/main` 解析；formal/control/plan_generation 保持原值。
+- 验证边界：本轮只做文档状态收口，后续仍需 fresh `pnpm check` 和新的独立 V2 entry reassessment 才能形成门禁结论；本修复本身不创建 V2 packet，不关闭 CR-006，不移动 formal，也不宣称 PC-12/PC-19/V2/V4/P5 或真实运行 3/3 完成。
+- 用户改动保护：未读取、修改、暂存或清理受保护 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`；未移动 refs、未 push。

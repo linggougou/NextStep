@@ -2715,3 +2715,16 @@
 - 用户改动保护：未读取、修改、暂存或清理受保护 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`；未移动 refs、未 push。
 - 机械检查：`git diff --check` 通过；提交前差异严格等于上述 exact-10 白名单；八份状态真源对 `main=813e9fd`、把 `93.50/88.62/99.22` 称为 current/fresh、旧的单次复评 pending 下一步口径反扫无命中。
 - 完成边界反扫：八份状态真源新增差异没有把 CR-006、V2 packet、formal、PC-12、PC-19、V2/V4/P5 或真实运行 3/3 包装为已关闭、已创建、已移动或已完成。
+
+## 2026-08-26 CR-006 详细状态文档尾差修复验证
+
+### 输入与修复
+
+- 输入对象：`docs/change-requests/006-scalability-guardrails.md` 第 8 节仍残留 `当前控制身份：main=813e9fd...` 的旧表述，而主状态页、路线锁、P5 计划、QA 索引与摘要页已经统一为“历史身份拆分 + live main 运行时解析”。
+- 修复结果：该详细文档现与主状态真源一致，固定 `accepted_subject_main`、`cumulative_review_commit`、`cumulative_state_sync_commit`、`first_reassessment_review_commit` 四个历史身份，并要求 live `main` 只能由 `git rev-parse refs/heads/main` 在运行时解析。
+
+### 边界与机械检查
+
+- 本轮不改代码、Schema、测试、依赖、review artifact 或 formal/control refs；formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control=`1ac071b0087514390238381fa71cc4b4182983bc`、`plan_generation=5` 保持不变。
+- `git diff --check` 待后续与 fresh `pnpm check` 一并执行；本修复不单独宣称门禁通过，只证明 CR-006 详细状态文档不再残留 `main=813e9fd` 的 current-state 漂移。
+- 本修复不创建 V2 packet，不关闭 CR-006，不移动 formal，不宣称 PC-12/PC-19/V2/V4/P5 或真实运行 3/3 完成。
