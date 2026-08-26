@@ -2691,3 +2691,12 @@
 - 明确未做：未把 SG-2 宣称为 PC-12、V2 或 P5 完成；未创建 SG-3 packet、CR-006 累积验收或 V2 packet，未移动 formal/control，未执行发布或 push。
 - 用户改动保护：未读取、修改、暂存或清理受保护 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`；本轮未扩张允许写集。
 - 阶段判断：本次状态同步闭合后，只放行 SG-3 packet preparation；CR-006 累积验收、V2 packet、formal 移动与 P5 完成继续保持门禁。
+
+## 2026-08-26 CR-006 SG-3 attempt 1 契约澄清
+
+- 任务边界：在专属 worktree `/Users/ling/.codex/worktrees/sg3-contract-clarification-20260826` 内，仅修改 SG-3 既有设计、活动计划、CR-006 与两份 `.codex` 留痕；未修改代码、Schema、测试、packet、control/formal ref 或依赖。
+- 触发原因：attempt 1 的 P1 指出真实资格、证据绑定、整批拒绝与合法排除、CLI 输出及 aggregate 确定性尚不能机械执行。该 attempt 固定为 `contract-revision-required`，未执行 RED、未产生候选。
+- 契约澄清：固定 `run_kind=real|synthetic`、`collection_mode=prospective|retrospective`；新增最小 `project_origin` 与精确 `evidence_binding_digest`；冻结整批拒绝边界、单一 exclusion reason 优先级、CLI 四个稳定错误码、qualified-only 聚合和 aggregate digest 公式。
+- 范围判断：上述内容是对原 SG-3 的机械化，不新增任务、文件、指标、DoD、依赖或运行能力，不 bump `plan_generation=5`。
+- 下一入口：只允许 corrected SG-3 attempt 2 packet，使用新 fence 与唯一新 worker；不得复用 attempt 1 fence/worker，不宣称 SG-3、PC-19、V2 或 P5 完成。
+- 用户改动保护：未读取、修改、暂存或清理受保护 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`。

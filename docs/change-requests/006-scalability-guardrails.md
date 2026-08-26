@@ -1,6 +1,6 @@
 # 可承受性护栏：复杂度预算、状态投影与真实项目价值验证
 
-- 状态：sg1-package-accepted-sg2-packet-preparation（SG-1 正式独立验收 `PASS / 98` 与 immutable Result 已固化；下一步分离准备 SG-2 packet）
+- 状态：sg1-sg2-package-accepted-sg3-attempt1-contract-revision-required（SG-3 attempt 1 未执行 RED、无候选；下一步只允许 corrected attempt 2 packet）
 - 记录日期：2026-08-25
 - 来源：V1 完成后的项目分析与用户对工作膨胀风险的明确反馈
 - 所属阶段：P5 / 跨版本可承受性护栏
@@ -21,7 +21,7 @@ V1 已证明 NextStep 的可靠性内核和证据链可以运行，但控制提�
 - 是否改变当前路线：否。保持 `P5-M0 -> V1 -> V2 -> V3 -> V4 -> Final Acceptance`，不新增产品版本，不改变 PC 主版本归属、技术栈、主载体、正式提升或验收门禁；但本 CR 新增计划范围、任务和 DoD，必须按 P4/S4 把 `plan_generation` 从 4 单向推进到 5。
 - 是否影响当前阶段出口：不替代任何既有出口。三个护栏任务包通过，只证明可承受性工具和验证框架可用。
 - 是否需要更新 `PROJECT_ROUTE_LOCK.md`：不改变路线结构，但必须同步当前阶段、代际缺口和授权停点；本 replacement 已更新路线锁的状态字段。若实施发现必须改变 PC、数据模型、正式 ref、控制协议或门禁，再停止并另开 Change Request。
-- 与当前入口的关系：V1 仍为 formally-completed；V2 入口评估 PASS 仍只允许规划。SG-1 的 generation 5 实现与正式独立验收链已经按分离单父 expected-old CAS 固化；下一动作仅为创建独立 SG-2 packet，本文不创建或授权 V2 首个产品 packet。
+- 与当前入口的关系：V1 仍为 formally-completed；V2 入口评估 PASS 仍只允许规划。SG-1、SG-2 的 generation 5 包级实现与正式独立验收链已经固化；SG-3 attempt 1 因 P1 契约歧义在 RED 前停止且无候选。下一动作仅为创建 corrected SG-3 attempt 2 packet，并分配新 fence 与新 worker；本文不创建或授权 V2 首个产品 packet。
 
 ### 2.1 控制代际影响
 
@@ -106,4 +106,6 @@ V1 已证明 NextStep 的可靠性内核和证据链可以运行，但控制提�
 - SG-1 claim/fence 结果：control=`042e007d5d342c90f6370212549963bae6a2db95`，唯一父/expected-old=`12ab4aaffda6ee44853d4014230b9a85c1ad8944`；claim=`claim-sg1-g5-a1-f118-20260826`，fence=118，lease=`2026-08-26T18:34:25Z`。写集 exact-2，只更新 `checkpoint.json` / `registry.json`；outbox/宿主均为空，pending dispatch=0，formal/main 未移动。
 - SG-1 dispatch/实现结果：ready/outbox=`96c6bcbfe766cab6c30aab5be4877e36ef75e6ab`，implementation ACK=`e0394c27d70ae522ebc1ae754124124d0a9f3242`，候选=`9fc9dc2e51790e868d30d23fd28c8b8f17d67935`。同一补丁曾在正式验收前提前 cherry-pick 为 main `3464fbc6b117fe4ee3b1d8b6c921a2f3dc43fd4c`，审计封存=`abbf865878a842a47591fb294981e0244b2fec72`；异常历史不被事后 PASS 改写。
 - SG-1 正式验收结果：packet=`91cdc9f2963201fa6d69704a1484ef73f02b48fb`，claim/fence 119=`4676b97a879baa7de2072878e437354d758936e9`，ACK=`e9100f0e41182135e10fb5997900060918c75aeb`，Result control=`830d831808a92f53dfca4dea87bb98c71e448fb1`；review=`690da53026ed4c06778ecf46e8f3172fadb0c140`，`PASS / 98`，P0/P1/P2=`0/0/2`，Result digest=`sha256:e04bd4b0c8efea41eb6015628205752624d58e92400d02565e01c61b244592e4`。
-- 当前下一动作：只允许分离创建 SG-2 packet；不得自动宣称 PC-12/PC-19、V2/V4/P5 完成或移动 formal。
+- SG-2 后续状态：implementation attempt 2 已合入，独立验收 attempt 7=`PASS / 99`，immutable Result 已固化；这不等于 PC-12 或 V2 完成。
+- SG-3 attempt 1：P1 指出真实资格、证据绑定、整批拒绝/合法排除、CLI 与 aggregate 的机械契约不充分；该 attempt 固定为 `contract-revision-required`，未执行 RED、未生成候选。
+- 当前下一动作：不改变三个任务包、路径、规模上限、DoD 或 `plan_generation=5`，只允许以澄清后的同一 SG-3 范围创建 corrected attempt 2 packet，使用新 fence 与唯一新 worker；不得自动宣称 SG-3/PC-19、V2/V4/P5 完成或移动 formal。

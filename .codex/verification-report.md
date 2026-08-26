@@ -2612,3 +2612,20 @@
 - 本次仅同步文档与留痕，未修改生产代码、测试、Schema、依赖或 Git refs；因此不重复运行全量产品测试，沿用 attempt 7 的已固化 `494/494` 证据，并以身份、diff 与格式检查验证本次同步。
 - 非完成边界：SG-2 不等于 PC-12、V2 或 P5 完成；CR-006 累积验收、V2 packet、formal 移动与 P5 完成仍未发生。
 - 门禁结论：本次状态同步通过，只允许进入 SG-3 packet preparation。
+
+# 2026-08-26 CR-006 SG-3 attempt 1 契约澄清验证
+
+## 范围与机械一致性
+
+- 基线分支：`codex/sg3-contract-clarification`，任务开始 HEAD=`826b415`。
+- 修改路径严格为 `docs/design-docs/p5-scalability-guardrails-design.md`、`docs/exec-plans/active/p5-scalability-guardrails.md`、`docs/change-requests/006-scalability-guardrails.md`、`.codex/operations-log.md`、`.codex/verification-report.md`；没有生产代码、Schema、测试或 ref 变更。
+- 三个冻结枚举/字段、binding 公式、九个 exclusion reason 及优先级、四个 CLI 错误码、qualified-only aggregate 与 digest 公式在设计和活动计划中一致。
+- SG-3 attempt 1 明确为 `contract-revision-required`、无 RED、无候选；下一入口是同范围 corrected attempt 2 packet、新 fence、新 worker，`plan_generation=5` 不变。
+- 非完成反扫通过：没有把 SG-3、PC-19、V2、V4 或 P5 写成完成，也没有创建累积验收或 formal 移动声明。
+
+## 本地检查
+
+- `git diff --check`：通过。
+- 禁止复合枚举旧措辞反扫：三份 SG-3 真源中无命中。
+- 写集检查：提交前 `git diff --name-only` 仅列出上述五个允许文件。
+- 本轮仅做文档契约机械澄清，没有产品代码变化，因此不重复运行 `pnpm check`；后续 attempt 2 仍必须从可复现 RED 开始并执行定向及全量检查。

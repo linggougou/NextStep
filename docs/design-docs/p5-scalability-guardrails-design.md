@@ -215,8 +215,13 @@ interface ProjectValueRun {
   readonly run_id: string;
   readonly run_kind: "real" | "synthetic";
   readonly collection_mode: "prospective" | "retrospective";
+  readonly project_origin:
+    | "external-user-project"
+    | "nextstep-self"
+    | "nextstep-derived";
   readonly project_identity: `sha256:${string}`;
   readonly evidence_digest: `sha256:${string}`;
+  readonly evidence_binding_digest: `sha256:${string}`;
   readonly user_authorization_ref: string | null;
   readonly started_at: string;
   readonly ended_at: string;
@@ -236,9 +241,16 @@ interface ProjectValueRun {
 }
 ```
 
-Schema 使用 `additionalProperties=false`，禁止完整聊天、源码、密钥和业务内容字段。所有计数和时长必须是非负有限数；`ended_at >= started_at`。`false_block_count` 仅在有用户或独立裁决引用时可为数字，缺裁决时必须为 null，聚合时不能按 0。
+`run_kind` 只允许 `real|synthetic`，`collection_mode` 只允许 `prospective|retrospective`；二者是正交字段，禁止另设复合枚举。Schema 使用 `additionalProperties=false`，禁止完整聊天、源码、密钥和业务内容字段。所有计数和时长必须是非负有限数；`ended_at >= started_at`。`false_block_count` 仅在有用户或独立裁决引用时可为数字，缺裁决时必须为 null，聚合时不能按 0。
 
-真实运行还必须满足：`run_kind=real`、`collection_mode=prospective`、用户拥有或明确授权、authorization ref 非空、不可逆项目身份和原始证据摘要完整、用户确认引用完整。NextStep 自测仓库、fixture、AI 样例、同一项目复制/改名、retrospective 回填或无原始证据记录均不合格。
+`evidence_binding_digest` 精确等于 `sha256(JCS({run_id,project_identity,evidence_digest}))`。真实运行还必须同时满足：`run_kind=real`、`collection_mode=prospective`、`project_origin=external-user-project`、用户拥有或明确授权、authorization ref 非空、不可逆项目身份和原始证据摘要完整、binding 精确匹配、用户确认引用完整。NextStep 自测仓库、NextStep 派生项目、fixture、AI 样例、同一项目复制/改名、retrospective 回填或无原始证据记录均不合格。binding 只能阻止受支持输入路径中 run、project 与 evidence 的误配或回填，不能抵抗可任意改写磁盘记录及重新计算摘要的恶意操作者，也不构成密码学不可抵赖证明。
+
+输入处理冻结为两类，禁止把合法但不合格的记录误报为格式错误：
+
+- 任一记录违反 Schema、时间或数值约束，输入包含禁止的敏感字段/内容，或批内出现重复 `run_id`，整批拒绝，不产生 aggregate；重复 `run_id` 的稳定错误码为 `DUPLICATE_RUN_ID`。
+- 通过上述整批校验但不满足真实资格的记录进入 `excluded_records`。同一 `project_identity` 出现多次时，该 identity 对应的所有记录全部排除，不能保留其中一条凑数。
+
+每条合法排除记录只保留一个 `reason_code`，按下列优先级选择首个命中项，code 必须逐字一致：`duplicate-project-identity`、`synthetic`、`retrospective`、`nextstep-self`、`nextstep-derived`、`used-nextstep-false`、`missing-user-authorization`、`missing-user-confirmation`、`evidence-binding-mismatch`。
 
 ### 4.3 聚合契约
 
@@ -265,7 +277,9 @@ interface ProjectValueAggregate {
 }
 ```
 
-按 `run_id` 稳定排序后校验和聚合；同一 `project_identity` 出现多次时全部重复项不能凑真实次数，并记录 exclusion。0、1、2 个合格真实运行固定为 `real-runs-insufficient`；至少 3 个独立项目才可为 `three-real-runs-observed`。这只表示样本被观测，不得写“证明提升”“验证完成”或“PC-19 通过”。没有配对基线时不计算节省百分比；缺失值不按 0，不删除离群值。
+先将 normalized runs 按 `run_id` 稳定排序，再校验和聚合；`excluded_records` 也按 `run_id` 排序，单条记录同时命中多个排除条件时按 4.2 的单一 reason 优先级裁决。`outcomes` 与全部 `medians` 只基于 qualified runs。`recovery_seconds` 中位数把所有 qualified run 的全部 recovery event 展平后计算；没有 event 时为 `null`，缺失绝不按 0。aggregate 的 `evidence_digest` 精确等于 `sha256(JCS({runs: normalized runs sorted by run_id}))`，不得混入 aggregate 自身或原始输入字节。
+
+0、1、2 个合格真实运行固定为 `real-runs-insufficient`；至少 3 个独立项目才可为 `three-real-runs-observed`。这只表示样本被观测，不得写“证明提升”“验证完成”或“PC-19 通过”。没有配对基线时不计算节省百分比；其他缺失值不按 0，不删除离群值。
 
 ### 4.4 离线 CLI、协议与负例
 
@@ -273,15 +287,16 @@ interface ProjectValueAggregate {
 nextstep-project-value-validation < canonical-input.json
 ```
 
-输入为 `{schema_version:"1.0", runs:[...]}` 的 canonical JSON；stdout 只输出聚合 JCS JSON，诊断写 stderr，失败退出非 0。CLI 不生成、修改或补写任何 run。
+输入为 `{schema_version:"1.0", runs:[...]}` 的 canonical JSON。成功必须 exit 0、stderr 为空、stdout 恰好一份 aggregate JCS；失败必须 exit 1、stdout 为空、stderr 恰好一行稳定错误码且不回显原值。错误码至少冻结为 `INVALID_INPUT`、`NON_CANONICAL_INPUT`、`SENSITIVE_INPUT_REJECTED`、`DUPLICATE_RUN_ID`：JSON 无法解析为目标输入或 Schema/时间/数值约束失败用 `INVALID_INPUT`；解析后含禁止敏感材料用 `SENSITIVE_INPUT_REJECTED`；输入字节不是其 RFC 8785/JCS 表示用 `NON_CANONICAL_INPUT`；批内重复 `run_id` 用 `DUPLICATE_RUN_ID`。CLI 不生成、修改或补写任何 run。
 
 `docs/qa/real-project-value-validation.md` 必须定义五项度量的起止点、单位、缺失语义、授权与隐私边界、原始 evidence digest 产生方式，以及本地协议只能拒绝支持路径中的回填/冒充、不能对恶意磁盘操作者提供密码学不可抵赖性的限制。
 
 固定负例：
 
 - synthetic fixture 格式完整、可用于计算测试，但真实计数恒为 0；
-- 将 synthetic 字段改名为 real、复用项目 identity、使用 NextStep 自测仓库、缺授权/时间/摘要、结束早于开始、负数计数均拒绝或排除；
-- 三条记录中存在重复项目、retrospective 或证据不完整时不能达到 3；
+- synthetic fixture 固定使用非 external 的 `project_origin`；只把 `run_kind` 改为 real 仍按来源排除，不把这种支持路径负例夸大为对恶意整体重写的抵抗；
+- 缺 required 时间/摘要、结束早于开始或负数计数使整批 `INVALID_INPUT`；重复 `run_id` 使整批 `DUPLICATE_RUN_ID`；缺用户授权/确认、binding 不匹配、NextStep 自测/派生来源或 retrospective 则进入对应 exclusion；
+- 三条记录中存在重复项目 identity 时，该 identity 的所有记录全部排除；存在 retrospective 或其他合法不合格记录时不能达到 3；
 - false block 无裁决引用时不得聚合为 0；
 - stdout/stderr 不回显业务内容、完整 evidence 或敏感字段。
 

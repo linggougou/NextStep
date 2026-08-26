@@ -1,10 +1,10 @@
 # P5 可承受性护栏实施计划
 
-- 状态：sg1-sg2-package-accepted-sg3-packet-preparation
+- 状态：sg1-sg2-package-accepted-sg3-attempt1-contract-revision-required
 - 变更入口：[CR-006](../../change-requests/006-scalability-guardrails.md)
 - 生命周期阶段：S5 开发落地
 - 路线位置：P5 跨版本基础护栏；不新增版本，不改变 V2 首个产品 packet 前门禁
-- 当前授权：用户已批准三个方向及自治 worktree/subagent 实施。SG-1 固定候选 `9fc9dc2` 已通过正式独立验收 `690da53`=`PASS / 98`。SG-2 implementation attempt 2 原始候选 `989ba2f` 已以 main commit `b79c991` 合入；attempt 7 原始评审 `f359f68`=`PASS / 99` 已以 main commit `7162c30` 合入，Result control=`b2f2b8c`、digest=`sha256:83fd993d...`。当前进入 SG-3 packet preparation，累积验收、V2 packet 与 formal 移动仍分离受控
+- 当前授权：用户已批准三个方向及自治 worktree/subagent 实施。SG-1 固定候选 `9fc9dc2` 已通过正式独立验收 `690da53`=`PASS / 98`。SG-2 implementation attempt 2 原始候选 `989ba2f` 已以 main commit `b79c991` 合入；attempt 7 原始评审 `f359f68`=`PASS / 99` 已以 main commit `7162c30` 合入，Result control=`b2f2b8c`、digest=`sha256:83fd993d...`。SG-3 attempt 1 因 P1 契约歧义标记为 `contract-revision-required`，没有执行 RED、没有实现候选；下一步只能以修订后的同一 SG-3 范围创建 attempt 2 packet，并使用新 fence 与新 worker。累积验收、V2 packet 与 formal 移动仍分离受控
 
 ## 1. 阶段目标
 
@@ -196,22 +196,28 @@ GREEN 只实现显式项目根解析、Git plumbing 只读来源、纯投影和 
 
 只有同时满足以下条件的记录才可计为一次真实运行：
 
-- `run_kind=real`，由用户拥有或明确授权的非 fixture 项目产生；
-- 具有唯一不可逆项目身份、独立运行 ID、开始/结束时间和原始证据摘要；
+- `run_kind=real`、`collection_mode=prospective`、`project_origin=external-user-project`；三个字段分别使用冻结枚举，禁止引入复合取值；
+- 由用户拥有或明确授权的非 fixture 项目产生，并具有唯一不可逆项目身份、独立运行 ID、开始/结束时间和原始证据摘要；
+- `evidence_binding_digest` 精确匹配 `sha256(JCS({run_id,project_identity,evidence_digest}))`；该 binding 只防受支持路径误配，不能抵抗恶意磁盘操作者伪造整条声明；
 - 记录是否使用 NextStep、人工介入次数、阻塞与恢复事件、最终结果和用户确认；
 - 不与另一次运行共享项目身份；同一项目复制、重复执行或改名不能凑数；
 - 不含完整聊天、源代码、密钥或未经同意的业务数据。
 
 `synthetic`、测试 fixture、NextStep 自测仓库、AI 生成样例和事后补写且无原始证据的记录只能验证框架，真实运行计数恒为 0。
 
+整批拒绝与合法排除严格分离：Schema、时间、数值、敏感输入或重复 `run_id` 使整批失败，重复 ID 返回 `DUPLICATE_RUN_ID`；其余合法但不合格的记录进入 `excluded_records`。重复 `project_identity` 时，该 identity 的所有记录均排除。每条排除记录只取一个 reason，优先级与 exact code 固定为：`duplicate-project-identity`、`synthetic`、`retrospective`、`nextstep-self`、`nextstep-derived`、`used-nextstep-false`、`missing-user-authorization`、`missing-user-confirmation`、`evidence-binding-mismatch`。
+
 ### 6.3 TDD RED / GREEN
 
 RED 必须先证明：
 
 - 格式完整的 synthetic fixture 可用于 Schema/计算测试，但真实运行计数仍为 0；
-- 把 synthetic 字段改名为 real、复用项目身份、缺时间/证据摘要、负数计数或结束早于开始时拒绝；
-- 0、1、2 次真实运行都不能输出“验证完成”；即使输入 3 条记录，存在重复项目或证据不完整也不能通过；
+- synthetic fixture 使用非 external 来源，只把 `run_kind` 改为 real 仍按来源排除；重复项目 identity 的全部记录排除，重复 `run_id` 整批返回 `DUPLICATE_RUN_ID`；
+- 缺 required 时间/证据摘要、负数计数或结束早于开始整批返回 `INVALID_INPUT`；缺授权/确认或 binding 不匹配进入唯一对应 exclusion；
+- 0、1、2 次真实运行都不能输出“验证完成”；即使输入 3 条记录，存在重复项目或合法但 binding 不匹配的记录也不能通过；
 - CLI 只输出聚合度量和不可逆身份，不回显业务内容。
+
+CLI 成功契约为 exit 0、stderr 空、stdout 恰一份 aggregate JCS；失败契约为 exit 1、stdout 空、stderr 恰一行稳定错误码且不回显原值。至少冻结 `INVALID_INPUT`、`NON_CANONICAL_INPUT`、`SENSITIVE_INPUT_REJECTED`、`DUPLICATE_RUN_ID`。
 
 GREEN 只实现 Schema、单次记录验证、去重、聚合与离线 CLI，并写清真实运行操作协议。不得生成真实数据、自动抓取项目、联网、接入遥测或宣称已完成三次运行。
 
@@ -219,6 +225,7 @@ GREEN 只实现 Schema、单次记录验证、去重、聚合与离线 CLI，并
 
 - 五项度量的单位、起止点、缺失处理和失败语义在协议与实现中一致。
 - fixture 能证明框架拒绝伪造、重复和时间矛盾；它们不能进入真实运行计数。
+- normalized runs 与 `excluded_records` 均按 `run_id` 排序；`outcomes`、各中位数只来自 qualified runs，`recovery_seconds` 展平全部 qualified recovery event，缺失不按 0；aggregate digest 固定为 `sha256(JCS({runs: normalized runs sorted by run_id}))`。
 - 独立验收者绑定候选 commit/tree/digest，核对隐私字段、去重、聚合、CLI 输出和“少于三次永不完成”。
 - 包级 PASS 文案必须是“真实项目价值验证框架可用，真实运行 0/3”；只有未来三次独立真实运行均形成合格证据后，才可另发运行验收。
 - 即使未来达到 3/3，也只证明真实项目价值样本达标；PC-19 仍需 V4 的 Q1..Q12 与全链路矩阵独立验收。
@@ -226,6 +233,12 @@ GREEN 只实现 Schema、单次记录验证、去重、聚合与离线 CLI，并
 ### 6.5 回滚
 
 删除本包新增路径即可回滚。真实运行证据若未来产生，应单独按隐私与保留策略管理，不因框架代码回滚而伪造删除或改写历史结论。
+
+### 6.6 Attempt 状态与下一入口
+
+- attempt 1 的 P1 契约歧义发生在实现前，状态固定为 `contract-revision-required`；未执行 RED、未生成生产/Schema/test 候选，也不计为 SG-3 行为失败。
+- 下一入口只允许基于本节澄清后的原 SG-3 scope/task/DoD 创建 corrected attempt 2 packet，重新分配新 fence 与唯一新 worker；不得复用 attempt 1 fence/worker，也不 bump `plan_generation=5`。
+- 本次澄清不表示 SG-3、PC-19、V2 或 P5 完成，不创建累积验收或移动 formal。
 
 ## 7. 累积验证与验收门禁
 
