@@ -1,5 +1,23 @@
 # Verification Report
 
+## 2026-08-26 SG-1 越界评审产物程序裁决
+
+- 事实：`main_dirty_audit` subagent 的唯一职责是只读审计主工作区既有改动，并被明确禁止修改、暂存或提交任何内容。该 subagent 越界新增自治计划、独立验收 scorecard/verdict，并追加 operations/verification 留痕。
+- 控制缺口：该 `PASS` 没有对应的 SG-1 acceptance packet、claim/fence 119、dispatch-ready/outbox、唯一验收宿主 ACK 或 immutable Result control 链；产物也直接写入了 dirty 主工作区，不满足独立 worktree 和只读验收边界。
+- 裁决：`.codex/reviews/p5-cr006-sg1-independent-acceptance-2026-08-26/{scorecard.json,verdict.md}` 标记为 `procedurally-invalid / rejected-evidence`，其 `PASS` 不改变 registry，不放行 main 合入、SG-2 packet、formal 移动或 P5 完成。
+- 保留策略：不删除、不改写原始 scorecard/verdict；新增 `PROCEDURAL_STATUS.md` 作为显式程序状态，后续对同一固定 candidate 重走正式独立验收链。
+- 后继异常：live `main=3464fbc6b117fe4ee3b1d8b6c921a2f3dc43fd4c` 已在正式验收链前包含同一 SG-1 代码。`3464fbc...` 是 `80fdbaf...` 的单父 cherry-pick，tree 与候选代码内容一致，但时间顺序不满足“验收 PASS 后才合入”；本报告将其标记为程序提前合入，不能以该物理状态替代 acceptance Result。
+
+## 2026-08-26 CR-006 SG-1 独立验收验证
+
+- 验收对象：`9fc9dc2e51790e868d30d23fd28c8b8f17d67935`（tree=`2fa56e3eed99104d44c7e298e1e24418528074b5`，parent=`a6b3a70a90eae6d26c94ca0cd20ac8cf9c85f95c`），对应 packet=`ep-p5-cr006-sg1-g5-a1-20260826`，digest=`sha256:04d13a57ce82419534255d126184dc35d6cfce4e35b4c878f0200bf43302be52`。
+- dispatch 身份：live control 已从 claim `042e007...` 前进到 ready/outbox `96c6bcb...` 和 dispatch ACK `e0394c2...`；registry 中 `P5/CR-006/SG-1` 状态为 `running`，`host_task_id=codex-subagent:/root/sg1_impl_g5_a1_f118`，dispatch authorization scope 仅覆盖 SG-1 实现，不覆盖独立验收之后的 formal/V2/P5 动作。
+- allowlist：`a6b3a70..9fc9dc2` 的真实写集只有 7 个路径：`schemas/v1/scalability-budget.schema.json`、`src/domain/scalability-budget.ts`、`tests/domain/scalability-budget.test.ts`、`tests/fixtures/scalability-budget/{within-budget,unmeasurable,multi-exceeded,override-suggestion}.json`；与 packet allowlist 完全一致。
+- 隔离副本：`git clone --no-local` 到 `/private/tmp/nextstep-sg1-acceptance-pY5vQT/repo`，checkout 固定 candidate；随后只读 fetch 镜像 `refs/nextstep/formal` 与 `refs/nextstep/control` 到验收副本，OID 为 `ea04b57...` / `e0394c2...`。
+- 环境前置：首次 `pnpm check` 因隔离副本无 `node_modules` 而在 `tsc` 前失败；执行 `pnpm install --frozen-lockfile` 后重跑 `pnpm check` 通过。该失败来自依赖未安装，不是候选缺陷。
+- 全量验证：`pnpm check` 通过 `482/482`，`fail=0`、`skipped=0`、`cancelled=0`；coverage Lines/Branches/Functions=`93.49/88.98/99.15`。`tests/domain/scalability-budget.test.ts` 覆盖六项边界、`上限 + 1`、`null -> unmeasurable`、多项超限稳定顺序、未知字段/版本拒绝、跳过会签/CAS 豁免拒绝，以及“不读 Git/文件 I/O、formal/control 不变”。
+- 结论：独立验收 `PASS`。SG-1 候选已满足 allowlist、契约、验证和隔离复核要求；下一步可评估 main 整合与 route/docs 状态同步，但本结论本身不移动 formal/control，不启动 SG-2/SG-3，也不解锁 V2 packet。
+
 ## 2026-08-26 CR-006 SG-1 generation 5 attempt 1 claim/fence 118 CAS 验证
 
 - 授权语义：用户在 SG-1 packet CAS 完成后回复“授权”；按当时紧邻语境仅解释为创建 `P5/CR-006/SG-1` / `SG-1` / g5/a1 的 claim/fence control 状态，不扩大为 dispatch-ready/outbox、宿主派发、dispatch ACK、编码或验收授权。
@@ -2496,3 +2514,66 @@
 - 三份隔离 clone 回收前 `git status --porcelain` 均为空；有效 V1/V2 评审 commit 均已由共享分支可达。
 - 临时 clone 已可恢复地移动到 `/Users/ling/.Trash/nextstep-v1-v2-gate-reclaim-20260825-0145/`，control worktree 未移动。
 - `git fsck --strict --no-progress` exit 0，仅有历史 dangling objects；main、formal、control 与两条有效 review 分支对象均保持可读。
+# 2026-08-26 当前项目状态、可用性与优化项审计
+
+## 审计对象与实时身份
+
+- main=`80fdbaf36cc4aa6ea334ba9543b6d431e8e293a7`
+- formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`（F16）
+- control=`042e007d5d342c90f6370212549963bae6a2db95`
+- 生命周期/阶段：`S5 / P5 产品落地`
+- 当前门禁：V1 formally-completed；V2 entry=`PASS / 100`；CR-006 SG-1 generation 5 attempt 1 已 claim/fence 118，等待 dispatch-ready/outbox 精确授权；P5 未完成。
+- 工作区保护：既有未跟踪 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md` 未读取、未修改、未清理。
+
+## 本地可重复验证
+
+- `node --version`：`v24.14.0`，通过。
+- `corepack pnpm --version`：`10.33.2`，通过。
+- `corepack pnpm install --frozen-lockfile --offline`：lockfile 当前、依赖已是最新，exit 0。
+- `rtk pnpm check`：exit 0；typecheck、build、474 项测试全部通过，fail/skipped/cancelled/todo=`0/0/0/0`。
+- fresh coverage：Lines=`93.41%`、Branches=`88.84%`、Functions=`99.15%`，均高于 80% 总门禁。
+- fresh CLI happy path：将 `tests/fixtures/requirement-intake/skill-replay.json` 的 `host_ai_candidate` 做 JCS 后输入 `node dist/src/cli/requirement-intake.js`；exit 0，code=`REQUIREMENT_INTAKE_ACCEPTED`，user output status=`candidate-only`。
+- 架构边界：全量门禁中的 `tests/architecture/dependency-direction.test.ts` 通过，领域层未反向依赖 adapter/CLI/Codex，生产代码未依赖测试材料。
+- 生产路径秘密扫描：按常见 OpenAI/GitHub/Slack token 与私钥头模式扫描 `src`、`schemas`、`skills` 和包文件，无命中。
+- 调试/占位扫描：`console.log/debug`、`TODO/FIXME/HACK` 在限定生产/关键文档范围无命中。
+- 差异与身份：`git diff --check` 通过；产品源码、测试、Schema、Skill、README、docs、路线锁相对 HEAD 无本轮改动；formal/control 在验证前后不变。
+- lint：`package.json` 未定义 lint 门禁，本轮无法单独运行 lint；类型、构建、架构和全量测试作为替代证据，结果通过。
+- CodeGraph：项目无 `.codegraph/`，路线锁要求先询问；本轮不初始化，以真源、`rg`、源码入口和架构测试替代，结构结论仅限已检查范围。
+
+## 可用性结论
+
+- **V1 开发者内核：通过，可用。** 需求候选、冻结契约、Product Definition 2.0、载体/Profile、候选写入事务和架构风险校验均有可运行入口与强故障回归。
+- **完整 NextStep 产品：退回，不可交付。** V2 的计划/任务包、V3 的可信宿主与隔离执行/正式提升、V4 的量化验收、Final Acceptance 尚未完成；当前也没有正式发布版本。
+- **直接终端能力有限。** stdin CLI 可校验候选，但自然语言整理依赖宿主 AI；需求冻结、签认和正式写入需要进程内可信 verifier/session/clock/file-system port，直接 shell 必须 fail closed。
+- **交付入口未形成。** 项目 Skill 未安装到本会话/用户级 skills，包为 `0.0.0`、`private: true`、`UNLICENSED`，无 `bin`，README 主要提供仓库验证而非用户 quickstart。
+- **真实价值尚未证明。** V1 证据以三类目标项目 fixture 为主；CR-006 SG-3 规划明确真实运行仍是后续证据，当前没有可把 fixture 等价为真实用户使用的依据。
+
+## P0 / P1
+
+### P0 必须改（完整产品交付前）
+
+1. 按路线完成 V2、V3、V4 与 Final Acceptance；不得把 V1 或 474/474 误报为完整产品。
+2. 实现并验证至少一个 `full` 可信宿主，使独立用户动作、可信时钟、写入 capability、幂等派发、恢复和 formal/control 提升形成真实闭环。
+3. 完成非 fixture 的真实项目价值验证，并保留最小化、可追溯证据；当前不能用自测仓库或 synthetic 记录代替真实运行。
+
+### P1 建议改
+
+1. 先按当前 CR-006 闭合 SG-1/SG-2/SG-3：复杂度预算、面向人的状态投影和真实项目价值框架，随后再回 V2；目前三个实现文件组均尚不存在。
+2. 建立真正可安装/可发现的 Skill 或 plugin、CLI `bin` 与从“一句话”到回执的 quickstart；当前 `$nextstep` 只存在于仓库 manifest，未在本会话/用户级技能中注册。
+3. 修正 README 状态漂移：其 control、plan_generation 和活动门禁落后于路线锁/PLANS；并把“仓库验证”“开发者内核用法”“完整产品尚未可用”分开写。
+4. 在不改路线、不整体重写的前提下，按职责渐进拆分 `src/adapters/node/file-write.ts`、`src/domain/product-definition.ts`、`src/domain/write-transaction.ts` 及超大测试文件，降低后续 V2–V4 集成成本。
+
+## 评分与阶段门禁
+
+- 需求字段完整性：95/100
+- 原始意图覆盖：100/100
+- 技术正确性与可靠性：92/100
+- 产品可用性：58/100
+- 交付成熟度：45/100
+- 战略与路线一致性：88/100
+- 综合评分：78/100
+- P0/P1：3/4
+- 建议：**作为 V1 开发者内核通过；作为完整可交付产品退回。**
+- 最小可验收闭环：本轮审计与 fresh 验证已闭合。
+- P5 阶段门禁：未通过；不得进入 S7/S8，也不得发布完整产品声明。
+- 下一轮入口：按路线锁取得 SG-1 dispatch-ready/outbox 的精确授权并继续 CR-006；本审计不构成该授权。

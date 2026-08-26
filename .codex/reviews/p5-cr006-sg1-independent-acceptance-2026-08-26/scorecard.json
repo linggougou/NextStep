@@ -1,0 +1,124 @@
+{
+  "review_id": "p5-cr006-sg1-independent-acceptance-2026-08-26",
+  "task_id": "P5/CR-006/SG-1",
+  "lane": "independent-acceptance",
+  "review_level": "L3",
+  "rubric_id": "nextstep-cr006-sg1-independent-acceptance-v1",
+  "artifact_refs": [
+    "git:9fc9dc2e51790e868d30d23fd28c8b8f17d67935",
+    "git:2fa56e3eed99104d44c7e298e1e24418528074b5",
+    "control:12ab4aaffda6ee44853d4014230b9a85c1ad8944",
+    "control:042e007d5d342c90f6370212549963bae6a2db95",
+    "control:96c6bcbfe766cab6c30aab5be4877e36ef75e6ab",
+    "control:e0394c27d70ae522ebc1ae754124124d0a9f3242",
+    "file:/private/tmp/nextstep-sg1-acceptance-pY5vQT/repo"
+  ],
+  "hard_gates": [
+    {
+      "id": "HG1-identity",
+      "status": "pass",
+      "evidence": "candidate commit=9fc9dc2e51790e868d30d23fd28c8b8f17d67935, tree=2fa56e3eed99104d44c7e298e1e24418528074b5, parent=a6b3a70a90eae6d26c94ca0cd20ac8cf9c85f95c; packet digest sha256:04d13a57ce82419534255d126184dc35d6cfce4e35b4c878f0200bf43302be52 matches SG-1 packet"
+    },
+    {
+      "id": "HG2-allowlist",
+      "status": "pass",
+      "evidence": "a6b3a70..9fc9dc2 changed only 7 allowed paths: schema 1, domain 1, test 1, fixtures 4; no docs/.codex/src/cli/src/adapters/dependency files changed"
+    },
+    {
+      "id": "HG3-dispatch-chain",
+      "status": "pass",
+      "evidence": "control chain packet 12ab4aa -> claim 042e007 -> ready/outbox 96c6bcb -> ack e0394c2 is single-parent and registry status is running for P5/CR-006/SG-1 attempt 1"
+    },
+    {
+      "id": "HG4-isolated-verification",
+      "status": "pass",
+      "evidence": "isolated no-local clone at /private/tmp/nextstep-sg1-acceptance-pY5vQT/repo, refs/nextstep/formal and refs/nextstep/control mirrored read-only, pnpm check passed 482/482 with fail=0 and coverage 93.49/88.98/99.15"
+    },
+    {
+      "id": "HG5-contract-boundary",
+      "status": "pass",
+      "evidence": "tests cover six frozen thresholds, +1 overflow, null=>unmeasurable, deterministic ordering, unknown field/version rejection, override suggestion rejection, and no Git/file I/O side effects"
+    },
+    {
+      "id": "HG6-no-new-dependencies",
+      "status": "pass",
+      "evidence": "candidate adds no runtime dependency or project config change; isolated clone only required pnpm install --frozen-lockfile before verification because node_modules were absent"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "contract-fidelity",
+      "score": 25,
+      "max_score": 25,
+      "reason": "实现与 packet 冻结目标、三态结论和六项固定阈值严格一致。",
+      "evidence_refs": [
+        "git:9fc9dc2e51790e868d30d23fd28c8b8f17d67935",
+        "control:12ab4aaffda6ee44853d4014230b9a85c1ad8944"
+      ]
+    },
+    {
+      "id": "test-evidence",
+      "score": 25,
+      "max_score": 25,
+      "reason": "隔离副本全量检查通过，且 SG-1 专属测试覆盖正反边界与纯领域边界。",
+      "evidence_refs": [
+        "file:/private/tmp/nextstep-sg1-acceptance-pY5vQT/repo",
+        "git:9fc9dc2e51790e868d30d23fd28c8b8f17d67935"
+      ]
+    },
+    {
+      "id": "scope-discipline",
+      "score": 25,
+      "max_score": 25,
+      "reason": "真实写集完全命中 allowlist，没有引入 CLI、adapter、docs、control 或 formal 改动。",
+      "evidence_refs": [
+        "git:a6b3a70a90eae6d26c94ca0cd20ac8cf9c85f95c",
+        "git:9fc9dc2e51790e868d30d23fd28c8b8f17d67935"
+      ]
+    },
+    {
+      "id": "integration-readiness",
+      "score": 25,
+      "max_score": 25,
+      "reason": "dispatch-ready/outbox/ack 已完成，候选通过独立验收后具备进入 main 整合评估的条件。",
+      "evidence_refs": [
+        "control:96c6bcbfe766cab6c30aab5be4877e36ef75e6ab",
+        "control:e0394c27d70ae522ebc1ae754124124d0a9f3242"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "在进入 SG-2 前，把 PROJECT_ROUTE_LOCK / PLANS / PRODUCT_SENSE / QA index 同步到 live control=e0394c2 和 SG-1 running 状态，消除文档漂移。"
+  ],
+  "reviewers": {
+    "generator": {
+      "conclusion": "submitted",
+      "note": "实现 worktree codex/cr006-sg1-g5-a1-f118 已产出 9fc9dc2 并完成自检。"
+    },
+    "verifier": {
+      "conclusion": "pass",
+      "note": "身份、allowlist、dispatch 链和隔离副本全量检查均通过。"
+    },
+    "strict_judge": {
+      "conclusion": "pass",
+      "note": "契约、测试与作用域纪律完整，无功能性缺口。"
+    },
+    "anti_slop_judge": {
+      "conclusion": "pass",
+      "note": "无模板化空壳、无占位路径、无靠文档冒充能力。"
+    },
+    "chief_reviewer": {
+      "conclusion": "pass",
+      "note": "该候选可以离开 SG-1 独立验收门，并进入 main 整合评估。"
+    }
+  },
+  "reviewed_at": "2026-08-26T13:00:00+08:00"
+}
