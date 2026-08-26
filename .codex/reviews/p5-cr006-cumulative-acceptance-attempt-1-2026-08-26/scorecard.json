@@ -1,0 +1,248 @@
+{
+  "review_id": "p5-cr006-cumulative-acceptance-attempt-1-2026-08-26",
+  "task_id": "CR-006-I-X-P",
+  "lane": "cumulative-acceptance",
+  "review_level": "L3",
+  "rubric_id": "p5-cr006-cumulative-acceptance-v1",
+  "artifact_refs": [
+    "git:37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa",
+    "git-tree:aac256d331cb75775583c7e903279fa76a57684e",
+    "git-parent:c42670a3a7f638b262fa72d94e5a5a6d3a68cc51",
+    "formal:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "control:6c49825cef5de5a79520d86a01119502d34ea4ee:gate-requests/gate-cumulative-acceptance-cr006-g5-a1-20260826.json",
+    "control:4a3e6abfd1949a233afc9174598a67941bbb4ba3",
+    "control:5414c63d6e6e838ed6507e65f3e31d30fdcb5542",
+    "control:8231caf7ec4b21d62363222e6466933e7bf12dbf",
+    "result:results/result-package-acceptance-sg1-g5-a1-f119-20260826.json",
+    "result:results/result-package-acceptance-sg2-g5-a7-f128-20260826.json",
+    "result:results/result-package-acceptance-sg3-g5-a1-f131-20260826.json",
+    "control:8231caf7ec4b21d62363222e6466933e7bf12dbf:messages/msg-dispatch-ack-cr006-ixp-g5-a1-f132-20260826.json",
+    "control:5414c63d6e6e838ed6507e65f3e31d30fdcb5542:messages/msg-dispatch-ready-cr006-ixp-g5-a1-f132-20260826.json"
+  ],
+  "subject_identity": {
+    "commit_oid": "37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa",
+    "tree_oid": "aac256d331cb75775583c7e903279fa76a57684e",
+    "parent_oid": "c42670a3a7f638b262fa72d94e5a5a6d3a68cc51",
+    "subject_digest": "sha256:590c7976ec01da83645bfd80073e687e07986be6c4a8812d103d261639a84814"
+  },
+  "formal_identity": {
+    "commit_oid": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "tree_oid": "5b97a4432fbedb3dda189e05052c2e7665a1bea8",
+    "parent_oid": "5d3ee76a514bda3da38adc8cccbe5ef4550bf30f",
+    "subject_digest": "sha256:3e75ad6dffe9a2f5479f0e2c48bea6e45f04593b4e75ac14d48e1e4cbb891672"
+  },
+  "control_identity": {
+    "packet_digest": "sha256:6a010a09b670207f3f0de007cc95442f1efcf66c53cc37becfe191e4d652c2b3",
+    "dedup_key": "sha256:f6be56b61ebf0027f60ea66204652d65872225cc0ee7824acb546cf67e8036bb",
+    "claim_id": "claim-cr006-ixp-g5-a1-f132-20260826",
+    "fence_token": 132,
+    "dispatch_ack_control_oid": "8231caf7ec4b21d62363222e6466933e7bf12dbf",
+    "formal_oid": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "plan_generation": 5
+  },
+  "hard_gates": [
+    {
+      "id": "HG1-digests-and-control-chain",
+      "status": "pass",
+      "evidence": "独立复算 cumulative packet=sha256:6a010a09b670207f3f0de007cc95442f1efcf66c53cc37becfe191e4d652c2b3、dedup=sha256:f6be56b61ebf0027f60ea66204652d65872225cc0ee7824acb546cf67e8036bb、main subject=sha256:590c7976ec01da83645bfd80073e687e07986be6c4a8812d103d261639a84814、formal subject=sha256:3e75ad6dffe9a2f5479f0e2c48bea6e45f04593b4e75ac14d48e1e4cbb891672，以及 SG-1/SG-2/SG-3 Result=sha256:e04bd4b0c8efea41eb6015628205752624d58e92400d02565e01c61b244592e4 / sha256:83fd993d5d489e1bcd179267676e6f0312b48e02ad2058051856716f7ed63e51 / sha256:abfea41a5d855d25950c302043ad925a2cf880ba4a71b94c414865350fed2b6b，均与持久化字段一致；control 链 6c49825 -> 4a3e6ab -> 5414c63 -> 8231caf 为逐段单父，claim 前 registry 最大 fence=131，本次 claim fence=132。"
+    },
+    {
+      "id": "HG2-clone-isolation-and-preprovision",
+      "status": "pass",
+      "evidence": "当前 no-local clone 的 HEAD/formal/control 精确为 37c13f3 / ea04b57 / 8231caf；remote 为空、alternates 缺失、node_modules 为目录非 symlink、pnpm exec tsc --version=7.0.2；全程未访问原仓库或其他 worktree。"
+    },
+    {
+      "id": "HG3-integration-order-path-boundary-dependencies",
+      "status": "pass",
+      "evidence": "main 集成顺序为 SG-1 -> SG-2 -> SG-3 -> SG-3 state sync；包候选真实写集分别为 7/2/8 条路径，交集均为空。SG-2 与 SG-3 main 提交 tree 分别与原始候选 tree 相同，包级代码未修改 package.json/pnpm-lock/tsconfig，运行时依赖仍仅 ajv，新增依赖=0。"
+    },
+    {
+      "id": "HG4-fresh-full-regression",
+      "status": "pass",
+      "evidence": "fresh pnpm check 通过，discovered=503、pass=503、fail/skip/cancel/todo=0/0/0/0，coverage Lines/Branches/Functions=93.50/88.62/99.22；git diff --check 与 git status --short 均为空。"
+    },
+    {
+      "id": "HG5-sg1-fixed-negative",
+      "status": "pass",
+      "evidence": "fresh 负例重跑确认 control_cas_per_attempt=13 时 conclusion=exception-required，exceeded_metrics=[control_cas_per_attempt]；尝试注入调用方 limits 字段不会放宽阈值，而是被 INVALID_SCALABILITY_BUDGET 直接拒绝。"
+    },
+    {
+      "id": "HG6-sg2-fixed-negative",
+      "status": "pass",
+      "evidence": "fresh 负例重跑确认 checkpoint/registry identity conflict 返回 status=unavailable、next_action=null、unavailable_reasons=[identity-conflict]；stale active identity 返回 freshness=stale、status=unavailable、next_action=null、unavailable_reasons=[stale-active-identity]；输出中无 claim/fence/绝对路径泄漏。"
+    },
+    {
+      "id": "HG7-sg3-fixed-negative",
+      "status": "pass",
+      "evidence": "fresh 负例重跑将 repository-synthetic fixture 的 run_kind 单改为 real 后，仍得到 qualified_real_runs=0、target_qualified_real_runs=3、excluded_records=[nextstep-derived]；run_kind 单独变化不能把仓库 fixture 冒充为 3/3 真实运行。"
+    },
+    {
+      "id": "HG8-non-overclaim-and-history-boundary",
+      "status": "pass",
+      "evidence": "PROJECT_ROUTE_LOCK、PRODUCT_SENSE、CR-006 与活动计划均保留 fail-closed 文案：下一动作仍仅为本次 cumulative read-only acceptance，明确禁止自动关闭 CR-006、创建 V2 packet、移动 formal，且不宣称 PC-12、PC-19、V2、V4、P5 完成；SG-3 包状态保持“真实项目价值验证框架可用，真实运行 0/3”。"
+    },
+    {
+      "id": "HG9-carry-forward-risks-preserved",
+      "status": "pass",
+      "evidence": "SG-1 两项 P2（RED 原始终端 transcript 未内容寻址固化、main 曾在正式 acceptance Result 前提前 cherry-pick）与 SG-2 一项 P2（RED 原始终端 transcript 未独立固化）被完整保留；SG-3 两项边界（恶意磁盘操作者整体重写不在抵抗范围、真实运行仍 0/3）也被保留且未被 PASS 文案抹平。"
+    },
+    {
+      "id": "HG10-review-output-boundary",
+      "status": "pass",
+      "evidence": "本次评审只允许写入 .codex/reviews/p5-cr006-cumulative-acceptance-attempt-1-2026-08-26/scorecard.json 与 verdict.md；review commit 必须唯一父=37c13f3，且不得创建 Result/control、修改 main/formal、产品代码或用户 signoff。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "identity-and-control-provenance",
+      "score": 25,
+      "max_score": 25,
+      "reason": "cumulative packet/dedup/main/formal 与三份 package Result digest 全部复算一致；claim->ready->ACK 控制链严格单父，fence 132 与 live registry 身份自洽。",
+      "evidence_refs": [
+        "HG1-digests-and-control-chain",
+        "HG2-clone-isolation-and-preprovision"
+      ]
+    },
+    {
+      "id": "integration-and-boundary-discipline",
+      "score": 25,
+      "max_score": 25,
+      "reason": "三包主线集成顺序、互斥路径、无新增依赖、formal/main/control 边界和 exact-two review 边界全部成立。",
+      "evidence_refs": [
+        "HG3-integration-order-path-boundary-dependencies",
+        "HG10-review-output-boundary"
+      ]
+    },
+    {
+      "id": "fresh-verification-and-fixed-negatives",
+      "score": 25,
+      "max_score": 25,
+      "reason": "fresh full regression 达到 503/503 与 93.50/88.62/99.22；SG-1/SG-2/SG-3 三条固定负例都按预期 fail closed。",
+      "evidence_refs": [
+        "HG4-fresh-full-regression",
+        "HG5-sg1-fixed-negative",
+        "HG6-sg2-fixed-negative",
+        "HG7-sg3-fixed-negative"
+      ]
+    },
+    {
+      "id": "history-truth-and-overclaim-guard",
+      "score": 25,
+      "max_score": 25,
+      "reason": "主线真源明确保持“真实运行 0/3”与“不得宣称 PC-12/PC-19/V2/V4/P5 完成”，同时把 SG-1/SG-2/SG-3 的历史风险和边界完整 carry forward。",
+      "evidence_refs": [
+        "HG8-non-overclaim-and-history-boundary",
+        "HG9-carry-forward-risks-preserved"
+      ]
+    }
+  ],
+  "penalties": [
+    {
+      "severity": "P2",
+      "deduction": 1,
+      "reason": "SG-1 的 RED 原始终端输出没有作为独立 immutable transcript 固化，当前仍依赖摘要化历史说明。",
+      "evidence_refs": [
+        "result:results/result-package-acceptance-sg1-g5-a1-f119-20260826.json"
+      ]
+    },
+    {
+      "severity": "P2",
+      "deduction": 1,
+      "reason": "SG-1 代码曾在正式 acceptance Result 前提前 cherry-pick 到 main；虽已持续披露且未被本次 PASS 当作证据，但异常时序仍需保留。",
+      "evidence_refs": [
+        "result:results/result-package-acceptance-sg1-g5-a1-f119-20260826.json"
+      ]
+    },
+    {
+      "severity": "P2",
+      "deduction": 1,
+      "reason": "SG-2 的 RED 阶段同样没有把原始终端 transcript 作为独立内容寻址对象固化。",
+      "evidence_refs": [
+        "result:results/result-package-acceptance-sg2-g5-a7-f128-20260826.json"
+      ]
+    }
+  ],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 3,
+    "final_score": 97,
+    "max_score": 100
+  },
+  "finding_counts": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 3
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "carry_forward_risks": [
+    {
+      "severity": "P2",
+      "scope": "SG-1",
+      "summary": "RED 原始终端输出没有内容寻址固化。"
+    },
+    {
+      "severity": "P2",
+      "scope": "SG-1",
+      "summary": "main 曾在正式 acceptance Result 前提前 cherry-pick 同一代码；本次 cumulative PASS 未把该 main 状态当作 package 通过证据。"
+    },
+    {
+      "severity": "P2",
+      "scope": "SG-2",
+      "summary": "RED 阶段只有摘要化 observed 说明，没有独立 immutable transcript。"
+    },
+    {
+      "severity": "boundary",
+      "scope": "SG-3",
+      "summary": "证据绑定只能阻止受支持路径中的 run/project/evidence 误配，不能抵抗恶意磁盘操作者整体重写并重算摘要。"
+    },
+    {
+      "severity": "boundary",
+      "scope": "SG-3",
+      "summary": "真实项目运行仍为 0/3；本次 PASS 不等于 PC-19、V2、V4 或 P5 完成。"
+    }
+  ],
+  "verification_summary": {
+    "full_regression": {
+      "discovered": 503,
+      "passed": 503,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    },
+    "coverage": {
+      "lines": 93.5,
+      "branches": 88.62,
+      "functions": 99.22
+    },
+    "fixed_negative_evidence": {
+      "sg1_overrun": "exception-required with exceeded_metrics=[control_cas_per_attempt]",
+      "sg1_override_relaxation": "caller-provided limits rejected with INVALID_SCALABILITY_BUDGET",
+      "sg2_conflict": "unavailable + next_action=null + identity-conflict",
+      "sg2_stale": "unavailable + next_action=null + stale-active-identity",
+      "sg3_repository_synthetic_relabeled_real": "qualified_real_runs=0 / target=3 + excluded as nextstep-derived"
+    }
+  },
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "identity": "codex-subagent:/root/cr006_cumulative_accept_g5_a1_f132",
+      "conclusion": "PASS",
+      "note": "10/10 hard gates 通过，fresh full regression 与三条固定负例均已独立重跑。"
+    },
+    {
+      "role": "Strict Judge",
+      "identity": "codex-subagent:/root/cr006_cumulative_accept_g5_a1_f132",
+      "conclusion": "PASS",
+      "note": "97/100；无 P0/P1，仅 3 个 carry-forward P2。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "identity": "codex-subagent:/root/cr006_cumulative_accept_g5_a1_f132",
+      "conclusion": "PASS",
+      "note": "只放行 CR-006 cumulative gate 通过；真实运行仍为 0/3，不放行 CR-006 自动关闭、V2 packet、formal 移动、PC-12、PC-19、V2、V4 或 P5 完成。"
+    }
+  ],
+  "reviewed_at": "2026-08-26T17:03:20+08:00"
+}
