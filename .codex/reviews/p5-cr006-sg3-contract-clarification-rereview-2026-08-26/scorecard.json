@@ -1,0 +1,172 @@
+{
+  "review_id": "p5-cr006-sg3-contract-clarification-rereview-2026-08-26",
+  "task_id": "P5/CR-006/SG-3-contract-clarification-replacement-rereview",
+  "lane": "independent-rereview",
+  "review_level": "L3",
+  "rubric_id": "nextstep-sg3-contract-clarification-rereview-v1",
+  "artifact_refs": [
+    {
+      "kind": "review_subject",
+      "ref": "git:08ff8a875cd6bfe09593a2fbe05dee193f735c1c",
+      "tree": "0722fca0ab5fee1c9b94ff67a10520c948a4340f",
+      "parent": "64fcee476bcfa51a7d68fabb34f2845d75cf8eb2"
+    },
+    {
+      "kind": "clarification_candidate",
+      "ref": "git:64fcee476bcfa51a7d68fabb34f2845d75cf8eb2",
+      "tree": "a6f0d55a82168c113dc31ed5862d565bcb0fe3c5",
+      "parent": "826b415424acbe3d52b3f9207d5ec6ec26795537"
+    },
+    {
+      "kind": "base",
+      "ref": "git:826b415424acbe3d52b3f9207d5ec6ec26795537"
+    },
+    {
+      "kind": "formal",
+      "ref": "git:ea04b57de83d6c548dcb1629b1f61832db8375ad"
+    },
+    {
+      "kind": "control_result",
+      "ref": "git:b1fceab03b48e901f32912091c008e8687d1b91b"
+    }
+  ],
+  "hard_gates": [
+    {
+      "id": "HG-01-EXACT-WRITE-SET",
+      "status": "pass",
+      "evidence": [
+        "git diff --name-only 64fcee4..08ff8a8 == [.codex/operations-log.md, .codex/verification-report.md, PROJECT_ROUTE_LOCK.md, docs/PLANS.md, docs/PRODUCT_SENSE.md, docs/change-requests/index.md]",
+        "64fcee4..08ff8a8 未修改 docs/change-requests/006-scalability-guardrails.md、docs/design-docs/p5-scalability-guardrails-design.md、docs/exec-plans/active/p5-scalability-guardrails.md，也未触及 src/schemas/tests/package.json/pnpm-lock/control refs"
+      ]
+    },
+    {
+      "id": "HG-02-FOUR-P1-MECHANICALLY-CLOSED",
+      "status": "pass",
+      "evidence": [
+        "澄清候选把 SG-3 真实资格冻结为 run_kind + collection_mode + project_origin 三元组，并要求 external-user-project: docs/design-docs/p5-scalability-guardrails-design.md:244-246; docs/exec-plans/active/p5-scalability-guardrails.md:197-206",
+        "证据绑定补上 evidence_binding_digest 公式与 supported-path 边界: docs/design-docs/p5-scalability-guardrails-design.md:246; docs/exec-plans/active/p5-scalability-guardrails.md:199-201",
+        "整批拒绝与合法排除被机械分离，并冻结 exclusion reason 优先级: docs/design-docs/p5-scalability-guardrails-design.md:248-253; docs/exec-plans/active/p5-scalability-guardrails.md:208-208",
+        "CLI/aggregate 契约补齐稳定错误码、qualified-only 聚合、sorted runs 与 aggregate digest 公式: docs/design-docs/p5-scalability-guardrails-design.md:280-301; docs/exec-plans/active/p5-scalability-guardrails.md:214-240",
+        "澄清日志明确这四项就是 attempt 1 的原始 P1，且只做机械化收口: .codex/operations-log.md:2698-2700"
+      ]
+    },
+    {
+      "id": "HG-03-ATTEMPT1-AUDIT-FACTS-ACCURATE",
+      "status": "pass",
+      "evidence": [
+        "attempt 1 Result/control 固定为 sha256:cd907... / b1fceab...，结论 contract-revision-required、无 RED、无候选: .codex/verification-report.md:2637-2642; .codex/operations-log.md:2707-2711",
+        "replacement 状态同步把首轮独立评审定格为 REVISE / 80，且唯一 P1 为最高优先级状态源仍停留在旧 packet 门禁: PROJECT_ROUTE_LOCK.md:34,46,112; docs/PLANS.md:7-8,31; docs/PRODUCT_SENSE.md:74-76,98; docs/change-requests/index.md:16"
+      ]
+    },
+    {
+      "id": "HG-04-HIGHEST-PRIORITY-STATE-SOURCES-FAIL-CLOSED",
+      "status": "pass",
+      "evidence": [
+        "路线锁当前最小闭环、当前状态、当前阶段缺口均已改成‘先替代候选独立复审，PASS 后才可 corrected attempt 2 + new packet/new fence 130/new worker’: PROJECT_ROUTE_LOCK.md:34,46,112",
+        "PLANS 当前活动里程碑、当前状态、当前实施入口均为同一 fail-closed 口径: docs/PLANS.md:7-8,31",
+        "PRODUCT_SENSE 当前阶段与变更入口不再指向 generic packet gate: docs/PRODUCT_SENSE.md:74-76,98",
+        "Change Request 索引同步到 attempt 1 contract-revision-required + clarification rereview gate，不再误导到 SG-2 或未分 attempt packet: docs/change-requests/index.md:16"
+      ]
+    },
+    {
+      "id": "HG-05-NO-SCOPE-TASK-DOD-BUDGET-EXPANSION",
+      "status": "pass",
+      "evidence": [
+        "CR-006 继续声明路线不变，仅因本 CR 新增计划范围/任务/DoD 才使用 plan_generation=5，且当前下一动作不改变三个任务包、路径、规模上限、DoD 或 plan_generation=5: docs/change-requests/006-scalability-guardrails.md:20-24,38-41,68-73,111",
+        "SG-3 澄清只补机械契约，不新增第四包、指标或运行能力: .codex/operations-log.md:2699-2700; docs/exec-plans/active/p5-scalability-guardrails.md:193-240",
+        "replacement 本身仅做 exact-6 状态同步，没有继续改动 SG-3 scope/task/DoD 正文"
+      ]
+    },
+    {
+      "id": "HG-06-FORMAL-CONTROL-STABLE-NO-REUSE",
+      "status": "pass",
+      "evidence": [
+        "formal 仍为 ea04b57...，control 仍为 b1fceab...；replacement 仅同步状态摘要，不移动 formal/control: PROJECT_ROUTE_LOCK.md:46; docs/PLANS.md:8; docs/PRODUCT_SENSE.md:76",
+        "attempt 1 packet/claim/ACK/drafts 被明确禁止复用，且 corrected attempt 2 必须 new packet/new fence 130/new worker: PROJECT_ROUTE_LOCK.md:34,46,112; .codex/operations-log.md:2709-2710; .codex/verification-report.md:2640-2642",
+        "replacement diff 未触及任何代码、Schema、测试、依赖或 control 载荷文件"
+      ]
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "contract_correctness",
+      "score": 40,
+      "max_score": 40,
+      "reason": "澄清候选对原四个 P1 给出了逐项机械化契约，replacement 没有回退这些修复。",
+      "evidence_refs": [
+        "HG-02-FOUR-P1-MECHANICALLY-CLOSED",
+        "HG-05-NO-SCOPE-TASK-DOD-BUDGET-EXPANSION"
+      ]
+    },
+    {
+      "id": "state_source_coherence",
+      "score": 25,
+      "max_score": 25,
+      "reason": "四个最高优先级状态源已经一致 fail-closed 到本替代候选独立复审门禁。",
+      "evidence_refs": [
+        "HG-03-ATTEMPT1-AUDIT-FACTS-ACCURATE",
+        "HG-04-HIGHEST-PRIORITY-STATE-SOURCES-FAIL-CLOSED"
+      ]
+    },
+    {
+      "id": "scope_and_boundary_discipline",
+      "score": 20,
+      "max_score": 20,
+      "reason": "replacement 保持 review-only 状态同步，没有扩张 SG-3 范围、DoD、预算或代际，也没有引入代码/依赖/控制面改动。",
+      "evidence_refs": [
+        "HG-01-EXACT-WRITE-SET",
+        "HG-05-NO-SCOPE-TASK-DOD-BUDGET-EXPANSION",
+        "HG-06-FORMAL-CONTROL-STABLE-NO-REUSE"
+      ]
+    },
+    {
+      "id": "evidence_fidelity",
+      "score": 15,
+      "max_score": 15,
+      "reason": "attempt 1 审计事实、clarification REVISE/80 状态和禁止复用边界在 replacement 留痕中准确复述，没有新增证据失真。",
+      "evidence_refs": [
+        "HG-03-ATTEMPT1-AUDIT-FACTS-ACCURATE",
+        "HG-06-FORMAL-CONTROL-STABLE-NO-REUSE"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100
+  },
+  "verdict": {
+    "decision": "PASS",
+    "score": 100,
+    "p0": 0,
+    "p1": 0,
+    "p2": 0
+  },
+  "required_fixes": [],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "decision": "PASS",
+      "summary": "replacement 仅做 exact-6 状态同步，attempt 1 审计事实与 clarification 契约边界都可独立复算。"
+    },
+    {
+      "role": "Strict Judge",
+      "decision": "PASS",
+      "summary": "原四个 P1 已在澄清候选中机械关闭，replacement 把最高优先级状态源全部拉回 fail-closed 门禁，且没有范围回退。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "decision": "PASS",
+      "summary": "本次修复精确对准唯一剩余状态同步缺口，没有借机扩写 SG-3 任务、DoD、预算或产品完成结论。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "decision": "PASS",
+      "summary": "固定 subject 08ff8a8 / tree 0722fca 可离开本次契约澄清替代候选复审门禁；下一入口仅限 corrected attempt 2 的 new packet/new fence 130/new worker。"
+    }
+  ],
+  "reviewed_at": "2026-08-26T15:49:41+08:00"
+}
