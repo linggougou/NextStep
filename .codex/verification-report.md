@@ -2698,3 +2698,20 @@
 - CR-006：cumulative gate 已通过，但 `change_request_closed=false`，CR-006 未自动关闭。
 - 下一唯一允许动作：基于本状态同步合入后的最新 main/control 做一次独立 V2 entry reassessment；该复评本身不创建 V2 packet。
 - 未完成边界：formal 不移动，PC-12/PC-19/V2/V4/P5/真实运行 3/3 均未完成；不替用户 signoff。
+
+## 2026-08-26 V2 入口首次复评 P1 状态真源修复验证
+
+### 输入、发现与修复
+
+- 固定父提交=`7a579dd1f08ec65e916e509863846d99f143c9d5`，该提交是首次 CR-006 后 V2 entry reassessment review，结论=`REVISE / 88`、P0/P1/P2=`0/2/0`；本修复不改写该独立结论。
+- P1-1 已关闭：八份允许状态真源不再把 `cumulative_review_commit=813e9fd5240b1af6413a274daa7e307757bbb246` 称为 current main，而是同时固定 `accepted_subject_main=37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa`、`cumulative_state_sync_commit=7274c03fbb6e7ee11dc7f24690a2af50ed76169a` 与 `first_reassessment_review_commit=7a579dd1f08ec65e916e509863846d99f143c9d5`；live main 由 `git rev-parse refs/heads/main` 运行时解析。
+- P1-2 已关闭：累计验收 `93.50/88.62/99.22` 明确标为 historical snapshot；首次复评 `93.48/88.59/99.22` 与主线复跑 `93.53/88.69/99.22` 分别标为独立 snapshot。末两位波动不再被包装为稳定 current 真源；current gate 采用 `503/503`、fail/skip/cancel/todo=`0/0/0/0`、各 coverage 维度 `>=80%`，live 百分比须 fresh 运行生成。
+
+### 范围与门禁
+
+- 状态边界保持：formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control=`1ac071b0087514390238381fa71cc4b4182983bc`、`plan_generation=5`；`change_request_closed=false`，CR-006 未关闭，真实运行仍为 `0/3`。
+- 未创建 V2 packet、claim/fence、dispatch、Result 或 formal movement；未宣称 PC-12/PC-19/V2/V4/P5 完成。修复合入后仅放行再次独立 V2 entry reassessment。
+- 写集限定为 `README.md`、`PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md`、`docs/PRODUCT_SENSE.md`、`docs/change-requests/index.md`、`docs/qa/index.md`、两个 P5 active plan 与两份 `.codex` 留痕；没有产品代码、测试、Schema 或依赖变化，因此本候选不重复运行 `pnpm check`，引用两次已核定 fresh run 仅用于证明覆盖率波动。
+- 用户改动保护：未读取、修改、暂存或清理受保护 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`；未移动 refs、未 push。
+- 机械检查：`git diff --check` 通过；提交前差异严格等于上述 exact-10 白名单；八份状态真源对 `main=813e9fd`、把 `93.50/88.62/99.22` 称为 current/fresh、旧的单次复评 pending 下一步口径反扫无命中。
+- 完成边界反扫：八份状态真源新增差异没有把 CR-006、V2 packet、formal、PC-12、PC-19、V2/V4/P5 或真实运行 3/3 包装为已关闭、已创建、已移动或已完成。

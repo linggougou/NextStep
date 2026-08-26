@@ -1,10 +1,10 @@
 # P5 可承受性护栏实施计划
 
-- 状态：cumulative-gate-passed-v2-entry-reassessment-pending（`change_request_closed=false`）
+- 状态：cumulative-gate-passed-v2-entry-reassessment-revise（`change_request_closed=false`）
 - 变更入口：[CR-006](../../change-requests/006-scalability-guardrails.md)
 - 生命周期阶段：S5 开发落地
 - 路线位置：P5 跨版本基础护栏；不新增版本，不改变 V2 首个产品 packet 前门禁
-- 当前授权：用户已批准三个方向及自治 worktree/subagent 实施。SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过；cumulative replacement review=`813e9fd`（旧 `dbb1c2d` 因未来 `reviewed_at` 废弃），`PASS / 97`，P0/P1/P2=`0/0/3`，Result control=`1ac071b`、digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。SG-1 两项 P2、SG-2 一项 P2 与 SG-3 两条边界继续保留；精确状态为“真实项目价值验证框架可用，真实运行 0/3”。`change_request_closed=false`；下一唯一动作是基于本状态同步合入后的最新 main/control 做独立 V2 entry reassessment。CR-006 关闭、V2 packet、formal 移动及用户 signoff 仍分离受控
+- 当前授权：用户已批准三个方向及自治 worktree/subagent 实施。SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过。身份拆分为 `accepted_subject_main=37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa`、`cumulative_review_commit=813e9fd5240b1af6413a274daa7e307757bbb246`（旧 `dbb1c2d` 因未来 `reviewed_at` 废弃）、`cumulative_state_sync_commit=7274c03fbb6e7ee11dc7f24690a2af50ed76169a`、`first_reassessment_review_commit=7a579dd1f08ec65e916e509863846d99f143c9d5`；live main 运行时解析。cumulative=`PASS / 97`，P0/P1/P2=`0/0/3`，Result control=`1ac071b`、digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。累计历史 coverage=`93.50/88.62/99.22`；首次复评 snapshot=`93.48/88.59/99.22`、主线复跑 snapshot=`93.53/88.69/99.22`，current gate 只固定 `503/503`、零失败与各 coverage 维度 `>=80%`，live 百分比须 fresh 生成。SG-1 两项 P2、SG-2 一项 P2 与 SG-3 两条边界继续保留；精确状态为“真实项目价值验证框架可用，真实运行 0/3”。`change_request_closed=false`；首次复评=`REVISE / 88`，修复合入后下一唯一动作是再次独立 V2 entry reassessment。CR-006 关闭、V2 packet、formal 移动及用户 signoff 仍分离受控
 
 ## 1. 阶段目标
 
@@ -238,8 +238,8 @@ GREEN 只实现 Schema、单次记录验证、去重、聚合与离线 CLI，并
 
 - 前序 attempt 1 的 P1 契约歧义发生在实现前，状态固定为 `contract-revision-required`；未执行 RED、未生成生产/Schema/test 候选，也不计为 SG-3 行为失败。该历史继续作为只读证据保留。
 - 更正后的原始候选=`87258c32162875bef16994b2259ad16baf4cb72e`、main=`a5b16942450d79ed583b80a1b4f13061017c41fd`；原始独立评审=`afdb308e09113a919a07778a75c1f816f2d3b5cd`、main=`c42670a3a7f638b262fa72d94e5a5a6d3a68cc51`，结论 `PASS / 100`，P0/P1/P2=`0/0/0`，Result digest=`sha256:abfea41a5d855d25950c302043ad925a2cf880ba4a71b94c414865350fed2b6b`。
-- main fresh 验证=`503/503`，coverage Lines/Branches/Functions=`93.50/88.62/99.22`；包级状态必须保持为“真实项目价值验证框架可用，真实运行 0/3”。SG-3 package gate 通过不表示 PC-19、V2、V4 或 P5 完成。
-- cumulative gate 已通过；下一唯一入口为基于状态同步后最新 main/control 的独立 V2 entry reassessment。该复评本身不创建 V2 packet，不自动关闭 CR-006，不移动 formal，也不替用户 signoff。
+- SG-3 package gate 历史验证=`503/503`，coverage Lines/Branches/Functions=`93.50/88.62/99.22`；这是包级历史 snapshot，不是永久 current 数值。包级状态必须保持为“真实项目价值验证框架可用，真实运行 0/3”。SG-3 package gate 通过不表示 PC-19、V2、V4 或 P5 完成。
+- cumulative gate 已通过；首次 V2 entry reassessment=`REVISE / 88`。状态真源修复合入后，下一唯一入口为再次独立复评。该复评本身不创建 V2 packet，不自动关闭 CR-006，不移动 formal，也不替用户 signoff。
 
 ## 7. 累积验证与验收门禁
 
@@ -251,10 +251,10 @@ GREEN 只实现 Schema、单次记录验证、去重、聚合与离线 CLI，并
 4. 核对 formal/control OID、用户工作树、既有产品真源和历史证据未变。
 5. 反扫完成声明，确保不存在 PC-12、PC-19、V2、V4、P5 或真实运行 3/3 的提前宣告。
 
-累积结论=`PASS / 97`，P0/P1/P2=`0/0/3`；cumulative packet=`6c49825`、claim/fence 132=`4a3e6ab`、ready=`5414c63`、ACK=`8231caf`，replacement review=`813e9fd`，Result control=`1ac071b`、digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。fresh `503/503`、coverage=`93.50/88.62/99.22`，三个固定负例均通过。
+累积结论=`PASS / 97`，P0/P1/P2=`0/0/3`；cumulative packet=`6c49825`、claim/fence 132=`4a3e6ab`、ready=`5414c63`、ACK=`8231caf`，`accepted_subject_main=37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa`、`cumulative_review_commit=813e9fd5240b1af6413a274daa7e307757bbb246`、Result control=`1ac071b`、digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。累计验收历史 snapshot=`503/503`、coverage=`93.50/88.62/99.22`，三个固定负例均通过。
 
-SG-1 两项 P2、SG-2 一项 P2 与 SG-3 两条边界继续 carry forward；精确状态仍为“真实项目价值验证框架可用，真实运行 0/3”。`change_request_closed=false`。PASS 后下一唯一动作是基于本状态同步合入后的最新 main/control 做独立 V2 entry reassessment；该复评本身不能创建 V2 packet 或推进 formal。
+SG-1 两项 P2、SG-2 一项 P2 与 SG-3 两条边界继续 carry forward；精确状态仍为“真实项目价值验证框架可用，真实运行 0/3”。`change_request_closed=false`。首次 V2 entry reassessment=`REVISE / 88`，修复合入后下一唯一动作是再次独立复评；该复评本身不能创建 V2 packet 或推进 formal。
 
 ## 8. 阶段出口
 
-本计划的实现与 cumulative gate 出口已经通过，同时明确留下“真实运行 0/3，PC-12/PC-19/V2/V4 均未由本计划完成”的状态。该 PASS 不自动归档本计划或关闭 CR-006；下一步只允许独立 V2 entry reassessment，是否创建 V2 packet、是否把护栏接入 V2/V4 产品路径，以及是否启动真实项目运行，均需按各自路线入口另行裁决。
+本计划的实现与 cumulative gate 出口已经通过，同时明确留下“真实运行 0/3，PC-12/PC-19/V2/V4 均未由本计划完成”的状态。该 PASS 不自动归档本计划或关闭 CR-006；首次复评为 `REVISE / 88`，状态真源修复后下一步只允许再次独立 V2 entry reassessment。是否创建 V2 packet、是否把护栏接入 V2/V4 产品路径，以及是否启动真实项目运行，均需按各自路线入口另行裁决。

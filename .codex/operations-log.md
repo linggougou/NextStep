@@ -2738,3 +2738,12 @@
 - 下一入口：本状态同步合入后，只允许基于最新 main/control 做一次独立 V2 entry reassessment；该复评本身也不创建 V2 packet。
 - 验证：`git diff --check` 通过；exact-path 检查严格为 exact-11；九份状态文档旧停点反扫与新增行提前完成声明反扫均无命中。提交前 HEAD/formal/control 保持 `813e9fd` / `ea04b57` / `1ac071b`。
 - 结束状态：已结束；CR-006 cumulative gate 状态同步通过，但 CR-006、V2 packet、formal 与 P5 均未由本轮推进。下一唯一动作仍为独立 V2 entry reassessment。
+
+## 2026-08-26 V2 入口首次复评 P1 状态真源修复
+
+- 任务边界：主控分派的 L2 状态真源修复；专属 worktree=`/Users/ling/.codex/worktrees/v2-entry-state-fix-a1`，固定单父基线=`7a579dd1f08ec65e916e509863846d99f143c9d5`。写集严格限于八份状态真源与 `.codex/operations-log.md`、`.codex/verification-report.md`，不改代码、Schema、测试、依赖、review artifact 或 formal/control refs。
+- 退回依据：首次 CR-006 后 V2 entry reassessment commit=`7a579dd1f08ec65e916e509863846d99f143c9d5`，结论=`REVISE / 88`、P0/P1/P2=`0/2/0`。两项 P1 分别是把 cumulative review `813e9fd...` 误称 current main，以及把累计验收 coverage `93.50/88.62/99.22` 误称复评时 fresh current 数值。
+- 身份修复：统一拆分 `accepted_subject_main=37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa`、`cumulative_review_commit=813e9fd5240b1af6413a274daa7e307757bbb246`、`cumulative_state_sync_commit=7274c03fbb6e7ee11dc7f24690a2af50ed76169a`、`first_reassessment_review_commit=7a579dd1f08ec65e916e509863846d99f143c9d5`。文档明确禁止把自身未来 commit 写入自身内容；live main 必须在使用时通过 `git rev-parse refs/heads/main` 解析。
+- 测量修复：累计验收 historical snapshot=`503/503`、coverage Lines/Branches/Functions=`93.50/88.62/99.22`；首次复评 snapshot=`503/503`、`93.48/88.59/99.22`；主线 `7a579dd...` 复跑 snapshot=`503/503`、`93.53/88.69/99.22`。该差异证明末两位存在运行波动，current gate 只固定 tests=`503/503`、fail/skip/cancel/todo=`0/0/0/0`、各 coverage 维度 `>=80%`；live 百分比只能由 fresh run 生成，不再作为提交身份字段。
+- 门禁保持：formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control=`1ac071b0087514390238381fa71cc4b4182983bc`、`plan_generation=5` 均不变；`change_request_closed=false`，CR-006 未关闭，无 V2 packet/claim/fence/dispatch/coding，P5 未完成。修复合入后的下一唯一动作仅为再次独立 V2 entry reassessment。
+- 用户改动保护：未读取、修改、暂存或清理受保护 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`；未移动 refs、未 push。

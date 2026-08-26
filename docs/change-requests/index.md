@@ -13,7 +13,7 @@
 
 ## 已接受未关闭变更
 
-- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过；replacement review=`813e9fd`，`PASS / 97`，P0/P1/P2=`0/0/3`，Result control=`1ac071b`、digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。`change_request_closed=false`，精确状态仍为“真实项目价值验证框架可用，真实运行 0/3”。下一唯一动作是基于状态同步后的最新 main/control 做独立 V2 entry reassessment；复评不创建 V2 packet，formal 不移动。
+- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过；`accepted_subject_main=37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa`、`cumulative_review_commit=813e9fd5240b1af6413a274daa7e307757bbb246`、`cumulative_state_sync_commit=7274c03fbb6e7ee11dc7f24690a2af50ed76169a`、`first_reassessment_review_commit=7a579dd1f08ec65e916e509863846d99f143c9d5`，live main 必须运行时解析。cumulative=`PASS / 97`、P0/P1/P2=`0/0/3`，Result control=`1ac071b`、digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。累计 coverage `93.50/88.62/99.22` 仅为 historical measurement；首次复评 snapshot=`93.48/88.59/99.22`，主线复跑 snapshot=`93.53/88.69/99.22`，current gate 采用 503/503、零失败、各 coverage 维度 `>=80%`。`change_request_closed=false`，精确状态仍为“真实项目价值验证框架可用，真实运行 0/3”。首次复评 `REVISE / 88`；修复合入后下一唯一动作是再次独立 V2 entry reassessment，复评不创建 V2 packet，formal 不移动。
 
 ## 分流规则
 

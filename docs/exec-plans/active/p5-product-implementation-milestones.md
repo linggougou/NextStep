@@ -1,6 +1,6 @@
 # P5 产品落地实施里程碑
 
-状态：进行中；main=`813e9fd5240b1af6413a274daa7e307757bbb246`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`。V1 已 formally-completed；CR-006 cumulative gate=`PASS / 97`、P0/P1/P2=`0/0/3`，但 `change_request_closed=false`。下一唯一动作是基于状态同步后最新 main/control 做独立 V2 entry reassessment；该复评不创建 V2 packet，formal 不移动
+状态：进行中；`accepted_subject_main=37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa`、`cumulative_review_commit=813e9fd5240b1af6413a274daa7e307757bbb246`、`cumulative_state_sync_commit=7274c03fbb6e7ee11dc7f24690a2af50ed76169a`、`first_reassessment_review_commit=7a579dd1f08ec65e916e509863846d99f143c9d5`；live main 必须运行时 `git rev-parse refs/heads/main`，不固定为任一历史提交。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`。V1 已 formally-completed；CR-006 cumulative gate=`PASS / 97`、P0/P1/P2=`0/0/3`，但 `change_request_closed=false`。首次 V2 entry reassessment=`REVISE / 88`；修复合入后下一唯一动作是再次独立复评，该复评不创建 V2 packet，formal 不移动
 启动日期：2026-08-08
 
 ## 1. 阶段目标
@@ -11,9 +11,9 @@
 
 - 生命周期阶段：`S5 开发落地`。
 - 项目里程碑：`P5 产品落地`。
-- 当前活动里程碑：`CR-006 cumulative gate 已通过 / V2 entry reassessment pending`；V2 产品 packet 继续暂停。
+- 当前活动里程碑：`CR-006 cumulative gate 已通过 / first V2 entry reassessment REVISE / state truth fix`；V2 产品 packet 继续暂停。
 - 本轮启动授权：用户于 2026-08-08 在 P4 会签归档后明确要求继续，授权单独启动 P5 并建立实施里程碑。
-- 路线性质：沿用已会签路线，不改变产品定位、主交互载体、技术栈、版本范围或验收门禁。V1 已完成精确用户会签及分离的 ACK/completion CAS。CR-006 只增加跨版本可承受性护栏，独立计划位于 `docs/exec-plans/active/p5-scalability-guardrails.md`；三个 package gate 与 cumulative gate 均已通过，但 CR-006 未自动关闭。当前只允许基于状态同步后最新 main/control 做一次独立 V2 entry reassessment；该复评本身不直接授权 V2 packet 或 formal 移动。
+- 路线性质：沿用已会签路线，不改变产品定位、主交互载体、技术栈、版本范围或验收门禁。V1 已完成精确用户会签及分离的 ACK/completion CAS。CR-006 只增加跨版本可承受性护栏，独立计划位于 `docs/exec-plans/active/p5-scalability-guardrails.md`；三个 package gate 与 cumulative gate 均已通过，但 CR-006 未自动关闭。首次 V2 entry reassessment=`REVISE / 88`；当前只允许修复状态真源并再次做独立复评，复评本身不直接授权 V2 packet 或 formal 移动。
 
 ## 3. 正式上游
 
@@ -158,4 +158,4 @@ P5-M0 不是新增产品版本，不改变 P3 的 PC 主版本归属，也不能
 
 P5 的最终阶段出口是：V1..V4 和 Final Acceptance 全部通过本地可重复验证、独立 I/X/P、适用 Profile 验收和用户会签；交付清单、正式 OID、已知风险、回滚与 PC-20.AR 状态可追溯。此前 P5 保持进行中，不得归档本计划或宣告完整产品完成。
 
-当前 M1.1 attempt 1 为历史 `退回 / 73`，attempt 2 已会签并正式完成。formal=F16，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`；S1.4-S1.6、M1.2 与 V1 均已正式完成。CR-006 cumulative replacement review=`813e9fd5240b1af6413a274daa7e307757bbb246`，`PASS / 97`，P0/P1/P2=`0/0/3`；Result digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。`503/503`、coverage=`93.50/88.62/99.22` 与三个固定负例均通过，但 SG-1 两项 P2、SG-2 一项 P2、SG-3 两条边界和“真实运行 0/3”继续保留。下一唯一动作是独立 V2 entry reassessment；该复评不创建 V2 packet。PC-12/PC-19/V2/V4/P5/真实运行 3/3 均未完成。
+当前 M1.1 attempt 1 为历史 `退回 / 73`，attempt 2 已会签并正式完成。formal=F16，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`；S1.4-S1.6、M1.2 与 V1 均已正式完成。CR-006 `accepted_subject_main=37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa`、`cumulative_review_commit=813e9fd5240b1af6413a274daa7e307757bbb246`、`cumulative_state_sync_commit=7274c03fbb6e7ee11dc7f24690a2af50ed76169a`；cumulative=`PASS / 97`，P0/P1/P2=`0/0/3`，Result digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。累计历史 coverage=`93.50/88.62/99.22`；首次复评 `7a579dd...` snapshot=`93.48/88.59/99.22`，主线复跑 snapshot=`93.53/88.69/99.22`，说明末两位存在波动；current gate 使用 `503/503`、零失败与 coverage 各维度 `>=80%`，live 数值须 fresh 生成。SG-1 两项 P2、SG-2 一项 P2、SG-3 两条边界和“真实运行 0/3”继续保留。首次复评 `REVISE / 88`；修复合入后下一唯一动作是再次独立复评，该复评不创建 V2 packet。PC-12/PC-19/V2/V4/P5/真实运行 3/3 均未完成。

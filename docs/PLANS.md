@@ -4,8 +4,8 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：CR-006 cumulative gate 已通过，等待独立 V2 entry reassessment；V2 产品 packet 仍暂停
-- 当前状态：main=`813e9fd5240b1af6413a274daa7e307757bbb246`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`。cumulative packet=`6c49825`、claim/fence 132=`4a3e6ab`、ready=`5414c63`、ACK=`8231caf`；replacement review=`813e9fd`（旧 `dbb1c2d` 因未来 `reviewed_at` 废弃），结论 `PASS / 97`，P0/P1/P2=`0/0/3`；Result digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。主线验证 `503/503`，coverage Lines/Branches/Functions=`93.50/88.62/99.22`，三个固定负例均通过。SG-1 两项 P2、SG-2 一项 P2、SG-3 两条边界继续保留，精确状态仍为“真实项目价值验证框架可用，真实运行 0/3”。`change_request_closed=false`；下一唯一允许动作是基于本状态同步合入后的最新 main/control 做独立 V2 entry reassessment，该复评不创建 V2 packet。formal 不移动，PC-12/PC-19/V2/V4/P5/真实运行 3/3 均未完成。
+- 当前活动里程碑：CR-006 cumulative gate 已通过；首次 V2 entry reassessment=`REVISE / 88`，状态真源修复后等待再次独立复评；V2 产品 packet 仍暂停
+- 当前状态：`accepted_subject_main=37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa`、`cumulative_review_commit=813e9fd5240b1af6413a274daa7e307757bbb246`、`cumulative_state_sync_commit=7274c03fbb6e7ee11dc7f24690a2af50ed76169a`、`first_reassessment_review_commit=7a579dd1f08ec65e916e509863846d99f143c9d5`；live main 必须运行时 `git rev-parse refs/heads/main`，不得把上述历史提交误称为 current。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`。cumulative packet=`6c49825`、claim/fence 132=`4a3e6ab`、ready=`5414c63`、ACK=`8231caf`；cumulative 结论 `PASS / 97`，P0/P1/P2=`0/0/3`，Result digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。累计历史测量=`503/503`、coverage `93.50/88.62/99.22`；首次复评 snapshot=`503/503`、`93.48/88.59/99.22`；主线复跑 snapshot=`503/503`、`93.53/88.69/99.22`。current gate 为 fail/skip/cancel/todo=`0/0/0/0` 且各 coverage 维度 `>=80%`，live 百分比只由 fresh run 生成。SG-1 两项 P2、SG-2 一项 P2、SG-3 两条边界继续保留，精确状态仍为“真实项目价值验证框架可用，真实运行 0/3”。`change_request_closed=false`；修复合入后下一唯一允许动作是再次独立 V2 entry reassessment，该复评不创建 V2 packet。formal 不移动，PC-12/PC-19/V2/V4/P5/真实运行 3/3 均未完成。
 
 ## 当前活动计划
 
@@ -28,7 +28,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。V2 入口独立评估已 `PASS / 100`。CR-006 SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过；累计结论 `PASS / 97` 只关闭该门禁，不自动关闭 CR-006。SG-3 包级结论仍是“真实项目价值验证框架可用，真实运行 0/3”，不等于 PC-19 或真实项目运行验收完成。下一唯一允许动作是基于本状态同步合入后的最新 main/control 做独立 V2 entry reassessment；该复评本身不创建 V2 产品 packet，P5 尚未完成。
+P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。V2 原入口独立评估已 `PASS / 100`。CR-006 SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过；累计结论 `PASS / 97` 只关闭该门禁，不自动关闭 CR-006。SG-3 包级结论仍是“真实项目价值验证框架可用，真实运行 0/3”，不等于 PC-19 或真实项目运行验收完成。CR-006 后首次复评 `REVISE / 88` 只退回状态真源口径；修复合入后下一唯一允许动作是再次独立 V2 entry reassessment。该复评本身不创建 V2 产品 packet，P5 尚未完成。
 
 实施顺序保持 P3 已会签结构：
 
