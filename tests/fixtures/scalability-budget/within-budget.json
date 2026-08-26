@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "measurements": {
+    "control_cas_per_attempt": 12,
+    "immutable_evidence_files_per_attempt": 24,
+    "user_visible_confirmations_per_attempt": 2,
+    "consecutive_non_pass_attempts_per_milestone": 2,
+    "active_plan_generations_per_milestone": 1,
+    "active_independent_tasks_per_packet": 5
+  }
+}

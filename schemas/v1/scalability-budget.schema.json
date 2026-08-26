@@ -1,0 +1,98 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nextstep.local/schemas/v1/scalability-budget.schema.json",
+  "title": "NextStep Scalability Budget Input 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "measurements"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "measurements": { "$ref": "#/definitions/measurements" }
+  },
+  "definitions": {
+    "measurement": {
+      "anyOf": [
+        { "type": "integer", "minimum": 0 },
+        { "type": "null" }
+      ]
+    },
+    "measurements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "control_cas_per_attempt",
+        "immutable_evidence_files_per_attempt",
+        "user_visible_confirmations_per_attempt",
+        "consecutive_non_pass_attempts_per_milestone",
+        "active_plan_generations_per_milestone",
+        "active_independent_tasks_per_packet"
+      ],
+      "properties": {
+        "control_cas_per_attempt": { "$ref": "#/definitions/measurement" },
+        "immutable_evidence_files_per_attempt": { "$ref": "#/definitions/measurement" },
+        "user_visible_confirmations_per_attempt": { "$ref": "#/definitions/measurement" },
+        "consecutive_non_pass_attempts_per_milestone": { "$ref": "#/definitions/measurement" },
+        "active_plan_generations_per_milestone": { "$ref": "#/definitions/measurement" },
+        "active_independent_tasks_per_packet": { "$ref": "#/definitions/measurement" }
+      }
+    },
+    "metric": {
+      "enum": [
+        "control_cas_per_attempt",
+        "immutable_evidence_files_per_attempt",
+        "user_visible_confirmations_per_attempt",
+        "consecutive_non_pass_attempts_per_milestone",
+        "active_plan_generations_per_milestone",
+        "active_independent_tasks_per_packet"
+      ]
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "control_cas_per_attempt",
+        "immutable_evidence_files_per_attempt",
+        "user_visible_confirmations_per_attempt",
+        "consecutive_non_pass_attempts_per_milestone",
+        "active_plan_generations_per_milestone",
+        "active_independent_tasks_per_packet"
+      ],
+      "properties": {
+        "control_cas_per_attempt": { "const": 12 },
+        "immutable_evidence_files_per_attempt": { "const": 24 },
+        "user_visible_confirmations_per_attempt": { "const": 2 },
+        "consecutive_non_pass_attempts_per_milestone": { "const": 2 },
+        "active_plan_generations_per_milestone": { "const": 1 },
+        "active_independent_tasks_per_packet": { "const": 5 }
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "conclusion",
+        "limits",
+        "exceeded_metrics",
+        "unmeasurable_metrics",
+        "input_digest"
+      ],
+      "properties": {
+        "schema_version": { "const": "1.0" },
+        "conclusion": { "enum": ["within-budget", "exception-required", "unmeasurable"] },
+        "limits": { "$ref": "#/definitions/limits" },
+        "exceeded_metrics": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/definitions/metric" }
+        },
+        "unmeasurable_metrics": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/definitions/metric" }
+        },
+        "input_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+      }
+    }
+  }
+}
