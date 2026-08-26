@@ -1,0 +1,212 @@
+{
+  "review_id": "p5-v2-entry-reassessment-after-cr006-2026-08-26",
+  "task_id": "V2-ENTRY-REASSESSMENT-AFTER-CR006",
+  "lane": "P5/V2-entry",
+  "review_level": "L3",
+  "rubric_id": "nextstep-v2-entry-reassessment-after-cr006-v1",
+  "artifact_refs": [
+    "git:7274c03fbb6e7ee11dc7f24690a2af50ed76169a",
+    "git:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "git:1ac071b0087514390238381fa71cc4b4182983bc",
+    ".codex/reviews/p5-v2-entry-evaluation-2026-08-25",
+    ".codex/reviews/p5-cr006-cumulative-acceptance-attempt-1-2026-08-26",
+    "PROJECT_ROUTE_LOCK.md",
+    "README.md",
+    "docs/PLANS.md",
+    "docs/PRODUCT_SENSE.md",
+    "docs/change-requests/index.md",
+    "docs/qa/index.md",
+    "docs/exec-plans/active/p5-product-implementation-milestones.md",
+    "docs/exec-plans/active/p5-scalability-guardrails.md"
+  ],
+  "hard_gates": [
+    {
+      "id": "LIVE-IDENTITY-BOUND",
+      "status": "pass",
+      "evidence": "评审 worktree 当前 HEAD/main 精确为 7274c03fbb6e7ee11dc7f24690a2af50ed76169a；live formal=ea04b57de83d6c548dcb1629b1f61832db8375ad；live control=1ac071b0087514390238381fa71cc4b4182983bc。分支为 codex/v2-entry-reassessment-cr006，工作树在写入评审前为干净状态。"
+    },
+    {
+      "id": "CUMULATIVE-CHAIN-RESULT-VALID",
+      "status": "pass",
+      "evidence": "control 链 6c49825 -> 4a3e6ab -> 5414c63 -> 8231caf -> review 813e9fd -> Result control 1ac071b 可逐段核对；result-cumulative-acceptance-cr006-g5-a1-f132-20260826.json 记录 result_digest=sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8，review_artifacts.review_commit_ref=git:813e9fd5240b1af6413a274daa7e307757bbb246，且旧 dbb1c2d 已被 superseded_review_commit_ref 标记为 future-dated superseded。"
+    },
+    {
+      "id": "CUMULATIVE-PASS-NO-P0-P1",
+      "status": "pass",
+      "evidence": "CR-006 cumulative Result 固化 score=97，finding_counts P0/P1/P2=0/0/3，required_fixes=[]，并明确 change_request_closed=false、v2_packet_created=false。"
+    },
+    {
+      "id": "THREE-PACKAGE-INTEGRATION",
+      "status": "pass",
+      "evidence": "checkpoint.cumulative_acceptance_results.CR-006 与 package_acceptance_results.SG-1/SG-2/SG-3 均存在；cumulative review hard gate HG3 记录三包真实写集互斥、无新增依赖、按 SG-1 -> SG-2 -> SG-3 顺序整合。"
+    },
+    {
+      "id": "FRESH-REGRESSION-AND-NEGATIVES-EVIDENCE",
+      "status": "pass",
+      "evidence": "本次 fresh pnpm check 在 7274c03 上通过：tests=503/503，fail/skip/cancel/todo=0/0/0/0，coverage Lines/Branches/Functions=93.48/88.59/99.22。累计 Result 同时保留三条 fixed negative evidence：SG-1 预算越界拒绝、SG-2 stale identity 投影 unavailable、SG-3 synthetic fixture 不能冒充 real 3/3。"
+    },
+    {
+      "id": "STATE-SOURCES-SYNCHRONIZED",
+      "status": "fail",
+      "evidence": "状态同步后的 live HEAD/main 已是 7274c03，但 README、PROJECT_ROUTE_LOCK、docs/PLANS、docs/PRODUCT_SENSE、docs/change-requests/index.md、docs/qa/index.md 与两个 active plan 仍把 813e9fd 写成 current main；同一批真源仍重复写 fresh coverage=93.50/88.62/99.22，而本次在 7274c03 上重跑得到 93.48/88.59/99.22。"
+    },
+    {
+      "id": "NO-ACTIVE-OR-PENDING-CONTROL-WORK",
+      "status": "pass",
+      "evidence": "checkpoint.pending_dispatch_messages=[]、unconfirmed_tombstones=[]，active_host_tasks[\"CR-006-I-X-P\"]=null；next_stage 仅为“synchronize CR-006 cumulative PASS without automatic closure, then run one independent V2 entry reassessment; V2 packet and formal remain separate”。"
+    },
+    {
+      "id": "PLAN-GENERATION-FORMAL-STABLE",
+      "status": "pass",
+      "evidence": "checkpoint.plan_generation=5、route_generation=1；formal_oid 始终为 F16 ea04b57de83d6c548dcb1629b1f61832db8375ad，且本轮未创建任何 formal movement、V2 packet 或额外 control 对象。"
+    },
+    {
+      "id": "CARRY-FORWARD-PRESERVED",
+      "status": "pass",
+      "evidence": "cumulative Result 继续保留 SG-1 两项 P2、SG-2 一项 P2，以及 SG-3 两条边界/真实运行 0/3；README、路线锁、PRODUCT_SENSE、CR-006 与 active plans 也都保留相同 carry-forward 语义，没有把 change_request_closed=false 推断成已关闭。"
+    },
+    {
+      "id": "NO-PREMATURE-CLAIMS",
+      "status": "pass",
+      "evidence": "README、PROJECT_ROUTE_LOCK、PRODUCT_SENSE、docs/qa/index.md、docs/exec-plans/active/p5-scalability-guardrails.md 与 p5-product-implementation-milestones.md 都明确禁止把当前状态包装成 PC-12、PC-19、V2、V4、P5 或真实运行 3/3 完成。"
+    },
+    {
+      "id": "NO-V2-PACKET-STATE",
+      "status": "pass",
+      "evidence": "registry.json 中没有任何 stage_id 以 P5/V2 开头或 task_id 属于 S2.1..S2.4 的任务；checkpoint.active_host_tasks 中也不存在 V2 或 CR-006-I-X-P active host；文档口径一致说明 V2 packet 未创建。"
+    },
+    {
+      "id": "V2-S2.1-SCOPE-UPSTREAM-READY",
+      "status": "pass",
+      "evidence": "既有独立评审 p5-v2-entry-evaluation-2026-08-25 仍为 PASS/100，且 p3-version-and-milestone-breakdown 明确 V2 首个产品入口是 S2.1“版本链唯一归属运行”，V2 闭环限定为 PC-09..13，并明确“不执行真实任务，不合入候选，不进入 P4 协议实现”。本轮未发现 P3/P4/S4 与该范围漂移。"
+    },
+    {
+      "id": "EXACT-TWO",
+      "status": "pass",
+      "evidence": "本评审只新增 .codex/reviews/p5-v2-entry-reassessment-after-cr006-2026-08-26/scorecard.json 与 verdict.md 两个文件；不创建 packet、claim/fence、dispatch、Result、control 或代码变更。"
+    },
+    {
+      "id": "PROTECTED-EXCLUDED",
+      "status": "pass",
+      "evidence": "本轮未读取、引用、暂存或修改受保护文件 .codex/context-summary-multica-migration-feasibility-2026-08-22.md，也未访问其他 worktree、push 或改 refs。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "live_identity_and_control_validity",
+      "score": 25,
+      "max_score": 25,
+      "reason": "live HEAD/formal/control、cumulative control 链、review replacement 以及 V1 formal 完成前提都可独立绑定，身份边界清楚。",
+      "evidence_refs": [
+        "LIVE-IDENTITY-BOUND",
+        "CUMULATIVE-CHAIN-RESULT-VALID",
+        "PLAN-GENERATION-FORMAL-STABLE"
+      ]
+    },
+    {
+      "id": "cumulative_gate_and_risk_preservation",
+      "score": 25,
+      "max_score": 25,
+      "reason": "CR-006 cumulative PASS/97、P0/P1=0/0、三包互斥整合，以及 SG-1/SG-2/SG-3 的 carry-forward 风险/边界都被保留，没有被 PASS 文案误清零。",
+      "evidence_refs": [
+        "CUMULATIVE-PASS-NO-P0-P1",
+        "THREE-PACKAGE-INTEGRATION",
+        "CARRY-FORWARD-PRESERVED"
+      ]
+    },
+    {
+      "id": "state_source_synchronization_and_fresh_evidence",
+      "score": 15,
+      "max_score": 25,
+      "reason": "fresh 回归证据本身存在且通过，但状态同步后的 current main 与 fresh coverage 数字没有被当前真源同步更新，导致“已同步状态”与 live 7274c03 不完全一致。",
+      "evidence_refs": [
+        "FRESH-REGRESSION-AND-NEGATIVES-EVIDENCE",
+        "STATE-SOURCES-SYNCHRONIZED"
+      ]
+    },
+    {
+      "id": "v2_boundary_and_upstream_readiness",
+      "score": 25,
+      "max_score": 25,
+      "reason": "V2 首入口仍正确锁定在 S2.1，PC-09..13 范围未漂移，且当前没有任何 V2 packet/claim/fence/dispatch 或真实任务提前执行。",
+      "evidence_refs": [
+        "NO-PREMATURE-CLAIMS",
+        "NO-V2-PACKET-STATE",
+        "V2-S2.1-SCOPE-UPSTREAM-READY"
+      ]
+    }
+  ],
+  "penalties": [
+    {
+      "id": "P1-live-main-not-updated-after-state-sync",
+      "severity": "P1",
+      "deduction": 1,
+      "reason": "状态同步后的 live main 是 7274c03，但 current-state 真源仍把 813e9fd 写成 current main，造成 reassessment 绑定对象与摘要页口径不一致。",
+      "evidence_refs": [
+        "STATE-SOURCES-SYNCHRONIZED"
+      ]
+    },
+    {
+      "id": "P1-fresh-coverage-figures-stale",
+      "severity": "P1",
+      "deduction": 1,
+      "reason": "当前真源重复引用 fresh coverage 93.50/88.62/99.22，但本轮在 7274c03 上重跑 pnpm check 得到 93.48/88.59/99.22，fresh 数字口径未与 live reassessment 对齐。",
+      "evidence_refs": [
+        "FRESH-REGRESSION-AND-NEGATIVES-EVIDENCE",
+        "STATE-SOURCES-SYNCHRONIZED"
+      ]
+    }
+  ],
+  "totals": {
+    "raw_score": 90,
+    "penalty_total": 2,
+    "final_score": 88,
+    "max_score": 100
+  },
+  "severity_summary": {
+    "P0": 0,
+    "P1": 2,
+    "P2": 0
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "把 current-state 真源统一改为 live main=7274c03fbb6e7ee11dc7f24690a2af50ed76169a，同时继续把 cumulative replacement review 明确标记为 813e9fd、Result control 标记为 1ac071b，避免把 review commit 误写成 current main。",
+    "用本次 live reassessment 的 fresh pnpm check 实测值统一更新 current-state 摘要中的 regression/coverage 口径（503/503，93.48/88.59/99.22），或给出经复跑证明的稳定替代数字后再重做本独立 reassessment。"
+  ],
+  "nice_to_have": [
+    "在后续状态摘要中把“current main”“cumulative review commit”“Result control”拆成独立字段，避免再次把 review commit 当成 live main。",
+    "V2 后续材料继续显式引用“真实任务 0/3”“change_request_closed=false”和 SG-1/SG-2/SG-3 carry-forward 边界，避免被下一轮分数覆盖。"
+  ],
+  "forbidden_actions": [
+    "创建或派发任何 V2 packet",
+    "创建 V2 claim/fence",
+    "开始 V2 dispatch、coding 或 formal movement",
+    "把本次 REVISE 包装成 CR-006 已关闭、PC-12/PC-19 已达成、V2/V4/P5 已开始或完成"
+  ],
+  "next_allowed_action": "仅允许先修正 current-state 真源中的 live main/coverage 口径并再次做独立 V2 entry reassessment；在修正完成前，不得创建 V2 packet、claim/fence、dispatch、coding 或 formal movement。",
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "signal": "REVISE",
+      "conclusion": "除 STATE-SOURCES-SYNCHRONIZED 外，其余硬门均通过；当前阻断是状态同步后的 main 与 fresh coverage 口径仍未和 live 7274c03 对齐。"
+    },
+    {
+      "role": "Strict Judge",
+      "signal": "REVISE",
+      "score": 88,
+      "conclusion": "V2 上游、control 边界和 S2.1 首入口都已准备好，但 current-state 真源仍不足以把这次 reassessment 判为 PASS。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "signal": "PASS",
+      "conclusion": "没有发现把 CR-006 cumulative PASS 夸大成 V2 已授权、CR 已关闭或真实运行 3/3 的模板化越界表述。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "signal": "REVISE",
+      "score": 88,
+      "conclusion": "本次独立复评只允许退回修正 state-sync 口径；修正 live main 与 fresh coverage 后，才能重新申请 V2 entry PASS 结论。"
+    }
+  ],
+  "reviewed_at": "2026-08-26T09:22:05Z"
+}
