@@ -2725,3 +2725,16 @@
 - 验证：`git diff --check` 通过；六份状态真源旧门禁反扫无命中；提交前写集严格为 exact-8。产品代码未变，因此不重复运行 `pnpm check`，仅同步已核定的 main `503/503` 与 coverage `93.50/88.62/99.22` 证据。
 - 工具替代：首次 exact-8 检查因命令包含临时文件清理而被安全策略拒绝，未产生文件或状态变化；改用纯命令替换比较，无清理动作，exact-8、格式与语义反扫均通过。
 - 结束状态：已结束；本轮状态同步门禁通过，只放行独立的 CR-006 cumulative read-only acceptance 控制链，不构成该控制链的创建或验收授权。
+
+## 2026-08-26 CR-006 cumulative gate 通过后状态真源同步
+
+- 任务边界：主控分派的 L2 文档状态同步；专属 worktree=`/Users/ling/.codex/worktrees/cr006-cumulative-state-sync-20260826`，分支=`codex/cr006-cumulative-state-sync`，基线 main=`813e9fd5240b1af6413a274daa7e307757bbb246`。只允许修改 exact-11；不改代码、测试、Schema、control/formal refs，不 push，不读取、暂存或修改受保护的 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`。
+- 路线与生命周期：仍为 `S5 / P5 产品落地`，里程碑真源为 `PROJECT_ROUTE_LOCK.md`、`docs/exec-plans/active/p5-scalability-guardrails.md` 与 P5 主计划。本轮最小闭环是把已核定的 CR-006 cumulative PASS 同步到权威状态入口；不是新需求、阶段切换、路线变更或 CR 关闭。
+- 项目规则：项目根无特化 `AGENTS.md`，按全局入口、路线锁、生命周期、留痕和文档协议执行。使用 `verification-loop` 的 diff/身份检查部分；因本轮只改 Markdown 状态且已有固定 `503/503` cumulative 证据，不重复运行 build/typecheck/test/security 阶段。技能首次按展示前缀定位失败，随后按技能清单实际路径 `/Users/ling/.codex/skills/verification-loop/SKILL.md` 读取；未影响项目文件。
+- 串行说明：exact-11 状态文档相互引用且由同一提交统一收口，本 worktree 内串行修改以避免并行冲突；主控的其他互斥任务不在本写集内。
+- 核定身份：formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`；cumulative packet=`6c49825`、claim/fence 132=`4a3e6ab`、ready=`5414c63`、ACK=`8231caf`，replacement review=`813e9fd`。旧 `dbb1c2d` 因未来 `reviewed_at` 废弃。
+- 累计结论：`PASS / 97`，P0/P1/P2=`0/0/3`；Result digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`；fresh `503/503`，coverage Lines/Branches/Functions=`93.50/88.62/99.22`，三个固定负例均通过。
+- 风险与边界：SG-1 两项 P2、SG-2 一项 P2、SG-3 两条边界继续保留；精确状态保持“真实项目价值验证框架可用，真实运行 0/3”。Result 明确 `change_request_closed=false`；本同步不关闭 CR-006，不创建 V2 packet，不移动 formal，不替用户 signoff，也不宣称 PC-12/PC-19/V2/V4/P5/真实运行 3/3 完成。
+- 下一入口：本状态同步合入后，只允许基于最新 main/control 做一次独立 V2 entry reassessment；该复评本身也不创建 V2 packet。
+- 验证：`git diff --check` 通过；exact-path 检查严格为 exact-11；九份状态文档旧停点反扫与新增行提前完成声明反扫均无命中。提交前 HEAD/formal/control 保持 `813e9fd` / `ea04b57` / `1ac071b`。
+- 结束状态：已结束；CR-006 cumulative gate 状态同步通过，但 CR-006、V2 packet、formal 与 P5 均未由本轮推进。下一唯一动作仍为独立 V2 entry reassessment。

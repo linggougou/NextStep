@@ -4,13 +4,13 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：CR-006 cumulative read-only acceptance 门禁；V2 产品 packet 暂停在入口评估通过状态
-- 当前状态：main=`c42670a3a7f638b262fa72d94e5a5a6d3a68cc51`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`730f2e011bd648801cde5c02db8287dc92e591a8`，`plan_generation=5`。SG-1、SG-2、SG-3 package gate 均已通过。SG-3 原始候选=`87258c32162875bef16994b2259ad16baf4cb72e`、main=`a5b16942450d79ed583b80a1b4f13061017c41fd`；原始评审=`afdb308e09113a919a07778a75c1f816f2d3b5cd`、main=`c42670a3a7f638b262fa72d94e5a5a6d3a68cc51`，`PASS / 100`，P0/P1/P2=`0/0/0`，Result digest=`sha256:abfea41a5d855d25950c302043ad925a2cf880ba4a71b94c414865350fed2b6b`。主线验证 `503/503`，coverage Lines/Branches/Functions=`93.50/88.62/99.22`；精确包状态为“真实项目价值验证框架可用，真实运行 0/3”。前序 SG-3 attempt 1 `contract-revision-required` 历史只读保留。下一允许动作仅为独立的 CR-006 cumulative read-only acceptance packet/claim/fence/唯一 reviewer；CR-006 未关闭，V2 packet 未创建，formal 未移动，PC-12/PC-19/V2/V4/P5 均未由本状态完成。
+- 当前活动里程碑：CR-006 cumulative gate 已通过，等待独立 V2 entry reassessment；V2 产品 packet 仍暂停
+- 当前状态：main=`813e9fd5240b1af6413a274daa7e307757bbb246`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`。cumulative packet=`6c49825`、claim/fence 132=`4a3e6ab`、ready=`5414c63`、ACK=`8231caf`；replacement review=`813e9fd`（旧 `dbb1c2d` 因未来 `reviewed_at` 废弃），结论 `PASS / 97`，P0/P1/P2=`0/0/3`；Result digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。主线验证 `503/503`，coverage Lines/Branches/Functions=`93.50/88.62/99.22`，三个固定负例均通过。SG-1 两项 P2、SG-2 一项 P2、SG-3 两条边界继续保留，精确状态仍为“真实项目价值验证框架可用，真实运行 0/3”。`change_request_closed=false`；下一唯一允许动作是基于本状态同步合入后的最新 main/control 做独立 V2 entry reassessment，该复评不创建 V2 packet。formal 不移动，PC-12/PC-19/V2/V4/P5/真实运行 3/3 均未完成。
 
 ## 当前活动计划
 
 - [P5 产品落地实施里程碑](./exec-plans/active/p5-product-implementation-milestones.md)：当前主路线活动计划；按 `P5-M0 -> V1 -> V2 -> V3 -> V4 -> Final Acceptance` 推进
-- [P5 可承受性护栏](./exec-plans/active/p5-scalability-guardrails.md)：CR-006 的当前优先活动计划；三个互斥 SG 包只降低跨版本治理膨胀风险，不改变 V2..V4 主路线或提前满足 PC
+- [P5 可承受性护栏](./exec-plans/active/p5-scalability-guardrails.md)：CR-006 三包及 cumulative gate 已通过，但 CR 未自动关闭；护栏不改变 V2..V4 主路线或提前满足 PC
 
 ## 暂停候选计划
 
@@ -28,7 +28,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。V2 入口独立评估已 `PASS / 100`。CR-006 SG-1、SG-2、SG-3 package gate 均已通过；SG-3 包级结论是“真实项目价值验证框架可用，真实运行 0/3”，不等于 PC-19 或真实项目运行验收完成。前序 SG-3 attempt 1 contract-revision 历史保持只读。当前只允许创建独立的 CR-006 cumulative read-only acceptance packet/claim/fence，并由唯一 reviewer 验收；不得自动关闭 CR-006 或创建 V2 产品 packet，P5 尚未完成。
+P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。V2 入口独立评估已 `PASS / 100`。CR-006 SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过；累计结论 `PASS / 97` 只关闭该门禁，不自动关闭 CR-006。SG-3 包级结论仍是“真实项目价值验证框架可用，真实运行 0/3”，不等于 PC-19 或真实项目运行验收完成。下一唯一允许动作是基于本状态同步合入后的最新 main/control 做独立 V2 entry reassessment；该复评本身不创建 V2 产品 packet，P5 尚未完成。
 
 实施顺序保持 P3 已会签结构：
 

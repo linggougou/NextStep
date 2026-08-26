@@ -71,9 +71,9 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 
 ## 当前阶段
 
-- 当前里程碑：P5 / CR-006 cumulative read-only acceptance 门禁
+- 当前里程碑：P5 / CR-006 cumulative gate 已通过，等待独立 V2 entry reassessment
 - 当前生命周期阶段：S5 开发落地
-- 当前状态：V1 已 formally-completed；main=`c42670a3a7f638b262fa72d94e5a5a6d3a68cc51`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`730f2e011bd648801cde5c02db8287dc92e591a8`，`plan_generation=5`。V2 入口评估=`PASS / 100`。SG-1、SG-2、SG-3 package gate 均已通过；SG-3 独立评审=`PASS / 100`，P0/P1/P2=`0/0/0`，Result digest=`sha256:abfea41a5d855d25950c302043ad925a2cf880ba4a71b94c414865350fed2b6b`，精确包状态为“真实项目价值验证框架可用，真实运行 0/3”。前序 SG-3 attempt 1 `contract-revision-required` 历史保持只读。下一允许动作仅为独立的 CR-006 cumulative read-only acceptance packet/claim/fence/唯一 reviewer；不得自动关闭 CR-006、创建 V2 packet、移动 formal，或宣称 PC-12/PC-19/V2/V4/P5 完成。
+- 当前状态：V1 已 formally-completed；main=`813e9fd5240b1af6413a274daa7e307757bbb246`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`。CR-006 cumulative replacement review=`813e9fd`，结论 `PASS / 97`、P0/P1/P2=`0/0/3`，Result digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`；`503/503` 与三个固定负例均通过。SG-1 两项 P2、SG-2 一项 P2 与 SG-3 两条边界继续保留，精确状态为“真实项目价值验证框架可用，真实运行 0/3”。`change_request_closed=false`；下一唯一允许动作是基于本状态同步合入后的最新 main/control 做独立 V2 entry reassessment，该复评本身不创建 V2 packet。formal 不移动，PC-12/PC-19/V2/V4/P5/真实运行 3/3 均未完成。
 - 当前正式状态、边界和下一入口以 `PROJECT_ROUTE_LOCK.md` 与 `docs/PLANS.md` 为准；若与本页摘要冲突，以两者为准。
 
 ## S3 已会签交付物
@@ -93,6 +93,6 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 ## 当前交付物
 
 - P5 主路线活动计划：`docs/exec-plans/active/p5-product-implementation-milestones.md`，V1 已 formally-completed，V2 入口评估已通过，但首个产品 packet 尚未授权
-- P5 可承受性护栏计划：`docs/exec-plans/active/p5-scalability-guardrails.md`，当前优先活动计划；三个互斥 SG package gate 均已通过，等待独立累积只读验收，不提前满足 PC-12、PC-19、V2 或 V4
+- P5 可承受性护栏计划：`docs/exec-plans/active/p5-scalability-guardrails.md`，三个互斥 SG package gate 与 cumulative gate 均已通过，但 CR-006 未自动关闭，也不提前满足 PC-12、PC-19、V2 或 V4
 - P3 版本与里程碑拆解：`docs/exec-plans/completed/p3-version-and-milestone-breakdown.md`，已会签并归档
-- 当前变更入口：`docs/change-requests/006-scalability-guardrails.md`，状态为 `sg1-sg2-sg3-package-accepted-cumulative-acceptance-pending`；当前门禁仅为 cumulative read-only acceptance packet/claim/fence/唯一 reviewer，CR-006 尚未关闭；CR-005 已完成并关闭，SG-3 前序 contract-revision 历史保留
+- 当前变更入口：`docs/change-requests/006-scalability-guardrails.md`，状态为 `cumulative-gate-passed-v2-entry-reassessment-pending`；`change_request_closed=false`，下一唯一入口为独立 V2 entry reassessment，且复评不创建 V2 packet；CR-005 已完成并关闭，SG-3 前序 contract-revision 历史保留

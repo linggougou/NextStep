@@ -1,6 +1,6 @@
 # QA
 
-当前阶段为 `P5 / CR-006 SG-2 packet preparation gate`。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`830d831808a92f53dfca4dea87bb98c71e448fb1`，`plan_generation=5`。V1 已 formally-completed；V2 入口独立评估 `5be7ff254f898cee7887df9a15b48b8d21f2c1ed`=`PASS / 100`。SG-1 正式验收 `690da53`=`PASS / 98`，Result=`sha256:e04bd4b0...`；旧的提前 PASS 目录明确为 `procedurally-invalid / rejected-evidence`，不得作为 Result。P5 未完成，SG-2/SG-3、V2 packet 与 formal 移动均未发生。
+当前阶段为 `P5 / CR-006 cumulative gate passed / V2 entry reassessment pending`。main=`813e9fd5240b1af6413a274daa7e307757bbb246`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`。cumulative replacement review=`813e9fd`（旧 `dbb1c2d` 因未来 `reviewed_at` 废弃），`PASS / 97`，P0/P1/P2=`0/0/3`；Result digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。fresh `503/503`、coverage Lines/Branches/Functions=`93.50/88.62/99.22`，三个固定负例均通过。`change_request_closed=false`；下一唯一动作是基于状态同步后最新 main/control 做独立 V2 entry reassessment，该复评不创建 V2 packet。formal 未移动，PC-12/PC-19/V2/V4/P5/真实运行 3/3 均未完成。
 
 ## 当前质量状态
 
@@ -24,5 +24,6 @@
 - S1.6 formal promotion：expected-old=F15 CAS 成功，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`；FV/AV=`PASS / 100`，474/474，Q3=100%、Q11=20/20。
 - [M1.2 attempt 1 累计验收与用户会签结果](./p5-v1-m1.2-acceptance-attempt-1-2026-08-24.md)：`PASS / 100`，I/X/P/Profile=`25/25/25/25`，P0/P1/P2=`0/0/0`；终审与用户会签 CAS 均已完成，M1.2 正式完成。
 - [V1 cumulative acceptance attempt 5 与用户会签候选](./p5-v1-cumulative-acceptance-attempt-5-2026-08-24.md)：`PASS / 100`，474/474、12 sections、17/17 source、PC=8/8、TG=18/18；用户会签、user-signoff ACK 与 V1 formally-completed CAS 已完成，当前仅作历史验收与会签证据。
+- [CR-006 cumulative acceptance attempt 1](../../.codex/reviews/p5-cr006-cumulative-acceptance-attempt-1-2026-08-26/verdict.md)：replacement review=`813e9fd`，`PASS / 97`，P0/P1/P2=`0/0/3`。SG-1 两项 P2、SG-2 一项 P2 继续保留；SG-3 evidence-binding 威胁模型边界和真实运行 `0/3` 继续保留。该 PASS 不自动关闭 CR-006，不创建 V2 packet，也不移动 formal。
 
 后续所有验证、阻塞、复测证据和质量缺口记录在本目录或 `.codex/verification-report.md`；当前路线与门禁以 `PROJECT_ROUTE_LOCK.md` 为准。

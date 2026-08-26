@@ -1,6 +1,6 @@
 # 可承受性护栏：复杂度预算、状态投影与真实项目价值验证
 
-- 状态：sg1-sg2-sg3-package-accepted-cumulative-acceptance-pending（SG-3 前序 attempt 1 contract-revision 历史只读保留；下一步只允许独立 cumulative read-only acceptance）
+- 状态：cumulative-gate-passed-v2-entry-reassessment-pending（`change_request_closed=false`；SG-3 前序 attempt 1 contract-revision 历史只读保留）
 - 记录日期：2026-08-25
 - 来源：V1 完成后的项目分析与用户对工作膨胀风险的明确反馈
 - 所属阶段：P5 / 跨版本可承受性护栏
@@ -21,7 +21,7 @@ V1 已证明 NextStep 的可靠性内核和证据链可以运行，但控制提�
 - 是否改变当前路线：否。保持 `P5-M0 -> V1 -> V2 -> V3 -> V4 -> Final Acceptance`，不新增产品版本，不改变 PC 主版本归属、技术栈、主载体、正式提升或验收门禁；但本 CR 新增计划范围、任务和 DoD，必须按 P4/S4 把 `plan_generation` 从 4 单向推进到 5。
 - 是否影响当前阶段出口：不替代任何既有出口。三个护栏任务包通过，只证明可承受性工具和验证框架可用。
 - 是否需要更新 `PROJECT_ROUTE_LOCK.md`：不改变路线结构，但必须同步当前阶段、代际缺口和授权停点；本 replacement 已更新路线锁的状态字段。若实施发现必须改变 PC、数据模型、正式 ref、控制协议或门禁，再停止并另开 Change Request。
-- 与当前入口的关系：V1 仍为 formally-completed；V2 入口评估 PASS 仍只允许规划。SG-1、SG-2、SG-3 的 generation 5 package gate 均已通过；SG-3 包级状态精确为“真实项目价值验证框架可用，真实运行 0/3”，前序 attempt 1 因契约歧义在 RED 前停止且无候选的历史只读保留。下一动作仅为独立的 CR-006 cumulative read-only acceptance packet/claim/fence/唯一 reviewer；本文不关闭 CR-006，也不创建或授权 V2 首个产品 packet。
+- 与当前入口的关系：V1 仍为 formally-completed。SG-1、SG-2、SG-3 的 generation 5 package gate 与 cumulative gate 均已通过；累计结论只关闭 cumulative gate，不自动关闭 CR-006。SG-3 包级状态精确为“真实项目价值验证框架可用，真实运行 0/3”，前序 attempt 1 因契约歧义在 RED 前停止且无候选的历史只读保留。下一唯一动作是基于本状态同步合入后的最新 main/control 做独立 V2 entry reassessment；该复评本身不创建或授权 V2 首个产品 packet。
 
 ### 2.1 控制代际影响
 
@@ -96,6 +96,8 @@ V1 已证明 NextStep 的可靠性内核和证据链可以运行，但控制提�
 - formal/control、用户工作树和既有产品真源未被修改。
 - 关闭本 CR 不得写“PC-12 完成”“PC-19 完成”“V2/V4 完成”或“三个真实项目已验证”。
 
+上述实现与 cumulative gate 条件已得到 `PASS / 97` 验证，但关闭动作仍是分离边界；当前 Result 明确 `change_request_closed=false`，本文不得据此把 CR-006 迁入“已关闭变更”。
+
 ## 8. Generation 5 replacement 规划验收
 
 - 固定候选：`82efe16f978b0269b7034a856643b7fea24abda0`，tree=`068f6da861ed181eca7864c1ae190a4a26fde60c`。
@@ -109,5 +111,9 @@ V1 已证明 NextStep 的可靠性内核和证据链可以运行，但控制提�
 - SG-2 后续状态：implementation attempt 2 已合入，独立验收 attempt 7=`PASS / 99`，immutable Result 已固化；这不等于 PC-12 或 V2 完成。
 - SG-3 前序 attempt 1：P1 指出真实资格、证据绑定、整批拒绝/合法排除、CLI 与 aggregate 的机械契约不充分；该历史固定为 `contract-revision-required`，未执行 RED、未生成候选，并继续作为只读证据保留。
 - SG-3 包级验收结果：原始候选=`87258c32162875bef16994b2259ad16baf4cb72e`、main=`a5b16942450d79ed583b80a1b4f13061017c41fd`；原始 review=`afdb308e09113a919a07778a75c1f816f2d3b5cd`、main=`c42670a3a7f638b262fa72d94e5a5a6d3a68cc51`，`PASS / 100`，P0/P1/P2=`0/0/0`。Result digest=`sha256:abfea41a5d855d25950c302043ad925a2cf880ba4a71b94c414865350fed2b6b`；main fresh 验证=`503/503`，coverage Lines/Branches/Functions=`93.50/88.62/99.22`。精确包状态为“真实项目价值验证框架可用，真实运行 0/3”。
-- 当前控制身份：main=`c42670a3a7f638b262fa72d94e5a5a6d3a68cc51`，formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`730f2e011bd648801cde5c02db8287dc92e591a8`，`plan_generation=5`。
-- 当前下一动作：不改变三个任务包、路径、规模上限、DoD 或 `plan_generation=5`；只允许创建独立的 CR-006 cumulative read-only acceptance packet/claim/fence，并派发唯一 reviewer。不得自动关闭 CR-006、创建 V2 packet、移动 formal、替用户 signoff，或宣称 PC-12/PC-19/V2/V4/P5 完成。
+- CR-006 cumulative control 链：packet=`6c49825cef5de5a79520d86a01119502d34ea4ee`；claim/fence 132=`4a3e6abfd1949a233afc9174598a67941bbb4ba3`；ready=`5414c63d6e6e838ed6507e65f3e31d30fdcb5542`；ACK=`8231caf7ec4b21d62363222e6466933e7bf12dbf`。
+- cumulative replacement review=`813e9fd5240b1af6413a274daa7e307757bbb246`（旧 `dbb1c2d` 因未来 `reviewed_at` 废弃），`PASS / 97`，P0/P1/P2=`0/0/3`；Result control=`1ac071b0087514390238381fa71cc4b4182983bc`，digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。
+- cumulative fresh 验证=`503/503`，coverage Lines/Branches/Functions=`93.50/88.62/99.22`，预算超限、状态冲突/过期、synthetic 冒充 real 三个固定负例通过。
+- carry-forward：SG-1 两项 P2（RED 原始终端 transcript 未内容寻址固化、main 曾在正式 Result 前提前 cherry-pick）、SG-2 一项 P2（RED 原始终端 transcript 未独立固化）与 SG-3 两条边界（不抵抗恶意磁盘整体重写、真实运行仍为 0/3）继续保留。
+- 当前控制身份：main=`813e9fd5240b1af6413a274daa7e307757bbb246`，formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`。
+- 当前下一动作：不改变三个任务包、路径、规模上限、DoD 或 `plan_generation=5`；下一唯一允许动作是基于本状态同步合入后的最新 main/control 做独立 V2 entry reassessment。该复评本身不创建 V2 packet，不移动 formal，不替用户 signoff，也不宣称 PC-12/PC-19/V2/V4/P5 或真实运行 3/3 完成。

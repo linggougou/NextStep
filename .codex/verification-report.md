@@ -2670,3 +2670,31 @@
 - 本轮只同步文档与留痕，不重复运行产品测试；`503/503` 与覆盖率作为已核定的 SG-3 main package 证据同步，不包装为本轮重新执行结果。
 - 用户改动保护：未读取、修改、暂存或清理受保护 Multica 上下文文件；未 push。
 - 门禁结论：状态真源同步通过；CR-006 仍为进行中，只放行独立累积只读验收控制链。
+
+## 2026-08-26 CR-006 cumulative gate 通过后状态真源同步验证
+
+### 固定输入与同步结论
+
+- 基线 main=`813e9fd5240b1af6413a274daa7e307757bbb246`，formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`。
+- cumulative control 链：packet=`6c49825`、claim/fence 132=`4a3e6ab`、ready=`5414c63`、ACK=`8231caf`；replacement review=`813e9fd`。旧 `dbb1c2d` 因未来 `reviewed_at` 废弃，没有被同步为有效 review。
+- immutable Result digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`；结论=`PASS / 97`，P0/P1/P2=`0/0/3`，`change_request_closed=false`。
+- cumulative 验收固定证据：`503/503`，fail/skip/cancel/todo=`0/0/0/0`，coverage Lines/Branches/Functions=`93.50/88.62/99.22`；预算超限、状态冲突/过期、synthetic 冒充 real 三个固定负例均通过。
+- carry-forward 完整：SG-1 两项 P2、SG-2 一项 P2、SG-3 两条边界未被 PASS 抹平；状态精确保持“真实项目价值验证框架可用，真实运行 0/3”。
+
+### 本地可重复检查
+
+- `git diff --check`：通过。
+- exact-path 检查：差异严格等于用户限定 exact-11，即九份状态文档与 `.codex/operations-log.md`、`.codex/verification-report.md`；无代码、测试、Schema、依赖或其他路径变化。
+- 旧停点反扫：`SG-2 packet preparation`、`sg1-sg2-sg3-package-accepted-cumulative-acceptance-pending`、等待 cumulative packet/claim/fence 的当前态文案在九份状态文档中均无命中。
+- 提前完成声明反扫：新增行中 `PC-12 已完成`、`PC-19 已完成`、`V2 已完成`、`V4 已完成`、`P5 已完成`、`真实运行 3/3 已完成`、`change_request_closed=true`、`V2 packet 已创建`、`formal 已移动` 均无命中。
+- 身份复核：提交前 HEAD 保持 `813e9fd5240b1af6413a274daa7e307757bbb246`，formal/control 分别保持 `ea04b57de83d6c548dcb1629b1f61832db8375ad` / `1ac071b0087514390238381fa71cc4b4182983bc`。
+- 本轮只改 Markdown 状态真源，不重复运行 build/typecheck/test/security；`503/503` 与覆盖率明确作为 cumulative acceptance 已核定证据，不包装为本轮重跑结果。
+- 用户改动保护：未读取、修改、暂存或清理受保护 Multica 上下文文件；未 push。
+
+### 门禁判断
+
+- 状态同步门禁：通过。
+- 生命周期阶段：继续为 `S5 / P5`，P5 阶段出口未通过，不允许进入 S7/S8。
+- CR-006：cumulative gate 已通过，但 `change_request_closed=false`，CR-006 未自动关闭。
+- 下一唯一允许动作：基于本状态同步合入后的最新 main/control 做一次独立 V2 entry reassessment；该复评本身不创建 V2 packet。
+- 未完成边界：formal 不移动，PC-12/PC-19/V2/V4/P5/真实运行 3/3 均未完成；不替用户 signoff。

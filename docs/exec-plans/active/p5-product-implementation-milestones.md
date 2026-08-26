@@ -1,6 +1,6 @@
 # P5 产品落地实施里程碑
 
-状态：进行中；main=`b0aa9b9`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`830d831808a92f53dfca4dea87bb98c71e448fb1`，`plan_generation=5`。V1 已 formally-completed；V2 入口评估=`PASS / 100`。CR-006 SG-1 已实现并正式独立验收 `PASS / 98`；当前进入 SG-2 packet preparation，V2 packet 与 formal 移动未授权
+状态：进行中；main=`813e9fd5240b1af6413a274daa7e307757bbb246`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`。V1 已 formally-completed；CR-006 cumulative gate=`PASS / 97`、P0/P1/P2=`0/0/3`，但 `change_request_closed=false`。下一唯一动作是基于状态同步后最新 main/control 做独立 V2 entry reassessment；该复评不创建 V2 packet，formal 不移动
 启动日期：2026-08-08
 
 ## 1. 阶段目标
@@ -11,9 +11,9 @@
 
 - 生命周期阶段：`S5 开发落地`。
 - 项目里程碑：`P5 产品落地`。
-- 当前活动里程碑：`CR-006 / SG-2 packet preparation gate`；V2 入口评估已通过，但产品 packet 暂停。
+- 当前活动里程碑：`CR-006 cumulative gate 已通过 / V2 entry reassessment pending`；V2 产品 packet 继续暂停。
 - 本轮启动授权：用户于 2026-08-08 在 P4 会签归档后明确要求继续，授权单独启动 P5 并建立实施里程碑。
-- 路线性质：沿用已会签路线，不改变产品定位、主交互载体、技术栈、版本范围或验收门禁。V1 已完成精确用户会签及分离的 ACK/completion CAS，V2 入口独立评估已通过。CR-006 只增加跨版本可承受性护栏，独立计划位于 `docs/exec-plans/active/p5-scalability-guardrails.md`；SG-1 已通过实现与正式独立验收闭环。当前只允许推进 SG-2 的分离 packet/control/worktree 链；该方向批准与 V2 入口 PASS 均不直接授权 V2 packet 或 formal 移动。
+- 路线性质：沿用已会签路线，不改变产品定位、主交互载体、技术栈、版本范围或验收门禁。V1 已完成精确用户会签及分离的 ACK/completion CAS。CR-006 只增加跨版本可承受性护栏，独立计划位于 `docs/exec-plans/active/p5-scalability-guardrails.md`；三个 package gate 与 cumulative gate 均已通过，但 CR-006 未自动关闭。当前只允许基于状态同步后最新 main/control 做一次独立 V2 entry reassessment；该复评本身不直接授权 V2 packet 或 formal 移动。
 
 ## 3. 正式上游
 
@@ -158,4 +158,4 @@ P5-M0 不是新增产品版本，不改变 P3 的 PC 主版本归属，也不能
 
 P5 的最终阶段出口是：V1..V4 和 Final Acceptance 全部通过本地可重复验证、独立 I/X/P、适用 Profile 验收和用户会签；交付清单、正式 OID、已知风险、回滚与 PC-20.AR 状态可追溯。此前 P5 保持进行中，不得归档本计划或宣告完整产品完成。
 
-当前 M1.1 attempt 1 为历史 `退回 / 73`，attempt 2 已会签并正式完成。formal=F16，control=`830d831808a92f53dfca4dea87bb98c71e448fb1`，`plan_generation=5`，pending dispatch=0；S1.4-S1.6、M1.2 与 V1 均已正式完成。CR-006 SG-1 已通过正式独立验收，当前只允许准备 SG-2 packet。V2 入口独立评估 `5be7ff254f898cee7887df9a15b48b8d21f2c1ed`=`PASS / 100`；P5 未完成，SG-3、CR-006 累积验收与 V2 packet 未发生。
+当前 M1.1 attempt 1 为历史 `退回 / 73`，attempt 2 已会签并正式完成。formal=F16，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`；S1.4-S1.6、M1.2 与 V1 均已正式完成。CR-006 cumulative replacement review=`813e9fd5240b1af6413a274daa7e307757bbb246`，`PASS / 97`，P0/P1/P2=`0/0/3`；Result digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。`503/503`、coverage=`93.50/88.62/99.22` 与三个固定负例均通过，但 SG-1 两项 P2、SG-2 一项 P2、SG-3 两条边界和“真实运行 0/3”继续保留。下一唯一动作是独立 V2 entry reassessment；该复评不创建 V2 packet。PC-12/PC-19/V2/V4/P5/真实运行 3/3 均未完成。

@@ -31,7 +31,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - Change Intake、恢复、Final Acceptance、交付和宿主归档边界通过故障注入和反扫验证。
   - V1..V4 与 Final Acceptance 分别完成本地验证、适用验收和用户会签。
 - 阶段出口：V1..V4 和 Final Acceptance 全部通过；正式 OID、交付清单、风险、回滚和 PC-20.AR 状态可追溯，并由用户明确确认 P5 产品落地完成。
-- 最小可验收闭环：`P5-M0` 与 V1 已正式完成，formal 保持 F16；V2 入口评估=`PASS / 100`。CR-006 generation 5 replacement、advance/ack 与 SG-1、SG-2、SG-3 三个 package gate 均已通过。SG-3 前序 attempt 1 的 `contract-revision-required`、未执行 RED、无候选历史保持只读；更正后的原始候选=`87258c32162875bef16994b2259ad16baf4cb72e`、main=`a5b16942450d79ed583b80a1b4f13061017c41fd`，原始独立评审=`afdb308e09113a919a07778a75c1f816f2d3b5cd`、main=`c42670a3a7f638b262fa72d94e5a5a6d3a68cc51`，结论 `PASS / 100`，P0/P1/P2=`0/0/0`，Result digest=`sha256:abfea41a5d855d25950c302043ad925a2cf880ba4a71b94c414865350fed2b6b`。主线验证 `503/503`，coverage Lines/Branches/Functions=`93.50/88.62/99.22`；包级状态精确为“真实项目价值验证框架可用，真实运行 0/3”。当前 fail closed：下一允许动作仅为独立的 CR-006 cumulative read-only acceptance packet/claim/fence/唯一 reviewer；不得自动关闭 CR-006、创建 V2 packet、移动 formal，或宣称 PC-12/PC-19/V2/V4/P5 完成。
+- 最小可验收闭环：`P5-M0` 与 V1 已正式完成，formal 保持 F16；V2 入口评估=`PASS / 100`。CR-006 generation 5 replacement、advance/ack、SG-1/SG-2/SG-3 package gate 与 cumulative gate 均已通过。cumulative replacement review=`813e9fd5240b1af6413a274daa7e307757bbb246`（旧 `dbb1c2d` 因未来 `reviewed_at` 废弃），结论 `PASS / 97`，P0/P1/P2=`0/0/3`；Result control=`1ac071b0087514390238381fa71cc4b4182983bc`，digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。主线验证 `503/503`，coverage Lines/Branches/Functions=`93.50/88.62/99.22`，三个固定负例均通过。继续保留 SG-1 两项 P2、SG-2 一项 P2 与 SG-3 两条边界；精确状态保持“真实项目价值验证框架可用，真实运行 0/3”。当前 fail closed：`change_request_closed=false`，CR-006 不自动关闭；下一唯一允许动作是基于本状态同步合入后的最新 main/control 做一次独立 V2 entry reassessment，该复评本身也不创建 V2 packet。formal 不移动，PC-12/PC-19/V2/V4/P5/真实运行 3/3 均未完成。
 - 明确非目标：
   - 不恢复 NextStep Web/UI 候选分支。
   - 不引入常驻服务、数据库、远程控制面或通用多 Agent 编排平台。
@@ -43,7 +43,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - 不改变已会签产品、交互、S4/P3/P4 或验收边界；需要改变时先进入 Change Request。
 - 禁止提前进入的阶段：S7 最终发布判断和 S8 交付归档；V1..V4 也不得跳过前序门禁并行宣告完成。
 - 允许进入下一阶段的条件：P5 Final Acceptance 通过本地可重复验证、独立验收和用户会签；若实现要求改变已会签产品、交互、技术、版本范围、正式提升或验收边界，必须先完成 Change Request。
-- 当前状态：进行中；main=`c42670a3a7f638b262fa72d94e5a5a6d3a68cc51`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`730f2e011bd648801cde5c02db8287dc92e591a8`，`plan_generation=5`。V1 formally-completed，V2 入口评估=`PASS / 100`。SG-1、SG-2、SG-3 package gate 均已通过；SG-3=`PASS / 100`、P0/P1/P2=`0/0/0`，包级状态为“真实项目价值验证框架可用，真实运行 0/3”。前序 SG-3 attempt 1 的 `contract-revision-required` 历史只读保留。当前只允许建立独立的 CR-006 cumulative read-only acceptance packet/claim/fence 并交给唯一 reviewer；CR-006 尚未关闭，V2 packet 未创建，formal 未移动，PC-12/PC-19/V2/V4/P5 均未由本状态完成。
+- 当前状态：进行中；main=`813e9fd5240b1af6413a274daa7e307757bbb246`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`。V1 formally-completed，V2 入口评估=`PASS / 100`。CR-006 cumulative gate=`PASS / 97`、P0/P1/P2=`0/0/3`，但 `change_request_closed=false`；精确状态仍为“真实项目价值验证框架可用，真实运行 0/3”。下一唯一允许动作是基于状态同步后的最新 main/control 做独立 V2 entry reassessment；复评本身不创建 V2 packet，不移动 formal，也不表示 PC-12/PC-19/V2/V4/P5 或真实运行 3/3 完成。
 
 ## 2.1 里程碑路线图
 
@@ -109,7 +109,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
 
 - Backlog：待建立。
 - Change Request：`docs/change-requests/index.md`
-- 当前阶段缺口：CR-006 SG-1、SG-2、SG-3 均已实现并通过 package gate；SG-3 精确结论为“真实项目价值验证框架可用，真实运行 0/3”，前序 `contract-revision-required` 历史保持只读。当前缺口仅为独立的 CR-006 cumulative read-only acceptance packet/claim/fence/唯一 reviewer。完成该验收也不得自动关闭 CR-006、创建 V2 packet、移动 formal 或宣称 PC-12/PC-19/V2/V4/P5 完成；V2 产品 packet 保持暂停。
+- 当前阶段缺口：CR-006 SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，但 `change_request_closed=false`，CR-006 不自动关闭；“真实项目价值验证框架可用，真实运行 0/3”保持不变。下一唯一允许动作是基于本状态同步合入后的最新 main/control 做独立 V2 entry reassessment；该复评不创建 V2 packet，不移动 formal，也不宣称 PC-12/PC-19/V2/V4/P5 或真实运行 3/3 完成。
 - 后续阶段需求：V1..V4 和 Final Acceptance 按活动计划顺序推进；P4 第 12 节“运行集成验收”只允许落实为集成诊断预检，正式 I/X/P 四态结论仍由独立门禁和最终复验链产生。若未来恢复 `Web / UI` 分支，需重新确认其与当前 Skill 主路线的关系。
 - 已拒绝需求：无。
 
