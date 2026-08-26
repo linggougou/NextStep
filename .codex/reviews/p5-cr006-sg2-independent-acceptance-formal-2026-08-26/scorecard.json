@@ -1,0 +1,175 @@
+{
+  "review_id": "p5-cr006-sg2-independent-acceptance-formal-g5-a1-f121-20260826",
+  "task_id": "SG-2-I-X-P",
+  "lane": "package-acceptance",
+  "review_level": "L3",
+  "rubric_id": "p5-cr006-sg2-package-acceptance-v1",
+  "artifact_refs": [
+    "git:a348029016638c4e619c4cb90c2511cac8615e7e",
+    "git-tree:fe43d550abf7d1fe8bfbbe01a68e4cc53ea0b38e",
+    "git-parent:044937fd8f73cd42e60d0b7ad5321dfecce040f5",
+    "control:cc0b8597e2545c5452d9dd2aa1b28091a01d55ef:gate-requests/gate-package-acceptance-sg2-g5-a1-20260826.json",
+    "control:de4059145b8630fbd61b492229f45ded4a51620f",
+    "control:08841982204814cfbeda28c5297ac30745d57cfd",
+    "formal:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "control:46ec6a66ae8ff6bc2cf97a45731415b5091e2807:messages/msg-dispatch-ack-sg2-g5-a1-f120-20260826.json"
+  ],
+  "subject_identity": {
+    "commit_oid": "a348029016638c4e619c4cb90c2511cac8615e7e",
+    "tree_oid": "fe43d550abf7d1fe8bfbbe01a68e4cc53ea0b38e",
+    "parent_oid": "044937fd8f73cd42e60d0b7ad5321dfecce040f5",
+    "subject_digest": "sha256:c9c521ed16f18f72146cfac1e8eda50590b8e54ef4d4701c5f77de3eff8a4fa5"
+  },
+  "control_identity": {
+    "packet_digest": "sha256:027e0e436b597280e92b8e15e7312b12925cc862cdcd4b0842e1af085d32a72c",
+    "dedup_key": "sha256:cae525b7024dae7e5db0b06a0126c96d4cc81188682598d69a1f354943777645",
+    "claim_id": "claim-sg2-ixp-g5-a1-f121-20260826",
+    "fence_token": 121,
+    "dispatch_ack_control_oid": "08841982204814cfbeda28c5297ac30745d57cfd",
+    "host_task_id": "codex-subagent:/root/sg2_accept_g5_a1_f121",
+    "formal_oid": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "plan_generation": 5
+  },
+  "hard_gates": [
+    {
+      "id": "HG1-control-identity",
+      "status": "pass",
+      "evidence": "独立复算验收 packet=sha256:027e0e43...、dedup=sha256:cae525b7...、subject=sha256:c9c521ed... 均与 gate packet 一致；验收控制链 46ec6a6 -> cc0b859 -> de40591 -> 0884198 为逐段单父链，fence=121、唯一 host 与 ACK 精确匹配。"
+    },
+    {
+      "id": "HG2-subject-and-allowlist",
+      "status": "pass",
+      "evidence": "cat-file/diff-tree 确认 subject=a348029/tree=fe43d55/parent=044937f；真实写集精确为 schema 1、adapter 1、cli 1、domain 1、test 3、fixture 1 共八路径，与 packet allowlist 完全相等；未读取或修改受保护 Multica 未跟踪文件。"
+    },
+    {
+      "id": "HG3-red-before-green",
+      "status": "pass",
+      "evidence": "固定父提交 044937f 不含 SG-2 八条新增路径，新增定向测试直接绑定新模块与 CLI 行为；实现阶段 RED->GREEN 证据已由交接链声明，独立验收在隔离 worktree 重跑定向 15/15，并重跑全量 pnpm check 493/493。由于原始 RED 终端输出未内容寻址固化，本项附带一个非阻塞 P2。"
+    },
+    {
+      "id": "HG4-projection-minimality",
+      "status": "pass",
+      "evidence": "available fixture 输出字段完备且不含 history、claim、fence、chat、source、secret 或绝对业务路径；对 live control worktree 的 smoke 中，checkpoint.next_stage 含 fence 121 的隔离验收描述时，CLI 以 unavailable + next_action=null fail closed，stdout/stderr 均未泄漏 fence/claim。"
+    },
+    {
+      "id": "HG5-read-only-boundary",
+      "status": "pass",
+      "evidence": "adapter 只使用 for-each-ref 双读 formal/control、rev-list 单父校验、rev-parse blob 与 cat-file 读取；源码与测试共同证明无 checkout、fetch、commit、update-ref、cache、Markdown 扫描或运行时写入。"
+    },
+    {
+      "id": "HG6-budget-and-deps",
+      "status": "pass",
+      "evidence": "生产与 Schema 恰为 4 文件 / 440 行，测试 3 文件 / 389 行，fixture 1 文件 / 71 行，tests+fixture 合计 460 行；新增运行时依赖为 0，package.json/pnpm-lock/tsconfig 无变化。"
+    },
+    {
+      "id": "HG7-non-overclaim",
+      "status": "pass",
+      "evidence": "候选实现与测试只声明 SG-2 只读项目状态投影 package acceptance；未宣称 PC-12、S2.3/S2.4、V2、V4、P5、full host 或 formal promotion 完成。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "identity-and-provenance",
+      "score": 24,
+      "max_score": 25,
+      "reason": "Git、packet、dedup、subject、claim/fence、host 与 ACK 身份闭合；唯一扣分来自原始 RED 终端证据未形成 immutable 对象。",
+      "evidence_refs": [
+        "control:08841982204814cfbeda28c5297ac30745d57cfd",
+        "control:cc0b8597e2545c5452d9dd2aa1b28091a01d55ef"
+      ]
+    },
+    {
+      "id": "projection-correctness",
+      "score": 25,
+      "max_score": 25,
+      "reason": "available/unavailable 双态、current scope、formal conclusion、blocker、freshness 与 next action 的 fail-closed 语义均与 packet 一致，live smoke 也没有泄漏敏感 next stage 内容。",
+      "evidence_refs": [
+        "git:a348029016638c4e619c4cb90c2511cac8615e7e:src/domain/project-status-projection.ts",
+        "git:a348029016638c4e619c4cb90c2511cac8615e7e:tests/domain/project-status-projection.test.ts",
+        "command:node dist/src/cli/project-status.js --project-root /private/tmp/nextstep-sg2-control-IyGkOE"
+      ]
+    },
+    {
+      "id": "read-only-boundary-and-adapter-discipline",
+      "score": 25,
+      "max_score": 25,
+      "reason": "adapter 严格停留在 Git plumbing 双读/单父/blob 读取边界，CLI 仅接受绝对 project-root，所有 write/fetch/ref override 入口都被 fail closed。",
+      "evidence_refs": [
+        "git:a348029016638c4e619c4cb90c2511cac8615e7e:src/adapters/node/project-status-source.ts",
+        "git:a348029016638c4e619c4cb90c2511cac8615e7e:tests/adapters/node/project-status-source.test.ts",
+        "git:a348029016638c4e619c4cb90c2511cac8615e7e:tests/cli/project-status.test.ts"
+      ]
+    },
+    {
+      "id": "verification-completeness",
+      "score": 25,
+      "max_score": 25,
+      "reason": "独立 acceptance worktree 中定向 15/15、全量 493/493、coverage 93.41/88.35/99.19、git diff --check 与 live smoke 全部通过，验证范围覆盖 ref 缺失、多父 control、畸形 blob、参数注入与零写入。",
+      "evidence_refs": [
+        "command:corepack pnpm check",
+        "command:corepack pnpm build && node --test dist/tests/domain/project-status-projection.test.js dist/tests/adapters/node/project-status-source.test.js dist/tests/cli/project-status.test.js",
+        "command:git diff --check"
+      ]
+    }
+  ],
+  "penalties": [
+    {
+      "severity": "P2",
+      "deduction": 1,
+      "reason": "实现阶段原始 RED 终端输出未作为内容寻址对象固化；本次独立评审只能依赖父提交缺少 SG-2 八路径、测试绑定关系与后续 GREEN 结果反推 RED 已先于实现存在。",
+      "evidence_refs": [
+        "git-parent:044937fd8f73cd42e60d0b7ad5321dfecce040f5",
+        "git:a348029016638c4e619c4cb90c2511cac8615e7e:tests/domain/project-status-projection.test.ts"
+      ]
+    }
+  ],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 1,
+    "final_score": 99
+  },
+  "finding_counts": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 1
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "后续 SG 类 TDD 可以把首次 RED 命令、退出码与原始输出摘要固化为内容寻址证据，减少评审时的推断成分。",
+    "若后续需要对外展示项目状态，可继续把 unavailable reason 的用户文案与 machine-readable reason 分层，而不放宽当前 fail-closed 边界。"
+  ],
+  "reviewers": [
+    {
+      "role": "Generator",
+      "identity": "codex-subagent:/root/sg2_impl_g5_a1_f120",
+      "conclusion": "submitted",
+      "note": "生成固定候选 a348029；未参与本次正式批准。"
+    },
+    {
+      "role": "Verifier",
+      "identity": "codex-subagent:/root/sg2_accept_g5_a1_f121",
+      "conclusion": "PASS",
+      "note": "7/7 hard gates 通过。"
+    },
+    {
+      "role": "Strict Judge",
+      "identity": "codex-subagent:/root/sg2_accept_g5_a1_f121",
+      "conclusion": "PASS",
+      "note": "99/100；无 P0/P1，仅一个 P2 不阻断包级验收。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "identity": "codex-subagent:/root/sg2_accept_g5_a1_f121",
+      "conclusion": "PASS",
+      "note": "无模板漂移、无证据完成宣告、无范围膨胀。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "identity": "codex-subagent:/root/sg2_accept_g5_a1_f121",
+      "conclusion": "PASS",
+      "note": "只放行 SG-2 package acceptance Result 固化与主线整合；不放行 V2、formal promotion 或 P5 完成。"
+    }
+  ],
+  "reviewed_at": "2026-08-26T05:11:28Z"
+}
