@@ -1,0 +1,232 @@
+{
+  "review_id": "p5-v2-entry-reassessment-after-cr006-attempt-3-2026-08-26",
+  "task_id": "V2-ENTRY-REASSESSMENT-AFTER-CR006-ATTEMPT-3",
+  "lane": "P5/V2-entry",
+  "review_level": "L3",
+  "rubric_id": "nextstep-v2-entry-reassessment-after-cr006-v3",
+  "artifact_refs": [
+    "git:cb28627c9ddcbf231d40b55880753495e141b88f",
+    "git:ccc182e484e07300b517fd371ecb327367754c6e",
+    "git:83eb33ef817126375522f8e9cc305d0554d6af48",
+    "git:7a579dd1f08ec65e916e509863846d99f143c9d5",
+    "git:7274c03fbb6e7ee11dc7f24690a2af50ed76169a",
+    "git:813e9fd5240b1af6413a274daa7e307757bbb246",
+    "git:37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa",
+    "git:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "git:1ac071b0087514390238381fa71cc4b4182983bc",
+    ".codex/reviews/p5-v2-entry-evaluation-2026-08-25",
+    ".codex/reviews/p5-v2-entry-reassessment-after-cr006-2026-08-26",
+    ".codex/reviews/p5-v2-entry-reassessment-after-cr006-attempt-2-2026-08-26",
+    ".codex/reviews/p5-cr006-cumulative-acceptance-attempt-1-2026-08-26",
+    "PROJECT_ROUTE_LOCK.md",
+    "README.md",
+    "docs/PLANS.md",
+    "docs/PRODUCT_SENSE.md",
+    "docs/change-requests/index.md",
+    "docs/change-requests/006-scalability-guardrails.md",
+    "docs/qa/index.md",
+    "docs/exec-plans/active/p5-product-implementation-milestones.md",
+    "docs/exec-plans/active/p5-scalability-guardrails.md"
+  ],
+  "subject_identity": {
+    "commit_oid": "cb28627c9ddcbf231d40b55880753495e141b88f",
+    "tree_oid": "04ede492ac23f433141d962a7e111c87c422d94f",
+    "parent_oid": "ccc182e484e07300b517fd371ecb327367754c6e"
+  },
+  "hard_gates": [
+    {
+      "id": "LIVE-IDENTITY-BOUND",
+      "status": "pass",
+      "evidence": "复评固定 subject/HEAD/current main=cb28627c9ddcbf231d40b55880753495e141b88f；运行时 refs/heads/main 同值，refs/nextstep/formal=ea04b57de83d6c548dcb1629b1f61832db8375ad，refs/nextstep/control=1ac071b0087514390238381fa71cc4b4182983bc。"
+    },
+    {
+      "id": "ATTEMPT-2-INVALID-SUPERSEDED",
+      "status": "pass",
+      "evidence": "cb28627 中 attempt 2 的 reviewer 同时创作了被审 subject ccc182e，违反独立角色分离；attempt 2 的 PASS 因 reviewer-authored subject 明确 invalid/superseded，不作为本次放行证据。本 attempt 3 独立复核 83eb、ccc182e 与整体 live tree。"
+    },
+    {
+      "id": "CURRENT-STATE-SOURCES-SYNCHRONIZED",
+      "status": "pass",
+      "evidence": "83eb 将状态身份正确拆分为 accepted_subject=37c13f3、cumulative_review=813e9fd、state_sync=7274c03、first_reassessment=7a579dd；ccc182e 收口 CR-006 详细文档的残留旧口径。状态文档要求 current main 由 git rev-parse refs/heads/main 运行时解析，避免要求文档写入自身未知 SHA。"
+    },
+    {
+      "id": "CUMULATIVE-RESULT-AND-RISKS-VALID",
+      "status": "pass",
+      "evidence": "control Result 固化 CR-006 cumulative PASS/97、P0/P1/P2=0/0/3、required_fixes=[]、digest=sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8；SG-1 两项 P2、SG-2 一项 P2 与 SG-3 两条边界继续保留，真实运行仍 0/3，change_request_closed=false。"
+    },
+    {
+      "id": "MEASUREMENT-HONESTY",
+      "status": "pass",
+      "evidence": "累计验收 93.50/88.62/99.22、首次复评 93.48/88.59/99.22、主线复跑 93.53/88.69/99.22 被明确区分为独立 snapshot；末两位波动不再冒充永久 current。current gate 只固定 503/503、fail/skip/cancel/todo=0/0/0/0、coverage 各维度 >=80%。"
+    },
+    {
+      "id": "FRESH-REGRESSION-EVIDENCE",
+      "status": "pass",
+      "evidence": "在固定 current main=cb28627 上离线冻结锁文件安装隔离依赖后 fresh pnpm check 通过：tests=503/503，fail/skip/cancel/todo=0/0/0/0，coverage Lines/Branches/Functions=93.53/88.69/99.22。首次 check 仅因隔离 worktree 未预装 node_modules 而 tsc command not found，补齐缓存依赖后完整门禁通过，package/lock 未改变。"
+    },
+    {
+      "id": "NO-V2-CONTROL-STATE",
+      "status": "pass",
+      "evidence": "registry 中无 stage_id 以 P5/V2 开头或 task_id 属于 S2.1..S2.4 的条目；checkpoint.pending_dispatch_messages=[]、unconfirmed_tombstones=[]，无 V2 packet/claim/fence/dispatch/pending/tombstone/host task。"
+    },
+    {
+      "id": "V1-F16-AND-ORIGINAL-V2-ENTRY-VALID",
+      "status": "pass",
+      "evidence": "V1 formally-completed 与 F16 formal=ea04b57 保持只读有效；原 V2 entry evaluation 仍为 PASS/100，但只证明入口准备，不直通 packet、claim/fence、dispatch、coding 或 formal movement。"
+    },
+    {
+      "id": "V2-SCOPE-AND-FIRST-ENTRY-FROZEN",
+      "status": "pass",
+      "evidence": "V2 范围保持 M2.1/M2.2、S2.1..S2.4、PC-09..13，首入口仍为 S2.1，且 S2.1 不执行真实任务、不进入 P4 协议实现。"
+    },
+    {
+      "id": "GENERATIONS-STABLE",
+      "status": "pass",
+      "evidence": "control checkpoint/registry 均为 plan_generation=5、route_generation=1；本次只读复评未移动 formal/control。"
+    },
+    {
+      "id": "NO-PREMATURE-COMPLETION",
+      "status": "pass",
+      "evidence": "live tree 明确 CR-006 未关闭、真实运行 0/3，且 PC-12、PC-19、V2、V4、P5 未完成；cb286 仅增加已作废的历史 attempt 2 review artifact，没有创建 V2 控制态或提前完成声明。"
+    },
+    {
+      "id": "EXACT-TWO-AND-TIME",
+      "status": "pass",
+      "evidence": "attempt 3 仅新增 scorecard.json 与 verdict.md；reviewed_at 使用生成时当前 UTC 2026-08-26T09:47:00Z，不晚于运行时当前时间。"
+    },
+    {
+      "id": "PROTECTED-EXCLUDED",
+      "status": "pass",
+      "evidence": "未读取、修改、暂存或引用受保护文件 .codex/context-summary-multica-migration-feasibility-2026-08-22.md；未 push，未移动任何 refs。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "identity_role_separation_and_control_validity",
+      "score": 25,
+      "max_score": 25,
+      "reason": "live main/formal/control 与 cumulative provenance 可独立复核；attempt 2 的自审违规被明确作废，本次 reviewer 与 ccc/83eb 作者分离。",
+      "evidence_refs": [
+        "LIVE-IDENTITY-BOUND",
+        "ATTEMPT-2-INVALID-SUPERSEDED",
+        "GENERATIONS-STABLE"
+      ]
+    },
+    {
+      "id": "state_sources_and_measurement_honesty",
+      "score": 25,
+      "max_score": 25,
+      "reason": "83eb 与 ccc182e 已关闭身份及详细文档尾差；历史、首次复评、主线复跑与本次 fresh 测量口径被诚实分离。",
+      "evidence_refs": [
+        "CURRENT-STATE-SOURCES-SYNCHRONIZED",
+        "MEASUREMENT-HONESTY",
+        "FRESH-REGRESSION-EVIDENCE"
+      ]
+    },
+    {
+      "id": "cumulative_gate_and_risk_preservation",
+      "score": 25,
+      "max_score": 25,
+      "reason": "cumulative PASS/97、三项 P2、两条 SG-3 边界、real 0/3 与 change_request_closed=false 均保持，没有被复评夸大。",
+      "evidence_refs": [
+        "CUMULATIVE-RESULT-AND-RISKS-VALID",
+        "NO-PREMATURE-COMPLETION"
+      ]
+    },
+    {
+      "id": "v2_boundary_and_next_step_discipline",
+      "score": 25,
+      "max_score": 25,
+      "reason": "V1/F16 与原 V2 entry 只读有效，V2 控制态仍为空，范围和 S2.1 首入口未漂移；后续仅允许状态同步及形成精确 packet 授权请求。",
+      "evidence_refs": [
+        "NO-V2-CONTROL-STATE",
+        "V1-F16-AND-ORIGINAL-V2-ENTRY-VALID",
+        "V2-SCOPE-AND-FIRST-ENTRY-FROZEN"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100
+  },
+  "severity_summary": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "carry_forward_risks": [
+    {
+      "severity": "P2",
+      "scope": "SG-1",
+      "summary": "RED 原始终端输出没有内容寻址固化。"
+    },
+    {
+      "severity": "P2",
+      "scope": "SG-1",
+      "summary": "main 曾在正式 acceptance Result 前提前 cherry-pick 同一代码；后续 PASS 不改写该异常历史。"
+    },
+    {
+      "severity": "P2",
+      "scope": "SG-2",
+      "summary": "RED 阶段只有摘要化 observed 说明，没有独立 immutable transcript。"
+    },
+    {
+      "severity": "boundary",
+      "scope": "SG-3",
+      "summary": "证据绑定不抵抗恶意磁盘操作者整体重写并重算摘要。"
+    },
+    {
+      "severity": "boundary",
+      "scope": "SG-3",
+      "summary": "真实项目运行仍为 0/3。"
+    }
+  ],
+  "invalidated_reviews": [
+    {
+      "review_commit": "cb28627c9ddcbf231d40b55880753495e141b88f",
+      "review_path": ".codex/reviews/p5-v2-entry-reassessment-after-cr006-attempt-2-2026-08-26",
+      "status": "invalid-superseded",
+      "reason": "reviewer-authored subject ccc182e; independent role separation violated"
+    }
+  ],
+  "next_allowed_actions": [
+    "同步 attempt 3 的独立 PASS 状态",
+    "形成首个 V2/S2.1 attempt 1 Execution Packet control CAS 的精确用户授权请求"
+  ],
+  "forbidden_actions": [
+    "创建任何 V2 packet 或执行 packet control CAS",
+    "创建 V2 claim/fence",
+    "启动 V2 dispatch、coding 或真实任务执行",
+    "移动 formal 或替用户 signoff",
+    "宣称 CR-006 已关闭，或 PC-12、PC-19、V2、V4、P5、真实运行 3/3 已完成",
+    "把 invalid/superseded attempt 2 当作放行证据"
+  ],
+  "reviewers": [
+    {
+      "role": "Independent Verifier",
+      "identity": "codex-subagent:/root/v2_entry_reassessment_a2_replacement",
+      "signal": "PASS",
+      "conclusion": "独立复核 live refs、83eb/ccc 修复、fresh check、control 空 V2 状态与累计风险边界均通过。"
+    },
+    {
+      "role": "Strict Judge",
+      "identity": "codex-subagent:/root/v2_entry_reassessment_a2_replacement",
+      "signal": "PASS",
+      "score": 100,
+      "conclusion": "attempt 2 自审违规已显式作废；attempt 3 未发现新的 P0/P1/P2。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "identity": "codex-subagent:/root/v2_entry_reassessment_a2_replacement",
+      "signal": "PASS",
+      "score": 100,
+      "conclusion": "仅放行状态同步与精确 S2.1 packet 授权请求，其他动作继续 fail closed。"
+    }
+  ],
+  "reviewed_at": "2026-08-26T09:47:00Z"
+}
