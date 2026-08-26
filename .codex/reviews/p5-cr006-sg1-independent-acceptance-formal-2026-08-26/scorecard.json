@@ -1,0 +1,181 @@
+{
+  "review_id": "p5-cr006-sg1-independent-acceptance-formal-g5-a1-f119-20260826",
+  "task_id": "SG-1-I-X-P",
+  "lane": "package-acceptance",
+  "review_level": "L3",
+  "rubric_id": "p5-cr006-sg1-package-acceptance-v1",
+  "artifact_refs": [
+    "git:9fc9dc2e51790e868d30d23fd28c8b8f17d67935",
+    "git-tree:2fa56e3eed99104d44c7e298e1e24418528074b5",
+    "git-parent:a6b3a70a90eae6d26c94ca0cd20ac8cf9c85f95c",
+    "control:91cdc9f2963201fa6d69704a1484ef73f02b48fb:gate-requests/gate-package-acceptance-sg1-g5-a1-20260826.json",
+    "control:4676b97a879baa7de2072878e437354d758936e9",
+    "control:e9100f0e41182135e10fb5997900060918c75aeb",
+    "formal:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "control:e0394c27d70ae522ebc1ae754124124d0a9f3242:messages/msg-dispatch-ack-sg1-g5-a1-f118-20260826.json"
+  ],
+  "subject_identity": {
+    "commit_oid": "9fc9dc2e51790e868d30d23fd28c8b8f17d67935",
+    "tree_oid": "2fa56e3eed99104d44c7e298e1e24418528074b5",
+    "parent_oid": "a6b3a70a90eae6d26c94ca0cd20ac8cf9c85f95c",
+    "subject_digest": "sha256:0f7176fc65970b75af7c422b9aa1454259fb37198a31b397f24c833717c78d40"
+  },
+  "control_identity": {
+    "packet_digest": "sha256:b658064af3fac1fc7bd7e62500ef77da912b423b42794aa0c47e1315c02abd32",
+    "dedup_key": "sha256:27a236cdb49057e0d858d9bc52bec59ee8c343cf1125af564a6b0504b2987856",
+    "claim_id": "claim-sg1-ixp-g5-a1-f119-20260826",
+    "fence_token": 119,
+    "dispatch_ack_control_oid": "e9100f0e41182135e10fb5997900060918c75aeb",
+    "host_task_id": "codex-subagent:/root/sg1_formal_accept_f119",
+    "formal_oid": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "plan_generation": 5
+  },
+  "hard_gates": [
+    {
+      "id": "HG1-control-identity",
+      "status": "pass",
+      "evidence": "独立按 RFC8785 重算验收 packet=sha256:b658064a...、dedup=sha256:27a236cd...、subject=sha256:0f7176fc...，均与 packet 匹配；控制链 e0394c2 -> 91cdc9f -> 4676b97 -> e9100f0 为逐段单父链，fence=119、唯一 host 与 ACK 精确匹配。"
+    },
+    {
+      "id": "HG2-subject-and-allowlist",
+      "status": "pass",
+      "evidence": "cat-file/diff-tree 确认 subject=9fc9dc2/tree=2fa56e3/parent=a6b3a70；相对父提交精确新增 Schema 1、domain 1、test 1、fixture 4 共七路径，与 allowlist 完全相等；未读取或修改受保护 Multica 文件。"
+    },
+    {
+      "id": "HG3-red-before-green",
+      "status": "pass",
+      "evidence": "实现交接记录给出 RED 命令 node --experimental-strip-types --test tests/domain/scalability-budget.test.ts，在生产 Schema/模块尚不存在时以 ERR_MODULE_NOT_FOUND 退出 1；随后同一定向集 GREEN 8/8。独立验收重新运行同一定向集 8/8，并运行全量 482/482。父提交 a6b3a70 不含 SG-1 七路径，候选永久测试覆盖冻结的 RED 断言。"
+    },
+    {
+      "id": "HG4-budget-behavior",
+      "status": "pass",
+      "evidence": "冻结阈值精确为 12/24/2/2/1/5；边界值、六项逐一上限加一、null、缺字段、负数、非整数、未知版本/字段、NaN/Infinity、多项超限稳定顺序、豁免建议拒绝与 JCS 稳定性均通过。输出只出现 within-budget、exception-required、unmeasurable。"
+    },
+    {
+      "id": "HG5-implementation-boundary",
+      "status": "pass",
+      "evidence": "生产与 Schema 合计 212 行 <= 320，测试与 fixture 合计 225 行 <= 420；无 package.json/pnpm-lock/tsconfig 变化、无新依赖；生产实现扫描无 CLI、Git、文件 I/O、process、formal/control 写入或阈值覆盖入口。"
+    },
+    {
+      "id": "HG6-non-overclaim",
+      "status": "pass",
+      "evidence": "七条候选路径未声明 PC-12、PC-19、V2、V4、P5、full host 或 formal promotion 完成。本结论只覆盖 SG-1 复杂度预算内核 package acceptance。"
+    },
+    {
+      "id": "HG7-fresh-verification",
+      "status": "pass",
+      "evidence": "独立 worktree 首次 pnpm check 因 node_modules 缺失在 tsc 前停止；离线 frozen install 下载 0 个包后从头重跑通过 482/482，fail/skipped/cancelled/todo=0/0/0/0，覆盖率 Lines/Branches/Functions=93.49/88.98/99.15；新增模块=97.62/95.65/100。git diff --check、git fsck --strict --no-dangling 与工作树 clean 均通过，formal/control 测试前后不变。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "identity-and-provenance",
+      "score": 24,
+      "max_score": 25,
+      "reason": "Git、packet、dedup、subject、fence、host 和 ACK 身份全部闭合；仅 RED 原始终端输出未作为内容寻址对象固化。",
+      "evidence_refs": [
+        "control:e9100f0e41182135e10fb5997900060918c75aeb",
+        "conversation:implementation-handoff-sg1-g5-a1-f118-20260826"
+      ]
+    },
+    {
+      "id": "budget-contract-correctness",
+      "score": 25,
+      "max_score": 25,
+      "reason": "冻结常量、三态、输入拒绝、稳定排序、不可覆盖阈值和 JCS 摘要全部满足 packet。",
+      "evidence_refs": [
+        "git:9fc9dc2e51790e868d30d23fd28c8b8f17d67935:src/domain/scalability-budget.ts",
+        "git:9fc9dc2e51790e868d30d23fd28c8b8f17d67935:schemas/v1/scalability-budget.schema.json"
+      ]
+    },
+    {
+      "id": "negative-paths-and-verification",
+      "score": 25,
+      "max_score": 25,
+      "reason": "定向 8/8、全量 482/482 与四类 fail-closed 负例均通过，覆盖率高于项目门禁。",
+      "evidence_refs": [
+        "git:9fc9dc2e51790e868d30d23fd28c8b8f17d67935:tests/domain/scalability-budget.test.ts",
+        "command:node --experimental-strip-types --test tests/domain/scalability-budget.test.ts",
+        "command:corepack pnpm check"
+      ]
+    },
+    {
+      "id": "isolation-and-scope-integrity",
+      "score": 24,
+      "max_score": 25,
+      "reason": "正式验收在隔离 worktree、fence 119 与 exact-2 输出边界内进行；主线先于正式验收的 3464fbc cherry-pick 是外部程序异常，未被本评审用作通过证据。",
+      "evidence_refs": [
+        "control:91cdc9f2963201fa6d69704a1484ef73f02b48fb",
+        "git:3464fbc6b117fe4ee3b1d8b6c921a2f3dc43fd4c"
+      ]
+    }
+  ],
+  "penalties": [
+    {
+      "severity": "P2",
+      "deduction": 1,
+      "reason": "原始 RED 终端输出由实现交接记录承载，未形成内容寻址的独立证据对象；永久测试和父/候选写集支持其可复现性，但来源强度低于 immutable transcript。",
+      "evidence_refs": [
+        "conversation:implementation-handoff-sg1-g5-a1-f118-20260826"
+      ]
+    },
+    {
+      "severity": "P2",
+      "deduction": 1,
+      "reason": "main 曾在正式 acceptance Result 之前 cherry-pick 同一代码。该异常未改变固定 subject，也未被作为 PASS 证据，但后续 Result/状态同步必须继续显式披露。",
+      "evidence_refs": [
+        "git:3464fbc6b117fe4ee3b1d8b6c921a2f3dc43fd4c",
+        "git:abbf865878a842a47591fb294981e0244b2fec72:.codex/verification-report.md"
+      ]
+    }
+  ],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 2,
+    "final_score": 98
+  },
+  "finding_counts": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 2
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "后续 TDD 任务把 RED 命令、退出码和原始输出摘要固化为内容寻址证据，避免只依赖交接记录。",
+    "在 SG-1 immutable Result 与状态同步中继续标注 3464fbc 为程序提前合入，不能把时间顺序改写成验收后合入。"
+  ],
+  "reviewers": [
+    {
+      "role": "Generator",
+      "identity": "codex-subagent:/root/sg1_impl_g5_a1_f118",
+      "conclusion": "submitted",
+      "note": "生成固定候选 9fc9dc2；未参与本次正式批准。"
+    },
+    {
+      "role": "Verifier",
+      "identity": "codex-subagent:/root/sg1_formal_accept_f119",
+      "conclusion": "PASS",
+      "note": "7/7 hard gates 通过。"
+    },
+    {
+      "role": "Strict Judge",
+      "identity": "codex-subagent:/root/sg1_formal_accept_f119",
+      "conclusion": "PASS",
+      "note": "98/100；无 P0/P1，两个 P2 不阻断包级验收。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "identity": "codex-subagent:/root/sg1_formal_accept_f119",
+      "conclusion": "PASS",
+      "note": "无模板漂移、空泛声明、无证据完成宣告或范围膨胀。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "identity": "codex-subagent:/root/sg1_formal_accept_f119",
+      "conclusion": "PASS",
+      "note": "只放行 SG-1 package acceptance Result 固化与程序状态收敛；不放行 user-signoff、formal、V2、V4 或 P5 完成。"
+    }
+  ],
+  "reviewed_at": "2026-08-26T04:34:46Z"
+}
