@@ -2728,3 +2728,23 @@
 - 本轮不改代码、Schema、测试、依赖、review artifact 或 formal/control refs；formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control=`1ac071b0087514390238381fa71cc4b4182983bc`、`plan_generation=5` 保持不变。
 - `git diff --check` 待后续与 fresh `pnpm check` 一并执行；本修复不单独宣称门禁通过，只证明 CR-006 详细状态文档不再残留 `main=813e9fd` 的 current-state 漂移。
 - 本修复不创建 V2 packet，不关闭 CR-006，不移动 formal，不宣称 PC-12/PC-19/V2/V4/P5 或真实运行 3/3 完成。
+
+## 2026-08-26 CR-006 后 V2 entry attempt 3 PASS 状态同步验证
+
+### 固定输入与结论
+
+- 固定父提交=`bd78c043d6e16da3debadcd7c7395c31624a33ac`，tree=`1509a2172cdf72bb40f40eab62dbdf793fb45965`，formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`1ac071b0087514390238381fa71cc4b4182983bc`。
+- attempt 3 独立结论=`PASS / 100`、P0/P1/P2=`0/0/0`、`required_fixes=[]`；fresh `pnpm check`=`503/503`，fail/skip/cancel/todo=`0/0/0/0`，coverage Lines/Branches/Functions=`93.53/88.69/99.22`。
+- attempt 2 review=`cb28627c9ddcbf231d40b55880753495e141b88f`，其 reviewer 同时创作被审尾差 subject=`ccc182e484e07300b517fd371ecb327367754c6e`，因此违反独立角色分离并被 attempt 3 标记为 invalid/superseded；首次 `REVISE / 88` 与该程序异常均按历史保留。
+- cumulative 结论仍为 `PASS / 97`、P0/P1/P2=`0/0/3`；SG-1 两项 P2、SG-2 一项 P2、SG-3 两条边界、真实运行 `0/3` 与 `change_request_closed=false` 没有被 attempt 3 清零或改写。
+
+### 范围与门禁
+
+- 九份状态入口同步为 attempt 3 PASS；live main 仍要求运行时解析，不写入本状态同步提交自身 SHA。
+- control 中没有 V2 packet/control state。下一唯一动作只是形成并请求 `V2/S2.1 attempt 1` Execution Packet control CAS 的精确用户授权；未固定或创建任何新 packet 路径、摘要、claim/fence、dispatch 或实现对象。
+- 本轮不执行 packet CAS、claim/fence、dispatch、编码，不移动 formal，不关闭 CR-006，不替用户 signoff，也不宣称 PC-12/PC-19/V2/V4/P5 或真实运行 3/3 完成。
+- CodeGraph 未初始化且路线锁要求初始化前询问；采用 P3/P4/P5 真源、既有 control packet 与 `rg`/定向文件树替代。新 explorer 因 thread limit 未能派发，由主控只读探索替代，未扩大 exact-11 白名单。
+- 本候选只修改 Markdown 状态/留痕，不重复运行产品测试；`503/503` 与 coverage 明确引用 attempt 3 已核定的 fresh 结果。
+- `git diff --check`：通过；差异路径严格为 exact-11。九份状态入口对旧 `reassessment-revise/pending`、等待修复后再次复评等当前停点反扫无命中；十一份新增差异对 `change_request_closed=true`、V2 packet 已创建、formal 已移动、PC-12/PC-19/V2/V4/P5/真实运行 3/3 已完成反扫无命中。
+- 提交前身份：HEAD=`bd78c043d6e16da3debadcd7c7395c31624a33ac`、formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control=`1ac071b0087514390238381fa71cc4b4182983bc`；受保护文件未出现在差异路径中。
+- 用户改动保护：未读取、修改、暂存或清理受保护 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`；未移动 refs、未 push。

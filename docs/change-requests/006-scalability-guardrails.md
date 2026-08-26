@@ -1,6 +1,6 @@
 # 可承受性护栏：复杂度预算、状态投影与真实项目价值验证
 
-- 状态：cumulative-gate-passed-v2-entry-reassessment-pending（`change_request_closed=false`；SG-3 前序 attempt 1 contract-revision 历史只读保留）
+- 状态：cumulative-gate-passed-v2-entry-reassessment-pass（`change_request_closed=false`；SG-3 前序 attempt 1 contract-revision 历史只读保留）
 - 记录日期：2026-08-25
 - 来源：V1 完成后的项目分析与用户对工作膨胀风险的明确反馈
 - 所属阶段：P5 / 跨版本可承受性护栏
@@ -21,7 +21,7 @@ V1 已证明 NextStep 的可靠性内核和证据链可以运行，但控制提�
 - 是否改变当前路线：否。保持 `P5-M0 -> V1 -> V2 -> V3 -> V4 -> Final Acceptance`，不新增产品版本，不改变 PC 主版本归属、技术栈、主载体、正式提升或验收门禁；但本 CR 新增计划范围、任务和 DoD，必须按 P4/S4 把 `plan_generation` 从 4 单向推进到 5。
 - 是否影响当前阶段出口：不替代任何既有出口。三个护栏任务包通过，只证明可承受性工具和验证框架可用。
 - 是否需要更新 `PROJECT_ROUTE_LOCK.md`：不改变路线结构，但必须同步当前阶段、代际缺口和授权停点；本 replacement 已更新路线锁的状态字段。若实施发现必须改变 PC、数据模型、正式 ref、控制协议或门禁，再停止并另开 Change Request。
-- 与当前入口的关系：V1 仍为 formally-completed。SG-1、SG-2、SG-3 的 generation 5 package gate 与 cumulative gate 均已通过；累计结论只关闭 cumulative gate，不自动关闭 CR-006。SG-3 包级状态精确为“真实项目价值验证框架可用，真实运行 0/3”，前序 attempt 1 因契约歧义在 RED 前停止且无候选的历史只读保留。下一唯一动作是基于本状态同步合入后的最新 main/control 做独立 V2 entry reassessment；该复评本身不创建或授权 V2 首个产品 packet。
+- 与当前入口的关系：V1 仍为 formally-completed。SG-1、SG-2、SG-3 的 generation 5 package gate 与 cumulative gate 均已通过；累计结论只关闭 cumulative gate，不自动关闭 CR-006。SG-3 包级状态精确为“真实项目价值验证框架可用，真实运行 0/3”，前序 attempt 1 因契约歧义在 RED 前停止且无候选的历史只读保留。V2 entry attempt 3 已独立 `PASS / 100`；下一唯一动作只是形成并请求 `V2/S2.1 attempt 1` Execution Packet control CAS 的精确用户授权，该 PASS 本身不创建或授权 V2 首个产品 packet。
 
 ### 2.1 控制代际影响
 
@@ -115,5 +115,6 @@ V1 已证明 NextStep 的可靠性内核和证据链可以运行，但控制提�
 - cumulative replacement review=`813e9fd5240b1af6413a274daa7e307757bbb246`（旧 `dbb1c2d` 因未来 `reviewed_at` 废弃），`PASS / 97`，P0/P1/P2=`0/0/3`；Result control=`1ac071b0087514390238381fa71cc4b4182983bc`，digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。
 - cumulative fresh 验证=`503/503`，coverage Lines/Branches/Functions=`93.50/88.62/99.22`，预算超限、状态冲突/过期、synthetic 冒充 real 三个固定负例通过。
 - carry-forward：SG-1 两项 P2（RED 原始终端 transcript 未内容寻址固化、main 曾在正式 Result 前提前 cherry-pick）、SG-2 一项 P2（RED 原始终端 transcript 未独立固化）与 SG-3 两条边界（不抵抗恶意磁盘整体重写、真实运行仍为 0/3）继续保留。
-- 当前控制身份：`accepted_subject_main=37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa`、`cumulative_review_commit=813e9fd5240b1af6413a274daa7e307757bbb246`、`cumulative_state_sync_commit=7274c03fbb6e7ee11dc7f24690a2af50ed76169a`、`first_reassessment_review_commit=7a579dd1f08ec65e916e509863846d99f143c9d5`；live main 必须在运行时通过 `git rev-parse refs/heads/main` 解析。formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`。
-- 当前下一动作：不改变三个任务包、路径、规模上限、DoD 或 `plan_generation=5`；下一唯一允许动作是基于本状态同步合入后的最新 main/control 做独立 V2 entry reassessment。该复评本身不创建 V2 packet，不移动 formal，不替用户 signoff，也不宣称 PC-12/PC-19/V2/V4/P5 或真实运行 3/3 完成。
+- 当前控制身份：`accepted_subject_main=37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa`、`cumulative_review_commit=813e9fd5240b1af6413a274daa7e307757bbb246`、`cumulative_state_sync_commit=7274c03fbb6e7ee11dc7f24690a2af50ed76169a`、`first_reassessment_review_commit=7a579dd1f08ec65e916e509863846d99f143c9d5`、`v2_entry_attempt3_review_commit=bd78c043d6e16da3debadcd7c7395c31624a33ac`；live main 必须在运行时通过 `git rev-parse refs/heads/main` 解析。formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`。
+- V2 entry 复评链：首次复评=`REVISE / 88`；attempt 2 review=`cb28627c9ddcbf231d40b55880753495e141b88f` 因同一 reviewer 创作被审尾差 subject=`ccc182e484e07300b517fd371ecb327367754c6e` 后自审而程序失效；独立 attempt 3 review=`bd78c043d6e16da3debadcd7c7395c31624a33ac`、tree=`1509a2172cdf72bb40f40eab62dbdf793fb45965`，`PASS / 100`、P0/P1/P2=`0/0/0`，fresh `503/503`、fail/skip/cancel/todo=`0/0/0/0`、coverage=`93.53/88.69/99.22`，supersede attempt 2。
+- 当前下一动作：不改变三个任务包、路径、规模上限、DoD 或 `plan_generation=5`；当前没有 V2 packet/control state，下一唯一允许动作只是形成并请求 `V2/S2.1 attempt 1` Execution Packet control CAS 的精确用户授权。不得据此执行 CAS、claim/fence、dispatch、编码，不移动 formal，不替用户 signoff，也不宣称 CR-006 已关闭或 PC-12/PC-19/V2/V4/P5/真实运行 3/3 完成。

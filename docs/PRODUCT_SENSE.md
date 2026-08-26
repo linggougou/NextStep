@@ -71,9 +71,9 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 
 ## 当前阶段
 
-- 当前里程碑：P5 / CR-006 cumulative gate 已通过；首次 V2 entry reassessment=`REVISE / 88`，等待状态真源修复后的再次独立复评
+- 当前里程碑：P5 / CR-006 cumulative gate 已通过；V2 entry reassessment attempt 3=`PASS / 100`；首个 V2 产品 packet 尚未授权
 - 当前生命周期阶段：S5 开发落地
-- 当前状态：V1 已 formally-completed；`accepted_subject_main=37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa`、`cumulative_review_commit=813e9fd5240b1af6413a274daa7e307757bbb246`、`cumulative_state_sync_commit=7274c03fbb6e7ee11dc7f24690a2af50ed76169a`、`first_reassessment_review_commit=7a579dd1f08ec65e916e509863846d99f143c9d5`；live main 只能运行时通过 `git rev-parse refs/heads/main` 解析。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`。CR-006 cumulative 结论 `PASS / 97`、P0/P1/P2=`0/0/3`，Result digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。累计历史测量=`503/503`、coverage `93.50/88.62/99.22`；首次复评 snapshot=`503/503`、`93.48/88.59/99.22`，主线复跑 snapshot=`503/503`、`93.53/88.69/99.22`；current gate 仅固定零失败且 coverage 各维度 `>=80%`，live 百分比须 fresh 生成。SG-1 两项 P2、SG-2 一项 P2 与 SG-3 两条边界继续保留，精确状态为“真实项目价值验证框架可用，真实运行 0/3”。`change_request_closed=false`；修复合入后下一唯一允许动作是再次独立 V2 entry reassessment，该复评本身不创建 V2 packet。formal 不移动，PC-12/PC-19/V2/V4/P5/真实运行 3/3 均未完成。
+- 当前状态：V1 已 formally-completed；`accepted_subject_main=37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa`、`cumulative_review_commit=813e9fd5240b1af6413a274daa7e307757bbb246`、`cumulative_state_sync_commit=7274c03fbb6e7ee11dc7f24690a2af50ed76169a`、`first_reassessment_review_commit=7a579dd1f08ec65e916e509863846d99f143c9d5`、`v2_entry_attempt3_review_commit=bd78c043d6e16da3debadcd7c7395c31624a33ac`；live main 只能运行时通过 `git rev-parse refs/heads/main` 解析。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`。CR-006 cumulative 结论 `PASS / 97`、P0/P1/P2=`0/0/3`，Result digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`，相关 carry-forward 风险与“真实运行 0/3”继续保留。attempt 3 独立复评=`PASS / 100`、P0/P1/P2=`0/0/0`，fresh `503/503`、零失败/跳过/取消/todo、coverage `93.53/88.69/99.22`；attempt 2 因 reviewer-authored subject 后自审而 invalid/superseded。`change_request_closed=false`，无 V2 packet/control state；下一唯一动作只是形成并请求 `V2/S2.1 attempt 1` Execution Packet control CAS 的精确用户授权。formal 不移动，PC-12/PC-19/V2/V4/P5/真实运行 3/3 均未完成。
 - 当前正式状态、边界和下一入口以 `PROJECT_ROUTE_LOCK.md` 与 `docs/PLANS.md` 为准；若与本页摘要冲突，以两者为准。
 
 ## S3 已会签交付物
@@ -95,4 +95,4 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 - P5 主路线活动计划：`docs/exec-plans/active/p5-product-implementation-milestones.md`，V1 已 formally-completed，V2 入口评估已通过，但首个产品 packet 尚未授权
 - P5 可承受性护栏计划：`docs/exec-plans/active/p5-scalability-guardrails.md`，三个互斥 SG package gate 与 cumulative gate 均已通过，但 CR-006 未自动关闭，也不提前满足 PC-12、PC-19、V2 或 V4
 - P3 版本与里程碑拆解：`docs/exec-plans/completed/p3-version-and-milestone-breakdown.md`，已会签并归档
-- 当前变更入口：`docs/change-requests/006-scalability-guardrails.md`，状态为 `cumulative-gate-passed-v2-entry-reassessment-revise`；`change_request_closed=false`，首次复评 `REVISE / 88`，修复后下一唯一入口为再次独立 V2 entry reassessment，且复评不创建 V2 packet；CR-005 已完成并关闭，SG-3 前序 contract-revision 历史保留
+- 当前变更入口：`docs/change-requests/006-scalability-guardrails.md`，状态为 `cumulative-gate-passed-v2-entry-reassessment-pass`；`change_request_closed=false`，attempt 3 独立 `PASS / 100`，下一唯一入口为形成并请求 `V2/S2.1 attempt 1` packet CAS 精确授权；CR-005 已完成并关闭，SG-3 前序 contract-revision 与 V2 entry attempt 1/2 历史保留

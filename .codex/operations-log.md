@@ -2755,3 +2755,16 @@
 - 修复内容：把该行改为 `accepted_subject_main`、`cumulative_review_commit`、`cumulative_state_sync_commit`、`first_reassessment_review_commit` 四项历史固定身份，并明确 live `main` 必须运行时 `git rev-parse refs/heads/main` 解析；formal/control/plan_generation 保持原值。
 - 验证边界：本轮只做文档状态收口，后续仍需 fresh `pnpm check` 和新的独立 V2 entry reassessment 才能形成门禁结论；本修复本身不创建 V2 packet，不关闭 CR-006，不移动 formal，也不宣称 PC-12/PC-19/V2/V4/P5 或真实运行 3/3 完成。
 - 用户改动保护：未读取、修改、暂存或清理受保护 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`；未移动 refs、未 push。
+
+## 2026-08-26 CR-006 后 V2 entry attempt 3 PASS 状态同步
+
+- 任务边界：主控分派的 L2 状态真源同步；专属 worktree=`/Users/ling/.codex/worktrees/v2-entry-pass-a3-state-sync`，固定单父基线=`bd78c043d6e16da3debadcd7c7395c31624a33ac`、tree=`1509a2172cdf72bb40f40eab62dbdf793fb45965`。写集最多 exact-11，只涉及九份状态文档和两份 `.codex` 留痕；不改代码、Schema、测试、依赖、review artifact 或 refs。
+- 路线与生命周期：继续为 `S5 / P5 产品落地`。本轮只同步独立复评结论，不是 V2 packet 创建、CR 关闭、阶段切换、路线变更或正式提升。
+- 固定身份：formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control=`1ac071b0087514390238381fa71cc4b4182983bc`、`plan_generation=5`；live main 继续由 `git rev-parse refs/heads/main` 运行时解析，避免状态同步提交自引用。
+- 复评链：首次复评=`REVISE / 88`，继续作为历史保留。attempt 2 review=`cb28627c9ddcbf231d40b55880753495e141b88f` 因同一 reviewer 自行创作被审尾差 subject=`ccc182e484e07300b517fd371ecb327367754c6e` 后自审，违反角色分离，程序上 invalid/superseded；该异常只影响放行证据有效性，不夸大为产品安全漏洞。独立 attempt 3 review=`bd78c043...` 已 supersede attempt 2，结论=`PASS / 100`、P0/P1/P2=`0/0/0`、`required_fixes=[]`。
+- 质量事实：attempt 3 fresh `pnpm check` 为 `503/503`，fail/skip/cancel/todo=`0/0/0/0`，coverage Lines/Branches/Functions=`93.53/88.69/99.22`。本轮只同步既有核定证据，不重复运行产品测试。
+- 风险与边界：cumulative 仍为 `PASS / 97`、P0/P1/P2=`0/0/3`，SG-1 两项 P2、SG-2 一项 P2、SG-3 两条边界及真实运行 `0/3` 均保留；`change_request_closed=false`。control 中无 V2 packet/control state。
+- 下一入口：只允许形成并请求 `V2/S2.1 attempt 1` Execution Packet control CAS 的精确用户授权。本同步不创建或执行 packet CAS、claim/fence、dispatch、编码，不移动 formal，不替用户 signoff，也不宣称 CR-006、PC-12、PC-19、V2、V4、P5 或真实运行 3/3 完成。
+- 工具替代：S2.1 精确授权字段探索触发 CodeGraph 结构检索，但项目 `.codegraph/` 未初始化且路线锁明确初始化“需询问”，本轮未擅自初始化；改用 P3/P4/P5 真源、control 中既有 packet 和 `rg`/定向文件树只读核对。新 explorer 因 thread limit 未能派发，由主控只读探索替代；未扩大本状态同步写集。
+- 验证：`git diff --check` 通过；写集严格为 exact-11；九份状态入口旧 pending/revise 当前停点反扫、十一份差异新增行提前完成声明反扫及受保护文件差异反扫均无命中。提交前 HEAD/formal/control 分别保持 `bd78c043...` / `ea04b57...` / `1ac071b...`。
+- 用户改动保护：未读取、修改、暂存或清理受保护 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`；未移动 refs、未 push。
