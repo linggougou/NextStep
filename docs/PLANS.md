@@ -4,8 +4,8 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：CR-006 SG-3 packet preparation gate；V2 产品 packet 暂停在入口评估通过状态
-- 当前状态：main=`7162c30d8a39a17fcee19b144ce4cc07fcf12d26`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`b2f2b8ca7cab05647c27e35a5e123a09fe39ff00`，`plan_generation=5`。SG-1 已正式验收 `PASS / 98`；SG-2 implementation attempt 2 原始候选 `989ba2f` 已以 `b79c991` 合入，attempt 7 原始评审 `f359f68`=`PASS / 99` 已以 `7162c30` 合入，Result=`sha256:83fd993d...`。当前仅准备 SG-3 独立 packet；CR-006 累积验收与 V2 packet 未创建。
+- 当前活动里程碑：CR-006 SG-3 契约澄清替代候选独立复审门禁；V2 产品 packet 暂停在入口评估通过状态
+- 当前状态：main=`826b415424acbe3d52b3f9207d5ec6ec26795537`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`b1fceab03b48e901f32912091c008e8687d1b91b`，`plan_generation=5`。SG-1、SG-2 已通过包级正式独立验收。SG-3 attempt 1 Result=`sha256:cd907ffff7cd509bd2744ee2da6fedfa2e70cf42e683d017bc8626d469695199`，结论 `contract-revision-required`，未执行 RED、无候选；契约澄清候选 `64fcee4` 首次独立评审=`REVISE / 80`，唯一 P1 是最高优先级状态源仍指向旧的未分 attempt packet 门禁。当前只允许对包含本状态同步的澄清替代候选做独立复审；仅 PASS 后才允许 corrected attempt 2 的 new packet/new fence 130/new worker，禁止复用 attempt 1 packet/claim/ACK/drafts。CR-006 累积验收与 V2 packet 未创建，formal 未移动，P5 未完成。
 
 ## 当前活动计划
 
@@ -28,7 +28,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。V2 入口独立评估已 `PASS / 100`。CR-006 SG-1、SG-2 已通过正式独立验收，当前进入 SG-3 packet preparation gate；CR-006 累积验收与 V2 产品 packet 保持暂停，SG-2 不等于 PC-12，P5 尚未完成。
+P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。V2 入口独立评估已 `PASS / 100`。CR-006 SG-1、SG-2 已通过正式独立验收；SG-3 attempt 1 已以 `contract-revision-required` 收口。当前处于 SG-3 契约澄清替代候选独立复审门禁，复审 PASS 前 fail closed，不得创建 corrected attempt 2。CR-006 累积验收与 V2 产品 packet 保持暂停，SG-2 不等于 PC-12，P5 尚未完成。
 
 实施顺序保持 P3 已会签结构：
 

@@ -2700,3 +2700,13 @@
 - 范围判断：上述内容是对原 SG-3 的机械化，不新增任务、文件、指标、DoD、依赖或运行能力，不 bump `plan_generation=5`。
 - 下一入口：只允许 corrected SG-3 attempt 2 packet，使用新 fence 与唯一新 worker；不得复用 attempt 1 fence/worker，不宣称 SG-3、PC-19、V2 或 P5 完成。
 - 用户改动保护：未读取、修改、暂存或清理受保护 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`。
+
+## 2026-08-26 SG-3 契约澄清首次复审 P1 状态同步
+
+- 固定基线：专属 worktree HEAD=`64fcee476bcfa51a7d68fabb34f2845d75cf8eb2`；本轮只修改路线锁、PLANS、PRODUCT_SENSE、Change Request 索引与两份 `.codex` 留痕 exact-6，不改已澄清 CR/design/active-plan 正文。
+- 控制事实：SG-3 attempt 1 immutable Result=`sha256:cd907ffff7cd509bd2744ee2da6fedfa2e70cf42e683d017bc8626d469695199`，control=`b1fceab03b48e901f32912091c008e8687d1b91b`，结论=`contract-revision-required`；没有执行 RED，没有实现候选。
+- 复审事实：契约澄清候选 `64fcee4` 已关闭原四个 P1；首次独立评审=`REVISE / 80`，唯一 P1 是最高优先级状态源仍停留在未分 attempt 的 packet 门禁。
+- 修复：四份最高优先级摘要统一为 SG-3 契约澄清替代候选独立复审门禁。当前 fail closed，必须先复审本状态同步后的替代候选；仅 PASS 后才允许 corrected attempt 2 的 new packet/new fence 130/new worker。
+- 禁止复用：attempt 1 packet、claim、ACK 和 drafts 全部保持历史，只读且不得作为 attempt 2 输入身份复用。
+- 未授权：CR-006 累积验收、V2 packet、formal movement 与 P5 completion 均未授权；本轮未编码、未写控制面、未改 Git refs、未推送。
+- 用户改动保护：未读取、修改、暂存或清理 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`。

@@ -13,7 +13,7 @@
 
 ## 已接受待实施变更
 
-- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：SG-1 已实现并通过正式独立验收 `PASS / 98`；当前准备 SG-2 packet，SG-3、累积验收与 V2 packet 均未创建。
+- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：SG-1、SG-2 已通过包级正式独立验收；SG-3 attempt 1 Result=`sha256:cd907ffff7cd509bd2744ee2da6fedfa2e70cf42e683d017bc8626d469695199`、control=`b1fceab03b48e901f32912091c008e8687d1b91b`，结论 `contract-revision-required`，无 RED、无候选。澄清候选 `64fcee4` 首次独立评审 `REVISE / 80`；当前只允许替代候选独立复审，PASS 后方可 new packet/new fence 130/new worker 启动 attempt 2。累积验收与 V2 packet 均未创建。
 
 ## 分流规则
 

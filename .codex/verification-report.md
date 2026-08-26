@@ -2629,3 +2629,20 @@
 - 禁止复合枚举旧措辞反扫：三份 SG-3 真源中无命中。
 - 写集检查：提交前 `git diff --name-only` 仅列出上述五个允许文件。
 - 本轮仅做文档契约机械澄清，没有产品代码变化，因此不重复运行 `pnpm check`；后续 attempt 2 仍必须从可复现 RED 开始并执行定向及全量检查。
+
+# 2026-08-26 SG-3 契约澄清状态同步验证
+
+## 身份与门禁
+
+- 单父基线必须为 `64fcee476bcfa51a7d68fabb34f2845d75cf8eb2`；状态同步前工作树 clean。
+- attempt 1 Result/control 精确绑定为 `sha256:cd907ffff7cd509bd2744ee2da6fedfa2e70cf42e683d017bc8626d469695199` / `b1fceab03b48e901f32912091c008e8687d1b91b`，结论 `contract-revision-required`、无 RED、无候选。
+- `64fcee4` 首次独立评审 `REVISE / 80` 的唯一 P1 已由 exact-6 状态同步承接；没有改动已澄清 CR/design/active-plan 正文。
+- 当前入口在路线锁、PLANS、PRODUCT_SENSE 与 CR index 中一致：先独立复审包含状态同步的澄清替代候选；PASS 前不得创建 corrected attempt 2。
+- PASS 后入口仍限制为 new packet/new fence 130/new worker，明确禁止复用 attempt 1 packet/claim/ACK/drafts。
+- 非完成反扫：CR-006 累积验收、V2 packet、formal movement、SG-3/P5 completion 均未获授权或提前宣告。
+
+## 验证方式
+
+- `git diff --check`：通过。
+- 提交前写集严格等于 `PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md`、`docs/PRODUCT_SENSE.md`、`docs/change-requests/index.md`、`.codex/operations-log.md`、`.codex/verification-report.md`。
+- 本轮仅同步状态摘要与留痕，不修改代码、Schema、测试或依赖，因此不重复运行 `pnpm check`；corrected attempt 2 仍须从 fresh RED 开始。
