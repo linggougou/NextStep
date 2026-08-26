@@ -141,7 +141,7 @@ function selectCurrentTask(
     const attempt = integer(raw, "task_attempt");
     const status = text(raw, "status");
     if (!task || !stage || attempt === null || checkpoint.highest_task_attempts[task] !== attempt) continue;
-    if (!SAFE_ID.test(task) || !SAFE_ID.test(stage) || !status || !KNOWN_STATUSES.has(status)) return "unknown-status";
+    if (!SAFE_ID.test(task) || !SAFE_ID.test(stage) || !status) return "unknown-status";
     if (identities.has(task)) return "highest-identity-conflict";
     const updatedAt = Date.parse(text(raw, "updated_at") ?? "");
     if (!Number.isFinite(updatedAt)) return "highest-identity-conflict";
@@ -154,7 +154,9 @@ function selectCurrentTask(
   const ordered = [...identities.values()].sort((left, right) => right.updatedAt - left.updatedAt);
   if (ordered.length === 0) return null;
   if (ordered[1]?.updatedAt === ordered[0]?.updatedAt) return "highest-identity-conflict";
-  return ordered[0] ?? null;
+  const current = ordered[0];
+  if (!current) return null;
+  return KNOWN_STATUSES.has(current.status) ? current : "unknown-status";
 }
 
 export function projectProjectStatus(source: ProjectStatusSource): ProjectStatusProjection {

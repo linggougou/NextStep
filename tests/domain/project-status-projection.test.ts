@@ -109,6 +109,30 @@ test("结构化 next action 含 claim 或 fence 时不脱敏猜测，直接 fail
   }
 });
 
+test("较旧 sibling 的未知状态不抢先污染更新的当前任务", async () => {
+  const input: any = await source();
+  const olderSibling = structuredClone(input.registry.tasks[2]);
+  olderSibling.status = "acceptance-dispatch-aborted";
+  olderSibling.updated_at = "2026-08-26T06:15:20Z";
+
+  const currentTask = structuredClone(input.registry.tasks[2]);
+  currentTask.stage_id = "P5/CR-006/SG-2/acceptance";
+  currentTask.task_id = "SG-2-I-X-P";
+  currentTask.task_attempt = 5;
+  currentTask.status = "running";
+  currentTask.updated_at = "2026-08-26T06:30:00Z";
+
+  input.checkpoint.highest_task_attempts = { "SG-2": 1, "SG-2-I-X-P": 5 };
+  input.checkpoint.next_stage = "SG-2-I-X-P generation 5 attempt 5 running under fence 125; claim hidden and inspect /Volumes/private/project";
+  input.registry.tasks = [olderSibling, currentTask];
+
+  const projection = projectProjectStatus(input);
+  assert.equal(projection.status, "unavailable");
+  assert.equal(projection.next_action, null);
+  assert.deepEqual(projection.unavailable_reasons, ["next-action-sensitive"]);
+  assert.doesNotMatch(canonicalizeJson(projection), /claim|fence|Volumes|private\/project/);
+});
+
 test("未知 freshness 不凭文件年龄猜过期", async () => {
   const input: any = await source();
   delete input.registry.tasks[2].dispatch_claim;
