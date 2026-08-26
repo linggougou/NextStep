@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nextstep.local/schemas/v1/project-value-run.schema.json",
+  "title": "NextStep Project Value Run Batch 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "runs"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "runs": { "type": "array", "items": { "$ref": "#/definitions/run" } }
+  },
+  "definitions": {
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "reference": {
+      "anyOf": [
+        { "type": "string", "minLength": 1 },
+        { "type": "null" }
+      ]
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "time_to_first_frozen_requirement_seconds",
+        "user_intervention_count",
+        "false_block_count",
+        "false_block_evidence_refs",
+        "recovery_seconds",
+        "outcome"
+      ],
+      "properties": {
+        "time_to_first_frozen_requirement_seconds": {
+          "anyOf": [{ "type": "number", "minimum": 0 }, { "type": "null" }]
+        },
+        "user_intervention_count": { "type": "integer", "minimum": 0 },
+        "false_block_count": {
+          "anyOf": [{ "type": "integer", "minimum": 0 }, { "type": "null" }]
+        },
+        "false_block_evidence_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "recovery_seconds": {
+          "type": "array",
+          "items": { "type": "number", "minimum": 0 }
+        },
+        "outcome": { "enum": ["completed", "abandoned", "blocked"] }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "false_block_count": { "type": "null" } } },
+          "then": {
+            "properties": { "false_block_evidence_refs": { "type": "array", "maxItems": 0 } }
+          },
+          "else": {
+            "properties": { "false_block_evidence_refs": { "type": "array", "minItems": 1 } }
+          }
+        }
+      ]
+    },
+    "confirmation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["confirmed", "confirmation_ref"],
+      "properties": {
+        "confirmed": { "type": "boolean" },
+        "confirmation_ref": { "$ref": "#/definitions/reference" }
+      }
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "run_id",
+        "run_kind",
+        "collection_mode",
+        "project_origin",
+        "project_identity",
+        "evidence_digest",
+        "evidence_binding_digest",
+        "user_authorization_ref",
+        "started_at",
+        "ended_at",
+        "used_nextstep",
+        "metrics",
+        "user_confirmation"
+      ],
+      "properties": {
+        "schema_version": { "const": "1.0" },
+        "run_id": { "type": "string", "minLength": 1 },
+        "run_kind": { "enum": ["real", "synthetic"] },
+        "collection_mode": { "enum": ["prospective", "retrospective"] },
+        "project_origin": {
+          "enum": ["external-user-project", "nextstep-self", "nextstep-derived"]
+        },
+        "project_identity": { "$ref": "#/definitions/digest" },
+        "evidence_digest": { "$ref": "#/definitions/digest" },
+        "evidence_binding_digest": { "$ref": "#/definitions/digest" },
+        "user_authorization_ref": { "$ref": "#/definitions/reference" },
+        "started_at": { "type": "string", "minLength": 1 },
+        "ended_at": { "type": "string", "minLength": 1 },
+        "used_nextstep": { "type": "boolean" },
+        "metrics": { "$ref": "#/definitions/metrics" },
+        "user_confirmation": { "$ref": "#/definitions/confirmation" }
+      }
+    }
+  }
+}
