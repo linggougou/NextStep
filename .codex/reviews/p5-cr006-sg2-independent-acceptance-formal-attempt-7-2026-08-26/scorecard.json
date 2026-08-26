@@ -1,0 +1,187 @@
+{
+  "review_id": "p5-cr006-sg2-independent-acceptance-formal-g5-a7-f128-20260826",
+  "task_id": "SG-2-I-X-P",
+  "lane": "package-acceptance",
+  "review_level": "L3",
+  "rubric_id": "p5-cr006-sg2-package-acceptance-v2",
+  "artifact_refs": [
+    "git:989ba2fcd75f0466239e1957c880e6a0ce4b1b83",
+    "git-tree:18de6e08c8617961e0c710d74e86e35193e203a6",
+    "git-parent:8842e025088ba6a217fa098c82d788a5d603ef3d",
+    "control:57bf49c7ca65828c0002553ec80412238c42943f:gate-requests/gate-package-acceptance-sg2-g5-a7-20260826.json",
+    "control:5d7da2782179ab185fc3ac09735acd0bc6cbadbe",
+    "control:16738fc1de1db9c59fd8777c004bdf178f8e3fde",
+    "control:2c1bb7d265a2a7309eb385f2ef0070dc88617721",
+    "formal:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "control:57bf49c7ca65828c0002553ec80412238c42943f:messages/msg-dispatch-ack-sg2-ixp-g5-a7-f128-20260826.json",
+    "result:results/result-execution-sg2-g5-a2-f126-20260826.json",
+    "result:results/result-package-acceptance-sg2-g5-a6-f127-20260826.json"
+  ],
+  "subject_identity": {
+    "commit_oid": "989ba2fcd75f0466239e1957c880e6a0ce4b1b83",
+    "tree_oid": "18de6e08c8617961e0c710d74e86e35193e203a6",
+    "parent_oid": "8842e025088ba6a217fa098c82d788a5d603ef3d",
+    "subject_digest": "sha256:54a7bb97c2f8cf1459ac6362312ac85695fa7b629334c55829aaa00d213e567d"
+  },
+  "control_identity": {
+    "packet_digest": "sha256:f58f4a616e1665562aacc4e244801b56a1544c5b5433c148b0adc5db88bb48c2",
+    "dedup_key": "sha256:e9ebe4af95981d5fe67425a58fdc3895d9400e223ad86e5201640ce76f5bb9d6",
+    "claim_id": "claim-sg2-ixp-g5-a7-f128-20260826",
+    "fence_token": 128,
+    "dispatch_ack_control_oid": "57bf49c7ca65828c0002553ec80412238c42943f",
+    "host_task_id": "codex-subagent:/root/sg2_accept_g5_a7_f128",
+    "formal_oid": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "plan_generation": 5
+  },
+  "hard_gates": [
+    {
+      "id": "HG0-attempt6-environment-only",
+      "status": "pass",
+      "evidence": "attempt6 Result 固定为 outcome=revision-required-environment，required_fixes 仅要求主控在 ACK 前预置 offline frozen install 并重跑 targeted/full/live smoke，明确 candidate_change_required=false；本次 ACK 记录 environment_precondition_status=passed-before-ack。"
+    },
+    {
+      "id": "HG1-control-identity",
+      "status": "pass",
+      "evidence": "独立重算 packet=sha256:f58f4a61...、dedup=sha256:e9ebe4af...、subject=sha256:54a7bb97...、execution Result=sha256:7fede586...、attempt6 Result=sha256:8e79a764...，均与控制对象一致；控制链 d403cfa -> 5d7da27 -> 16738fc -> 2c1bb7d -> 57bf49c 为逐段单父链，fence=128、claim 与 ACK 精确匹配。"
+    },
+    {
+      "id": "HG2-clone-isolation-and-preprovision",
+      "status": "pass",
+      "evidence": "验收 clone 无 remote、无 alternates，node_modules 为本地目录非 symlink，pnpm exec tsc --version=7.0.2；formal/control 在验证前后均保持 ea04b57 / 57bf49c 不变。"
+    },
+    {
+      "id": "HG3-subject-and-allowlist",
+      "status": "pass",
+      "evidence": "cat-file/diff 证实 subject=989ba2f/tree=18de6e0/parent=8842e02；相对 parent 的真实变更精确为 src/domain/project-status-projection.ts 与 tests/domain/project-status-projection.test.ts 两条允许路径；未读取受保护 Multica 文件。"
+    },
+    {
+      "id": "HG4-targeted-and-full-verification",
+      "status": "pass",
+      "evidence": "定向 build + node --test 为 16/16；full corepack pnpm check 为 discovered=494、pass=494、fail/skip/cancel/todo=0/0/0/0；coverage Lines/Branches/Functions=93.44/88.38/99.19；git diff --check 通过。"
+    },
+    {
+      "id": "HG5-live-shaped-smoke",
+      "status": "pass",
+      "evidence": "基于当前 ACK control 形状构造的 live-shaped 临时仓库中，精确 identity + 敏感 next_stage 返回 unavailable + next_action=null + reason=next-action-sensitive，stdout/stderr 不泄漏 claim/fence/绝对路径；被选中的当前任务状态设为 acceptance-dispatch-aborted 时返回 unknown-status fail closed。"
+    },
+    {
+      "id": "HG6-read-only-boundary-and-non-overclaim",
+      "status": "pass",
+      "evidence": "生产 adapter 仅使用 for-each-ref、rev-list、rev-parse 与 cat-file 读取 formal/control/blob；源码与测试均无 checkout/fetch/commit/update-ref/cache/Markdown scan/write path/新依赖；候选与评审均未宣称 PC-12、V2、P5、full host 或 formal promotion 完成。"
+    },
+    {
+      "id": "HG7-budget-and-dependencies",
+      "status": "pass",
+      "evidence": "Schema+生产共 4 文件/442 行（78+107+36+221），测试 3 文件/413 行，fixture 1 文件/71 行，tests+fixture 合计 484 行；package.json/pnpm-lock/tsconfig 无变化，新增依赖 0。"
+    },
+    {
+      "id": "HG8-output-boundary",
+      "status": "pass",
+      "evidence": "本回执仅写入 packet 指定目录下 scorecard.json 与 verdict.md 两个文件；review commit 唯一父提交固定为 989ba2f，未生成 Result/control 状态，也未修改 formal/main。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "identity-and-control-provenance",
+      "score": 24,
+      "max_score": 25,
+      "reason": "packet、dedup、subject、execution/attempt6 Result 与 packet->claim->ready->ACK 身份全部闭合；唯一扣分是 RED 原始终端输出仍未以独立 immutable transcript 固化。",
+      "evidence_refs": [
+        "control:57bf49c7ca65828c0002553ec80412238c42943f",
+        "result:results/result-execution-sg2-g5-a2-f126-20260826.json",
+        "result:results/result-package-acceptance-sg2-g5-a6-f127-20260826.json"
+      ]
+    },
+    {
+      "id": "behavioral-correctness",
+      "score": 25,
+      "max_score": 25,
+      "reason": "修复把状态合法性校验后移到已选 current task 上，关闭了“较旧 sibling 的未知状态污染更新当前任务”的回归，同时保留被选中当前任务 unknown-status 的 fail-closed 行为。",
+      "evidence_refs": [
+        "git:989ba2fcd75f0466239e1957c880e6a0ce4b1b83:src/domain/project-status-projection.ts",
+        "git:989ba2fcd75f0466239e1957c880e6a0ce4b1b83:tests/domain/project-status-projection.test.ts"
+      ]
+    },
+    {
+      "id": "verification-completeness",
+      "score": 25,
+      "max_score": 25,
+      "reason": "定向 16/16、全量 494/494、coverage 93.44/88.38/99.19、next-action-sensitive 与 unknown-status 两个 live-shaped smoke 均通过，覆盖范围满足 packet 硬门。",
+      "evidence_refs": [
+        "command:corepack pnpm build && node --test dist/tests/domain/project-status-projection.test.js dist/tests/adapters/node/project-status-source.test.js dist/tests/cli/project-status.test.js",
+        "command:corepack pnpm check",
+        "command:live-shaped-cli-next-action-sensitive",
+        "command:live-shaped-cli-unknown-status"
+      ]
+    },
+    {
+      "id": "scope-discipline",
+      "score": 25,
+      "max_score": 25,
+      "reason": "候选保持 exact-two、无新依赖、无控制面写入；本评审也停留在 isolated clone 与 exact-two review 输出边界内。",
+      "evidence_refs": [
+        "git-parent:8842e025088ba6a217fa098c82d788a5d603ef3d",
+        "control:57bf49c7ca65828c0002553ec80412238c42943f:gate-requests/gate-package-acceptance-sg2-g5-a7-20260826.json"
+      ]
+    }
+  ],
+  "penalties": [
+    {
+      "severity": "P2",
+      "deduction": 1,
+      "reason": "RED 阶段仍只有 execution Result 内的摘要化 observed 说明，没有把首次失败命令、退出码与原始终端输出作为独立内容寻址对象固化。",
+      "evidence_refs": [
+        "result:results/result-execution-sg2-g5-a2-f126-20260826.json"
+      ]
+    }
+  ],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 1,
+    "final_score": 99
+  },
+  "finding_counts": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 1
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [
+    "后续同类 package acceptance 若继续强调 RED-before-GREEN，可把首次失败命令的原始 stdout/stderr 也固化为单独 immutable transcript。",
+    "当前 live control 的 next_stage 本身先落在 unproven-next-action；若后续要把该分支作为更强的真实烟测证据，可在不泄漏敏感信息的前提下让 live control 自身直接命中 next-action-sensitive。"
+  ],
+  "reviewers": [
+    {
+      "role": "Generator",
+      "identity": "codex-subagent:/root/sg2_impl_g5_a2_f126",
+      "conclusion": "submitted",
+      "note": "生成固定候选 989ba2f；未参与本次正式批准。"
+    },
+    {
+      "role": "Verifier",
+      "identity": "codex-subagent:/root/sg2_accept_g5_a7_f128",
+      "conclusion": "PASS",
+      "note": "9/9 hard gates 通过。"
+    },
+    {
+      "role": "Strict Judge",
+      "identity": "codex-subagent:/root/sg2_accept_g5_a7_f128",
+      "conclusion": "PASS",
+      "note": "99/100；无 P0/P1，仅 1 个 P2 不阻断包级验收。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "identity": "codex-subagent:/root/sg2_accept_g5_a7_f128",
+      "conclusion": "PASS",
+      "note": "无模板漂移、无证据缺口包装完成、无范围膨胀。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "identity": "codex-subagent:/root/sg2_accept_g5_a7_f128",
+      "conclusion": "PASS",
+      "note": "只放行 SG-2 attempt7 package acceptance Result 固化与后续主控整合；不放行 user-signoff、formal、PC-12、V2 或 P5 完成。"
+    }
+  ],
+  "reviewed_at": "2026-08-26T07:07:00Z"
+}
