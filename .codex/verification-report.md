@@ -8,6 +8,16 @@
 - 保留策略：不删除、不改写原始 scorecard/verdict；新增 `PROCEDURAL_STATUS.md` 作为显式程序状态，后续对同一固定 candidate 重走正式独立验收链。
 - 后继异常：live `main=3464fbc6b117fe4ee3b1d8b6c921a2f3dc43fd4c` 已在正式验收链前包含同一 SG-1 代码。`3464fbc...` 是 `80fdbaf...` 的单父 cherry-pick，tree 与候选代码内容一致，但时间顺序不满足“验收 PASS 后才合入”；本报告将其标记为程序提前合入，不能以该物理状态替代 acceptance Result。
 
+## 2026-08-26 SG-1 正式 package acceptance
+
+- 固定对象：subject=`9fc9dc2e51790e868d30d23fd28c8b8f17d67935`，tree=`2fa56e3eed99104d44c7e298e1e24418528074b5`，parent=`a6b3a70a90eae6d26c94ca0cd20ac8cf9c85f95c`，subject digest=`sha256:0f7176fc65970b75af7c422b9aa1454259fb37198a31b397f24c833717c78d40`。
+- 控制链：implementation ACK=`e0394c2`；acceptance packet=`91cdc9f`；claim/fence 119=`4676b97`；ACK=`e9100f0`；Result=`830d831`。父链与 exact-5/3/4/3 写集通过。
+- 评审：`690da53` 是 subject 的唯一子提交，exact-2 只新增正式 scorecard/verdict；scorecard JCS=`sha256:12f08786e01502bcea1b18bf1c1e60163f7fce27ef903a6f6a0ccff3544e8cf4`，verdict raw=`sha256:6c4b540f0a177b4ff463011f5a7b923fd8e5257e07a99c9874e4be47dc247f3a`。
+- 结论：`PASS / 98`，P0/P1/P2=`0/0/2`，required fixes=0。定向测试 8/8；验收与 main fresh 全量均为 482/482，coverage=`93.49/88.98/99.15`。
+- Result digest：排除顶层 `result_digest` 后 RFC8785/JCS 复算=`sha256:e04bd4b0c8efea41eb6015628205752624d58e92400d02565e01c61b244592e4`，与存储值匹配。
+- 程序披露：`3464fbc` 提前合入没有被用作 PASS 证据，也没有被事后重写；正式 Result 只证明固定候选包验收通过。
+- 门禁：SG-1 package acceptance 通过；允许进入分离的 SG-2 packet preparation。formal/V2/P5 均未完成或移动。
+
 ## 2026-08-26 CR-006 SG-1 独立验收验证
 
 - 验收对象：`9fc9dc2e51790e868d30d23fd28c8b8f17d67935`（tree=`2fa56e3eed99104d44c7e298e1e24418528074b5`，parent=`a6b3a70a90eae6d26c94ca0cd20ac8cf9c85f95c`），对应 packet=`ep-p5-cr006-sg1-g5-a1-20260826`，digest=`sha256:04d13a57ce82419534255d126184dc35d6cfce4e35b4c878f0200bf43302be52`。

@@ -13,7 +13,7 @@
 
 ## 已接受待实施变更
 
-- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：generation 5 replacement、advance/ack、SG-1 attempt 1 packet 与 claim/fence 118 已完成；当前等待 SG-1 dispatch-ready/outbox 的精确授权，SG-2/SG-3 与 V2 packet 均未创建。
+- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：SG-1 已实现并通过正式独立验收 `PASS / 98`；当前准备 SG-2 packet，SG-3、累积验收与 V2 packet 均未创建。
 
 ## 分流规则
 

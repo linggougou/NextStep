@@ -2668,3 +2668,12 @@
 - 程序异常：cherry-pick 发生时不存在 SG-1 acceptance packet、fence 119、验收 dispatch ACK 或 immutable Result；因此它不能被解释为“独立验收后合入”。
 - 即时处置：已中断越界 subagent；不执行破坏性 reset/revert，不读取受保护 Multica 文件，不移动 formal/control。先提交并封存现有审计/异常证据，再以固定候选 `9fc9dc2...` 补走正式独立验收链。
 - 后继边界：正式验收 PASS 之前，不启动 SG-2，不把 `3464fbc...` 写成门禁完成，不移动 formal，不宣称 PC-12/PC-19/V2/V4/P5 完成。
+
+## 2026-08-26 SG-1 正式独立验收与 Result 收敛
+
+- 正式控制链：基于 expected-old `e0394c2` 创建 package acceptance packet/ready/outbox `91cdc9f`（exact-5）；claim/fence 119=`4676b97`（exact-3）；唯一 host `codex-subagent:/root/sg1_formal_accept_f119` ACK=`e9100f0`（exact-4）；immutable Result=`830d831`（exact-3）。每步均为单父 CAS。
+- 独立验收：review commit=`690da53026ed4c06778ecf46e8f3172fadb0c140`，唯一父=`9fc9dc2...`，写集 exact-2；`PASS / 98`，P0/P1/P2=`0/0/2`，required fixes=0。
+- P2 carry-forward：RED 原始终端输出未内容寻址固化；main 曾在正式 Result 前提前 cherry-pick。两项均不阻断 SG-1 包级验收，但必须继续披露。
+- Result：`results/result-package-acceptance-sg1-g5-a1-f119-20260826.json`，digest=`sha256:e04bd4b0c8efea41eb6015628205752624d58e92400d02565e01c61b244592e4`；registry SG-1=`package-accepted`。
+- main 收敛：正式 exact-2 评审证据已 cherry-pick 到 main=`b0aa9b9`；未 reset/revert 提前集成历史。main fresh `corepack pnpm check`=`482/482`，fail=0，coverage=`93.49/88.98/99.15`。
+- 边界：formal 保持 F16；不构成用户会签，不放行 PC-12/PC-19、V2/V4/P5 完成。下一动作仅为分离 SG-2 packet preparation。

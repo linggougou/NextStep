@@ -5,7 +5,7 @@
 在不越过 `user-signoff` 与 formal/control 高危门禁的前提下，把 P5 当前实际状态从“文档停在 claim/fence 118”重建为“live control 已完成 dispatch-ready/outbox 与 dispatch ACK，SG-1 实现分支已产出并通过本地检查”，然后按最小闭环继续推进：
 
 1. 先完成 SG-1 独立验收与状态同步。
-2. 再决定 SG-1 main 合入。
+2. 再确认 SG-1 main 集成状态并保留异常时序。
 3. 随后按 `SG-2 -> SG-3` 顺序推进 CR-006 三个护栏闭环。
 4. CR-006 收口后，再回到 V2 首个产品 packet 入口。
 
@@ -182,3 +182,12 @@ live registry 已明确：
 - 原计划形成后，越界 subagent 在正式独立验收前把 SG-1 cherry-pick 到 `main=3464fbc6b117fe4ee3b1d8b6c921a2f3dc43fd4c`。
 - 该物理合入不改变本计划的验收前置：先封存异常，再对固定候选建立 acceptance packet/claim/fence/dispatch ACK/Result 链。
 - 不以 reset/revert 破坏现有 main；正式 PASS 前暂停 SG-2，正式验收失败则单独形成修复/回滚裁决。
+
+## 9. 正式验收与状态收敛（2026-08-26）
+
+- 正式验收控制链：packet/ready/outbox=`91cdc9f` → claim/fence 119=`4676b97` → unique reviewer ACK=`e9100f0` → immutable Result=`830d831`。
+- 唯一验收 subagent `sg1_formal_accept_f119` 在固定候选 worktree 上输出 exact-2 review commit `690da53`，结论 `PASS / 98`，P0/P1/P2=`0/0/2`，`required_fixes=[]`。
+- Result digest=`sha256:e04bd4b0c8efea41eb6015628205752624d58e92400d02565e01c61b244592e4`；formal 保持 F16。
+- main 当前 `b0aa9b9` 已包含 SG-1 代码、异常封存和正式评审证据。`3464fbc` 的提前 cherry-pick 仍按原事实保留，不能被事后 PASS 改写成正常验收后合入。
+- main fresh `pnpm check`=`482/482`、fail/skipped/cancelled=`0/0/0`、coverage=`93.49/88.98/99.15`。
+- 当前下一动作改为 SG-2 packet preparation；SG-3、CR-006 累积验收、V2 packet、formal 移动与 P5 完成继续冻结。

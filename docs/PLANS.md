@@ -4,8 +4,8 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：CR-006 SG-1 generation 5 dispatch-ready/outbox 授权门禁；V2 产品 packet 暂停在入口评估通过状态
-- 当前状态：formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`；control=`042e007d5d342c90f6370212549963bae6a2db95`；`plan_generation=5`。generation 5 replacement、advance/ack、SG-1 attempt 1 packet 和 claim/fence 118 均已完成；packet digest=`sha256:04d13a57ce82419534255d126184dc35d6cfce4e35b4c878f0200bf43302be52`。当前只允许请求 SG-1 dispatch-ready/outbox 的精确 control 授权；宿主派发、dispatch ACK、编码、独立验收与 V2 packet 均未授权。
+- 当前活动里程碑：CR-006 SG-2 packet preparation gate；V2 产品 packet 暂停在入口评估通过状态
+- 当前状态：main=`b0aa9b9`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`830d831808a92f53dfca4dea87bb98c71e448fb1`，`plan_generation=5`。SG-1 implementation ACK=`e0394c2`，正式 acceptance fence 119 ACK=`e9100f0`，Result=`sha256:e04bd4b0...`，结论 `PASS / 98`。提前 cherry-pick 异常已封存；当前仅准备 SG-2 独立 packet，SG-3 与 V2 packet 未创建。
 
 ## 当前活动计划
 
@@ -28,7 +28,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。V2 入口独立评估已 `PASS / 100`。CR-006 generation 5 replacement、advance/ack、SG-1 attempt 1 packet 与 claim/fence 118 已完成；当前等待 SG-1 dispatch-ready/outbox 的精确 control 授权，V2 产品 packet 保持暂停，P5 尚未完成。
+P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。V2 入口独立评估已 `PASS / 100`。CR-006 SG-1 已通过正式独立验收，当前进入 SG-2 packet preparation gate；SG-3、CR-006 累积验收与 V2 产品 packet 保持暂停，P5 尚未完成。
 
 实施顺序保持 P3 已会签结构：
 

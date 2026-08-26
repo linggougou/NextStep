@@ -1,10 +1,10 @@
 # P5 可承受性护栏实施计划
 
-- 状态：sg1-claim-held-awaiting-dispatch-authorization
+- 状态：sg1-package-accepted-sg2-packet-preparation
 - 变更入口：[CR-006](../../change-requests/006-scalability-guardrails.md)
 - 生命周期阶段：S5 开发落地
 - 路线位置：P5 跨版本基础护栏；不新增版本，不改变 V2 首个产品 packet 前门禁
-- 当前授权：用户已批准三个方向及其实施；generation 5 replacement、advance/ack、SG-1 generation 5 attempt 1 packet 与 claim/fence 118 CAS 已完成。current control=`042e007d5d342c90f6370212549963bae6a2db95`，digest=`sha256:04d13a57ce82419534255d126184dc35d6cfce4e35b4c878f0200bf43302be52`。当前等待 dispatch-ready/outbox 的单独精确 control 授权；宿主派发、dispatch ACK、编码与独立验收均未授权
+- 当前授权：用户已批准三个方向及自治 worktree/subagent 实施。SG-1 固定候选 `9fc9dc2` 已通过正式独立验收 `690da53`=`PASS / 98`，Result control=`830d831`、digest=`sha256:e04bd4b0...`。提前 main cherry-pick 异常已保留；当前进入 SG-2 packet preparation，SG-3、累积验收、V2 packet 与 formal 移动仍分离受控
 
 ## 1. 阶段目标
 

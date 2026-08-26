@@ -1,6 +1,6 @@
 # QA
 
-当前阶段为 `P5 / CR-006 SG-1 generation 5 dispatch-ready/outbox authorization gate`。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`042e007d5d342c90f6370212549963bae6a2db95`，`plan_generation=5`。V1 已 formally-completed；V2 入口独立评估 `5be7ff254f898cee7887df9a15b48b8d21f2c1ed`=`PASS / 100`。SG-1 attempt 1 claim/fence 118 已完成；当前只允许请求 dispatch-ready/outbox 的精确授权。P5 未完成，宿主派发、dispatch ACK、编码、独立验收与 V2 packet 未授权，旧 V1 attempt 仅作墓碑历史。
+当前阶段为 `P5 / CR-006 SG-2 packet preparation gate`。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`830d831808a92f53dfca4dea87bb98c71e448fb1`，`plan_generation=5`。V1 已 formally-completed；V2 入口独立评估 `5be7ff254f898cee7887df9a15b48b8d21f2c1ed`=`PASS / 100`。SG-1 正式验收 `690da53`=`PASS / 98`，Result=`sha256:e04bd4b0...`；旧的提前 PASS 目录明确为 `procedurally-invalid / rejected-evidence`，不得作为 Result。P5 未完成，SG-2/SG-3、V2 packet 与 formal 移动均未发生。
 
 ## 当前质量状态
 
