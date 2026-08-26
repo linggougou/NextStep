@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "observed_at": "2026-08-26T05:00:00Z",
+  "formal_oid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "control_oid": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "control_parent_oid": "cccccccccccccccccccccccccccccccccccccccc",
+  "checkpoint_blob_oid": "dddddddddddddddddddddddddddddddddddddddd",
+  "registry_blob_oid": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "checkpoint": {
+    "schema_version": "1.0",
+    "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "route_generation": 1,
+    "plan_id": "p5-product-implementation",
+    "plan_generation": 5,
+    "formal_ref": "refs/nextstep/formal",
+    "formal_oid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "control_parent_oid": "cccccccccccccccccccccccccccccccccccccccc",
+    "highest_task_attempts": { "OLD": 2, "SG-1": 1, "SG-2": 1 },
+    "next_stage": "SG-2 generation 5 attempt 1 executing; independent acceptance and main integration remain gated",
+    "updated_at": "2026-08-26T04:50:00Z",
+    "version_signoffs": {
+      "V1": {
+        "status": "approved",
+        "result_ref": "results/v1.json",
+        "result_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "formal_oid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "approval_message_id": "msg-user-signoff-v1",
+        "completed_at": "2026-08-24T17:28:06Z",
+        "completion_message_id": "msg-version-completion-v1"
+      }
+    }
+  },
+  "registry": {
+    "schema_version": "1.0",
+    "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "route_generation": 1,
+    "plan_id": "p5-product-implementation",
+    "plan_generation": 5,
+    "tasks": [
+      {
+        "stage_id": "P5/V1/OLD",
+        "task_id": "OLD",
+        "task_attempt": 2,
+        "status": "revision-required",
+        "highest_confirmed_generation": 4,
+        "updated_at": "2026-08-26T04:59:00Z",
+        "reason": "secret-that-must-not-appear",
+        "user_signoff": "old-signoff-must-not-authorize"
+      },
+      {
+        "stage_id": "P5/CR-006/SG-1",
+        "task_id": "SG-1",
+        "task_attempt": 1,
+        "status": "package-accepted",
+        "highest_confirmed_generation": 5,
+        "updated_at": "2026-08-26T04:37:43Z"
+      },
+      {
+        "stage_id": "P5/CR-006/SG-2",
+        "task_id": "SG-2",
+        "task_attempt": 1,
+        "status": "running",
+        "highest_confirmed_generation": 5,
+        "updated_at": "2026-08-26T04:50:00Z",
+        "packet_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+        "dispatch_claim": { "lease_expires_at": "2026-08-27T04:47:00Z" },
+        "authorization_scope": "private-chat-and-business-content-must-not-appear"
+      }
+    ]
+  }
+}

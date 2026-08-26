@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nextstep.local/schemas/v1/project-status-projection.schema.json",
+  "title": "NextStep Project Status Projection 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "current_stage",
+    "current_scope",
+    "latest_formal_conclusion",
+    "blockers",
+    "next_action",
+    "risk_summary",
+    "formal_oid",
+    "control_oid",
+    "source_digest",
+    "freshness",
+    "unavailable_reasons"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "status": { "enum": ["available", "unavailable"] },
+    "current_stage": { "type": ["string", "null"], "minLength": 1 },
+    "current_scope": { "type": ["string", "null"], "minLength": 1 },
+    "latest_formal_conclusion": { "type": ["string", "null"], "minLength": 1 },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["reason_code", "evidence_ref"],
+        "properties": {
+          "reason_code": { "type": "string", "minLength": 1 },
+          "evidence_ref": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "next_action": { "type": ["string", "null"], "minLength": 1 },
+    "risk_summary": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "formal_oid": { "type": "string", "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})?$" },
+    "control_oid": { "type": "string", "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})?$" },
+    "source_digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "freshness": { "enum": ["current", "stale", "unknown"] },
+    "unavailable_reasons": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "available" } } },
+      "then": {
+        "properties": {
+          "current_stage": { "type": "string" },
+          "current_scope": { "type": "string" },
+          "latest_formal_conclusion": { "type": "string" },
+          "next_action": { "type": "string" },
+          "formal_oid": { "type": "string", "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$" },
+          "control_oid": { "type": "string", "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$" },
+          "unavailable_reasons": { "type": "array", "maxItems": 0 }
+        }
+      },
+      "else": {
+        "properties": {
+          "next_action": { "type": "null" },
+          "unavailable_reasons": { "type": "array", "minItems": 1 }
+        }
+      }
+    }
+  ]
+}
