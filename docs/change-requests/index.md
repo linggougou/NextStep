@@ -13,7 +13,7 @@
 
 ## 已接受待实施变更
 
-- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：SG-1、SG-2 已通过包级正式独立验收；SG-3 attempt 1 Result=`sha256:cd907ffff7cd509bd2744ee2da6fedfa2e70cf42e683d017bc8626d469695199`、control=`b1fceab03b48e901f32912091c008e8687d1b91b`，结论 `contract-revision-required`，无 RED、无候选。澄清候选 `64fcee4` 首次独立评审 `REVISE / 80`；当前只允许替代候选独立复审，PASS 后方可 new packet/new fence 130/new worker 启动 attempt 2。累积验收与 V2 packet 均未创建。
+- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：SG-1、SG-2、SG-3 package gate 均已通过；SG-3 原始候选=`87258c32162875bef16994b2259ad16baf4cb72e`、main=`a5b16942450d79ed583b80a1b4f13061017c41fd`，原始评审=`afdb308e09113a919a07778a75c1f816f2d3b5cd`、main=`c42670a3a7f638b262fa72d94e5a5a6d3a68cc51`，`PASS / 100`，P0/P1/P2=`0/0/0`，Result digest=`sha256:abfea41a5d855d25950c302043ad925a2cf880ba4a71b94c414865350fed2b6b`。精确包状态为“真实项目价值验证框架可用，真实运行 0/3”；前序 attempt 1 contract-revision 历史保持只读。下一允许动作仅为独立的 cumulative read-only acceptance packet/claim/fence/唯一 reviewer；CR-006 未关闭，V2 packet 未创建，formal 未移动。
 
 ## 分流规则
 

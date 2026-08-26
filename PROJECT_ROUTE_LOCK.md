@@ -31,7 +31,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - Change Intake、恢复、Final Acceptance、交付和宿主归档边界通过故障注入和反扫验证。
   - V1..V4 与 Final Acceptance 分别完成本地验证、适用验收和用户会签。
 - 阶段出口：V1..V4 和 Final Acceptance 全部通过；正式 OID、交付清单、风险、回滚和 PC-20.AR 状态可追溯，并由用户明确确认 P5 产品落地完成。
-- 最小可验收闭环：`P5-M0` 与 V1 已正式完成，formal 保持 F16；V2 入口评估=`PASS / 100`。CR-006 generation 5 replacement、advance/ack 与 SG-1、SG-2 包级实现链均已闭合。SG-3 attempt 1 已由 Result=`sha256:cd907ffff7cd509bd2744ee2da6fedfa2e70cf42e683d017bc8626d469695199`、control=`b1fceab03b48e901f32912091c008e8687d1b91b` 判定为 `contract-revision-required`，未执行 RED、无候选。契约澄清候选 `64fcee4` 已关闭原四个 P1，但首次独立评审为 `REVISE / 80`，唯一 P1 是最高优先级状态源仍指向旧的未分 attempt packet 门禁。当前 fail closed：必须先对包含本次状态同步的澄清替代候选做独立复审；仅 PASS 后才允许 corrected SG-3 attempt 2，并必须使用 new packet、new fence 130、new worker，禁止复用 attempt 1 packet/claim/ACK/drafts。CR-006 累积验收、V2 packet、formal 移动和 P5 完成都未授权。
+- 最小可验收闭环：`P5-M0` 与 V1 已正式完成，formal 保持 F16；V2 入口评估=`PASS / 100`。CR-006 generation 5 replacement、advance/ack 与 SG-1、SG-2、SG-3 三个 package gate 均已通过。SG-3 前序 attempt 1 的 `contract-revision-required`、未执行 RED、无候选历史保持只读；更正后的原始候选=`87258c32162875bef16994b2259ad16baf4cb72e`、main=`a5b16942450d79ed583b80a1b4f13061017c41fd`，原始独立评审=`afdb308e09113a919a07778a75c1f816f2d3b5cd`、main=`c42670a3a7f638b262fa72d94e5a5a6d3a68cc51`，结论 `PASS / 100`，P0/P1/P2=`0/0/0`，Result digest=`sha256:abfea41a5d855d25950c302043ad925a2cf880ba4a71b94c414865350fed2b6b`。主线验证 `503/503`，coverage Lines/Branches/Functions=`93.50/88.62/99.22`；包级状态精确为“真实项目价值验证框架可用，真实运行 0/3”。当前 fail closed：下一允许动作仅为独立的 CR-006 cumulative read-only acceptance packet/claim/fence/唯一 reviewer；不得自动关闭 CR-006、创建 V2 packet、移动 formal，或宣称 PC-12/PC-19/V2/V4/P5 完成。
 - 明确非目标：
   - 不恢复 NextStep Web/UI 候选分支。
   - 不引入常驻服务、数据库、远程控制面或通用多 Agent 编排平台。
@@ -43,7 +43,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - 不改变已会签产品、交互、S4/P3/P4 或验收边界；需要改变时先进入 Change Request。
 - 禁止提前进入的阶段：S7 最终发布判断和 S8 交付归档；V1..V4 也不得跳过前序门禁并行宣告完成。
 - 允许进入下一阶段的条件：P5 Final Acceptance 通过本地可重复验证、独立验收和用户会签；若实现要求改变已会签产品、交互、技术、版本范围、正式提升或验收边界，必须先完成 Change Request。
-- 当前状态：进行中；main=`826b415424acbe3d52b3f9207d5ec6ec26795537`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`b1fceab03b48e901f32912091c008e8687d1b91b`，`plan_generation=5`。V1 formally-completed，V2 入口评估=`PASS / 100`。SG-1、SG-2 registry 均已通过包级门禁；SG-3 attempt 1=`contract-revision-required`、无 RED、无候选。`64fcee4` 首次独立评审=`REVISE / 80`，当前只允许形成包含 exact-6 状态同步的澄清替代候选并独立复审。复审 PASS 前不得创建 attempt 2；PASS 后也只能用 new packet/new fence 130/new worker，且不得复用 attempt 1 packet/claim/ACK/drafts。CR-006 累积验收、V2 packet、formal 移动与 P5 完成均未发生。
+- 当前状态：进行中；main=`c42670a3a7f638b262fa72d94e5a5a6d3a68cc51`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`730f2e011bd648801cde5c02db8287dc92e591a8`，`plan_generation=5`。V1 formally-completed，V2 入口评估=`PASS / 100`。SG-1、SG-2、SG-3 package gate 均已通过；SG-3=`PASS / 100`、P0/P1/P2=`0/0/0`，包级状态为“真实项目价值验证框架可用，真实运行 0/3”。前序 SG-3 attempt 1 的 `contract-revision-required` 历史只读保留。当前只允许建立独立的 CR-006 cumulative read-only acceptance packet/claim/fence 并交给唯一 reviewer；CR-006 尚未关闭，V2 packet 未创建，formal 未移动，PC-12/PC-19/V2/V4/P5 均未由本状态完成。
 
 ## 2.1 里程碑路线图
 
@@ -109,7 +109,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
 
 - Backlog：待建立。
 - Change Request：`docs/change-requests/index.md`
-- 当前阶段缺口：CR-006 SG-1、SG-2 已实现并通过正式独立验收；SG-3 attempt 1 已以 `contract-revision-required` 收口。当前缺口是先让包含状态同步的 SG-3 契约澄清替代候选通过独立复审；仅 PASS 后才可用 new packet/new fence 130/new worker 启动 corrected attempt 2，禁止复用 attempt 1 packet/claim/ACK/drafts。之后仍须完成 SG-3 独立验收与 CR-006 累积验收。SG-2 不等于 PC-12；V2 产品 packet 保持暂停。
+- 当前阶段缺口：CR-006 SG-1、SG-2、SG-3 均已实现并通过 package gate；SG-3 精确结论为“真实项目价值验证框架可用，真实运行 0/3”，前序 `contract-revision-required` 历史保持只读。当前缺口仅为独立的 CR-006 cumulative read-only acceptance packet/claim/fence/唯一 reviewer。完成该验收也不得自动关闭 CR-006、创建 V2 packet、移动 formal 或宣称 PC-12/PC-19/V2/V4/P5 完成；V2 产品 packet 保持暂停。
 - 后续阶段需求：V1..V4 和 Final Acceptance 按活动计划顺序推进；P4 第 12 节“运行集成验收”只允许落实为集成诊断预检，正式 I/X/P 四态结论仍由独立门禁和最终复验链产生。若未来恢复 `Web / UI` 分支，需重新确认其与当前 Skill 主路线的关系。
 - 已拒绝需求：无。
 

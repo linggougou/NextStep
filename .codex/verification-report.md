@@ -2646,3 +2646,27 @@
 - `git diff --check`：通过。
 - 提交前写集严格等于 `PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md`、`docs/PRODUCT_SENSE.md`、`docs/change-requests/index.md`、`.codex/operations-log.md`、`.codex/verification-report.md`。
 - 本轮仅同步状态摘要与留痕，不修改代码、Schema、测试或依赖，因此不重复运行 `pnpm check`；corrected attempt 2 仍须从 fresh RED 开始。
+
+# 2026-08-26 CR-006 SG-3 package gate 通过后状态真源同步验证
+
+## 身份与证据核对
+
+- 同步基线：main=`c42670a3a7f638b262fa72d94e5a5a6d3a68cc51`，tree=`032add0ab9c6cc3f8c5fb812af8e40d338e0103d`，唯一父=`a5b16942450d79ed583b80a1b4f13061017c41fd`；formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`730f2e011bd648801cde5c02db8287dc92e591a8`，`plan_generation=5`。
+- SG-3 候选映射：原始候选=`87258c32162875bef16994b2259ad16baf4cb72e`，main=`a5b16942450d79ed583b80a1b4f13061017c41fd`，两者 tree 均为 `a7b317cec57e61b1cac06f55b6f212bf08a8b02a`。
+- SG-3 评审映射：原始 review=`afdb308e09113a919a07778a75c1f816f2d3b5cd`，main=`c42670a3a7f638b262fa72d94e5a5a6d3a68cc51`，两者 tree 均为 `032add0ab9c6cc3f8c5fb812af8e40d338e0103d`；结论 `PASS / 100`，P0/P1/P2=`0/0/0`。
+- Result digest=`sha256:abfea41a5d855d25950c302043ad925a2cf880ba4a71b94c414865350fed2b6b`；核定 main 验证=`503/503`，coverage Lines/Branches/Functions=`93.50/88.62/99.22`。
+
+## 状态一致性与边界
+
+- 六份状态真源均已同步为：SG-1、SG-2、SG-3 package gate 均已通过；SG-3 精确包状态为“真实项目价值验证框架可用，真实运行 0/3”。
+- 前序 SG-3 attempt 1 的 `contract-revision-required`、未执行 RED、无候选历史继续作为只读证据保留，未被后续 PASS 覆盖或改写。
+- 旧的 `826b415` / `b1fceab` 当前身份、`64fcee4` 澄清复审门禁、`fence 130` 与 corrected attempt 2 下一入口在六份状态真源中反扫无命中。
+- 下一允许动作仅为独立的 CR-006 cumulative read-only acceptance packet/claim/fence/唯一 reviewer；未把 package PASS 扩大为 CR-006 关闭、V2 packet、formal movement、用户 signoff 或 PC-12/PC-19/V2/V4/P5 完成。
+
+## 本地检查与结论
+
+- `git diff --check`：通过。
+- 写集检查：提交前差异严格等于用户限定 exact-8；没有代码、Schema、测试、依赖、control/formal ref 或其他路径变化。
+- 本轮只同步文档与留痕，不重复运行产品测试；`503/503` 与覆盖率作为已核定的 SG-3 main package 证据同步，不包装为本轮重新执行结果。
+- 用户改动保护：未读取、修改、暂存或清理受保护 Multica 上下文文件；未 push。
+- 门禁结论：状态真源同步通过；CR-006 仍为进行中，只放行独立累积只读验收控制链。

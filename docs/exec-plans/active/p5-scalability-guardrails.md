@@ -1,10 +1,10 @@
 # P5 可承受性护栏实施计划
 
-- 状态：sg1-sg2-package-accepted-sg3-attempt1-contract-revision-required
+- 状态：sg1-sg2-sg3-package-accepted-cumulative-acceptance-pending
 - 变更入口：[CR-006](../../change-requests/006-scalability-guardrails.md)
 - 生命周期阶段：S5 开发落地
 - 路线位置：P5 跨版本基础护栏；不新增版本，不改变 V2 首个产品 packet 前门禁
-- 当前授权：用户已批准三个方向及自治 worktree/subagent 实施。SG-1 固定候选 `9fc9dc2` 已通过正式独立验收 `690da53`=`PASS / 98`。SG-2 implementation attempt 2 原始候选 `989ba2f` 已以 main commit `b79c991` 合入；attempt 7 原始评审 `f359f68`=`PASS / 99` 已以 main commit `7162c30` 合入，Result control=`b2f2b8c`、digest=`sha256:83fd993d...`。SG-3 attempt 1 因 P1 契约歧义标记为 `contract-revision-required`，没有执行 RED、没有实现候选；下一步只能以修订后的同一 SG-3 范围创建 attempt 2 packet，并使用新 fence 与新 worker。累积验收、V2 packet 与 formal 移动仍分离受控
+- 当前授权：用户已批准三个方向及自治 worktree/subagent 实施。SG-1 固定候选 `9fc9dc2` 已通过正式独立验收 `690da53`=`PASS / 98`。SG-2 implementation attempt 2 原始候选 `989ba2f` 已以 main commit `b79c991` 合入；attempt 7 原始评审 `f359f68`=`PASS / 99` 已以 main commit `7162c30` 合入，Result control=`b2f2b8c`、digest=`sha256:83fd993d...`。SG-3 原始候选 `87258c3` 已以 main commit `a5b1694` 合入；原始评审 `afdb308`=`PASS / 100` 已以 main commit `c42670a` 合入，Result control=`730f2e0`、digest=`sha256:abfea41a5d855d25950c302043ad925a2cf880ba4a71b94c414865350fed2b6b`。SG-1、SG-2、SG-3 package gate 均已通过；SG-3 精确包状态为“真实项目价值验证框架可用，真实运行 0/3”。前序 SG-3 attempt 1 `contract-revision-required` 历史只读保留。下一步仅允许独立的 CR-006 cumulative read-only acceptance packet/claim/fence/唯一 reviewer；CR-006 关闭、V2 packet、formal 移动及用户 signoff 仍分离受控
 
 ## 1. 阶段目标
 
@@ -236,13 +236,14 @@ GREEN 只实现 Schema、单次记录验证、去重、聚合与离线 CLI，并
 
 ### 6.6 Attempt 状态与下一入口
 
-- attempt 1 的 P1 契约歧义发生在实现前，状态固定为 `contract-revision-required`；未执行 RED、未生成生产/Schema/test 候选，也不计为 SG-3 行为失败。
-- 下一入口只允许基于本节澄清后的原 SG-3 scope/task/DoD 创建 corrected attempt 2 packet，重新分配新 fence 与唯一新 worker；不得复用 attempt 1 fence/worker，也不 bump `plan_generation=5`。
-- 本次澄清不表示 SG-3、PC-19、V2 或 P5 完成，不创建累积验收或移动 formal。
+- 前序 attempt 1 的 P1 契约歧义发生在实现前，状态固定为 `contract-revision-required`；未执行 RED、未生成生产/Schema/test 候选，也不计为 SG-3 行为失败。该历史继续作为只读证据保留。
+- 更正后的原始候选=`87258c32162875bef16994b2259ad16baf4cb72e`、main=`a5b16942450d79ed583b80a1b4f13061017c41fd`；原始独立评审=`afdb308e09113a919a07778a75c1f816f2d3b5cd`、main=`c42670a3a7f638b262fa72d94e5a5a6d3a68cc51`，结论 `PASS / 100`，P0/P1/P2=`0/0/0`，Result digest=`sha256:abfea41a5d855d25950c302043ad925a2cf880ba4a71b94c414865350fed2b6b`。
+- main fresh 验证=`503/503`，coverage Lines/Branches/Functions=`93.50/88.62/99.22`；包级状态必须保持为“真实项目价值验证框架可用，真实运行 0/3”。SG-3 package gate 通过不表示 PC-19、V2、V4 或 P5 完成。
+- 下一入口仅允许独立的 CR-006 cumulative read-only acceptance packet/claim/fence/唯一 reviewer；不得自动关闭 CR-006、创建 V2 packet、移动 formal 或替用户 signoff。
 
 ## 7. 累积验证与验收门禁
 
-三包分别 PASS 后，派发一个未参与任何实现的累积只读验收者，至少执行：
+三包现已分别 PASS；下一允许动作是创建独立的 cumulative read-only acceptance packet/claim/fence，并派发一个未参与任何实现的唯一 reviewer，至少执行：
 
 1. 校验三个候选已按约定顺序整合，路径无交叉、无既有契约修改、无新依赖。
 2. 运行 `pnpm check`，核对测试数、失败/跳过数和覆盖率不低于整合前基线。

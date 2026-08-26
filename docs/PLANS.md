@@ -4,8 +4,8 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：CR-006 SG-3 契约澄清替代候选独立复审门禁；V2 产品 packet 暂停在入口评估通过状态
-- 当前状态：main=`826b415424acbe3d52b3f9207d5ec6ec26795537`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`b1fceab03b48e901f32912091c008e8687d1b91b`，`plan_generation=5`。SG-1、SG-2 已通过包级正式独立验收。SG-3 attempt 1 Result=`sha256:cd907ffff7cd509bd2744ee2da6fedfa2e70cf42e683d017bc8626d469695199`，结论 `contract-revision-required`，未执行 RED、无候选；契约澄清候选 `64fcee4` 首次独立评审=`REVISE / 80`，唯一 P1 是最高优先级状态源仍指向旧的未分 attempt packet 门禁。当前只允许对包含本状态同步的澄清替代候选做独立复审；仅 PASS 后才允许 corrected attempt 2 的 new packet/new fence 130/new worker，禁止复用 attempt 1 packet/claim/ACK/drafts。CR-006 累积验收与 V2 packet 未创建，formal 未移动，P5 未完成。
+- 当前活动里程碑：CR-006 cumulative read-only acceptance 门禁；V2 产品 packet 暂停在入口评估通过状态
+- 当前状态：main=`c42670a3a7f638b262fa72d94e5a5a6d3a68cc51`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`730f2e011bd648801cde5c02db8287dc92e591a8`，`plan_generation=5`。SG-1、SG-2、SG-3 package gate 均已通过。SG-3 原始候选=`87258c32162875bef16994b2259ad16baf4cb72e`、main=`a5b16942450d79ed583b80a1b4f13061017c41fd`；原始评审=`afdb308e09113a919a07778a75c1f816f2d3b5cd`、main=`c42670a3a7f638b262fa72d94e5a5a6d3a68cc51`，`PASS / 100`，P0/P1/P2=`0/0/0`，Result digest=`sha256:abfea41a5d855d25950c302043ad925a2cf880ba4a71b94c414865350fed2b6b`。主线验证 `503/503`，coverage Lines/Branches/Functions=`93.50/88.62/99.22`；精确包状态为“真实项目价值验证框架可用，真实运行 0/3”。前序 SG-3 attempt 1 `contract-revision-required` 历史只读保留。下一允许动作仅为独立的 CR-006 cumulative read-only acceptance packet/claim/fence/唯一 reviewer；CR-006 未关闭，V2 packet 未创建，formal 未移动，PC-12/PC-19/V2/V4/P5 均未由本状态完成。
 
 ## 当前活动计划
 
@@ -28,7 +28,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。V2 入口独立评估已 `PASS / 100`。CR-006 SG-1、SG-2 已通过正式独立验收；SG-3 attempt 1 已以 `contract-revision-required` 收口。当前处于 SG-3 契约澄清替代候选独立复审门禁，复审 PASS 前 fail closed，不得创建 corrected attempt 2。CR-006 累积验收与 V2 产品 packet 保持暂停，SG-2 不等于 PC-12，P5 尚未完成。
+P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。V2 入口独立评估已 `PASS / 100`。CR-006 SG-1、SG-2、SG-3 package gate 均已通过；SG-3 包级结论是“真实项目价值验证框架可用，真实运行 0/3”，不等于 PC-19 或真实项目运行验收完成。前序 SG-3 attempt 1 contract-revision 历史保持只读。当前只允许创建独立的 CR-006 cumulative read-only acceptance packet/claim/fence，并由唯一 reviewer 验收；不得自动关闭 CR-006 或创建 V2 产品 packet，P5 尚未完成。
 
 实施顺序保持 P3 已会签结构：
 

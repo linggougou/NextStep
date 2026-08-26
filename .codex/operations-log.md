@@ -2710,3 +2710,18 @@
 - 禁止复用：attempt 1 packet、claim、ACK 和 drafts 全部保持历史，只读且不得作为 attempt 2 输入身份复用。
 - 未授权：CR-006 累积验收、V2 packet、formal movement 与 P5 completion 均未授权；本轮未编码、未写控制面、未改 Git refs、未推送。
 - 用户改动保护：未读取、修改、暂存或清理 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`。
+
+## 2026-08-26 CR-006 SG-3 package gate 通过后状态真源同步
+
+- 任务边界：专属 worktree=`/Users/ling/.codex/worktrees/sg3-state-sync-20260826`，分支=`codex/sg3-state-sync`，固定单父基线 main=`c42670a3a7f638b262fa72d94e5a5a6d3a68cc51`。用户限定 exact-8 写集：`PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md`、`docs/PRODUCT_SENSE.md`、`docs/change-requests/index.md`、`docs/change-requests/006-scalability-guardrails.md`、`docs/exec-plans/active/p5-scalability-guardrails.md`、`.codex/operations-log.md`、`.codex/verification-report.md`。
+- 路线与生命周期：仍为 `S5 / P5`，本轮只同步 CR-006 当前最小闭环，不是新需求、阶段切换或路线变更。当前里程碑真源为 `PROJECT_ROUTE_LOCK.md` 与 `docs/exec-plans/active/p5-scalability-guardrails.md`；阶段出口仍要求 V1..V4、Final Acceptance 与用户会签。
+- 项目规则：项目根无特化 `AGENTS.md`；已读取路线锁、生命周期、留痕、文档与 Skills/RTK 协议，并采用 `verification-loop` 进行差异、身份和范围核验。用户限定 exact-8，且现有路线锁/活动计划已提供完整上下文，因此不新增 context-summary 文件。CodeGraph 不适用于本次机械状态同步，未初始化。
+- 核定身份：main=`c42670a3a7f638b262fa72d94e5a5a6d3a68cc51`，formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`730f2e011bd648801cde5c02db8287dc92e591a8`，`plan_generation=5`。
+- SG-3 证据：原始候选=`87258c32162875bef16994b2259ad16baf4cb72e`、main=`a5b16942450d79ed583b80a1b4f13061017c41fd`，两者 tree 均为 `a7b317cec57e61b1cac06f55b6f212bf08a8b02a`；原始 review=`afdb308e09113a919a07778a75c1f816f2d3b5cd`、main=`c42670a3a7f638b262fa72d94e5a5a6d3a68cc51`，两者 tree 均为 `032add0ab9c6cc3f8c5fb812af8e40d338e0103d`。独立结论=`PASS / 100`，P0/P1/P2=`0/0/0`，Result digest=`sha256:abfea41a5d855d25950c302043ad925a2cf880ba4a71b94c414865350fed2b6b`。
+- 质量事实：main 验证=`503/503`，coverage Lines/Branches/Functions=`93.50/88.62/99.22`。SG-1、SG-2、SG-3 package gate 均已通过；SG-3 包级状态精确同步为“真实项目价值验证框架可用，真实运行 0/3”。
+- 历史保护：SG-3 前序 attempt 1 的 `contract-revision-required`、未执行 RED、无候选历史保持只读，未用后续 PASS 改写该历史。
+- 下一入口：只允许独立的 CR-006 cumulative read-only acceptance packet/claim/fence/唯一 reviewer。不得自动关闭 CR-006、创建 V2 packet、移动 formal、声明 PC-12/PC-19/V2/V4/P5 完成或替用户 signoff。
+- 明确未做：未修改代码、Schema、测试、依赖、control/formal refs 或其他路径，未 push；未读取、修改、暂存或清理受保护 Multica 上下文文件。
+- 验证：`git diff --check` 通过；六份状态真源旧门禁反扫无命中；提交前写集严格为 exact-8。产品代码未变，因此不重复运行 `pnpm check`，仅同步已核定的 main `503/503` 与 coverage `93.50/88.62/99.22` 证据。
+- 工具替代：首次 exact-8 检查因命令包含临时文件清理而被安全策略拒绝，未产生文件或状态变化；改用纯命令替换比较，无清理动作，exact-8、格式与语义反扫均通过。
+- 结束状态：已结束；本轮状态同步门禁通过，只放行独立的 CR-006 cumulative read-only acceptance 控制链，不构成该控制链的创建或验收授权。
