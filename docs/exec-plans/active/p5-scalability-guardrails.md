@@ -1,10 +1,10 @@
 # P5 可承受性护栏实施计划
 
-- 状态：sg1-package-accepted-sg2-packet-preparation
+- 状态：sg1-sg2-package-accepted-sg3-packet-preparation
 - 变更入口：[CR-006](../../change-requests/006-scalability-guardrails.md)
 - 生命周期阶段：S5 开发落地
 - 路线位置：P5 跨版本基础护栏；不新增版本，不改变 V2 首个产品 packet 前门禁
-- 当前授权：用户已批准三个方向及自治 worktree/subagent 实施。SG-1 固定候选 `9fc9dc2` 已通过正式独立验收 `690da53`=`PASS / 98`，Result control=`830d831`、digest=`sha256:e04bd4b0...`。提前 main cherry-pick 异常已保留；当前进入 SG-2 packet preparation，SG-3、累积验收、V2 packet 与 formal 移动仍分离受控
+- 当前授权：用户已批准三个方向及自治 worktree/subagent 实施。SG-1 固定候选 `9fc9dc2` 已通过正式独立验收 `690da53`=`PASS / 98`。SG-2 implementation attempt 2 原始候选 `989ba2f` 已以 main commit `b79c991` 合入；attempt 7 原始评审 `f359f68`=`PASS / 99` 已以 main commit `7162c30` 合入，Result control=`b2f2b8c`、digest=`sha256:83fd993d...`。当前进入 SG-3 packet preparation，累积验收、V2 packet 与 formal 移动仍分离受控
 
 ## 1. 阶段目标
 
@@ -167,6 +167,8 @@ GREEN 只实现显式项目根解析、Git plumbing 只读来源、纯投影和 
 - 审计身份仍可通过 formal/control OID 和来源摘要追溯；摘要不能覆盖正式真源。
 - 独立验收者绑定候选 commit/tree/digest，执行正例、冲突、过期、敏感信息和零写入反扫。
 - PASS 只表示只读投影工具可用，不等于 PC-12、S2.3/S2.4 或 V2 完成。
+
+当前验收状态：implementation attempt 2 已通过 attempt 7 唯一正式 package acceptance，结论 `PASS / 99`；attempt 6 的 `REVISE / 70` 仅由隔离环境依赖未预置触发，未要求修改候选。定向测试 `16/16`、全量 `494/494`，coverage Lines/Branches/Functions=`93.44/88.38/99.19`。唯一 P2 为 RED 原始终端 transcript 未独立固化，留待 CR-006 累积验收继续披露。
 
 ### 5.4 回滚
 

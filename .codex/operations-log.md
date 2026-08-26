@@ -2677,3 +2677,17 @@
 - Result：`results/result-package-acceptance-sg1-g5-a1-f119-20260826.json`，digest=`sha256:e04bd4b0c8efea41eb6015628205752624d58e92400d02565e01c61b244592e4`；registry SG-1=`package-accepted`。
 - main 收敛：正式 exact-2 评审证据已 cherry-pick 到 main=`b0aa9b9`；未 reset/revert 提前集成历史。main fresh `corepack pnpm check`=`482/482`，fail=0，coverage=`93.49/88.98/99.15`。
 - 边界：formal 保持 F16；不构成用户会签，不放行 PC-12/PC-19、V2/V4/P5 完成。下一动作仅为分离 SG-2 packet preparation。
+
+## 2026-08-26 CR-006 SG-2 正式验收后状态同步
+
+- 任务边界：本轮是主控分派的 L2 状态/留痕同步，专属 worktree=`/Users/ling/.codex/worktrees/sg2-state-sync-20260826`，固定基线 main=`7162c30d8a39a17fcee19b144ce4cc07fcf12d26`。只修改路线锁、PLANS、PRODUCT_SENSE、CR-006 活动计划与两份 `.codex` 留痕，不改代码、测试、Schema、control/formal refs 或其他文件。
+- 路线与生命周期：仍为 `S5 / P5`，服务 CR-006 当前最小闭环。SG-2 包级验收与 main 整合已闭合，下一步仅为 SG-3 packet；这不是阶段切换或新需求，不改变 V2..V4、Final Acceptance 与 P5 出口。
+- 项目规则：项目根无特化 `AGENTS.md`，按全局入口、`PROJECT_ROUTE_LOCK.md`、生命周期、留痕与开发工作流协议执行；使用 `verification-loop` 做差异与身份核验。CodeGraph 不适用于本次机械文档同步，未初始化。
+- live 身份：main=`7162c30d8a39a17fcee19b144ce4cc07fcf12d26`，formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`b2f2b8ca7cab05647c27e35a5e123a09fe39ff00`，`plan_generation=5`。
+- SG-2 集成身份：implementation attempt 2 原始候选=`989ba2fcd75f0466239e1957c880e6a0ce4b1b83`，以 main commit=`b79c991379c1937c60225da21eb581545b25ee4f` 合入；attempt 7 原始独立评审=`f359f6810ebf41a6f72a5eb5cdeebd52f8b7e919`，以 main commit=`7162c30d8a39a17fcee19b144ce4cc07fcf12d26` 合入。
+- 验收轨迹：attempt 6 是隔离 clone 未预置依赖造成的环境型 `REVISE / 70`，未要求修改候选；attempt 7 在 ACK 前完成 offline frozen 环境预置，独立验收为 `PASS / 99`，P0/P1/P2=`0/0/1`、`required_fixes=[]`。
+- Result 与验证：immutable Result digest=`sha256:83fd993d5d489e1bcd179267676e6f0312b48e02ad2058051856716f7ed63e51`，control=`b2f2b8ca7cab05647c27e35a5e123a09fe39ff00`。定向测试 `16/16`；全量 `494/494`，fail/skipped/cancelled/todo=`0/0/0/0`；coverage Lines/Branches/Functions=`93.44/88.38/99.19`。
+- P2 carry-forward：RED 首次失败命令的原始终端 transcript 未作为独立 immutable 内容寻址对象固化；现有 Execution Result 只保留摘要化 observed 说明。该风险不阻断 SG-2 包级验收，继续带入 CR-006 累积验收。
+- 明确未做：未把 SG-2 宣称为 PC-12、V2 或 P5 完成；未创建 SG-3 packet、CR-006 累积验收或 V2 packet，未移动 formal/control，未执行发布或 push。
+- 用户改动保护：未读取、修改、暂存或清理受保护 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`；本轮未扩张允许写集。
+- 阶段判断：本次状态同步闭合后，只放行 SG-3 packet preparation；CR-006 累积验收、V2 packet、formal 移动与 P5 完成继续保持门禁。

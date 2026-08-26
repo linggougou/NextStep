@@ -2587,3 +2587,28 @@
 - 最小可验收闭环：本轮审计与 fresh 验证已闭合。
 - P5 阶段门禁：未通过；不得进入 S7/S8，也不得发布完整产品声明。
 - 下一轮入口：按路线锁取得 SG-1 dispatch-ready/outbox 的精确授权并继续 CR-006；本审计不构成该授权。
+
+# 2026-08-26 CR-006 SG-2 状态同步验证
+
+## 身份与证据核对
+
+- 同步基线：main=`7162c30d8a39a17fcee19b144ce4cc07fcf12d26`，tree=`e4f40513b236f3215fd4cd0d93653f3fadcd66d1`，唯一父=`b79c991379c1937c60225da21eb581545b25ee4f`。
+- live refs：formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`b2f2b8ca7cab05647c27e35a5e123a09fe39ff00`；control checkpoint 的 `plan_generation=5`。
+- 候选集成：原始 implementation candidate=`989ba2fcd75f0466239e1957c880e6a0ce4b1b83`，tree=`18de6e08c8617961e0c710d74e86e35193e203a6`，parent=`8842e025088ba6a217fa098c82d788a5d603ef3d`；对应 main commit=`b79c991379c1937c60225da21eb581545b25ee4f` 保持相同 tree。
+- 评审集成：原始 review=`f359f6810ebf41a6f72a5eb5cdeebd52f8b7e919`，唯一父为原始候选且写集 exact-two；对应 main commit=`7162c30d8a39a17fcee19b144ce4cc07fcf12d26` 合入同一评审 tree=`e4f40513b236f3215fd4cd0d93653f3fadcd66d1`。
+- Result：`results/result-package-acceptance-sg2-g5-a7-f128-20260826.json` 的 digest=`sha256:83fd993d5d489e1bcd179267676e6f0312b48e02ad2058051856716f7ed63e51`，registry attempt 7=`gate-passed`，review commit ref 与上述原始评审一致。
+
+## 验收与质量证据
+
+- attempt 6：`revision-required-environment / REVISE / 70`；阻断来自 no-local clone 未预置离线依赖，`candidate_change_required=false`，不构成候选代码回归。
+- attempt 7：`PASS / 99`，9/9 hard gates，P0/P1/P2=`0/0/1`，`required_fixes=[]`。
+- 定向验证：`16/16`；全量 `corepack pnpm check`=`494/494`，fail/skipped/cancelled/todo=`0/0/0/0`；coverage Lines/Branches/Functions=`93.44/88.38/99.19`。
+- 行为门禁：较旧 sibling 的未知状态不再污染更新的 current task；被选中的 current task 状态未知时仍 `unknown-status` fail closed；敏感 next stage 返回 `next-action-sensitive`、`next_action=null`，且不泄漏 claim/fence/绝对路径。
+- 唯一 P2：RED 原始终端 transcript 未独立内容寻址固化，只在 Execution Result 中保留摘要化 observed 说明；继续带入 CR-006 累积验收。
+
+## 状态同步结论
+
+- 六个允许文件已统一为“SG-1、SG-2 包级验收完成；下一步仅 SG-3 packet preparation”。
+- 本次仅同步文档与留痕，未修改生产代码、测试、Schema、依赖或 Git refs；因此不重复运行全量产品测试，沿用 attempt 7 的已固化 `494/494` 证据，并以身份、diff 与格式检查验证本次同步。
+- 非完成边界：SG-2 不等于 PC-12、V2 或 P5 完成；CR-006 累积验收、V2 packet、formal 移动与 P5 完成仍未发生。
+- 门禁结论：本次状态同步通过，只允许进入 SG-3 packet preparation。

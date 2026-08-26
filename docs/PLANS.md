@@ -4,8 +4,8 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：CR-006 SG-2 packet preparation gate；V2 产品 packet 暂停在入口评估通过状态
-- 当前状态：main=`b0aa9b9`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`830d831808a92f53dfca4dea87bb98c71e448fb1`，`plan_generation=5`。SG-1 implementation ACK=`e0394c2`，正式 acceptance fence 119 ACK=`e9100f0`，Result=`sha256:e04bd4b0...`，结论 `PASS / 98`。提前 cherry-pick 异常已封存；当前仅准备 SG-2 独立 packet，SG-3 与 V2 packet 未创建。
+- 当前活动里程碑：CR-006 SG-3 packet preparation gate；V2 产品 packet 暂停在入口评估通过状态
+- 当前状态：main=`7162c30d8a39a17fcee19b144ce4cc07fcf12d26`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`b2f2b8ca7cab05647c27e35a5e123a09fe39ff00`，`plan_generation=5`。SG-1 已正式验收 `PASS / 98`；SG-2 implementation attempt 2 原始候选 `989ba2f` 已以 `b79c991` 合入，attempt 7 原始评审 `f359f68`=`PASS / 99` 已以 `7162c30` 合入，Result=`sha256:83fd993d...`。当前仅准备 SG-3 独立 packet；CR-006 累积验收与 V2 packet 未创建。
 
 ## 当前活动计划
 
@@ -28,7 +28,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。V2 入口独立评估已 `PASS / 100`。CR-006 SG-1 已通过正式独立验收，当前进入 SG-2 packet preparation gate；SG-3、CR-006 累积验收与 V2 产品 packet 保持暂停，P5 尚未完成。
+P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。V2 入口独立评估已 `PASS / 100`。CR-006 SG-1、SG-2 已通过正式独立验收，当前进入 SG-3 packet preparation gate；CR-006 累积验收与 V2 产品 packet 保持暂停，SG-2 不等于 PC-12，P5 尚未完成。
 
 实施顺序保持 P3 已会签结构：
 
