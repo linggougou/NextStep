@@ -2840,3 +2840,12 @@
 - 用户改动保护：全程未读取、修改、暂存或清理三个受保护未跟踪目标；Git 状态检查始终使用 `--untracked-files=no`，未 reset/rebase/clean/push。
 - 状态同步门禁：通过。生命周期继续为 `S5 / P5`，P5 阶段出口未通过，不允许进入 S7/S8；当前唯一允许入口是 S2.3 Execution Packet preparation。
 - 同步质量自检：`100 / 100`，建议通过；该分数只评价 exact-11 状态同步的一致性与边界，不替代 S2.2 独立验收或任何后续产品门禁。
+
+## 2026-08-27 S2.3 packet 与派发控制链验证
+
+- S2.3 packet 排除 `packet_digest`、`dedup_key` 后按项目 RFC8785/JCS 重算=`sha256:bd406a2b8b209aa566d718d72d355e7d96b9b25b4e733d69ed43f97b46369c25`；七字段 dedup 投影重算=`sha256:455db1287f8a173856bb84158e03be083d5e10135b2dfeddf46778804843ce84`，均与固化值一致。
+- 单父 expected-old CAS 链：S2.2 state sync=`8c5e696` → S2.3 packet=`f76be11` → claim/fence140=`eebaedb` → ready/outbox=`510f630` → dispatch ACK=`ecc2c2d`；每段唯一父与 expected-old 一致，formal F16 未移动。
+- dispatch-ready JCS payload digest=`sha256:9f8a691ad53459d93fe8dc5bb3d92728429b623f88b5799f1069cbdf7069a505`；packet、ready、outbox、ACK、registry 的 packet/dedup/claim/fence/host 绑定一致。
+- 工作树 readiness：HEAD/tree=`6ec262fbac45de3d0f84c05a4a5582049139f219` / `596a2948196f01454192ebe3e2090b8280b4a897`，离线依赖下载 0，`node_modules` 普通目录，TypeScript `7.0.2`，ACK 前 tracked clean。
+- packet allowlist 精确为 small-milestone Schema/domain/CLI、两份测试、fixture 目录和 Skill；docs、`.codex`、package/lock、S2.1/S2.2、refs 均禁止。实现 agent 不具备自验收、Result/control/main/formal 权限。
+- 完成边界：本验证只放行 S2.3 TDD 编码，不构成候选、独立验收、PC-11、M2.2、V2、alpha、formal 或 P5 完成证据。

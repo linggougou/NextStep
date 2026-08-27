@@ -2894,3 +2894,13 @@
 - 本地验证：`git diff --check` 通过；差异路径严格等于 exact-11；九份状态入口旧 S2.2 停点固定字符串反扫无命中；exact-11 新增差异的提前完成声明反扫无命中。
 - 测试边界：本轮仅同步 Markdown 状态真源，不重复运行产品测试；引用 attempt 3 已核定的 `526/526` 与 coverage，不包装为本轮重跑。
 - 状态：已结束。S2.2 权威状态=`gate-passed/present-in-main`；只允许进入 S2.3 Execution Packet preparation，尚未创建 S2.3 packet。
+
+## 2026-08-27 S2.2 状态固化与 S2.3 派发
+
+- S2.2 exact-11 状态同步已由 main `960d16ded99104ee7409ec6938e501db204ea8fa` 合入为 `6ec262fbac45de3d0f84c05a4a5582049139f219`；写集只含既定状态真源和 `.codex` 留痕。
+- S2.2 状态同步 control CAS=`8c5e696de5e60565e47252366bc23e5fb88521ff`，单父 expected-old=`6b4cb573655beb107d751004c9fc2b0b2c35490f`，只修改 `checkpoint.json`、`registry.json`；formal 继续为 F16。
+- S2.3 Execution Packet=`ep-p5-v2-m2.1-s2.3-g5-a1-20260827`，working parent=`6ec262f...`，packet digest=`sha256:bd406a2b8b209aa566d718d72d355e7d96b9b25b4e733d69ed43f97b46369c25`，dedup=`sha256:455db1287f8a173856bb84158e03be083d5e10135b2dfeddf46778804843ce84`；packet CAS=`f76be119396c08b443c059db6a8389c01e97fb3f`。
+- S2.3 claim/fence140 CAS=`eebaedbd26f8963fdca92d0b53599306ab62bf70`；ready/outbox payload JCS digest=`sha256:9f8a691ad53459d93fe8dc5bb3d92728429b623f88b5799f1069cbdf7069a505`，CAS=`510f6302442589bb08afd1de984a898642b085a9`。
+- 唯一实现 agent=`codex-subagent:/root/s23_impl_g5_a1_f140`，隔离 worktree 固定 HEAD=`6ec262f...`；offline frozen install downloaded=`0`，`node_modules` 非 symlink，TypeScript=`7.0.2`，初始 tracked clean。ACK CAS=`ecc2c2d778109694c3c05501bb5f9876296efbef`，accepted_at=`2026-08-27T10:57:00Z`。
+- S2.3 冻结边界：18 个节点、17 条依赖到被依赖者方向的精确线性边、唯一根 S1.1、唯一终点 S4.3、逐行 P3 字段语义；“无环但边集合不同”仍须拒绝。
+- 当前状态：S2.3 implementation running；独立验收、main 集成、S2.4、M2.1/M2.2、V2、alpha、formal 与 P5 均未完成。
