@@ -2768,3 +2768,16 @@
 - 工具替代：S2.1 精确授权字段探索触发 CodeGraph 结构检索，但项目 `.codegraph/` 未初始化且路线锁明确初始化“需询问”，本轮未擅自初始化；改用 P3/P4/P5 真源、control 中既有 packet 和 `rg`/定向文件树只读核对。新 explorer 因 thread limit 未能派发，由主控只读探索替代；未扩大本状态同步写集。
 - 验证：`git diff --check` 通过；写集严格为 exact-11；九份状态入口旧 pending/revise 当前停点反扫、十一份差异新增行提前完成声明反扫及受保护文件差异反扫均无命中。提交前 HEAD/formal/control 分别保持 `bd78c043...` / `ea04b57...` / `1ac071b...`。
 - 用户改动保护：未读取、修改、暂存或清理受保护 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`；未移动 refs、未 push。
+## 2026-08-27 v0.2.0-alpha 开发启动
+
+- 用户目标：先固定一个可实际试用的 `v0.2.0-alpha`，用户已将日常开发、控制流推进与任务规划交由主控自主执行。
+- 路线与阶段：继续处于 `S5 / P5 产品落地`；里程碑真源为 `PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md` 与 `docs/exec-plans/active/p5-product-implementation-milestones.md`。
+- 阶段出口：本轮服务 V2 的 S2.1..S2.4 和随后 alpha 预发布检查点；不改变 P5 最终仍需 V1..V4 与 Final Acceptance 的出口。
+- 当前最小闭环：只推进 S2.1 packet-prepared 后的 claim/fence、dispatch、TDD 实现、独立验收与合入；S2.2..S2.4 保持顺序等待。
+- 当前身份：main=`004e3b13b9abd3c47529802be7b1adfd2611c4b0`，formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`d1e5624aebccd3d5675c10d022ba7caa9f687d82`，`plan_generation=5`。
+- 控制对象：S2.1 packet=`ep-p5-v2-m2.1-s2.1-g5-a1-20260827`，digest=`sha256:94aa00ca0bf2bad7586adbfec25453e119413f5f46f73cbd6a7beedcd9694f3b`，当前状态=`packet-prepared`。
+- 并行分工：派出三个只读 subagent，分别核对控制链、S2.1 实现模式与 alpha 发布范围；严格顺序依赖的 S2.1..S2.4 不并行编码。
+- Skills：采用 `tdd-workflow` 和 `verification-loop`；测试先行、实现与验收角色分离、全量本地验证后才允许集成。
+- 变更分流：`v0.2.0-alpha` 作为 P5 内部预发布检查点，不宣称正式 P5 发布或 S8 交付归档；若发布范围需要改变既有路线或门禁，先更新 Change Intake/路线锁再实施。
+- 高危动作：当前不涉及重写、技术栈替换、删除门禁或权限弱化；不 push、不发布外部平台。
+- 用户改动保护：原工作区现有三个未跟踪文件全部保留；不得读取、修改、暂存或清理受保护 Multica 上下文文件。
