@@ -2807,3 +2807,19 @@
 - 已覆盖：三类正例 20/20、P3 精确主版本矩阵、七类单 mutation 负例、未知版本/字段/缺项/敏感内容/JCS/参数注入、确定性输出与摘要、稳定错误顺序、结果防伪及 S2.2+ 非目标。
 - 契约边界：使用 S2.1 本地 receipt，未越界修改全局 machine-receipt；无新增依赖。
 - 当前状态：首次 GREEN，不等于候选完成或独立验收通过；继续补 Skill、预算检查和 full `pnpm check`。
+
+## 2026-08-27 S2.1 attempt 1 基线漂移处置
+
+- attempt 1 候选：commit=`27461df8b66df7a2b2743811ab3d0de92975b527`，tree=`becde79221c84d0acda73e144bbd3625c3219bae`，直接父=`004e3b1...`；定向 `11/11` 全绿，写集为 exact-10 allowlist。
+- 全量门禁：`512` 中 `511 pass / 1 fail`；唯一失败为既有 project-status CLI 正例的固定 lease 自然过期，产品正确返回 `stale-active-identity`。Packet 明确要求 full `pnpm check`，因此未把排除该用例的 `516/516` 包装为门禁通过。
+- 独立修复：`3b47f82eb44388a01868b1dc8dc1a34abb9ee820` 仅修改 `tests/cli/project-status.test.ts` 两行，使 lease 相对当前时间并断言 `freshness=current`；独立 reviewer=`codex-subagent:/root/project_status_clock_review` 判定 PASS、P0/P1=`0/0`，fresh `pnpm check=503/503`。
+- main 集成：main 由 `004e3b1...` fast-forward 到 `3b47f82...`；formal/control 在集成时保持不变，原工作区未跟踪用户文件保持未触碰。
+- attempt 1 Result：control=`a1663ac02574b9b0a821fff2fc4adf5bf5e569bc`，Result digest=`sha256:800247b86c165452acecc1201b6e09f852d889cc6e384f0434638813bcf28ee4`，结论=`baseline-revision-required`。attempt 1 候选不得作为独立验收证据。
+
+## 2026-08-27 S2.1 attempt 2 重新派发
+
+- Packet：`ep-p5-v2-m2.1-s2.1-g5-a2-20260827`，working parent=`3b47f82...`，packet digest=`sha256:bfc2f84113d7af19a230add373b1bde0aac4af39e27658d5a04a14d55020cced`，dedup=`sha256:7e294457835fa269e397cc3f5253497b5c62c18c5e6d268f7796dbf47598cedc`；packet CAS control=`14d04e439467547879ab56b41f6d224105b89aef`。
+- claim/fence：`claim-s2.1-g5-a2-f134-20260827`、fence=`134`，control=`cc2f17382bbc3dc1f773e72fd64506a686674fbf`。
+- ready/outbox：payload digest=`sha256:cddfaf40a256a05e73daa8ab02388d724075986fe595ce216fc42bd1511ef840`，control=`7006b97f3366be20ed8d87f3d48a0523c21643f9`。
+- ACK：唯一新 worker=`codex-subagent:/root/s21_impl_g5_a2_f134`，专属 worktree=`/Users/ling/.codex/worktrees/nextstep-s21-g5-a2-f134`；ACK control=`ca4cac271a0dcbcc37ddc5c99d7db490054e083e`。
+- 当前门禁：attempt 2=`running`；必须重新形成 RED/GREEN、以 `3b47f82...` 为直接父、exact allowlist、full `pnpm check` 全绿。独立验收和 main/formal 推进仍后置。
