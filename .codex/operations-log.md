@@ -2791,3 +2791,11 @@
 - dispatch ACK：以 `b5fef36...` 为 expected-old，关闭 outbox、清空 pending、绑定唯一宿主；单父 CAS 后 control=`45fa7de20f2bb7da43b6b3b13afbb47a8991e40a`。
 - 当前状态：S2.1=`running`；实现 Agent 已获 ACK，严格按 packet allowlist 和 TDD 开发。独立验收、main 合入、formal 移动、M2.1/V2/P5 完成仍未发生。
 - 状态漂移：路线锁、PLANS、README 仍显示 packet 前旧 control；为保持 packet 固定 working parent，本轮不先移动 main，待 S2.1 候选闭合时做受控状态同步。
+
+## 2026-08-27 V2 S2.1 TDD RED 检查点
+
+- 实现 worktree：`/Users/ling/.codex/worktrees/nextstep-s21-g5-a1-f133`，固定 HEAD=`004e3b13b9abd3c47529802be7b1adfd2611c4b0`。
+- RED 写集：仅新增两个测试文件与四个 `tests/fixtures/version-chain/**` fixture，均在 packet allowlist 内。
+- RED 结果：`pnpm build` exit=`1`，核心失败为 `src/domain/version-chain.ts` 与 `src/cli/version-chain.ts` 尚不存在；其余错误是缺失类型导致的级联错误，符合测试先行预期。
+- 依赖准备：复用离线依赖，未修改 lockfile 或产品依赖。
+- 边界：尚无生产实现、候选提交或验收结论；随后只允许最小 GREEN 实现。
