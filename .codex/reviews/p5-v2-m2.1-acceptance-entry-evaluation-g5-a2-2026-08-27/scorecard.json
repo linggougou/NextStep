@@ -1,0 +1,214 @@
+{
+  "review_id": "p5-v2-m2.1-acceptance-entry-evaluation-g5-a2-2026-08-27",
+  "task_id": "M2.1-ENTRY-EVALUATION",
+  "lane": "P5/V2/M2.1/acceptance-entry",
+  "review_level": "L3",
+  "rubric_id": "nextstep-m2.1-acceptance-entry-readiness-v3",
+  "verdict": "PASS",
+  "review_started_at": "2026-08-27T13:40:27Z",
+  "reviewed_at": "2026-08-27T13:50:27Z",
+  "artifact_refs": [
+    "git:77cf0892ba12dd1048e24406a696f8d2dfe4bc3a",
+    "git-tree:2f275649fb44afa72bdf707436e59c0e1b5217c0",
+    "git-parent:250d58ba1a24e36354d3607bd4729977443acb51",
+    "git:8e2dce7ecdc8cba9c85564cffa408fd0f6f3f3e5",
+    "git:6ec262fbac45de3d0f84c05a4a5582049139f219",
+    "formal:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "control:100bc6ae2937caf14e6f1e5abc4a88d143583640",
+    ".codex/exec-plan-m2.1-acceptance-generation-1.md",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/PLANS.md",
+    ".codex/operations-log.md",
+    ".codex/verification-report.md"
+  ],
+  "subject_identity": {
+    "review_subject_commit": "77cf0892ba12dd1048e24406a696f8d2dfe4bc3a",
+    "review_subject_tree": "2f275649fb44afa72bdf707436e59c0e1b5217c0",
+    "review_subject_parent": "250d58ba1a24e36354d3607bd4729977443acb51",
+    "attempt1_candidate_commit": "8e2dce7ecdc8cba9c85564cffa408fd0f6f3f3e5",
+    "attempt1_review_commit": "250d58ba1a24e36354d3607bd4729977443acb51",
+    "attempt1_review_tree": "d2cf5f56f2621bc27be80e18dd39c1d3d3226fb1",
+    "historical_subject_commit": "6ec262fbac45de3d0f84c05a4a5582049139f219",
+    "historical_subject_tree": "596a2948196f01454192ebe3e2090b8280b4a897",
+    "historical_subject_parent": "960d16ded99104ee7409ec6938e501db204ea8fa",
+    "historical_subject_digest": "sha256:8ca135a89e6b586e810b04f83d62bde9da02b6ca7852c8786a3de13301534c61"
+  },
+  "control_identity": {
+    "formal_oid": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "entry_control_oid": "100bc6ae2937caf14e6f1e5abc4a88d143583640",
+    "entry_control_parent_oid": "b7900ae27af69cf175b11ab551e73e420e9a01ed",
+    "live_main_context_oid": "b68dd8974482517089ab558eb347856f4af6bde9",
+    "plan_generation": 5,
+    "stage_id": "P5/V2/M2.1/acceptance",
+    "task_id": "M2.1-I-X-P",
+    "task_attempt": 1
+  },
+  "independence_declaration": {
+    "reviewer": "codex-subagent:/root/m21_acceptance_entry_review_a2",
+    "role": "唯一独立 entry reviewer",
+    "clone": "/private/tmp/nextstep-m21-entry-review-g5-a2.TYE0VG/repo",
+    "statements": [
+      "未参与 attempt1 review 或计划创作。",
+      "审查期间只访问指定 clone；未访问原仓库、其他 clone 或 worktree。",
+      "本轮不运行产品 full tests，只做计划机械静态核对、祖先与摘要验证、路径验证和 git diff-check。",
+      "只输出本目录 exact-two；不修改计划、产品、formal、control、Result 或 refs。"
+    ]
+  },
+  "hard_gates": [
+    {
+      "id": "HG1-review-subject-identity-and-exact-three",
+      "status": "pass",
+      "evidence": "送审主体为 commit 77cf0892ba12dd1048e24406a696f8d2dfe4bc3a，唯一父为 250d58ba1a24e36354d3607bd4729977443acb51，tree=2f275649fb44afa72bdf707436e59c0e1b5217c0。git diff-tree 显示 changed paths 精确为 .codex/exec-plan-m2.1-acceptance-generation-1.md、.codex/operations-log.md、.codex/verification-report.md 三路径；git diff --check 通过。"
+    },
+    {
+      "id": "HG2-attempt1-history-and-entry-control-identity",
+      "status": "pass",
+      "evidence": "attempt1 review commit 250d58ba1a24e36354d3607bd4729977443acb51 为 exact-two，唯一父=8e2dce7ecdc8cba9c85564cffa408fd0f6f3f3e5，tree=d2cf5f56f2621bc27be80e18dd39c1d3d3226fb1。当前 formal=ea04b57de83d6c548dcb1629b1f61832db8375ad，live control ref=100bc6ae2937caf14e6f1e5abc4a88d143583640，且其唯一父为 b7900ae27af69cf175b11ab551e73e420e9a01ed。"
+    },
+    {
+      "id": "HG3-historical-subject-freeze",
+      "status": "pass",
+      "evidence": "历史验收 subject 固定为 6ec262fbac45de3d0f84c05a4a5582049139f219，tree=596a2948196f01454192ebe3e2090b8280b4a897，唯一父=960d16ded99104ee7409ec6938e501db204ea8fa。独立 JCS 复算 {commit_oid,parent_oid,tree_oid} 得到 sha256:8ca135a89e6b586e810b04f83d62bde9da02b6ca7852c8786a3de13301534c61，与计划一致。"
+    },
+    {
+      "id": "HG4-authority-and-invalid-history-boundary",
+      "status": "pass",
+      "evidence": "S2.1 authority 绑定 67dae282065926c2a583643cfc348385f1282554 / 3424a8a5e65d7737401cf602d7227bf637194817 / 24ef30a3399c8add07b691d288afc50c07160ee5 / sha256:938c6779cf5028629f93d2382713de1d7af444ca4b0fa1ad40dec274ae416fb6；S2.2 authority 绑定 d35e63d4ca7a6cca3ac3ac662b77a0ca482ad51e / 6c48b6c47215f45781734572902e1012e3ddef5d / 6ec262fbac45de3d0f84c05a4a5582049139f219 / sha256:332323df803af638aac65a6044d0cf17a171dc8ff5744e213385f18fda089c0e。两份 invalid audit sha256:f6c7681083f5fdb810f1375cf0ce75aeb759c1d4e554617fc027d15dc55a5041 与 sha256:08cf20a2c70e02833444c5ae7893ab007bc5c830441f3119ee2f60c115a6c9be 继续只作无效历史。"
+    },
+    {
+      "id": "HG5-same-reviewer-readiness-only-before-ack",
+      "status": "pass",
+      "evidence": "计划第 37 行与第 60 行统一要求：主控在 ACK 前派发未来唯一正式 reviewer 执行 readiness-only，该 reviewer 只能只读核对并回复 READY，不得测试、写文件或提交；主控收到该 host 的 READY 后才固化 ACK，并将 ACK 绑定同一 reviewer host。attempt1 中关于 readiness 执行者与时序的 P1 已闭合。"
+    },
+    {
+      "id": "HG6-post-ack-controller-only-evidence-import",
+      "status": "pass",
+      "evidence": "计划第 34、38、61-62 行明确：clone 内 frozen refs/nextstep/control 保持 pre-ACK ready control 不变；ACK 后由 controller-only provisioning 导入精确 ACK OID，并以 expected-old 全零 create-once CAS 只新增 refs/nextstep/evidence/m2.1-acceptance-ack-f<N>。正式审查前必须断言 ACK 唯一父=pre-ACK ready control、evidence ref 指向精确 ACK OID、formal/control/HEAD/tree/worktree 不变、ACK 前后 ref 集合差异精确只有该 evidence ref。attempt1 中关于 ACK/control 证据无法进入隔离 clone 的 P1 已闭合。"
+    },
+    {
+      "id": "HG7-isolation-and-no-remote-boundary",
+      "status": "pass",
+      "evidence": "计划第 37-38、43、59-61 行保持 no-local、origin-removed、无 alternates、detached historical subject 的隔离边界，同时把 ACK 证据交付限制为 controller-only object import 与单一 immutable evidence ref，不向 reviewer 授予原仓库写权限，也不允许 reviewer 修改任何 ref。"
+    },
+    {
+      "id": "HG8-packet-claim-ready-ack-single-chain-verifiability",
+      "status": "pass",
+      "evidence": "计划第 34、38、57-63 行保留从 entry control 到 packet、claim/fence、ready/outbox、ACK 的单父 CAS 链要求，并把 reviewer 的正式职责收敛为在 ACK 后验证完整 packet->claim->ready->ACK 单父链、再写 exact-three；若对象导入、ref 注入或任一断言失败，则 blocked/recovery、不得更换 reviewer。"
+    },
+    {
+      "id": "HG9-test-floors-and-ixp-profile-boundaries-frozen",
+      "status": "pass",
+      "evidence": "计划第 39-42 行没有弱化 targeted 23/23、fresh full >=526/526、fail/skip/cancel/todo=0/0/0/0、coverage floors 93.99/89.20/99.49，以及 I/X/P/Profile、PC 20/20、九个大里程碑、Profile 冲突矩阵和稳定拒绝失败面的要求。此次 entry review 仅验证这些门槛被正确冻结，不实际执行产品测试。"
+    },
+    {
+      "id": "HG10-product-scope-honesty",
+      "status": "pass",
+      "evidence": "计划第 42、63-66、70-74 行继续把产品声明限定在 PC-09、PC-10 与 M2.1 运行链；明确禁止宣称 PC-11..PC-13、M2.2、V2、v0.2.0-alpha、formal、CR-006、P5 或 qualified real runs 已完成。Result 最多只能进入 passed-awaiting-user-signoff，用户 ACK 与 completion 仍是后续两个独立 CAS。"
+    },
+    {
+      "id": "HG11-zero-side-effects-and-authority-discipline",
+      "status": "pass",
+      "evidence": "计划第 43、48-52、70-74 行保持 reviewer 零 ref 写入、零 Result 创建、零 signoff/ACK/completion、零产品/计划改写的权限边界；本轮送审提交相对父提交也仅为计划与两份留痕 exact-three，没有越权写集。"
+    },
+    {
+      "id": "HG12-judge-harness-pass-criteria",
+      "status": "pass",
+      "evidence": "计划第 44 行明确只有总分达标、P0/P1/P2=0/0/0、required_fixes=[] 才可 PASS；身份、时序、角色隔离、测试或副作用任一硬门失败必须 REVISE 或 REJECT，不得由总分抵消，符合 Judge Harness/L3 的评审契约。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "identity-and-history-integrity",
+      "score": 25,
+      "max_score": 25,
+      "reason": "送审主体、attempt1 历史、entry control、historical subject 三元组与摘要均可独立机械复算。",
+      "evidence_refs": [
+        "HG1-review-subject-identity-and-exact-three",
+        "HG2-attempt1-history-and-entry-control-identity",
+        "HG3-historical-subject-freeze"
+      ]
+    },
+    {
+      "id": "authority-and-boundary-correctness",
+      "score": 25,
+      "max_score": 25,
+      "reason": "S2.1/S2.2 authority、invalid history、产品范围与 Judge Harness pass 条件保持严格且无越权。",
+      "evidence_refs": [
+        "HG4-authority-and-invalid-history-boundary",
+        "HG10-product-scope-honesty",
+        "HG12-judge-harness-pass-criteria"
+      ]
+    },
+    {
+      "id": "ack-readiness-executability",
+      "score": 25,
+      "max_score": 25,
+      "reason": "attempt1 的两项 P1 已收敛为单义流程：同一 reviewer ACK 前 readiness-only，ACK 后 controller-only 导入精确 ACK 证据并以 immutable evidence ref 交付正式审查。",
+      "evidence_refs": [
+        "HG5-same-reviewer-readiness-only-before-ack",
+        "HG6-post-ack-controller-only-evidence-import",
+        "HG7-isolation-and-no-remote-boundary",
+        "HG8-packet-claim-ready-ack-single-chain-verifiability"
+      ]
+    },
+    {
+      "id": "gate-honesty-and-scope-discipline",
+      "score": 25,
+      "max_score": 25,
+      "reason": "测试门槛、I/X/P/Profile、零副作用、Result/signoff/completion 分离和 exact-two authority 都没有被提前消费或弱化。",
+      "evidence_refs": [
+        "HG9-test-floors-and-ixp-profile-boundaries-frozen",
+        "HG11-zero-side-effects-and-authority-discipline"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100
+  },
+  "finding_counts": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "required_fixes": [],
+  "nice_to_have": [],
+  "verification_summary": [
+    "独立复算 77cf089 的 parent/tree 与 exact-three 写集，git diff --check 通过。",
+    "独立复算 historical subject digest=sha256:8ca135a89e6b586e810b04f83d62bde9da02b6ca7852c8786a3de13301534c61。",
+    "核对 S2.1/S2.2 authority、invalid history、formal/control/live-main 绑定均可寻址。",
+    "attempt1 两项 P1 已通过同一 reviewer readiness-only 和 post-ACK immutable evidence ref 机制闭合。",
+    "本轮未运行产品 full tests；只验证计划把 23/23、>=526/526、coverage floors 与 I/X/P/Profile 边界冻结正确。"
+  ],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "identity": "codex-subagent:/root/m21_acceptance_entry_review_a2",
+      "conclusion": "PASS",
+      "note": "硬门机械核对通过；无 P0/P1。"
+    },
+    {
+      "role": "Strict Judge",
+      "identity": "codex-subagent:/root/m21_acceptance_entry_review_a2",
+      "conclusion": "PASS",
+      "score": 100,
+      "note": "attempt1 的两项 P1 已被修成单义、可执行控制链。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "identity": "codex-subagent:/root/m21_acceptance_entry_review_a2",
+      "conclusion": "PASS",
+      "note": "未发现以话术掩盖角色越权、控制链缺口或提前完成声明。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "identity": "codex-subagent:/root/m21_acceptance_entry_review_a2",
+      "conclusion": "PASS",
+      "score": 100,
+      "note": "允许此入口计划离开独立 entry review；仍不授权 packet、claim/fence、ACK、Result 或会签动作。"
+    }
+  ]
+}
