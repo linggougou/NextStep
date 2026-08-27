@@ -2823,3 +2823,14 @@
 - ready/outbox：payload digest=`sha256:cddfaf40a256a05e73daa8ab02388d724075986fe595ce216fc42bd1511ef840`，control=`7006b97f3366be20ed8d87f3d48a0523c21643f9`。
 - ACK：唯一新 worker=`codex-subagent:/root/s21_impl_g5_a2_f134`，专属 worktree=`/Users/ling/.codex/worktrees/nextstep-s21-g5-a2-f134`；ACK control=`ca4cac271a0dcbcc37ddc5c99d7db490054e083e`。
 - 当前门禁：attempt 2=`running`；必须重新形成 RED/GREEN、以 `3b47f82...` 为直接父、exact allowlist、full `pnpm check` 全绿。独立验收和 main/formal 推进仍后置。
+
+## 2026-08-27 S2.1 attempt 2 候选与独立验收派发
+
+- 实现候选：commit=`67dae282065926c2a583643cfc348385f1282554`，tree=`ed6228bad2a784ef0b34d4214f3bf4bfb62b9ce2`，唯一父=`3b47f82eb44388a01868b1dc8dc1a34abb9ee820`；写集为 packet allowlist 内 exact-10。
+- TDD 与验证：RED 为目标 domain/CLI 尚不存在的预期失败；定向 `11/11`；主控 fresh `pnpm check=514/514`，fail/skip/cancel/todo=`0/0/0/0`，coverage Lines/Branches/Functions=`93.63/88.80/99.27`，`git diff --check` 通过，无新增依赖。
+- Execution Result：`results/result-execution-s2.1-g5-a2-f134-20260827.json`，subject digest=`sha256:934978eb4ee9f72ecb24fcda8ecc1f80ec07b0ecb2c082d1708c087ad87f3da2`，Result digest=`sha256:2fe8c2e344ec79ddbbe2c4631f91528ede7d351087df83b4c17ff4d0dbfe1f3a`；单父 CAS control=`59e952a9b0273da6eda55d43bf0830654db30d2c`。
+- 独立验收 packet：`gate-package-acceptance-s2.1-g5-a1-20260827`，digest=`sha256:aad88daaf91c767344f84e34337949808eed6b897fd8d71e9ede04a9a3db8e94`，dedup=`sha256:9557c0883f4956b20ae59ec6121fc0e66e93ac7b4e9d8eb076e6988de045ed15`；packet control=`852eae6`，claim/fence135 control=`7508a1e`，ready/outbox control=`fe21fe9`。
+- 环境门禁：reviewer 首次 readiness 发现验收 worktree 无 `node_modules`，主控没有带病 ACK；随后在精确 worktree 执行 offline frozen install，确认普通目录、TypeScript `7.0.2` 和 exact HEAD 后才继续。
+- 派发 ACK：唯一 reviewer=`codex-subagent:/root/s21_accept_g5_a1_f135`，隔离 worktree=`/Users/ling/.codex/worktrees/nextstep-s21-accept-g5-a1-f135`；ACK control=`593ca9761e694f41d51500e4c0713d004bba7c25`。
+- reviewer 边界：只允许写并提交 exact-two `scorecard.json`、`verdict.md`，不得修候选、创建 Result/control 或移动 main/formal；只有 PASS 且 P0/P1=`0/0`、`required_fixes=[]` 才允许后续集成。
+- 用户改动保护：三个受保护未跟踪目标保持不读、不改、不暂存、不清理；验收 worktree 中即使可见也明确排除。

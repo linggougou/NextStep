@@ -2713,6 +2713,23 @@
 - 未创建 V2 packet、claim/fence、dispatch、Result 或 formal movement；未宣称 PC-12/PC-19/V2/V4/P5 完成。修复合入后仅放行再次独立 V2 entry reassessment。
 - 写集限定为 `README.md`、`PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md`、`docs/PRODUCT_SENSE.md`、`docs/change-requests/index.md`、`docs/qa/index.md`、两个 P5 active plan 与两份 `.codex` 留痕；没有产品代码、测试、Schema 或依赖变化，因此本候选不重复运行 `pnpm check`，引用两次已核定 fresh run 仅用于证明覆盖率波动。
 - 用户改动保护：未读取、修改、暂存或清理受保护 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`；未移动 refs、未 push。
+
+## 2026-08-27 S2.1 attempt 2 候选与独立验收派发验证
+
+### 候选硬门禁
+
+- 身份：candidate=`67dae282065926c2a583643cfc348385f1282554`，tree=`ed6228bad2a784ef0b34d4214f3bf4bfb62b9ce2`，唯一父=`3b47f82eb44388a01868b1dc8dc1a34abb9ee820`；subject digest 独立重算为 `sha256:934978eb4ee9f72ecb24fcda8ecc1f80ec07b0ecb2c082d1708c087ad87f3da2`。
+- 写集：exact-10，严格位于 S2.1 packet allowlist；production/schema/Skill=`4 files / 560 lines <= 4/800`，tests=`2/2`，fixtures=`4/8`，tests+fixtures=`435/1200`，新依赖=`0/0`。
+- 主控 fresh 验证：定向 `11/11`；`pnpm check=514/514`，fail/skip/cancel/todo=`0/0/0/0`；coverage Lines/Branches/Functions=`93.63/88.80/99.27`；`git diff --check` 通过。
+- Result：digest_contract 排除 `result_digest` 后 RFC8785 重算精确等于 `sha256:2fe8c2e344ec79ddbbe2c4631f91528ede7d351087df83b4c17ff4d0dbfe1f3a`；Result CAS 为单父 `ca4cac2 -> 59e952a`。
+
+### 独立验收控制链
+
+- acceptance packet digest/dedup 独立重算分别为 `sha256:aad88daaf91c767344f84e34337949808eed6b897fd8d71e9ede04a9a3db8e94` / `sha256:9557c0883f4956b20ae59ec6121fc0e66e93ac7b4e9d8eb076e6988de045ed15`。
+- 单父 CAS 链：packet=`852eae6`，claim/fence135=`7508a1e`，ready/outbox=`fe21fe9`，ACK=`593ca97`；ready payload JCS digest=`sha256:621d18006da0137f534e65d08d7a6d5a55821b55bbc5aec1783d21b6f486e863`。
+- readiness 首次因验收 worktree 未实际预置依赖而 fail closed；主控在精确 worktree 完成 offline frozen install 后，独立 reviewer 复核 `node_modules` 非 symlink、TypeScript=`7.0.2`、HEAD exact，才写 ACK。
+- reviewer 唯一身份=`codex-subagent:/root/s21_accept_g5_a1_f135`；输出白名单 exact-two，父提交必须是 candidate `67dae282`。当前仍在独立审查中，尚无 PASS/REVISE/REJECT Result，main/formal 未移动。
+- 受保护未跟踪目标不进入候选、review allowlist、暂存集或证据读取范围。
 - 机械检查：`git diff --check` 通过；提交前差异严格等于上述 exact-10 白名单；八份状态真源对 `main=813e9fd`、把 `93.50/88.62/99.22` 称为 current/fresh、旧的单次复评 pending 下一步口径反扫无命中。
 - 完成边界反扫：八份状态真源新增差异没有把 CR-006、V2 packet、formal、PC-12、PC-19、V2/V4/P5 或真实运行 3/3 包装为已关闭、已创建、已移动或已完成。
 
