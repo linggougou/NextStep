@@ -2999,3 +2999,22 @@
 - 差异路径必须严格等于 `.codex/exec-plan-m2.2-coverage-remediation-generation-1.md`、`.codex/operations-log.md`、`.codex/verification-report.md`；`git diff --check` 必须通过。
 - 修订提交唯一父必须为 `989eb10a9cf423024cf55c4a16aaa1a88966bd6f`，不得 amend/rebase/改写原 candidate；中文提交信息，提交后 tracked clean。
 - 质量自检=`100 / 100`，建议=`重新独立 entry review`。该结论只证明唯一 P1 已按 runtime evidence 窄修复，不替代重新独立评审，也不授权 remediation packet。
+
+## 2026-08-28 M2.2 coverage remediation Generation 2 计划验证
+
+### 冻结事实与范围
+
+- 计划唯一父预期=`ea342c25bda8191f1dbc001458acb130ce1d581a`；身份精确为 `P5/V2/M2.2/remediation / M2.2-COV / route_generation 1 / plan_generation 5 / task_attempt 2`，入口 control=`c8d01e75b4a07ec5225af847eebccf4363a3e8dd`。
+- state-sync REVISE Result digest=`sha256:633528e46fb525ef8f648644007bd6cfbc311dd9fa61732de2ab5d05bba11a57` 已固定；attempt 1 candidate=`68710ca8146ee79e8ce00bd06c93509455da58f0`、independent acceptance=`ea342c25bda8191f1dbc001458acb130ce1d581a`、PASS authority=`f4a0407e` 保持有效且不可改写。
+- failure delta 精确为 original main fresh full=`555/555`、零 fail/skip/cancel/todo、Lines/Branches/Functions=`94.36/89.64/99.57`，其中仅 Branches 未达 Generation 2 floor=`89.70`。
+- 唯一实现范围精确为 `tests/domain/small-milestone.test.ts`；只允许在既有“权威 S2.2 parser...”测试体加入 `evaluateSmallMilestonePlan(null)` 的 `INVALID_SMALL_MILESTONE` 断言，不新增测试数、fixture/helper/依赖或生产/config 变化。
+- 计划完整拆分 fence151 实现控制链、唯一实现角色、fence152 独立候选 review、线性集成、original-main-like fresh state-sync 和条件式 M2.2 acceptance attempt 2 入口；旧 attempt 1 authority 不被覆盖或降级。
+- 正式硬门为 full>=`555/555`、fail/skip/cancel/todo=`0/0/0/0`、Lines/Branches/Functions>=`94.36/89.70/99.57`。临时注入 raw=`8360/8858, 3003/3348, 697/700` 与 Node native=`94.38/89.70/99.57` 仅作可行性证据。
+- state-sync PASS 前禁止冻结新 historical subject 或进入 M2.2 attempt 2；本计划不授权 user-signoff、formal、V2、alpha、CR-006、P5 或 qualified real runs 状态变化。
+
+### 提交前检查
+
+- 必须执行 `git diff --check`，并证明差异路径严格等于 `.codex/exec-plan-m2.2-coverage-remediation-generation-2.md`、`.codex/operations-log.md`、`.codex/verification-report.md`。
+- 必须机械反扫 identity、入口 control、REVISE digest、attempt 1 三项不可变 authority、唯一 allowlist、单条 null 断言、fence151/fence152、线性集成、original-main-like fresh floors、state-sync PASS 条件和全部非授权边界。
+- 提交必须为单父、父=`ea342c25bda8191f1dbc001458acb130ce1d581a`，中文提交信息；提交后 tracked clean。
+- 计划质量自检=`100 / 100`，建议=`提交独立 entry review`。该评分仅评价计划候选的一致性、可执行性和 fail-closed 边界，不替代 entry review，也不授权后续 packet。

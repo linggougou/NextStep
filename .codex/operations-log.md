@@ -2984,3 +2984,13 @@
 - 修复内容：计划第 2 节固定 `const cyclic: Record<string, unknown> = {}; cyclic.self = cyclic;`，并要求在同一既有测试体内分别对 `evaluateSmallMilestonePlan(cyclic)` / `parseSmallMilestonePlan(cyclic)` 断言 `INVALID_SMALL_MILESTONE` / `RESULT_INTEGRITY_MISMATCH`；仍不新增 test count、不改生产代码或实现 allowlist。
 - reviewer 工作目录偏差：reviewer 曾因默认 cwd 短暂在原仓库创建本次 entry review 的 exact-two 新文件，发现后立即删除；未读取原内容，未触碰 refs、既有文件或受保护未跟踪目标。后续 reviewer 工作目录固定为 no-local、origin-removed、无 alternates 的隔离 clone，禁止依赖默认 cwd。
 - 写集与停点：本轮仍只修改计划、operations-log、verification-report exact-three；重新独立 entry review PASS 前不得创建 remediation packet。
+
+## 2026-08-28 M2.2 coverage remediation Generation 2 计划冻结
+
+- 从 current main=`ea342c25bda8191f1dbc001458acb130ce1d581a` 创建隔离 worktree/branch `codex/m22-coverage-remediation-plan-g2`；未读取原仓库工作树或受保护未跟踪目标，未访问或修改 `refs/nextstep`。
+- 固定身份=`P5/V2/M2.2/remediation / M2.2-COV / route_generation 1 / plan_generation 5 / task_attempt 2`，入口 control=`c8d01e75b4a07ec5225af847eebccf4363a3e8dd`，formal 保持 F16。
+- state-sync REVISE digest=`sha256:633528e46fb525ef8f648644007bd6cfbc311dd9fa61732de2ab5d05bba11a57`；attempt 1 candidate/independent acceptance/PASS authority=`68710ca... / ea342c2... / f4a0407e` 保持有效且不可改写。退回原因仅为 original main fresh Branches=`89.64 < 89.70`。
+- Generation 2 未来 allowlist 精确为 `tests/domain/small-milestone.test.ts`；只在既有“权威 S2.2 parser...”测试体加入一条 null 输入的 `INVALID_SMALL_MILESTONE` 断言，不新增 test、fixture/helper/依赖或生产/config 改动。
+- 控制链冻结为 entry review → 新 packet/claim/fence151/ready/ACK → 唯一实现 subagent → 独立候选 review fence152 → PASS 后线性集成 → original-main-like fresh state-sync。只有 state-sync PASS 才能冻结新 historical subject 并进入 M2.2 acceptance attempt 2。
+- 门槛固定 full>=`555/555`、零 fail/skip/cancel/todo、Lines>=`94.36`、Branches>=`89.70`、Functions>=`99.57`；临时注入实测只作可行性证据，不冒充正式 authority。
+- 本轮只写 Generation 2 计划和两份追加留痕 exact-three；不授权实现、user-signoff、formal、V2、alpha、CR-006 或 P5 完成。
