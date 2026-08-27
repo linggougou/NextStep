@@ -1,0 +1,215 @@
+{
+  "review_id": "p5-v2-s2.3-independent-acceptance-g5-a1-f142-2026-08-27",
+  "task_id": "S2.3-I-X-P",
+  "lane": "package-acceptance",
+  "review_level": "L3",
+  "rubric_id": "p5-v2-s2.3-package-acceptance-v1",
+  "verdict": "PASS",
+  "review_started_at": "2026-08-27T11:27:25Z",
+  "reviewed_at": "2026-08-27T11:29:21Z",
+  "ack_accepted_at": "2026-08-27T11:26:12Z",
+  "artifact_refs": [
+    "git:37bbd1c5b51daf44e8f411c2404e958925029b01",
+    "git-tree:ab825c03ecfd2d4e12c639c1ccf1cfec54c2e65f",
+    "git-parent:30e617cddff404ed8501ebb18a74348e372ee5e1",
+    "control:052f3d3aa4582c32264490d53f7e0965ce328add:gate-requests/gate-package-acceptance-s2.3-g5-a1-20260827.json",
+    "control:2a9279e7416faa14a2f11b4ba327bf8f05e733ef",
+    "control:9c23eee114d4466a79b4c9e6a43d0a2df565e552",
+    "control:98b79c23ace2fdbdc36a20f744313e309d605320:messages/msg-dispatch-ack-s2.3-ixp-g5-a1-f142-20260827.json",
+    "formal:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "result:results/result-execution-s2.3-g5-a2-f141-20260827.json",
+    "audit:results/result-execution-s2.3-g5-a1-f140-identity-audit-20260827.json"
+  ],
+  "subject_identity": {
+    "commit_oid": "37bbd1c5b51daf44e8f411c2404e958925029b01",
+    "tree_oid": "ab825c03ecfd2d4e12c639c1ccf1cfec54c2e65f",
+    "parent_oid": "30e617cddff404ed8501ebb18a74348e372ee5e1",
+    "subject_digest": "sha256:89b9b0909f7ea102536ae08e080675d94e8a4b1f6c214d108761236cd9b834bd"
+  },
+  "control_identity": {
+    "stage_id": "P5/V2/M2.2/S2.3/acceptance",
+    "plan_generation": 5,
+    "packet_digest": "sha256:86208e3722e13d80db856ea1a22c31ca40efb4f600b17be8235e8cfde9509a80",
+    "dedup_key": "sha256:3e27c327dce781366eabc5114a93cb9a4889b467fc7c1d3b2a2546379a0f180a",
+    "execution_result_digest": "sha256:8247ede7fd00352f96c7b74adcdef5efb5e172bf0bb2655115a0fcc2ff80afb2",
+    "attempt1_identity_audit_digest": "sha256:c82ef7e2ff65f36864771185c0be08b2d2413af9eeb779abb0968dafac2e6da6",
+    "claim_id": "claim-s2.3-ixp-g5-a1-f142-20260827",
+    "fence_token": 142,
+    "packet_control_oid": "052f3d3aa4582c32264490d53f7e0965ce328add",
+    "claim_control_oid": "2a9279e7416faa14a2f11b4ba327bf8f05e733ef",
+    "ready_control_oid": "9c23eee114d4466a79b4c9e6a43d0a2df565e552",
+    "dispatch_ack_control_oid": "98b79c23ace2fdbdc36a20f744313e309d605320",
+    "host_task_id": "codex-subagent:/root/s23_accept_g5_a1_f142",
+    "formal_oid": "ea04b57de83d6c548dcb1629b1f61832db8375ad"
+  },
+  "independence_declaration": {
+    "reviewer": "codex-subagent:/root/s23_accept_g5_a1_f142",
+    "role": "唯一独立 reviewer",
+    "clone": "/Users/ling/.codex/review-clones/nextstep-s23-a1-f142",
+    "statements": [
+      "未参与 S2.3 implementation attempt 1、corrected attempt 2 或候选生成。",
+      "审查期间只访问一次性 no-local、origin-removed、自包含隔离 clone。",
+      "未访问或修改原仓库、共享 worktree、attempt1 worktree 或其他 clone。",
+      "未修复候选、创建 Result、写 control、移动 refs、集成或同步状态。",
+      "结论来自 ACK 后独立摘要复算、真源比对、负例检查和 fresh 本地验证。"
+    ]
+  },
+  "hard_gates": [
+    {
+      "id": "HG0-attempt1-identity-invalid-history",
+      "status": "pass",
+      "evidence": "attempt1 audit digest 独立复算为 sha256:c82ef7e2ff65f36864771185c0be08b2d2413af9eeb779abb0968dafac2e6da6；其 stage=P5/V2/M2.1/S2.3、correct_stage=P5/V2/M2.2/S2.3、fence=140、candidate_ref=null、green_started=false。audit blob 7a0631349cc7126b1d6d133a699e6294158d4b7d 自审计提交至当前 control 保持不变，RED-only attempt1 不构成本包批准证据。"
+    },
+    {
+      "id": "HG1-digests-identity-and-single-parent-control-chain",
+      "status": "pass",
+      "evidence": "独立 RFC8785 复算 packet=sha256:86208e3722e13d80db856ea1a22c31ca40efb4f600b17be8235e8cfde9509a80、dedup=sha256:3e27c327dce781366eabc5114a93cb9a4889b467fc7c1d3b2a2546379a0f180a、subject=sha256:89b9b0909f7ea102536ae08e080675d94e8a4b1f6c214d108761236cd9b834bd、execution Result=sha256:8247ede7fd00352f96c7b74adcdef5efb5e172bf0bb2655115a0fcc2ff80afb2、attempt1 audit=sha256:c82ef7e2ff65f36864771185c0be08b2d2413af9eeb779abb0968dafac2e6da6，全部匹配。control 单父链为 0f4070d -> 052f3d3(packet) -> 2a9279e(claim) -> 9c23eee(ready) -> 98b79c2(ACK)。"
+    },
+    {
+      "id": "HG2-one-time-clone-and-offline-toolchain",
+      "status": "pass",
+      "evidence": "隔离 clone 的 git remote -v 为空，.git 是本地自包含目录；node_modules 存在且不是 symlink；本地 tsc --version=7.0.2；detached HEAD 精确为候选且开始时 clean。未访问共享 refs 或原仓库。"
+    },
+    {
+      "id": "HG3-post-ack-time-order",
+      "status": "pass",
+      "evidence": "ACK accepted_at=2026-08-27T11:26:12Z；review_started_at=2026-08-27T11:27:25Z、reviewed_at=2026-08-27T11:29:21Z，二者均严格晚于 ACK。review commit 仅在本评分卡完成后创建，commit time 必须且将严格晚于 ACK。"
+    },
+    {
+      "id": "HG4-exact-subject-stage-and-nine-paths",
+      "status": "pass",
+      "evidence": "subject commit/tree/parent 精确为 37bbd1c5b51daf44e8f411c2404e958925029b01 / ab825c03ecfd2d4e12c639c1ccf1cfec54c2e65f / 30e617cddff404ed8501ebb18a74348e372ee5e1；stage 精确为 P5/V2/M2.2/S2.3。相对 parent 的 changed paths 恰为 packet expected_candidate_changed_paths 九项，无额外路径。"
+    },
+    {
+      "id": "HG5-targeted-full-coverage-and-diff-check",
+      "status": "pass",
+      "evidence": "fresh 定向 build + domain/CLI tests=10/10；fresh pnpm check exit 0，discovered=536、pass=536、fail/skip/cancel/todo=0/0/0/0；全量 coverage Lines/Branches/Functions=94.12/89.28/99.52，S2.3 domain=98.47/92.17/100，S2.3 CLI=100/100/100；git diff --check 通过。"
+    },
+    {
+      "id": "HG6-p3-semantics-graph-and-negative-boundaries",
+      "status": "pass",
+      "evidence": "实现调用权威 parseMajorMilestonePlan 并重验 project repository_id/formal_baseline。独立从签署 P3 表提取 18 行，与实现 10 字段/行共 180 项逐项完全一致；覆盖 9/9 owner、精确 17 dependency-to-dependent 边、唯一根 S1.1、唯一终点 S4.3、zero cycles。测试覆盖缺失/重复/乱序/未知行、S4.4/Final Acceptance 注入、18 行任一字段改写、错误 owner、缺失/额外/重复/自依赖/未知/反向/跳级/替代 DAG/环路、上游伪造、project drift、summary/result tamper、non-JCS、坏 UTF-8、参数和敏感输入，全部 fail closed。"
+    },
+    {
+      "id": "HG7-budget-dependencies-and-blocked-scope",
+      "status": "pass",
+      "evidence": "production+schema+Skill=4 文件/666 行 <=4/900；tests=2 文件；fixtures=3 文件 <=7；tests+fixtures=403 行 <=1100；package.json 与 pnpm-lock.yaml 无变化，新增依赖=0。Skill 和输出继续阻塞 S2.4+、M2.2、V2、v0.2.0-alpha、formal 与 P5，不作完成过度声明。"
+    },
+    {
+      "id": "HG8-exact-two-review-output-and-authority-boundary",
+      "status": "pass",
+      "evidence": "reviewer 只新增 .codex/reviews/p5-v2-s2.3-independent-acceptance-g5-a1-f142-2026-08-27/scorecard.json 与 verdict.md；未修改候选、Result、control、formal、main 或其他 refs。review commit 以候选 37bbd1c5b51daf44e8f411c2404e958925029b01 为唯一父。"
+    }
+  ],
+  "verification": {
+    "targeted": {
+      "command": "corepack pnpm build && node --test dist/tests/domain/small-milestone.test.js dist/tests/cli/small-milestone.test.js",
+      "discovered": 10,
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    },
+    "full": {
+      "command": "corepack pnpm check",
+      "exit_code": 0,
+      "discovered": 536,
+      "passed": 536,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    },
+    "coverage": {
+      "all_files": { "lines": 94.12, "branches": 89.28, "functions": 99.52 },
+      "small_milestone_domain": { "lines": 98.47, "branches": 92.17, "functions": 100 },
+      "small_milestone_cli": { "lines": 100, "branches": 100, "functions": 100 }
+    },
+    "p3_comparison": {
+      "rows": 18,
+      "fields_per_row": 10,
+      "comparisons": 180,
+      "mismatches": 0,
+      "major_milestone_owners": 9,
+      "dependency_edges": 17,
+      "roots": ["S1.1"],
+      "terminals": ["S4.3"],
+      "cycles": 0
+    },
+    "budget": {
+      "production_schema_skill_files": 4,
+      "production_schema_skill_lines": 666,
+      "test_files": 2,
+      "fixture_files": 3,
+      "test_and_fixture_lines": 403,
+      "new_dependencies": 0
+    },
+    "git_diff_check": "pass"
+  },
+  "dimensions": [
+    {
+      "id": "identity-control-and-independence",
+      "score": 25,
+      "max_score": 25,
+      "reason": "attempt1 无效身份历史保持不可变，packet/dedup/subject/Result/audit 与单父 control 链可独立复算，且唯一 reviewer 的 clone、角色和时序边界完整。",
+      "evidence_refs": ["HG0-attempt1-identity-invalid-history", "HG1-digests-identity-and-single-parent-control-chain", "HG2-one-time-clone-and-offline-toolchain", "HG3-post-ack-time-order"]
+    },
+    {
+      "id": "contract-and-graph-correctness",
+      "score": 25,
+      "max_score": 25,
+      "reason": "候选身份与 M2.2 stage 精确，P3 18 行语义、9/9 owner、17 条冻结边、唯一根/终点和零环全部满足，并调用权威 S2.2 parser。",
+      "evidence_refs": ["HG4-exact-subject-stage-and-nine-paths", "HG6-p3-semantics-graph-and-negative-boundaries"]
+    },
+    {
+      "id": "verification-and-fail-closed-boundaries",
+      "score": 25,
+      "max_score": 25,
+      "reason": "fresh 定向 10/10、全量 536/536、覆盖率和 diff 检查全部达标；系统性正负例证明输入、上游、语义、图、摘要、结果与 CLI 边界均 fail closed。",
+      "evidence_refs": ["HG5-targeted-full-coverage-and-diff-check", "HG6-p3-semantics-graph-and-negative-boundaries"]
+    },
+    {
+      "id": "scope-budget-and-authority-discipline",
+      "score": 25,
+      "max_score": 25,
+      "reason": "exact-nine 候选、零依赖扩张、全部预算和 exact-two reviewer 写集均满足；没有修候选、创建 Result、移动 refs 或宣告后续阶段完成。",
+      "evidence_refs": ["HG4-exact-subject-stage-and-nine-paths", "HG7-budget-dependencies-and-blocked-scope", "HG8-exact-two-review-output-and-authority-boundary"]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100
+  },
+  "finding_counts": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "required_fixes": [],
+  "nice_to_have": [],
+  "verification_summary": [
+    "corrected S2.3 candidate、M2.2 stage、packet/ACK/fence 142 与 subject identity 全部精确。",
+    "P3 18 行语义、9/9 ownership、17/17 冻结边、唯一根/终点与零环均独立通过。",
+    "定向 10/10、全量 536/536、覆盖率和所有负例边界通过。",
+    "预算、零依赖、exact-two、时间顺序与独立 reviewer 权限边界全部满足。",
+    "本 PASS 只批准 S2.3 package acceptance 证据；S2.4+、M2.2、V2、alpha、formal 与 P5 仍未完成。"
+  ],
+  "reviewers": [
+    {
+      "role": "Generator",
+      "identity": "codex-subagent:/root/s23_impl_g5_a2_f141",
+      "conclusion": "submitted",
+      "note": "生成 corrected M2.2 候选；未参与本次独立批准。"
+    },
+    {
+      "role": "Independent Reviewer / Strict Judge / Anti-Slop Judge / Chief Reviewer",
+      "identity": "codex-subagent:/root/s23_accept_g5_a1_f142",
+      "conclusion": "PASS",
+      "note": "100/100；P0/P1/P2=0/0/0；required_fixes=[]；只放行本次 S2.3 package acceptance 证据。"
+    }
+  ]
+}
