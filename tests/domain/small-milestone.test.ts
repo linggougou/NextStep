@@ -20,7 +20,7 @@ import {
   parseSmallMilestonePlan,
   type SmallMilestoneCandidate,
 } from "../../src/domain/small-milestone.ts";
-import { evaluateVersionChain } from "../../src/domain/version-chain.ts";
+import { VersionChainError, evaluateVersionChain, parseVersionChainResult } from "../../src/domain/version-chain.ts";
 
 const fixtureRoot = resolve(process.cwd(), "tests/fixtures");
 const positiveFixtures = ["project-delivery-tool", "community-workshop", "expense-reminder"] as const;
@@ -209,6 +209,14 @@ test("权威 S2.2 parser、项目绑定、摘要与结果完整性全部 fail cl
   cyclic.self = cyclic;
   assert.throws(() => evaluateSmallMilestonePlan(cyclic), expectCode("INVALID_SMALL_MILESTONE"));
   assert.throws(() => parseSmallMilestonePlan(cyclic), expectCode("RESULT_INTEGRITY_MISMATCH"));
+  assert.throws(
+    () => parseVersionChainResult(cyclic),
+    (error) => error instanceof VersionChainError && error.reasons.some((reason) => reason.code === "RESULT_INTEGRITY_MISMATCH"),
+  );
+  assert.throws(
+    () => evaluateVersionChain(null),
+    (error) => error instanceof VersionChainError && error.reasons.some((reason) => reason.code === "INVALID_VERSION_CHAIN"),
+  );
 
   const result = evaluateSmallMilestonePlan(base);
   const resultMutations: Array<(value: Record<string, unknown>) => void> = [
