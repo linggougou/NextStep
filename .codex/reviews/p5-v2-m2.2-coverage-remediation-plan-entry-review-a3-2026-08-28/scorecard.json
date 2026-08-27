@@ -1,0 +1,130 @@
+{
+  "review_id": "p5-v2-m2.2-coverage-remediation-plan-entry-review-a3-2026-08-28",
+  "task_id": "M2.2-COV",
+  "lane": "entry-review",
+  "review_level": "L2",
+  "rubric_id": "nextstep-remediation-plan-entry-v1",
+  "artifact_refs": [
+    {
+      "kind": "reviewed-plan-commit",
+      "commit": "a7c7fba0684db6e3cba921a2e9225739095e1058",
+      "tree": "6ee0da99b7259b95b7ed935c2979213c5b3b783b",
+      "parent": "989eb10a9cf423024cf55c4a16aaa1a88966bd6f"
+    },
+    {
+      "kind": "plan",
+      "path": ".codex/exec-plan-m2.2-coverage-remediation-generation-1.md"
+    },
+    {
+      "kind": "previous-entry-review",
+      "commit": "d6ae75dba2cc87679fde1455445072833e09ce77",
+      "verdict": "REVISE",
+      "required_fix": "evaluateSmallMilestonePlan(cyclic) must assert INVALID_SMALL_MILESTONE while parseSmallMilestonePlan(cyclic) asserts RESULT_INTEGRITY_MISMATCH"
+    }
+  ],
+  "hard_gates": [
+    {
+      "id": "HG1",
+      "status": "pass",
+      "evidence": "Detached HEAD 精确等于 a7c7fba0684db6e3cba921a2e9225739095e1058；tree=6ee0da99b7259b95b7ed935c2979213c5b3b783b；唯一 parent=989eb10a9cf423024cf55c4a16aaa1a88966bd6f。候选提交相对其父仅修改执行计划、operations-log、verification-report 三条路径。"
+    },
+    {
+      "id": "HG2",
+      "status": "pass",
+      "evidence": "评审在 fresh git clone --no-local 副本中执行；origin 已移除，git remote -v 无输出；.git/objects/info 无 alternates；未访问或修改原仓库工作树、main/formal/control refs、其他 clone 或受保护未跟踪目标。"
+    },
+    {
+      "id": "HG3",
+      "status": "pass",
+      "evidence": "上轮 d6ae75d 的唯一 required_fix 已关闭：计划第 2 节现明确 const cyclic: Record<string, unknown> = {}; cyclic.self = cyclic;，并将 evaluateSmallMilestonePlan(cyclic) 的外层契约修正为 INVALID_SMALL_MILESTONE，同时保留 parseSmallMilestonePlan(cyclic) -> RESULT_INTEGRITY_MISMATCH。"
+    },
+    {
+      "id": "HG4",
+      "status": "pass",
+      "evidence": "fresh offline/frozen install + build 后的最小 runtime probe 复现：evaluateSmallMilestonePlan(cyclic) 抛出 SmallMilestoneError，reasons[0].code=INVALID_SMALL_MILESTONE；parseSmallMilestonePlan(cyclic) 抛出 SmallMilestoneError，reasons[0].code=RESULT_INTEGRITY_MISMATCH。旧的 DEPENDENCY_CYCLE 外层预期已不再存在。"
+    },
+    {
+      "id": "HG5",
+      "status": "pass",
+      "evidence": "计划仍将 remediation allowlist 精确限定为 tests/domain/small-milestone.test.ts，明确不得新增 test(...) 或 it(...) 计数、不得改生产代码/Schema/CLI/Skill/fixture/依赖；若断言暴露生产差异，必须停止并走新变更入口。"
+    },
+    {
+      "id": "HG6",
+      "status": "pass",
+      "evidence": "角色与控制链边界保持严格：remediation packet、claim/fence、dispatch-ready/outbox、dispatch ACK 与后续 M2.2 attempt 2 acceptance packet/fence/ACK/Result 全部要求独立 expected-old 单父 CAS；attempt 1 的 REVISE Result、packet、fence148、ACK、review 与 host 明确不可升级或复用。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "D1",
+      "name": "身份与提交边界",
+      "score": 25,
+      "max_score": 25,
+      "reason": "候选 commit/tree/唯一父、三路径写集与 no-local 隔离边界均可独立复核。",
+      "evidence_refs": [
+        "HG1",
+        "HG2"
+      ]
+    },
+    {
+      "id": "D2",
+      "name": "required_fix 关闭质量",
+      "score": 35,
+      "max_score": 35,
+      "reason": "计划文本与 fresh runtime probe 对齐，唯一 P1 已按真实外层错误契约收口，没有继续沿用 DEPENDENCY_CYCLE 的错误预期。",
+      "evidence_refs": [
+        "HG3",
+        "HG4"
+      ]
+    },
+    {
+      "id": "D3",
+      "name": "范围与 anti-padding",
+      "score": 20,
+      "max_score": 20,
+      "reason": "修订仍是 test-only、单文件、零新增测试计数与零生产面改动，没有借 coverage remediation 偷渡更大范围。",
+      "evidence_refs": [
+        "HG5"
+      ]
+    },
+    {
+      "id": "D4",
+      "name": "角色隔离与 authority discipline",
+      "score": 20,
+      "max_score": 20,
+      "reason": "attempt 1 永久 REVISE authority、双控制链、独立实现/候选审查/attempt 2 验收 reviewer 等边界保持清晰，没有升级 attempt 1 或混并后续授权。",
+      "evidence_refs": [
+        "HG6"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "severity_counts": {
+      "P0": 0,
+      "P1": 0,
+      "P2": 0
+    }
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "PASS：候选身份、写集、隔离边界与唯一 required_fix 的 runtime 闭环全部成立。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "PASS：修订是精确收口，不扩大到生产实现，也没有留下新的 gate 级缺口。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "PASS / 100；P0/P1/P2=0/0/0；允许进入后续 remediation packet 创建授权门禁，但本评审本身不创建 packet、dispatch、Result 或任何 ref 变更。"
+    }
+  ],
+  "reviewed_at": "2026-08-27T17:00:20Z"
+}
