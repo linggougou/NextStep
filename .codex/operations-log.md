@@ -2834,3 +2834,12 @@
 - 派发 ACK：唯一 reviewer=`codex-subagent:/root/s21_accept_g5_a1_f135`，隔离 worktree=`/Users/ling/.codex/worktrees/nextstep-s21-accept-g5-a1-f135`；ACK control=`593ca9761e694f41d51500e4c0713d004bba7c25`。
 - reviewer 边界：只允许写并提交 exact-two `scorecard.json`、`verdict.md`，不得修候选、创建 Result/control 或移动 main/formal；只有 PASS 且 P0/P1=`0/0`、`required_fixes=[]` 才允许后续集成。
 - 用户改动保护：三个受保护未跟踪目标保持不读、不改、不暂存、不清理；验收 worktree 中即使可见也明确排除。
+
+## 2026-08-27 S2.1 gate passed 与 main 集成状态同步
+
+- 固定候选：`67dae282065926c2a583643cfc348385f1282554`；独立 exact-two review：`3424a8a5e65d7737401cf602d7227bf637194817`。
+- package acceptance：`PASS / 100`，P0/P1/P2=`0/0/0`，Result digest=`sha256:938c6779cf5028629f93d2382713de1d7af444ca4b0fa1ad40dec274ae416fb6`；验收 fresh `514/514`，coverage Lines/Branches/Functions=`93.61/88.74/99.27`。
+- main 集成：integration checkpoint=`24ef30a3399c8add07b691d288afc50c07160ee5`；主线 fresh `514/514`，coverage Lines/Branches/Functions=`93.63/88.80/99.27`。
+- control 集成 CAS=`bf7aab75881bf3b8b876cff510ec69fccb55b1a5`；formal 保持 F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，`plan_generation=5`。
+- 本轮仅在固定父 `24ef30a3399c8add07b691d288afc50c07160ee5` 的专属 state-sync worktree 同步 exact-11 文档/留痕路径，不修改 main/formal/control refs，不重复运行已有 fresh 产品测试，不 push。
+- 状态边界：S2.1 自身 gate passed 且已在 main；下一唯一入口为准备 `P5/V2/M2.1/S2.2 generation 5 attempt 1` Execution Packet。`change_request_closed=false`；PC-09、M2.1、V2、formal、P5 与真实运行 3/3 均未完成。

@@ -4,8 +4,8 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：CR-006 cumulative gate 已通过；V2 entry reassessment attempt 3=`PASS / 100`；首个 V2 产品 packet 尚未授权
-- 当前状态：`accepted_subject_main=37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa`、`cumulative_review_commit=813e9fd5240b1af6413a274daa7e307757bbb246`、`cumulative_state_sync_commit=7274c03fbb6e7ee11dc7f24690a2af50ed76169a`、`first_reassessment_review_commit=7a579dd1f08ec65e916e509863846d99f143c9d5`、`v2_entry_attempt3_review_commit=bd78c043d6e16da3debadcd7c7395c31624a33ac`；live main 必须运行时 `git rev-parse refs/heads/main`，不得把上述历史提交误称为 current。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`。cumulative packet=`6c49825`、claim/fence 132=`4a3e6ab`、ready=`5414c63`、ACK=`8231caf`；cumulative 结论 `PASS / 97`，P0/P1/P2=`0/0/3`，Result digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。SG-1 两项 P2、SG-2 一项 P2、SG-3 两条边界继续保留，精确状态仍为“真实项目价值验证框架可用，真实运行 0/3”。attempt 3 独立复评结论=`PASS / 100`、P0/P1/P2=`0/0/0`，fresh `503/503`、fail/skip/cancel/todo=`0/0/0/0`、coverage `93.53/88.69/99.22`；attempt 2 `cb28627...` 因 reviewer-authored subject `ccc182e...` 违反角色分离而 invalid/superseded，首次 `REVISE / 88` 继续作为历史链保留。`change_request_closed=false`，无 V2 packet/control state；下一唯一动作只是形成并请求 `V2/S2.1 attempt 1` Execution Packet control CAS 的精确用户授权。formal 不移动，PC-12/PC-19/V2/V4/P5/真实运行 3/3 均未完成。
+- 当前活动里程碑：V2 / M2.1；S2.1 gate passed 且已在 main；下一唯一入口为 S2.2 Execution Packet preparation
+- 当前状态：S2.1 候选=`67dae282065926c2a583643cfc348385f1282554`、独立评审=`3424a8a5e65d7737401cf602d7227bf637194817`、integration checkpoint=`24ef30a3399c8add07b691d288afc50c07160ee5`；package acceptance=`PASS / 100`、P0/P1/P2=`0/0/0`，Result digest=`sha256:938c6779cf5028629f93d2382713de1d7af444ca4b0fa1ad40dec274ae416fb6`。验收 fresh `514/514`、coverage `93.61/88.74/99.27`；主线 fresh `514/514`、coverage `93.63/88.80/99.27`。live main 必须运行时解析；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动，control=`bf7aab75881bf3b8b876cff510ec69fccb55b1a5`，`plan_generation=5`。`change_request_closed=false`；下一唯一入口为准备 `P5/V2/M2.1/S2.2 generation 5 attempt 1` Execution Packet。S2.1 gate passed 不代表 PC-09、M2.1、V2 或 P5 完成；真实运行仍为 0/3。
 
 ## 当前活动计划
 
@@ -28,7 +28,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。V2 原入口独立评估已 `PASS / 100`。CR-006 SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过；累计结论 `PASS / 97` 只关闭该门禁，不自动关闭 CR-006。SG-3 包级结论仍是“真实项目价值验证框架可用，真实运行 0/3”，不等于 PC-19 或真实项目运行验收完成。CR-006 后 V2 entry attempt 3 已独立 `PASS / 100`；attempt 2 的自审异常已程序作废。当前没有 V2 packet/control state，下一唯一动作只是形成并请求 `V2/S2.1 attempt 1` Execution Packet control CAS 的精确用户授权；不得据此执行 CAS、claim/fence、dispatch 或编码，P5 尚未完成。
+P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。CR-006 SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，但 CR-006 未关闭，真实运行仍为 0/3。V2 S2.1 已通过独立 package acceptance 并进入 main；下一唯一入口为准备 S2.2 Execution Packet。M2.1、V2、formal 与 P5 尚未完成，不得把 S2.1 通过转换为 PC-09 完成声明。
 
 实施顺序保持 P3 已会签结构：
 

@@ -1,6 +1,6 @@
 # P5 产品落地实施里程碑
 
-状态：进行中；`accepted_subject_main=37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa`、`cumulative_review_commit=813e9fd5240b1af6413a274daa7e307757bbb246`、`cumulative_state_sync_commit=7274c03fbb6e7ee11dc7f24690a2af50ed76169a`、`first_reassessment_review_commit=7a579dd1f08ec65e916e509863846d99f143c9d5`、`v2_entry_attempt3_review_commit=bd78c043d6e16da3debadcd7c7395c31624a33ac`；live main 必须运行时 `git rev-parse refs/heads/main`，不固定为任一历史提交。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`。V1 已 formally-completed；CR-006 cumulative gate=`PASS / 97`、P0/P1/P2=`0/0/3`，但 `change_request_closed=false`。V2 entry attempt 3 独立复评=`PASS / 100`、P0/P1/P2=`0/0/0`；当前无 V2 packet/control state，下一唯一动作只是形成并请求 `V2/S2.1 attempt 1` Execution Packet control CAS 的精确用户授权，formal 不移动
+状态：进行中；V1 已 formally-completed。V2 S2.1 候选=`67dae282065926c2a583643cfc348385f1282554`、独立评审=`3424a8a5e65d7737401cf602d7227bf637194817`、package acceptance=`PASS / 100`、P0/P1/P2=`0/0/0`、Result digest=`sha256:938c6779cf5028629f93d2382713de1d7af444ca4b0fa1ad40dec274ae416fb6`，并已进入 main，integration checkpoint=`24ef30a3399c8add07b691d288afc50c07160ee5`。live main 必须运行时解析；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`bf7aab75881bf3b8b876cff510ec69fccb55b1a5`，`plan_generation=5`。CR-006 仍为 `change_request_closed=false`；下一唯一入口为准备 S2.2 Execution Packet。S2.1 gate passed 不代表 PC-09、M2.1、V2、formal 或 P5 完成
 启动日期：2026-08-08
 
 ## 1. 阶段目标
@@ -11,9 +11,9 @@
 
 - 生命周期阶段：`S5 开发落地`。
 - 项目里程碑：`P5 产品落地`。
-- 当前活动里程碑：`CR-006 cumulative gate 已通过 / V2 entry reassessment attempt 3 PASS / S2.1 packet authorization request`；V2 产品 packet 尚未授权。
+- 当前活动里程碑：`V2 / M2.1 / S2.1 gate passed and present in main / S2.2 packet preparation`。
 - 本轮启动授权：用户于 2026-08-08 在 P4 会签归档后明确要求继续，授权单独启动 P5 并建立实施里程碑。
-- 路线性质：沿用已会签路线，不改变产品定位、主交互载体、技术栈、版本范围或验收门禁。V1 已完成精确用户会签及分离的 ACK/completion CAS。CR-006 只增加跨版本可承受性护栏，独立计划位于 `docs/exec-plans/active/p5-scalability-guardrails.md`；三个 package gate 与 cumulative gate 均已通过，但 CR-006 未自动关闭。V2 entry attempt 3 独立复评=`PASS / 100`；当前只允许形成并请求 `V2/S2.1 attempt 1` Execution Packet control CAS 的精确用户授权，该 PASS 本身不授权 packet CAS、claim/fence、dispatch、编码或 formal 移动。
+- 路线性质：沿用已会签路线，不改变产品定位、主交互载体、技术栈、版本范围或验收门禁。V1 已完成精确用户会签及分离的 ACK/completion CAS。CR-006 三个 package gate 与 cumulative gate 均已通过但未关闭。S2.1 已通过独立 package acceptance 并进入 main；当前唯一入口为准备 S2.2 Execution Packet。M2.1、V2、formal 与 P5 仍受后续独立门禁约束。
 
 ## 3. 正式上游
 
@@ -158,4 +158,4 @@ P5-M0 不是新增产品版本，不改变 P3 的 PC 主版本归属，也不能
 
 P5 的最终阶段出口是：V1..V4 和 Final Acceptance 全部通过本地可重复验证、独立 I/X/P、适用 Profile 验收和用户会签；交付清单、正式 OID、已知风险、回滚与 PC-20.AR 状态可追溯。此前 P5 保持进行中，不得归档本计划或宣告完整产品完成。
 
-当前 M1.1 attempt 1 为历史 `退回 / 73`，attempt 2 已会签并正式完成。formal=F16，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`；S1.4-S1.6、M1.2 与 V1 均已正式完成。CR-006 `accepted_subject_main=37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa`、`cumulative_review_commit=813e9fd5240b1af6413a274daa7e307757bbb246`、`cumulative_state_sync_commit=7274c03fbb6e7ee11dc7f24690a2af50ed76169a`；cumulative=`PASS / 97`，P0/P1/P2=`0/0/3`，Result digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。SG-1 两项 P2、SG-2 一项 P2、SG-3 两条边界和“真实运行 0/3”继续保留。首次复评 `REVISE / 88` 为历史；attempt 2 `cb28627...` 因 reviewer-authored subject `ccc182e...` 后自审而 invalid/superseded；独立 attempt 3 `bd78c043...`=`PASS / 100`、P0/P1/P2=`0/0/0`，fresh `503/503`、零失败且 coverage=`93.53/88.69/99.22`。当前无 V2 packet/control state，下一唯一动作只是形成并请求 `V2/S2.1 attempt 1` packet CAS 精确用户授权；PC-12/PC-19/V2/V4/P5/真实运行 3/3 均未完成。
+当前 M1.1 attempt 1 为历史 `退回 / 73`，attempt 2 已会签并正式完成；S1.4-S1.6、M1.2 与 V1 均已正式完成。S2.1 候选=`67dae282065926c2a583643cfc348385f1282554`、评审=`3424a8a5e65d7737401cf602d7227bf637194817`、Result digest=`sha256:938c6779cf5028629f93d2382713de1d7af444ca4b0fa1ad40dec274ae416fb6`，`PASS / 100`、P0/P1/P2=`0/0/0`，已在 main；验收 fresh `514/514`、coverage `93.61/88.74/99.27`，主线 fresh `514/514`、coverage `93.63/88.80/99.27`。formal=F16 未移动，control=`bf7aab75881bf3b8b876cff510ec69fccb55b1a5`，`plan_generation=5`。CR-006 `change_request_closed=false`，真实运行 0/3；下一唯一入口为准备 S2.2 Execution Packet。PC-09、M2.1、V2、V4、P5 均未据此完成。

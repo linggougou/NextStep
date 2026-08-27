@@ -1,6 +1,6 @@
 # QA
 
-当前阶段为 `P5 / CR-006 cumulative gate passed / V2 entry reassessment attempt 3 passed`。身份拆分为 `accepted_subject_main=37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa`、`cumulative_review_commit=813e9fd5240b1af6413a274daa7e307757bbb246`（旧 `dbb1c2d` 因未来 `reviewed_at` 废弃）、`cumulative_state_sync_commit=7274c03fbb6e7ee11dc7f24690a2af50ed76169a`、`first_reassessment_review_commit=7a579dd1f08ec65e916e509863846d99f143c9d5`、`v2_entry_attempt3_review_commit=bd78c043d6e16da3debadcd7c7395c31624a33ac`；live main 运行时通过 `git rev-parse refs/heads/main` 解析。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`1ac071b0087514390238381fa71cc4b4182983bc`，`plan_generation=5`。cumulative=`PASS / 97`、P0/P1/P2=`0/0/3`，Result digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`，carry-forward 风险和真实运行 `0/3` 保留。attempt 3 独立=`PASS / 100`、P0/P1/P2=`0/0/0`，fresh `503/503`、fail/skip/cancel/todo=`0/0/0/0`、coverage `93.53/88.69/99.22`；attempt 2 因 reviewer-authored subject 后自审而 invalid/superseded，首次 `REVISE / 88` 继续作为历史。`change_request_closed=false`，无 V2 packet/control state；下一唯一动作只是形成并请求 `V2/S2.1 attempt 1` Execution Packet control CAS 的精确用户授权。formal 未移动，PC-12/PC-19/V2/V4/P5/真实运行 3/3 均未完成。
+当前阶段为 `P5 / V2 / M2.1 / S2.1 gate passed and present in main`。S2.1 candidate=`67dae282065926c2a583643cfc348385f1282554`、review=`3424a8a5e65d7737401cf602d7227bf637194817`、integration checkpoint=`24ef30a3399c8add07b691d288afc50c07160ee5`，独立验收 `PASS / 100`、P0/P1/P2=`0/0/0`、Result digest=`sha256:938c6779cf5028629f93d2382713de1d7af444ca4b0fa1ad40dec274ae416fb6`。验收 fresh `514/514`、coverage `93.61/88.74/99.27`；主线 fresh `514/514`、coverage `93.63/88.80/99.27`。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动，control=`bf7aab75881bf3b8b876cff510ec69fccb55b1a5`，`plan_generation=5`。`change_request_closed=false`，真实运行 0/3；下一唯一入口为准备 S2.2 Execution Packet。不得据此声明 PC-09、M2.1、V2、P5 完成。
 
 ## 当前质量状态
 
@@ -27,5 +27,6 @@
 - [CR-006 cumulative acceptance attempt 1](../../.codex/reviews/p5-cr006-cumulative-acceptance-attempt-1-2026-08-26/verdict.md)：replacement review=`813e9fd`，`PASS / 97`，P0/P1/P2=`0/0/3`。SG-1 两项 P2、SG-2 一项 P2 继续保留；SG-3 evidence-binding 威胁模型边界和真实运行 `0/3` 继续保留。该 PASS 不自动关闭 CR-006，不创建 V2 packet，也不移动 formal。
 - V2 entry reassessment attempt 2：review=`cb28627`，因同一 reviewer 创作被审尾差 subject=`ccc182e` 后自审而 `invalid / superseded`，不得作为放行证据。
 - [V2 entry reassessment attempt 3](../../.codex/reviews/p5-v2-entry-reassessment-after-cr006-attempt-3-2026-08-26/verdict.md)：review=`bd78c043`、tree=`1509a217`，`PASS / 100`，P0/P1/P2=`0/0/0`，fresh `503/503`、coverage `93.53/88.69/99.22`；仅放行状态同步与形成精确 S2.1 packet 授权请求。
+- S2.1 generation 5 attempt 2：candidate=`67dae282`，独立 exact-two review=`3424a8a5`，package acceptance=`PASS / 100`、P0/P1/P2=`0/0/0`；验收 `514/514`，main `514/514`。integration checkpoint=`24ef30a`，下一入口仅为 S2.2 packet preparation。
 
 后续所有验证、阻塞、复测证据和质量缺口记录在本目录或 `.codex/verification-report.md`；当前路线与门禁以 `PROJECT_ROUTE_LOCK.md` 为准。

@@ -2,7 +2,7 @@
 
 NextStep 是以 Skill 为主交互入口、以项目文档和 Git 为正式真源的 AI 项目闭环落地系统。
 
-当前处于 `S5 / P5`。S1.2/F12 至 S1.6/F16、M1.1、M1.2 与 V1 均已正式完成；CR-006 三个 package gate 与 cumulative gate 均已通过，累计结论=`PASS / 97`、P0/P1/P2=`0/0/3`。这只表示累计门禁通过：`change_request_closed=false`，CR-006 未自动关闭，V2 packet 未创建，formal 未移动，P5 未完成。
+当前处于 `S5 / P5`。V1 已正式完成；CR-006 三个 package gate 与 cumulative gate 均已通过，但 `change_request_closed=false`。V2 S2.1 已通过独立 package acceptance 并进入 main；下一唯一入口是准备 S2.2 Execution Packet。S2.1 通过不等于 PC-09、M2.1、V2、formal 或 P5 完成。
 
 ## 环境
 
@@ -34,10 +34,10 @@ pnpm check
 - S1.4、S1.5、S1.6 已分别通过完整正式证据链并提升到 F14、F15、F16。
 - 当前 formal 为 F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`；main 额外承载 V1 验收评审与会签报告材料，不等同于 formal。
 - M1.1 与 S1.4-S1.6 已正式完成；M1.2 attempt 1 在精确 F16 隔离副本中完成 `pnpm check` 474/474，I/X/P/Profile=`25/25/25/25`，累计验收本体 `PASS / 100`，用户会签与 expected-old control CAS 已固化，M1.2 正式完成。
-- 状态身份拆分为：`accepted_subject_main=37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa`、`cumulative_review_commit=813e9fd5240b1af6413a274daa7e307757bbb246`、`cumulative_state_sync_commit=7274c03fbb6e7ee11dc7f24690a2af50ed76169a`、`first_reassessment_review_commit=7a579dd1f08ec65e916e509863846d99f143c9d5`、`v2_entry_attempt3_review_commit=bd78c043d6e16da3debadcd7c7395c31624a33ac`。这些都是历史固定身份；live main 必须在使用时通过 `git rev-parse refs/heads/main` 解析，不把某个历史提交或本文所在提交写成永久 current main。control=`1ac071b0087514390238381fa71cc4b4182983bc`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，`plan_generation=5`。
+- S2.1 固定候选=`67dae282065926c2a583643cfc348385f1282554`、独立评审=`3424a8a5e65d7737401cf602d7227bf637194817`、integration checkpoint=`24ef30a3399c8add07b691d288afc50c07160ee5`。live main 必须在使用时通过 `git rev-parse refs/heads/main` 解析；control=`bf7aab75881bf3b8b876cff510ec69fccb55b1a5`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，`plan_generation=5`。
 - 累计验收历史测量为 `503/503`、coverage Lines/Branches/Functions=`93.50/88.62/99.22`；首次 V2 入口复评 snapshot 为 `503/503`、`93.48/88.59/99.22`，随后主线复跑 snapshot 为 `503/503`、`93.53/88.69/99.22`。末两位存在运行波动，current gate 只固定 tests=`503/503`、fail/skip/cancel/todo=`0/0/0/0`、各 coverage 维度 `>=80%`；live 百分比必须 fresh 运行生成，不作为提交身份字段。累计 Result digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`，三个固定负例均通过。
 - SG-1 两项 P2、SG-2 一项 P2 与 SG-3 两条边界继续保留；精确状态仍是“真实项目价值验证框架可用，真实运行 0/3”。
-- 首次 V2 入口复评 `7a579dd...` 因状态身份与测量口径两项 P1 得出 `REVISE / 88`；attempt 2 `cb28627...` 因评审者自行创作被审尾差 `ccc182e...` 后自审而程序失效。独立 attempt 3 `bd78c043...` 已 supersede attempt 2，结论 `PASS / 100`、P0/P1/P2=`0/0/0`，fresh `503/503`、零失败/跳过/取消/todo、coverage `93.53/88.69/99.22`。当前没有 V2 packet/control state；下一唯一动作只是形成并请求 `V2/S2.1 attempt 1` Execution Packet control CAS 的精确用户授权，不得据此执行 CAS、claim/fence、dispatch 或编码，也不表示 CR-006 已关闭或 PC-12、PC-19、V2、V4、P5、真实运行 3/3 完成。
+- S2.1 package acceptance Result digest=`sha256:938c6779cf5028629f93d2382713de1d7af444ca4b0fa1ad40dec274ae416fb6`，结论 `PASS / 100`、P0/P1/P2=`0/0/0`；验收 fresh `514/514`、coverage `93.61/88.74/99.27`，主线 fresh `514/514`、coverage `93.63/88.80/99.27`。S2.1 自身 gate passed 且已在 main；下一唯一入口为准备 `S2.2 generation 5 attempt 1` Execution Packet。CR-006、M2.1、V2、V4、P5、formal 与真实运行 3/3 均未完成，也不声明 PC-09 已完成。
 - 不接入 Codex SDK/App Server，不声明宿主 `full` 支持。
 - 不恢复 Web/UI 分支，不引入常驻服务或数据库。
 

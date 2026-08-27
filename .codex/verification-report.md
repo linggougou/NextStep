@@ -2765,3 +2765,19 @@
 - `git diff --check`：通过；差异路径严格为 exact-11。九份状态入口对旧 `reassessment-revise/pending`、等待修复后再次复评等当前停点反扫无命中；十一份新增差异对 `change_request_closed=true`、V2 packet 已创建、formal 已移动、PC-12/PC-19/V2/V4/P5/真实运行 3/3 已完成反扫无命中。
 - 提交前身份：HEAD=`bd78c043d6e16da3debadcd7c7395c31624a33ac`、formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control=`1ac071b0087514390238381fa71cc4b4182983bc`；受保护文件未出现在差异路径中。
 - 用户改动保护：未读取、修改、暂存或清理受保护 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`；未移动 refs、未 push。
+
+## 2026-08-27 S2.1 gate passed/main integrated 状态同步验证
+
+### 固定身份与验收结论
+
+- parent/integration checkpoint=`24ef30a3399c8add07b691d288afc50c07160ee5`；candidate=`67dae282065926c2a583643cfc348385f1282554`；review=`3424a8a5e65d7737401cf602d7227bf637194817`。
+- 独立 package acceptance=`PASS / 100`、P0/P1/P2=`0/0/0`、Result digest=`sha256:938c6779cf5028629f93d2382713de1d7af444ca4b0fa1ad40dec274ae416fb6`。
+- 验收 fresh `514/514`、coverage Lines/Branches/Functions=`93.61/88.74/99.27`；main fresh `514/514`、coverage=`93.63/88.80/99.27`。
+- formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动；control integration CAS=`bf7aab75881bf3b8b876cff510ec69fccb55b1a5`；`plan_generation=5`。
+
+### 同步范围与 fail-closed 边界
+
+- 状态同步限定 exact-11：路线锁、README、PLANS、PRODUCT_SENSE、两份活动计划、QA 索引、CR 索引、CR-006 详情及两份 `.codex` 追加留痕。
+- 权威状态统一为“S2.1 gate passed 且已在 main；下一唯一入口为 S2.2 Execution Packet preparation”。
+- 保留 `change_request_closed=false`、真实运行 `0/3`、formal F16、M2.1/V2/P5 未完成；不声明 PC-09 已完成。
+- 本轮为状态同步，不重复运行产品测试；使用已经独立验收和主线 fresh 核定的两组 `514/514` 结果。提交前执行 `git diff --check`、exact-11 路径核对、旧停点和提前完成声明反扫。
