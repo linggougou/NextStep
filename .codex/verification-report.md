@@ -2921,3 +2921,21 @@
 - reviewer 未来写集为 exact-three；Result 在用户会签前只能为 `passed-awaiting-user-signoff`，用户 ACK 与 completion 不得合并。
 - 完成边界明确保持 M2.2、V2、`v0.2.0-alpha`、formal、CR-006、P5 与 qualified real runs 未完成。
 - 本轮只修改计划与两份追加留痕 exact-three；不运行产品测试，不创建控制对象，不派发，不移动 refs，不触碰受保护未跟踪目标。
+
+## 2026-08-27 V2 / M2.1 里程碑验收计划 revision attempt 2 验证
+
+### REVISE 输入与单父历史
+
+- attempt 1 candidate/review=`8e2dce7ecdc8cba9c85564cffa408fd0f6f3f3e5` / `250d58ba1a24e36354d3607bd4729977443acb51`；父链=`b68dd8974482517089ab558eb347856f4af6bde9 -> 8e2dce7ecdc8cba9c85564cffa408fd0f6f3f3e5 -> 250d58ba1a24e36354d3607bd4729977443acb51`，trees=`ef958c0940863709f10a6a609b7119105b72bd3c` / `d2cf5f56f2621bc27be80e18dd39c1d3d3226fb1`，均为单父且原对象未改写。
+- attempt 1 review=`REVISE / 70`、P0/P1/P2=`0/2/0`；两个 P1 精确为“ACK/control 证据无法进入隔离 clone”与“readiness 执行者/时序互相冲突”。entry review 仍不授权 packet 或任何后续 CAS。
+
+### 修订闭环
+
+- HG5 与控制步骤现在只有一条 readiness 路径：主控先 provision no-local、origin-removed、无 alternates clone，注入 formal 与 pre-ACK ready control，再派发未来唯一 reviewer readiness-only；该 reviewer 只读回复 `READY`，不测试、不写文件，ACK CAS 绑定同一 host。
+- HG6 固定 ACK 后 controller-only 证据注入：clone 的 `refs/nextstep/control` 永不更新，只以 expected-old=全零 OID 的 create-once CAS 新增单一 `refs/nextstep/evidence/m2.1-acceptance-ack-f<N>`，并禁止后续更新/删除；必须验证 ACK 唯一父、ref OID、无 remote/alternates、formal/control 未变、HEAD/tree/worktree 未变及 ACK 前后 ref 集合差异精确只有该 evidence ref。
+- 只有证据注入和全部断言通过，主控才向同一 reviewer 发送 ACK accepted_at/OID/evidence-ref/packet/fence 不可变边界，reviewer 才开始测试、写 exact-three 并验证 packet→claim→ready→ACK 单父链。失败时 blocked/recovery，不开始评审、不替换 reviewer。
+- reviewer 不访问原仓库、不修改 refs、无原仓库写权限；HG11 仅为 controller-only 单一 ACK evidence ref 保留窄例外，其他零副作用边界未弱化。
+- `task_attempt=1`、historical subject、formal、entry control、authority 链、targeted/full/coverage、I/X/P/Profile、Result/signoff/completion 分离和后续未完成边界均保持不变。
+- 本轮验证只针对 Markdown 计划修订；不运行产品测试、不创建 packet/control、不移动 refs，差异必须保持 exact-three 并通过身份/矛盾反扫与 `git diff --check`。
+- 提交前身份反扫：HEAD=`250d58ba1a24e36354d3607bd4729977443acb51`、唯一父=`8e2dce7ecdc8cba9c85564cffa408fd0f6f3f3e5`、tree=`d2cf5f56f2621bc27be80e18dd39c1d3d3226fb1`；formal/control=`ea04b57de83d6c548dcb1629b1f61832db8375ad` / `100bc6ae2937caf14e6f1e5abc4a88d143583640`，均与 revision 入口一致且未移动。
+- 矛盾反扫未发现“readiness 通过/完成后才派发 reviewer”或 ACK 后正向更新 clone `refs/nextstep/control` 的残留语义；readiness-only、同 host ACK、create-once evidence ref、唯一 ref 差异、blocked/recovery 与不换 reviewer 的必备边界均命中。`git diff --check` 与 exact-three 路径检查通过。

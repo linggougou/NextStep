@@ -2944,3 +2944,12 @@
 - 硬门冻结身份/control/authority/集成等价/no-local 隔离/ACK 后时序、detached subject targeted `23/23`、full 至少 `526/526`、coverage floors `93.99/89.20/99.49`、PC 主版本 `20/20`、九大里程碑、X/Profile 失败面、PC-09..10 产品边界、零副作用与 Judge Harness。
 - reviewer 未来输出固定为专属目录 exact-three `milestone-acceptance.json`、`scorecard.json`、`verdict.md`；Result 最多只能进入 `passed-awaiting-user-signoff`，用户会签 ACK 与 completion 必须是后续两个独立 CAS。
 - 本轮写集严格为计划文件及两份追加留痕 exact-three；不创建 packet/control 对象，不派发 reviewer，不移动 main/formal/control，不声明 M2.1、M2.2、V2、alpha、formal、CR-006 或 P5 完成。
+
+## 2026-08-27 V2 / M2.1 里程碑验收计划 revision attempt 2
+
+- attempt 1 candidate=`8e2dce7ecdc8cba9c85564cffa408fd0f6f3f3e5`，唯一父=`b68dd8974482517089ab558eb347856f4af6bde9`，tree=`ef958c0940863709f10a6a609b7119105b72bd3c`；独立 entry review=`250d58ba1a24e36354d3607bd4729977443acb51`，唯一父=attempt 1 candidate，tree=`d2cf5f56f2621bc27be80e18dd39c1d3d3226fb1`，结论=`REVISE / 70`、P0/P1/P2=`0/2/0`。二者继续作为不可变单父历史，不重写、不压平。
+- P1-1：attempt 1 只允许 ACK 前注入 formal/control，却要求 ACK 后 reviewer 验证完整 control 链；origin 已移除后没有可执行的 ACK evidence 交付路径。P1-2：HG6 指定 reviewer 做 readiness，但步骤 5.4 又写成 readiness 后才派发 reviewer，执行者与时序矛盾。
+- revision attempt 2 固定唯一 reviewer 同时承担 ACK 前 readiness-only 与 ACK 后正式验收；readiness 阶段只允许只读回复 `READY`，不运行测试、不写文件。主控 ACK CAS 必须绑定同一 reviewer host。
+- ACK 后主控保持 clone 的 frozen `refs/nextstep/control` 不变，以 controller-only provisioning 导入精确 ACK 对象，并用 expected-old=全零 OID 的 create-once CAS 只新增 `refs/nextstep/evidence/m2.1-acceptance-ack-f<N>`，后续禁止更新或删除。开始评审前机械断言 ACK 唯一父、evidence ref OID、无 remote/alternates、formal/control、HEAD/tree/worktree 与唯一新增 ref；随后才把 ACK 边界发给同一 reviewer。
+- evidence 注入或断言失败时状态为 blocked/recovery，不开始评审、不更换 reviewer 冒充同一 attempt。reviewer 不访问原仓库、不修改 refs，也不获得原仓库写权限。
+- 本轮仍只修改计划与两份追加留痕 exact-three；entry re-review 通过前不授权 packet，不创建控制对象、不移动 refs，不宣称 M2.1 或后续阶段完成。
