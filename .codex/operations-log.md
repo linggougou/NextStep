@@ -2875,3 +2875,22 @@
 - 主控没有 reset、rebase 或改写上述历史；追加 audit Result digest=`sha256:08cf20a2c70e02833444c5ae7893ab007bc5c830441f3119ee2f60c115a6c9be`，control=`cc0d2bd006ecae9626bac0c239005455600d3bae`。S2.2 代码保持 `present-in-main-programmatic-pending-valid-acceptance`，S2.3 继续阻塞。
 - attempt 3 packet digest=`sha256:23743515fe23e99d317af619cb5e7e0b15786df63592cf6ce915237ce107878a`、dedup=`sha256:dec9f7fdcd3115653e92a841a3c2bbe0daef0fb997a0ce481b9093df41b481fd`，control=`46f6c80...`；claim/fence139=`618a127...`；ready/outbox payload=`sha256:4f84e7bcb9536454e9188a0e9d41d8692fee6616a45da7748794e962459d9e87`，control=`14751ae...`；ACK real-time=`2026-08-27T10:22:31Z`，control=`a7aa139...`。
 - attempt 3 使用 `git clone --no-local` 一次性副本，controller 预置 control/formal 后移除 origin；`.git` 自包含、remote 为空、依赖 offline frozen 预置。全新低上下文 reviewer 只获该 clone 路径和 exact-two 权限，禁止访问原仓库/共享 worktree、创建 Result 或移动 refs。
+
+## 2026-08-27 S2.2 有效验收后状态同步
+
+- 用户目标：只在 `/Users/ling/.codex/worktrees/nextstep-s22-state-sync-20260827`、固定父 `960d16ded99104ee7409ec6938e501db204ea8fa` 上，把 S2.2 有效验收后的权威状态同步到 exact-11；提交中文 commit，并回报 commit/tree/parent/写集。
+- 路线与生命周期：继续处于 `S5 / P5 产品落地`，当前活动里程碑为 `V2 / M2.1`；本轮服务 S2.2 package gate 状态闭环，阶段出口是九份状态入口一致显示 `gate-passed/present-in-main`，下一唯一入口为 S2.3 Execution Packet preparation。
+- 最小可验收闭环：只同步已经核定的 S2.2 验收事实与下一入口；不创建 S2.3 packet，不执行 claim/fence/dispatch/编码，不移动 refs，不关闭 CR-006，不宣称 S2.3/S2.4、M2.1、V2、`v0.2.0-alpha`、formal 或 P5 完成。
+- 里程碑真源：`PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md`、`docs/exec-plans/active/p5-product-implementation-milestones.md`；无项目根 `AGENTS.md` 特化规则，沿用用户本轮边界、全局协议与路线锁。
+- 写集：严格限定 `.codex/operations-log.md`、`.codex/verification-report.md`、`PROJECT_ROUTE_LOCK.md`、`README.md`、`docs/PLANS.md`、`docs/PRODUCT_SENSE.md`、`docs/change-requests/006-scalability-guardrails.md`、`docs/change-requests/index.md`、`docs/exec-plans/active/p5-product-implementation-milestones.md`、`docs/exec-plans/active/p5-scalability-guardrails.md`、`docs/qa/index.md`。
+- 事实输入：S2.2 implementation=`d35e63d4ca7a6cca3ac3ac662b77a0ca482ad51e`；程序性 main candidate/review=`88eaa58` / `91ed44a`；状态同步固定父/基线=`960d16ded99104ee7409ec6938e501db204ea8fa`；formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`；control=`6b4cb573655beb107d751004c9fc2b0b2c35490f`；`plan_generation=5`。文档只记录固定父/基线，live main 要求运行时解析，不把本提交自身未来 OID 冒充 current。
+- 无效历史保留：attempt 1 temporal-invalid audit Result digest=`sha256:f6c7681083f5fdb810f1375cf0ce75aeb759c1d4e554617fc027d15dc55a5041`；attempt 2 role-authority-invalid audit Result digest=`sha256:08cf20a2c70e02833444c5ae7893ab007bc5c830441f3119ee2f60c115a6c9be`。两次历史均不作为 gate 放行证据。
+- 有效证据：attempt 3 在 `git clone --no-local`、移除 origin 的一次性副本中由独立 review=`6c48b6c` 完成，结论=`PASS / 100`、P0/P1/P2=`0/0/0`，fresh `526/526`，coverage Lines/Branches/Functions=`93.99/89.20/99.49`，有效 Result digest=`sha256:332323df803af638aac65a6044d0cf17a171dc8ff5744e213385f18fda089c0e`。
+- CR-006 边界：三个 package gate 与 cumulative gate 已通过，但 `change_request_closed=false`；SG-1/SG-2 P2、SG-3 两条边界和“真实项目价值验证框架可用，真实运行 0/3”完整保留。
+- 变更分流：这是已通过门禁后的状态同步，不是新需求、漏项、二期需求或路线变更；不涉及重写、技术栈替换、删除门禁或安全弱化。
+- Skills / 工具：已按 skills runtime 检查；本轮是严格事实同步，不重新执行验收，`judge-harness`、TDD、CodeGraph 均不适用。使用 `rg`、定向 diff 与 Git 只读身份检查作为替代验证；共享状态文档具有严格顺序依赖，由本 Agent 串行修改。
+- 用户改动保护：不使用包含未跟踪目标的状态/枚举命令，不读取、修改、暂存或清理三个受保护未跟踪目标；不 reset/rebase/clean/push。
+- 实时身份复核：状态同步前 `HEAD=refs/heads/main=960d16ded99104ee7409ec6938e501db204ea8fa`，formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`6b4cb573655beb107d751004c9fc2b0b2c35490f`，与授权事实一致。
+- 本地验证：`git diff --check` 通过；差异路径严格等于 exact-11；九份状态入口旧 S2.2 停点固定字符串反扫无命中；exact-11 新增差异的提前完成声明反扫无命中。
+- 测试边界：本轮仅同步 Markdown 状态真源，不重复运行产品测试；引用 attempt 3 已核定的 `526/526` 与 coverage，不包装为本轮重跑。
+- 状态：已结束。S2.2 权威状态=`gate-passed/present-in-main`；只允许进入 S2.3 Execution Packet preparation，尚未创建 S2.3 packet。

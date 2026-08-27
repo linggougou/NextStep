@@ -1,6 +1,6 @@
 # QA
 
-当前阶段为 `P5 / V2 / M2.1 / S2.1 gate passed and present in main`。S2.1 candidate=`67dae282065926c2a583643cfc348385f1282554`、review=`3424a8a5e65d7737401cf602d7227bf637194817`、integration checkpoint=`24ef30a3399c8add07b691d288afc50c07160ee5`，独立验收 `PASS / 100`、P0/P1/P2=`0/0/0`、Result digest=`sha256:938c6779cf5028629f93d2382713de1d7af444ca4b0fa1ad40dec274ae416fb6`。验收 fresh `514/514`、coverage `93.61/88.74/99.27`；主线 fresh `514/514`、coverage `93.63/88.80/99.27`。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动，control=`bf7aab75881bf3b8b876cff510ec69fccb55b1a5`，`plan_generation=5`。`change_request_closed=false`，真实运行 0/3；下一唯一入口为准备 S2.2 Execution Packet。不得据此声明 PC-09、M2.1、V2、P5 完成。
+当前阶段为 `P5 / V2 / M2.1 / S2.2 gate-passed/present-in-main`。S2.2 candidate=`d35e63d4ca7a6cca3ac3ac662b77a0ca482ad51e`，程序性 main candidate/review=`88eaa58` / `91ed44a`。attempt 1 temporal-invalid audit digest=`sha256:f6c7681083f5fdb810f1375cf0ce75aeb759c1d4e554617fc027d15dc55a5041`；attempt 2 role-authority-invalid audit digest=`sha256:08cf20a2c70e02833444c5ae7893ab007bc5c830441f3119ee2f60c115a6c9be`。attempt 3 在 no-local、origin-removed 隔离副本中由独立 review=`6c48b6c` 得到 `PASS / 100`、P0/P1/P2=`0/0/0`、fresh `526/526`、coverage `93.99/89.20/99.49`，有效 Result digest=`sha256:332323df803af638aac65a6044d0cf17a171dc8ff5744e213385f18fda089c0e`。本状态同步固定父/基线=`960d16ded99104ee7409ec6938e501db204ea8fa`，live main 必须运行时解析；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动，control=`6b4cb573655beb107d751004c9fc2b0b2c35490f`，`plan_generation=5`。`change_request_closed=false`，真实运行 0/3；下一唯一入口为准备 S2.3 Execution Packet。S2.3、S2.4、M2.1、V2、`v0.2.0-alpha`、formal、P5 均未完成。
 
 ## 当前质量状态
 
@@ -27,6 +27,7 @@
 - [CR-006 cumulative acceptance attempt 1](../../.codex/reviews/p5-cr006-cumulative-acceptance-attempt-1-2026-08-26/verdict.md)：replacement review=`813e9fd`，`PASS / 97`，P0/P1/P2=`0/0/3`。SG-1 两项 P2、SG-2 一项 P2 继续保留；SG-3 evidence-binding 威胁模型边界和真实运行 `0/3` 继续保留。该 PASS 不自动关闭 CR-006，不创建 V2 packet，也不移动 formal。
 - V2 entry reassessment attempt 2：review=`cb28627`，因同一 reviewer 创作被审尾差 subject=`ccc182e` 后自审而 `invalid / superseded`，不得作为放行证据。
 - [V2 entry reassessment attempt 3](../../.codex/reviews/p5-v2-entry-reassessment-after-cr006-attempt-3-2026-08-26/verdict.md)：review=`bd78c043`、tree=`1509a217`，`PASS / 100`，P0/P1/P2=`0/0/0`，fresh `503/503`、coverage `93.53/88.69/99.22`；仅放行状态同步与形成精确 S2.1 packet 授权请求。
-- S2.1 generation 5 attempt 2：candidate=`67dae282`，独立 exact-two review=`3424a8a5`，package acceptance=`PASS / 100`、P0/P1/P2=`0/0/0`；验收 `514/514`，main `514/514`。integration checkpoint=`24ef30a`，下一入口仅为 S2.2 packet preparation。
+- S2.1 generation 5 attempt 2：candidate=`67dae282`，独立 exact-two review=`3424a8a5`，package acceptance=`PASS / 100`、P0/P1/P2=`0/0/0`；验收 `514/514`，main `514/514`。integration checkpoint=`24ef30a`；其历史下一入口已由 S2.2 有效验收 supersede。
+- S2.2 generation 5：candidate=`d35e63d`。attempt 1 temporal-invalid、attempt 2 role-authority-invalid 均只保留为无效历史；attempt 3 独立 review=`6c48b6c`，`PASS / 100`、P0/P1/P2=`0/0/0`、`526/526`、coverage=`93.99/89.20/99.49`，有效 Result digest=`sha256:332323df803af638aac65a6044d0cf17a171dc8ff5744e213385f18fda089c0e`。当前下一入口仅为 S2.3 packet preparation。
 
 后续所有验证、阻塞、复测证据和质量缺口记录在本目录或 `.codex/verification-report.md`；当前路线与门禁以 `PROJECT_ROUTE_LOCK.md` 为准。

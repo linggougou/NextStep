@@ -4,8 +4,8 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：V2 / M2.1；S2.1 gate passed 且已在 main；下一唯一入口为 S2.2 Execution Packet preparation
-- 当前状态：S2.1 候选=`67dae282065926c2a583643cfc348385f1282554`、独立评审=`3424a8a5e65d7737401cf602d7227bf637194817`、integration checkpoint=`24ef30a3399c8add07b691d288afc50c07160ee5`；package acceptance=`PASS / 100`、P0/P1/P2=`0/0/0`，Result digest=`sha256:938c6779cf5028629f93d2382713de1d7af444ca4b0fa1ad40dec274ae416fb6`。验收 fresh `514/514`、coverage `93.61/88.74/99.27`；主线 fresh `514/514`、coverage `93.63/88.80/99.27`。live main 必须运行时解析；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动，control=`bf7aab75881bf3b8b876cff510ec69fccb55b1a5`，`plan_generation=5`。`change_request_closed=false`；下一唯一入口为准备 `P5/V2/M2.1/S2.2 generation 5 attempt 1` Execution Packet。S2.1 gate passed 不代表 PC-09、M2.1、V2 或 P5 完成；真实运行仍为 0/3。
+- 当前活动里程碑：V2 / M2.1；S2.1、S2.2 gate passed 且已在 main；下一唯一入口为 S2.3 Execution Packet preparation
+- 当前状态：S2.2 实现候选=`d35e63d4ca7a6cca3ac3ac662b77a0ca482ad51e`，程序性 main candidate/review=`88eaa58` / `91ed44a`。attempt 1 temporal-invalid audit digest=`sha256:f6c7681083f5fdb810f1375cf0ce75aeb759c1d4e554617fc027d15dc55a5041`；attempt 2 role-authority-invalid audit digest=`sha256:08cf20a2c70e02833444c5ae7893ab007bc5c830441f3119ee2f60c115a6c9be`；attempt 3 由 no-local、origin-removed 隔离副本中的独立 review=`6c48b6c` 得到 `PASS / 100`、P0/P1/P2=`0/0/0`，fresh `526/526`、coverage `93.99/89.20/99.49`，有效 Result digest=`sha256:332323df803af638aac65a6044d0cf17a171dc8ff5744e213385f18fda089c0e`。本状态同步固定父/基线=`960d16ded99104ee7409ec6938e501db204ea8fa`；live main 必须运行时解析，不得把状态同步提交自身冒充 live current。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动，control=`6b4cb573655beb107d751004c9fc2b0b2c35490f`，`plan_generation=5`。`change_request_closed=false`；S2.2=`gate-passed/present-in-main`，下一唯一入口为准备 `P5/V2/M2.1/S2.3 generation 5 attempt 1` Execution Packet。S2.3、S2.4、M2.1、V2、`v0.2.0-alpha`、formal、P5 均未完成；真实运行仍为 0/3。
 
 ## 当前活动计划
 
@@ -28,7 +28,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。CR-006 SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，但 CR-006 未关闭，真实运行仍为 0/3。V2 S2.1 已通过独立 package acceptance 并进入 main；下一唯一入口为准备 S2.2 Execution Packet。M2.1、V2、formal 与 P5 尚未完成，不得把 S2.1 通过转换为 PC-09 完成声明。
+P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。CR-006 SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，但 CR-006 未关闭，真实运行仍为 0/3。V2 S2.1、S2.2 已通过独立 package acceptance 并进入 main；下一唯一入口为准备 S2.3 Execution Packet。S2.3、S2.4、M2.1、V2、`v0.2.0-alpha`、formal 与 P5 尚未完成。
 
 实施顺序保持 P3 已会签结构：
 

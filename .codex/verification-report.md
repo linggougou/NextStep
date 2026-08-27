@@ -2813,3 +2813,30 @@
 - 权威状态统一为“S2.1 gate passed 且已在 main；下一唯一入口为 S2.2 Execution Packet preparation”。
 - 保留 `change_request_closed=false`、真实运行 `0/3`、formal F16、M2.1/V2/P5 未完成；不声明 PC-09 已完成。
 - 本轮为状态同步，不重复运行产品测试；使用已经独立验收和主线 fresh 核定的两组 `514/514` 结果。提交前执行 `git diff --check`、exact-11 路径核对、旧停点和提前完成声明反扫。
+
+## 2026-08-27 S2.2 有效验收后状态同步验证
+
+### 固定身份与验收结论
+
+- 状态同步 parent/baseline=`960d16ded99104ee7409ec6938e501db204ea8fa`；S2.2 implementation=`d35e63d4ca7a6cca3ac3ac662b77a0ca482ad51e`；程序性 main candidate/review=`88eaa58` / `91ed44a`。
+- attempt 1 temporal-invalid audit Result digest=`sha256:f6c7681083f5fdb810f1375cf0ce75aeb759c1d4e554617fc027d15dc55a5041`；attempt 2 role-authority-invalid audit Result digest=`sha256:08cf20a2c70e02833444c5ae7893ab007bc5c830441f3119ee2f60c115a6c9be`。两次均为不可变无效历史，不构成 gate 证据。
+- attempt 3 在 `git clone --no-local`、移除 origin 的一次性隔离副本中由独立 review=`6c48b6c` 得到 `PASS / 100`、P0/P1/P2=`0/0/0`；fresh `526/526`、coverage Lines/Branches/Functions=`93.99/89.20/99.49`；有效 Result digest=`sha256:332323df803af638aac65a6044d0cf17a171dc8ff5744e213385f18fda089c0e`。
+- formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动；control=`6b4cb573655beb107d751004c9fc2b0b2c35490f`；`plan_generation=5`。
+
+### 同步范围与 fail-closed 边界
+
+- 状态同步限定 exact-11：路线锁、README、PLANS、PRODUCT_SENSE、CR-006 详情与索引、两份 P5 活动计划、QA 索引及两份 `.codex` 追加留痕。
+- 权威状态统一为“S2.2 `gate-passed/present-in-main`；下一唯一入口为 S2.3 Execution Packet preparation”。文档记录固定父/基线但不把状态同步提交自身未来 OID写成 live current，live main 只能运行时解析。
+- CR-006 保持 `change_request_closed=false`，真实运行保持 `0/3`；S2.3、S2.4、M2.1、V2、`v0.2.0-alpha`、formal、P5 均未完成。
+- 本轮只同步 Markdown 状态真源，不重复运行产品 build/typecheck/test/security；`526/526` 与覆盖率是 attempt 3 已核定 fresh 验收证据，不包装为本轮重跑结果。
+
+### 本地可重复检查与门禁判断
+
+- 实时 refs：`HEAD=refs/heads/main=960d16ded99104ee7409ec6938e501db204ea8fa`，formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`6b4cb573655beb107d751004c9fc2b0b2c35490f`，通过。
+- `git diff --check`：通过。
+- exact-path 检查：差异严格等于用户限定 exact-11，无代码、测试、Schema、依赖或其他路径变化。
+- 旧停点反扫：九份状态入口对“下一唯一入口为/是准备 S2.2 Execution Packet”、`S2.1 gate passed and present in main`、`S2.2 packet preparation`、`P5/V2/M2.1/S2.2 generation 5 attempt 1`、`present-in-main-programmatic-pending-valid-acceptance` 均无命中。
+- 提前完成声明反扫：exact-11 新增差异中未出现 CR-006 已关闭，也未出现 S2.3/S2.4/M2.1/V2/`v0.2.0-alpha`/formal/P5/真实运行 3/3 的提前完成或移动声明。
+- 用户改动保护：全程未读取、修改、暂存或清理三个受保护未跟踪目标；Git 状态检查始终使用 `--untracked-files=no`，未 reset/rebase/clean/push。
+- 状态同步门禁：通过。生命周期继续为 `S5 / P5`，P5 阶段出口未通过，不允许进入 S7/S8；当前唯一允许入口是 S2.3 Execution Packet preparation。
+- 同步质量自检：`100 / 100`，建议通过；该分数只评价 exact-11 状态同步的一致性与边界，不替代 S2.2 独立验收或任何后续产品门禁。

@@ -13,7 +13,7 @@
 
 ## 已接受未关闭变更
 
-- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，但 `change_request_closed=false`，风险及真实运行 `0/3` 保留。V2 S2.1 已独立 `PASS / 100`、P0/P1/P2=`0/0/0` 并进入 main；candidate=`67dae282`、review=`3424a8a5`、integration checkpoint=`24ef30a`、Result digest=`sha256:938c6779cf5028629f93d2382713de1d7af444ca4b0fa1ad40dec274ae416fb6`。formal 仍为 F16，control=`bf7aab75881bf3b8b876cff510ec69fccb55b1a5`；下一唯一入口为 S2.2 Execution Packet preparation，PC-09/M2.1/V2/P5 未完成。
+- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，但 `change_request_closed=false`，风险及真实运行 `0/3` 保留。V2 S2.2 candidate=`d35e63d`；attempt 1 temporal-invalid audit digest=`sha256:f6c7681083f5fdb810f1375cf0ce75aeb759c1d4e554617fc027d15dc55a5041`，attempt 2 role-authority-invalid audit digest=`sha256:08cf20a2c70e02833444c5ae7893ab007bc5c830441f3119ee2f60c115a6c9be`，两者均保留为无效历史；attempt 3 独立 review=`6c48b6c`、`PASS / 100`、P0/P1/P2=`0/0/0`、fresh `526/526`、coverage=`93.99/89.20/99.49`，有效 Result digest=`sha256:332323df803af638aac65a6044d0cf17a171dc8ff5744e213385f18fda089c0e`。S2.2=`gate-passed/present-in-main`；formal 仍为 F16，control=`6b4cb573655beb107d751004c9fc2b0b2c35490f`；下一唯一入口为 S2.3 Execution Packet preparation，S2.3/S2.4/M2.1/V2/`v0.2.0-alpha`/formal/P5 未完成。
 
 ## 分流规则
 
