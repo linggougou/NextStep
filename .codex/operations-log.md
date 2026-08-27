@@ -2781,3 +2781,13 @@
 - 变更分流：`v0.2.0-alpha` 作为 P5 内部预发布检查点，不宣称正式 P5 发布或 S8 交付归档；若发布范围需要改变既有路线或门禁，先更新 Change Intake/路线锁再实施。
 - 高危动作：当前不涉及重写、技术栈替换、删除门禁或权限弱化；不 push、不发布外部平台。
 - 用户改动保护：原工作区现有三个未跟踪文件全部保留；不得读取、修改、暂存或清理受保护 Multica 上下文文件。
+
+## 2026-08-27 V2 S2.1 attempt 1 派发控制链
+
+- 起始边界：main=`004e3b13b9abd3c47529802be7b1adfd2611c4b0`，formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，packet control=`d1e5624aebccd3d5675c10d022ba7caa9f687d82`。
+- claim/fence：以 `d1e5624...` 为 expected-old，创建 `claim-s2.1-g5-a1-f133-20260827`、fence=`133`；单父 CAS 后 control=`e49c7721e97d2fdd4c12f0712cd31f1cb5e8c196`。
+- ready/outbox：payload digest=`sha256:f739b7e8219a412cb122535c9dcf45f458d7a45bce68fc82f89849a8e9a4f166`；以 `e49c772...` 为 expected-old 的单父 CAS 后 control=`b5fef361bb699d7b187f6efc5d70dd52ce6f82a3`。
+- 唯一宿主：`codex-subagent:/root/s21_impl_g5_a1_f133`，专属 worktree=`/Users/ling/.codex/worktrees/nextstep-s21-g5-a1-f133`，固定父提交=`004e3b1...`。
+- dispatch ACK：以 `b5fef36...` 为 expected-old，关闭 outbox、清空 pending、绑定唯一宿主；单父 CAS 后 control=`45fa7de20f2bb7da43b6b3b13afbb47a8991e40a`。
+- 当前状态：S2.1=`running`；实现 Agent 已获 ACK，严格按 packet allowlist 和 TDD 开发。独立验收、main 合入、formal 移动、M2.1/V2/P5 完成仍未发生。
+- 状态漂移：路线锁、PLANS、README 仍显示 packet 前旧 control；为保持 packet 固定 working parent，本轮不先移动 main，待 S2.1 候选闭合时做受控状态同步。
