@@ -2843,3 +2843,12 @@
 - control 集成 CAS=`bf7aab75881bf3b8b876cff510ec69fccb55b1a5`；formal 保持 F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，`plan_generation=5`。
 - 本轮仅在固定父 `24ef30a3399c8add07b691d288afc50c07160ee5` 的专属 state-sync worktree 同步 exact-11 文档/留痕路径，不修改 main/formal/control refs，不重复运行已有 fresh 产品测试，不 push。
 - 状态边界：S2.1 自身 gate passed 且已在 main；下一唯一入口为准备 `P5/V2/M2.1/S2.2 generation 5 attempt 1` Execution Packet。`change_request_closed=false`；PC-09、M2.1、V2、formal、P5 与真实运行 3/3 均未完成。
+
+## 2026-08-27 S2.1 收口与 S2.2 派发
+
+- S2.1 独立验收：review=`3424a8a5e65d7737401cf602d7227bf637194817`，唯一父=`67dae282...`，exact-two；结论=`PASS / 100`、P0/P1/P2=`0/0/0`、`required_fixes=[]`，fresh `514/514`，coverage=`93.61/88.74/99.27`。
+- S2.1 acceptance Result：digest=`sha256:938c6779cf5028629f93d2382713de1d7af444ca4b0fa1ad40dec274ae416fb6`，control=`f889449af52f6a4d201023ca224ed163f4e808dd`；main 已 fast-forward 包含候选与 review，随后集成留痕 checkpoint=`24ef30a...`。
+- S2.1 integration CAS：exact-2 control=`bf7aab75881bf3b8b876cff510ec69fccb55b1a5`，状态=`gate-passed/present-in-main`。exact-11 权威状态同步=`b2a5f3ff5a866b5fc44c4fa2ab4cb35be5367460`，下一入口固定为 S2.2；M2.1/V2/formal/P5 未完成。
+- S2.2 packet：`ep-p5-v2-m2.1-s2.2-g5-a1-20260827`，working parent=`b2a5f3f...`，digest=`sha256:e274469741d5d0f0f5602d22e50d83a4337494b7e03b266f4f836d3a1ac57dd1`，dedup=`sha256:144495af43be17b1e0324f748087bed9fbff1dde8e98896aaa4bdda1b3cf333b`，packet control=`32943f7`。
+- S2.2 dispatch：claim/fence136=`808e7e1`；ready/outbox payload digest=`sha256:da6c1e5c9f58726331257707aaa0f60c404941ec2c2a57e3b5f45d2efb4e9d2e`，control=`e996d8f`；唯一 worker=`codex-subagent:/root/s22_impl_g5_a1_f136` readiness 通过后 ACK control=`e005c073420f2d10d5cb6244f58cbc7c68d7fdfc`。
+- S2.2 边界：只实现 9 个大里程碑/20 PC 互斥范围与 Profile 绑定；S2.3/S2.4、PC-10/M2.1/V2/alpha/formal/P5 完成保持阻塞。

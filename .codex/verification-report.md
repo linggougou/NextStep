@@ -2714,6 +2714,15 @@
 - 写集限定为 `README.md`、`PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md`、`docs/PRODUCT_SENSE.md`、`docs/change-requests/index.md`、`docs/qa/index.md`、两个 P5 active plan 与两份 `.codex` 留痕；没有产品代码、测试、Schema 或依赖变化，因此本候选不重复运行 `pnpm check`，引用两次已核定 fresh run 仅用于证明覆盖率波动。
 - 用户改动保护：未读取、修改、暂存或清理受保护 `.codex/context-summary-multica-migration-feasibility-2026-08-22.md`；未移动 refs、未 push。
 
+## 2026-08-27 S2.1 收口与 S2.2 控制链验证
+
+- S2.1 review commit/tree/parent=`3424a8a5e65d7737401cf602d7227bf637194817` / `659d48584aa6a96bb540916e331d6ea0819acbf6` / `67dae282065926c2a583643cfc348385f1282554`，写集 exact-two；scorecard raw/JCS 与 verdict raw digest 均由主控独立重算。
+- S2.1 Result digest=`sha256:938c6779cf5028629f93d2382713de1d7af444ca4b0fa1ad40dec274ae416fb6`；candidate/review 均为 integration checkpoint `24ef30a...` 和同步 main `b2a5f3f...` 的祖先；formal 保持 F16。
+- S2.1 control 收口 `f889449 -> bf7aab7` 为单父 exact-2 CAS；状态同步 commit `b2a5f3f...` 为唯一父 `24ef30a...`、exact-11、`git diff --check` 通过，未出现 PC-09/M2.1/V2/formal/P5 提前完成声明。
+- S2.2 packet/dedup 经 RFC8785 独立重算为 `sha256:e274469741d5d0f0f5602d22e50d83a4337494b7e03b266f4f836d3a1ac57dd1` / `sha256:144495af43be17b1e0324f748087bed9fbff1dde8e98896aaa4bdda1b3cf333b`。
+- S2.2 单父 control 链：packet=`32943f7`、claim/fence136=`808e7e1`、ready/outbox=`e996d8f`、ACK=`e005c07`；ready payload JCS digest=`sha256:da6c1e5c9f58726331257707aaa0f60c404941ec2c2a57e3b5f45d2efb4e9d2e`。
+- 实现 worktree 固定 parent=`b2a5f3f...`，offline frozen 依赖存在且非 symlink，TypeScript=`7.0.2`，ACK 前工作区干净。独立验收、main/formal 推进仍未发生。
+
 ## 2026-08-27 S2.1 attempt 2 候选与独立验收派发验证
 
 ### 候选硬门禁
