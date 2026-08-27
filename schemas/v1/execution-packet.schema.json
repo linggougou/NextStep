@@ -1,0 +1,118 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nextstep.local/schemas/v1/execution-packet.schema.json",
+  "title": "NextStep Execution Packet Candidate 1.0",
+  "description": "S2.4 纯确定性任务包候选；small_milestone_plan 必须由权威 S2.3 parser 重验。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_type", "command", "dry_run", "project", "small_milestone_plan", "selected_milestone_id", "control_identity", "target", "input_bindings", "dependency_proofs", "scope", "output_contract", "verification", "execution", "reporting", "validity"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "record_type": { "const": "execution-packet-candidate" },
+    "command": { "const": "packet-build" },
+    "dry_run": { "type": "boolean" },
+    "project": { "$ref": "#/definitions/project" },
+    "small_milestone_plan": { "type": "object" },
+    "selected_milestone_id": { "$ref": "#/definitions/milestoneId" },
+    "control_identity": { "$ref": "#/definitions/controlIdentity" },
+    "target": { "$ref": "#/definitions/target" },
+    "input_bindings": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/definitions/inputBinding" } },
+    "dependency_proofs": { "type": "array", "maxItems": 18, "items": { "$ref": "#/definitions/dependencyProof" } },
+    "scope": { "$ref": "#/definitions/scope" },
+    "output_contract": { "$ref": "#/definitions/outputContract" },
+    "verification": { "$ref": "#/definitions/verification" },
+    "execution": { "$ref": "#/definitions/execution" },
+    "reporting": { "$ref": "#/definitions/reporting" },
+    "validity": { "$ref": "#/definitions/validity" }
+  },
+  "definitions": {
+    "nonEmpty": { "type": "string", "minLength": 1 },
+    "oid": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "digest": { "type": "string", "minLength": 1 },
+    "milestoneId": { "type": "string", "pattern": "^S[0-9]+\\.[0-9]+$" },
+    "project": {
+      "type": "object", "additionalProperties": false,
+      "required": ["repository_id", "formal_baseline"],
+      "properties": { "repository_id": { "$ref": "#/definitions/digest" }, "formal_baseline": { "$ref": "#/definitions/oid" } }
+    },
+    "controlIdentity": {
+      "type": "object", "additionalProperties": false,
+      "required": ["repository_id", "route_generation", "stage_id", "plan_id", "plan_generation", "task_id", "task_attempt", "baseline_oid"],
+      "properties": {
+        "repository_id": { "$ref": "#/definitions/digest" },
+        "route_generation": { "type": "integer", "minimum": 1 },
+        "stage_id": { "$ref": "#/definitions/nonEmpty" },
+        "plan_id": { "$ref": "#/definitions/nonEmpty" },
+        "plan_generation": { "type": "integer", "minimum": 1 },
+        "task_id": { "$ref": "#/definitions/milestoneId" },
+        "task_attempt": { "type": "integer", "minimum": 1 },
+        "baseline_oid": { "$ref": "#/definitions/oid" }
+      }
+    },
+    "target": {
+      "type": "object", "additionalProperties": false,
+      "required": ["milestone_id", "objective", "why_now"],
+      "properties": { "milestone_id": { "$ref": "#/definitions/milestoneId" }, "objective": { "$ref": "#/definitions/nonEmpty" }, "why_now": { "$ref": "#/definitions/nonEmpty" } }
+    },
+    "inputBinding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["input_id", "requirement", "source_ref", "source_digest"],
+      "properties": { "input_id": { "enum": ["S2.3", "S4"] }, "requirement": { "enum": ["S2.3", "S4"] }, "source_ref": { "$ref": "#/definitions/nonEmpty" }, "source_digest": { "$ref": "#/definitions/digest" } }
+    },
+    "dependencyProof": {
+      "type": "object", "additionalProperties": false,
+      "required": ["dependency_id", "status", "evidence_ref", "evidence_digest"],
+      "properties": { "dependency_id": { "$ref": "#/definitions/milestoneId" }, "status": { "const": "satisfied" }, "evidence_ref": { "$ref": "#/definitions/nonEmpty" }, "evidence_digest": { "$ref": "#/definitions/digest" } }
+    },
+    "scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["allowed_paths", "forbidden_paths", "non_goals", "modifies_signed_upstream", "change_request_ref"],
+      "properties": {
+        "allowed_paths": { "type": "array", "minItems": 1, "maxItems": 64, "items": { "$ref": "#/definitions/nonEmpty" } },
+        "forbidden_paths": { "type": "array", "minItems": 1, "maxItems": 64, "items": { "$ref": "#/definitions/nonEmpty" } },
+        "non_goals": { "type": "array", "minItems": 1, "maxItems": 16, "items": { "$ref": "#/definitions/nonEmpty" } },
+        "modifies_signed_upstream": { "type": "boolean" },
+        "change_request_ref": { "anyOf": [{ "type": "string" }, { "type": "null" }] }
+      }
+    },
+    "outputContract": {
+      "type": "object", "additionalProperties": false,
+      "required": ["required_outputs", "candidate_form"],
+      "properties": { "required_outputs": { "type": "array", "minItems": 1, "maxItems": 16, "items": { "$ref": "#/definitions/nonEmpty" } }, "candidate_form": { "const": "immutable-candidate" } }
+    },
+    "check": {
+      "type": "object", "additionalProperties": false,
+      "required": ["check_id", "check_type"],
+      "properties": { "check_id": { "$ref": "#/definitions/nonEmpty" }, "check_type": { "enum": ["positive", "negative", "blocked", "recovery"] } }
+    },
+    "verification": {
+      "type": "object", "additionalProperties": false,
+      "required": ["checks", "acceptance_types", "failure_rules"],
+      "properties": {
+        "checks": { "type": "array", "maxItems": 16, "items": { "$ref": "#/definitions/check" } },
+        "acceptance_types": { "type": "array", "maxItems": 4, "items": { "enum": ["integration", "interaction", "product", "ui_restoration"] } },
+        "failure_rules": { "type": "array", "minItems": 1, "maxItems": 16, "items": { "$ref": "#/definitions/nonEmpty" } }
+      }
+    },
+    "timeoutPolicy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["timeout_ms", "on_timeout"],
+      "properties": { "timeout_ms": { "type": "integer", "minimum": 1, "maximum": 86400000 }, "on_timeout": { "const": "blocked" } }
+    },
+    "execution": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sandbox_mode", "host_mode", "timeout_policy"],
+      "properties": { "sandbox_mode": { "const": "isolated-worktree" }, "host_mode": { "const": "manual-isolated" }, "timeout_policy": { "$ref": "#/definitions/timeoutPolicy" } }
+    },
+    "reporting": {
+      "type": "object", "additionalProperties": false,
+      "required": ["result_schema_version", "evidence_requirements", "escalation_rules"],
+      "properties": { "result_schema_version": { "const": "1.0" }, "evidence_requirements": { "type": "array", "minItems": 1, "maxItems": 16, "items": { "$ref": "#/definitions/nonEmpty" } }, "escalation_rules": { "type": "array", "minItems": 1, "maxItems": 16, "items": { "$ref": "#/definitions/nonEmpty" } } }
+    },
+    "validity": {
+      "type": "object", "additionalProperties": false,
+      "required": ["created_at", "expires_at"],
+      "properties": { "created_at": { "$ref": "#/definitions/nonEmpty" }, "expires_at": { "$ref": "#/definitions/nonEmpty" } }
+    }
+  }
+}

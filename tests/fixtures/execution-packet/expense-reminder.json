@@ -1,0 +1,8 @@
+{
+  "small_milestone_fixture": "expense-reminder",
+  "selected_milestone_id": "S2.4",
+  "allowed_paths": ["src/change-intake/**", "tests/change-intake/**"],
+  "forbidden_paths": [".git/**", ".codex/**"],
+  "created_at": "2026-08-27T12:00:00Z",
+  "expires_at": "2026-08-27T13:00:00Z"
+}

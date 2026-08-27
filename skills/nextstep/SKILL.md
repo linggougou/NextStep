@@ -249,3 +249,22 @@ node dist/src/cli/small-milestone.js
 Success emits one deterministic `SMALL_MILESTONE_ACCEPTED` JCS receipt with 18/18 milestones, 9/9 major-milestone ownership coverage, 17/17 edges, one root, one terminal, and zero cycles. Invalid JSON/JCS, arguments, unknown or sensitive fields, a forged S2.2 plan, project drift, missing/duplicate/reordered/unknown milestones, any P3 row rewrite, unknown/missing/duplicate/self/cyclic/alternative dependency edges, or forged summaries and results fail closed with one value-safe receipt, a generic stderr diagnostic, and exit code 1.
 
 S2.3 is a pure candidate validator. It performs no Git, network, filesystem, Execution Packet, development-task, claim/fence, dispatch, formal/control, project-write, or execution action. S2.4 remains separately gated. Do not claim PC-11, M2.2, V2, or P5 complete from an accepted S2.3 receipt.
+
+## S2.4 Execution Packet Candidate Boundary
+
+Enter S2.4 only when project truth and control state identify `V2 / M2.2 / S2.4` and the independently accepted S2.3 result is present in main. The kernel must call `parseSmallMilestonePlan`; copied milestones, dependencies, status, metrics, project identity, or acceptance data are never trusted.
+
+The host AI supplies one RFC 8785/JCS `execution-packet-candidate` with `command: packet-build` and `dry_run: true`. It selects exactly one accepted S2.3 milestone and binds the complete milestone inputs, outputs, definition of done, tests, non-goals, dependency proofs, failure return, target-project identity, control identity, path scope, accepted Profile, reporting, and validity window. All ten P4 section 7 field groups are mandatory. The two input bindings are exactly `S2.3` and `S4`; their refs/digests and every accepted dependency Result identity come from a trusted, non-JSON, in-process evaluation context rather than stdin or environment variables.
+
+S2.4 supports only the initial identity (`route_generation = plan_generation = task_attempt = 1`), `manual-isolated`, and no signed-upstream modification. The plan id is derived from the authority-revalidated S2.3 candidate digest. `full` host mode, caller capability booleans, any non-null Change Request, and allowed paths overlapping `docs/product-specs/**`, `docs/design-docs/**`, `docs/architecture/**`, or `docs/exec-plans/**` fail closed. `full` host capability remains separately gated to S3.1.
+
+Build the standalone parser for blocked-path diagnostics:
+
+```bash
+pnpm build
+node dist/src/cli/execution-packet.js
+```
+
+The standalone shell command cannot supply trusted S4 or accepted-Result authority, so pure stdin invocation is intentionally rejected with a value-safe JCS receipt, generic stderr diagnostic, and non-zero exit code. A trusted host may call `runExecutionPacket` with an in-process `ExecutionPacketEvaluationContext`; only that path can emit deterministic `EXECUTION_PACKET_VALID` with result status exactly `packet-valid-only`. The context clock is read once and enforces `created_at <= now < expires_at`; no evaluation timestamp is written into the deterministic payload. Invalid JSON/JCS, arguments, unknown or sensitive fields, forged S2.3/S4 data, project/control drift, non-unique milestones, missing/conflicting/unauthorized inputs or dependencies, unsafe/overlapping paths, signed-upstream changes, Profile/check conflicts, unsupported host claims, inactive time windows, and packet/dedup/summary/result tampering fail closed.
+
+This command only validates and returns a candidate. It does not persist or dispatch an Execution Packet, create a development task, claim/fence, outbox, dispatch-ready or dispatch ACK, call a host, Git, network or project writer, or move formal/control. S3.1 remains separately gated. Do not claim PC-12, PC-13, M2.2, V2, or P5 complete from an accepted S2.4 receipt.
