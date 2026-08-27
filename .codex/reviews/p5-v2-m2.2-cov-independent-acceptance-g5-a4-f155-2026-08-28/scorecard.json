@@ -1,0 +1,270 @@
+{
+  "review_id": "p5-v2-m2.2-cov-independent-acceptance-g5-a4-f155-2026-08-28",
+  "task_id": "M2.2-COV-I-X-P",
+  "lane": "package-acceptance",
+  "review_level": "L3",
+  "rubric_id": "p5-v2-m2.2-coverage-remediation-acceptance-v4",
+  "verdict": "PASS",
+  "review_started_at": "2026-08-27T19:45:46Z",
+  "reviewed_at": "2026-08-27T19:56:22Z",
+  "ack_accepted_at": "2026-08-27T19:43:33Z",
+  "artifact_refs": [
+    "git:a8ba3dae236f3978fd4e97c4ce0062cf81a25b9d",
+    "git-tree:4e4d0162fcac237040acc40f0996ecefd1a079a6",
+    "git-parent:cd69728eb52476e7d0788a0b6f2df0f9fcdd2702",
+    "control:bb78415f00ea11e280111d84c6a677dda9b31236:gate-requests/gate-package-acceptance-m2.2-cov-g5-a4-20260828.json",
+    "control:094748f8662c96ab7510b2915725e150e0f1483a",
+    "control:4899b856b32652554ac37da6d0b5212b2db981d0",
+    "control:63f8c9ed3d159f72213e401e94161c95eabad47a:messages/msg-dispatch-ack-m2.2-cov-ixp-g5-a4-f155-20260828.json",
+    "formal:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "result:results/result-execution-m2.2-cov-g5-a3-f153-20260828.json",
+    "prior-pass:results/result-package-acceptance-m2.2-cov-g5-a1-f150-20260828.json",
+    "prior-revise:results/result-package-acceptance-m2.2-cov-g5-a2-f152-20260828.json",
+    "prior-revise:results/result-package-acceptance-m2.2-cov-g5-a3-f154-20260828.json"
+  ],
+  "subject_identity": {
+    "commit_oid": "a8ba3dae236f3978fd4e97c4ce0062cf81a25b9d",
+    "tree_oid": "4e4d0162fcac237040acc40f0996ecefd1a079a6",
+    "parent_oid": "cd69728eb52476e7d0788a0b6f2df0f9fcdd2702",
+    "subject_digest": "sha256:ff7b2f5e029c7030ad72d44e5177f16440cc2b40dfeb4e279909cc418492e6fd",
+    "changed_blob_oid": "e83ec39b3d2d0482f667c69c7949cfe4458bd9b0",
+    "changed_file_raw_digest": "sha256:b61593ba83498146fb7e6ff904181e4cbccddffeffb35ea22bcf013c9048e95f"
+  },
+  "control_identity": {
+    "stage_id": "P5/V2/M2.2/remediation/acceptance",
+    "plan_generation": 5,
+    "task_attempt": 4,
+    "packet_digest": "sha256:26840b36e8814edce50f2525cd9f5d1599b4f96caca23cd1fdfc8bb80a295ceb",
+    "dedup_key": "sha256:502126f8e15ceb584f20be774449d8b47433695a8c1ebf5288cea9d0b1381220",
+    "execution_result_digest": "sha256:c3c93a4bb91758f9dbeb543e736c2db8025fa6fca6e0bddcbdd3263ccdee8907",
+    "prior_result_digests": {
+      "attempt_1": "sha256:f4a0407ea5350bb10fc1b5724e296207ab742844480366433534f0cb391a8b31",
+      "attempt_2": "sha256:6852fa81021d6fffddd9bd1fb1623ea5d4a69939750773009260ae9b45187f99",
+      "attempt_3": "sha256:12120b457bdd1fbc4b505f856c7c53d3c80136bd1ef44d2b9641bb579f8bb816"
+    },
+    "claim_id": "claim-m2.2-cov-ixp-g5-a4-f155-20260828",
+    "fence_token": 155,
+    "packet_control_oid": "bb78415f00ea11e280111d84c6a677dda9b31236",
+    "claim_control_oid": "094748f8662c96ab7510b2915725e150e0f1483a",
+    "ready_control_oid": "4899b856b32652554ac37da6d0b5212b2db981d0",
+    "dispatch_ack_control_oid": "63f8c9ed3d159f72213e401e94161c95eabad47a",
+    "ack_evidence_ref": "refs/nextstep/evidence/m2.2-cov-acceptance-ack-f155",
+    "host_task_id": "codex-subagent:/root/m22_cov_accept_g5_a4_f155",
+    "formal_oid": "ea04b57de83d6c548dcb1629b1f61832db8375ad"
+  },
+  "independence_declaration": {
+    "reviewer": "codex-subagent:/root/m22_cov_accept_g5_a4_f155",
+    "role": "唯一独立 reviewer",
+    "clone": "/private/tmp/nextstep-m22-cov-g5-a4-f155.kKRpMF/review",
+    "statements": [
+      "未参与 M2.2-COV Generation 3 计划、entry review、实现或 attempt1 到 attempt3 的 package acceptance。",
+      "审查期间只访问指定一次性 no-local、origin-removed、自包含隔离 clone，以及全局 Judge Harness 技能文件。",
+      "未访问原仓库、其他 clone 或网络，未修改 candidate、Result、main、formal、control 或 refs。",
+      "结论来自 current-turn 的摘要复算、控制链核验、源码差异审查、公开错误码探针、targeted/full fresh 验证和 coverage 复算。"
+    ]
+  },
+  "hard_gates": [
+    {
+      "id": "HG1-packet-result-and-subject-digests",
+      "status": "pass",
+      "evidence": "独立 RFC8785 复算 packet=sha256:26840b36e8814edce50f2525cd9f5d1599b4f96caca23cd1fdfc8bb80a295ceb、dedup=sha256:502126f8e15ceb584f20be774449d8b47433695a8c1ebf5288cea9d0b1381220、subject=sha256:ff7b2f5e029c7030ad72d44e5177f16440cc2b40dfeb4e279909cc418492e6fd、Execution Result=sha256:c3c93a4bb91758f9dbeb543e736c2db8025fa6fca6e0bddcbdd3263ccdee8907、attempt1=sha256:f4a0407ea5350bb10fc1b5724e296207ab742844480366433534f0cb391a8b31、attempt2=sha256:6852fa81021d6fffddd9bd1fb1623ea5d4a69939750773009260ae9b45187f99、attempt3=sha256:12120b457bdd1fbc4b505f856c7c53d3c80136bd1ef44d2b9641bb579f8bb816，全部匹配。control 单父链为 cc60b8d -> bb78415(packet) -> 094748f(claim) -> 4899b85(ready) -> 63f8c9e(ACK)。"
+    },
+    {
+      "id": "HG2-ack-control-tree-and-frozen-clone-boundary",
+      "status": "pass",
+      "evidence": "review start 时 refs/nextstep/control 与 refs/nextstep/evidence/m2.2-cov-acceptance-ack-f155 均指向 63f8c9ed3d159f72213e401e94161c95eabad47a；ACK control tree 可读本次 packet、ready、ACK、registry 和 closed outbox。clone remote=0、无 alternates、HEAD 固定 a8ba3dae、formal 固定 ea04b57，review output 创建前工作树 clean。"
+    },
+    {
+      "id": "HG3-post-ack-and-post-import-time-order",
+      "status": "pass",
+      "evidence": "ACK accepted_at=2026-08-27T19:43:33Z，controller evidence-import-completed_at=2026-08-27T19:44:44Z，review_started_at=2026-08-27T19:45:46Z，reviewed_at=2026-08-27T19:49:53Z，全部严格晚于 ACK 与 import completion。"
+    },
+    {
+      "id": "HG4-exact-subject-and-direct-diff",
+      "status": "pass",
+      "evidence": "subject commit/tree/parent 精确为 a8ba3dae236f3978fd4e97c4ce0062cf81a25b9d / 4e4d0162fcac237040acc40f0996ecefd1a079a6 / cd69728eb52476e7d0788a0b6f2df0f9fcdd2702；changed paths 恰为 tests/domain/small-milestone.test.ts；direct numstat=9/1，blob=e83ec39b3d2d0482f667c69c7949cfe4458bd9b0，raw sha256=b61593ba83498146fb7e6ff904181e4cbccddffeffb35ea22bcf013c9048e95f。"
+    },
+    {
+      "id": "HG5-test-count-stability",
+      "status": "pass",
+      "evidence": "新增差异中 test()/it()=0，helper 新增=0，assert.throws=2。domain discovered/passed=6/6；四文件 targeted=29/29；fresh full=555/555；fail/skip/cancel/todo 均为 0。"
+    },
+    {
+      "id": "HG6-public-version-chain-contract-assertions",
+      "status": "pass",
+      "evidence": "current-turn 直接探针确认 parseVersionChainResult(cyclic) 抛 VersionChainError，reasons 含 RESULT_INTEGRITY_MISMATCH；evaluateVersionChain(null) 抛 VersionChainError，reasons 含 INVALID_VERSION_CHAIN。Generation2 historical-only 的 evaluateSmallMilestonePlan(null) 断言未带入本候选。"
+    },
+    {
+      "id": "HG7-displayed-and-raw-coverage",
+      "status": "pass",
+      "evidence": "current-turn same-run multi-reporter full verification 在与 pnpm check 对齐的 54 个测试文件上得到 555/555；同次 Node native all-files Lines/Branches/Functions=94.60/90.01/99.57，满足 strengthened floors 94.40/89.75/99.57。同次 LCOV raw counters 为 LH/LF=8380/8858、BRH/BRF=3026/3362、FNH/FNF=697/700，对应 94.603748024385/90.005948839976/99.571428571429；displayed 与 raw 来自同一轮 full run。"
+    },
+    {
+      "id": "HG8-no-scope-drift-or-padding",
+      "status": "pass",
+      "evidence": "直接 diff 只在既有 fail-closed 测试体内补入 version-chain import 和两条真实公开契约断言；无 no-op、unreachable、ignore、padding、coverage exclusion、threshold 改写、生产代码、schema、CLI、Skill、fixture、依赖、锁文件或配置漂移。"
+    },
+    {
+      "id": "HG9-cleanliness-and-zero-side-effects",
+      "status": "pass",
+      "evidence": "git diff --check 通过；build、targeted、full、lcov probe 后工作树无 tracked 变更；remote=0、alternates=false；formal/control/ACK evidence refs 保持 ea04b57/63f8c9e/63f8c9e；未创建 Result、未改 main、未改 refs、未使用网络。"
+    },
+    {
+      "id": "HG10-traceability-and-attempt3-immutability",
+      "status": "pass",
+      "evidence": "Generation3 plan commit c4445e5a8dbd7dd5102355a34dfa8248bb04f069、entry review/main parent cd69728eb52476e7d0788a0b6f2df0f9fcdd2702、attempt3 review commit 5f4138d91d00b5b3b8ecddb9b576fc900007068e 和 attempt3 REVISE Result sha256:12120b457bdd1fbc4b505f856c7c53d3c80136bd1ef44d2b9641bb579f8bb816 均可追溯且保持 immutable。"
+    },
+    {
+      "id": "HG11-budget",
+      "status": "pass",
+      "evidence": "预算精确为 1 个 changed file、9 inserted、1 deleted、net 8、2 assertions、0 tests/helpers/production/config/dependencies，完全符合 packet 冻结预算。"
+    },
+    {
+      "id": "HG12-exact-two-and-authority-boundary",
+      "status": "pass",
+      "evidence": "reviewer 只新建本目录 scorecard.json 与 verdict.md；不会创建 Result、集成 main、宣称 M2.2/V2/alpha/formal/CR-006/P5 完成。后续 review commit 必须以 a8ba3dae236f3978fd4e97c4ce0062cf81a25b9d 为唯一父。"
+    }
+  ],
+  "verification": {
+    "targeted": {
+      "command": "node --test dist/tests/domain/small-milestone.test.js dist/tests/cli/small-milestone.test.js dist/tests/domain/execution-packet.test.js dist/tests/cli/execution-packet.test.js",
+      "discovered": 29,
+      "passed": 29,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    },
+    "full": {
+      "command": "find dist/tests/adapters dist/tests/architecture dist/tests/cli dist/tests/domain dist/tests/skill -name '*.test.js' | sort | xargs node --test --experimental-test-coverage --test-coverage-include='dist/src/**/*.js' --test-coverage-lines=80 --test-coverage-functions=80 --test-coverage-branches=80 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=<temp-lcov>",
+      "exit_code": 0,
+      "discovered": 555,
+      "passed": 555,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    },
+    "node_native_coverage": {
+      "lines": 94.60,
+      "branches": 90.01,
+      "functions": 99.57,
+      "floors": {
+        "lines": 94.40,
+        "branches": 89.75,
+        "functions": 99.57
+      },
+      "floors_met": true
+    },
+    "same_range_raw_coverage": {
+      "source": "same-run lcov reporter collateral from the 555-test multi-reporter full run",
+      "lines": {
+        "covered": 8380,
+        "total": 8858,
+        "ratio_percent": 94.603748024385
+      },
+      "branches": {
+        "covered": 3026,
+        "total": 3362,
+        "ratio_percent": 90.005948839976
+      },
+      "functions": {
+        "covered": 697,
+        "total": 700,
+        "ratio_percent": 99.571428571429
+      }
+    },
+    "budget": {
+      "changed_files": 1,
+      "inserted_lines": 9,
+      "deleted_lines": 1,
+      "net_added_lines": 8,
+      "new_assertions": 2,
+      "added_test_cases": 0,
+      "new_helpers": 0,
+      "new_dependencies": 0
+    },
+    "git_diff_check": "pass"
+  },
+  "dimensions": [
+    {
+      "id": "I-identity-control-and-timing",
+      "score": 25,
+      "max_score": 25,
+      "reason": "packet/result/subject 摘要、ACK control tree、时序和隔离边界全部精确成立。",
+      "evidence_refs": [
+        "HG1-packet-result-and-subject-digests",
+        "HG2-ack-control-tree-and-frozen-clone-boundary",
+        "HG3-post-ack-and-post-import-time-order",
+        "HG4-exact-subject-and-direct-diff"
+      ]
+    },
+    {
+      "id": "X-public-contract-and-test-correctness",
+      "score": 25,
+      "max_score": 25,
+      "reason": "两条真实公开 version-chain contract assertions 命中精确 reason code，targeted/full 计数稳定且全绿。",
+      "evidence_refs": [
+        "HG5-test-count-stability",
+        "HG6-public-version-chain-contract-assertions"
+      ]
+    },
+    {
+      "id": "P-coverage-cleanliness-and-no-side-effects",
+      "score": 25,
+      "max_score": 25,
+      "reason": "displayed 与 same-range raw coverage 均越过 strengthened floors，范围无漂移，工作区和控制面保持零副作用。",
+      "evidence_refs": [
+        "HG7-displayed-and-raw-coverage",
+        "HG8-no-scope-drift-or-padding",
+        "HG9-cleanliness-and-zero-side-effects"
+      ]
+    },
+    {
+      "id": "Budget-traceability-and-authority-boundary",
+      "score": 25,
+      "max_score": 25,
+      "reason": "Generation3 plan、attempt3 REVISE 和当前 attempt4 权限边界均可追溯；预算 exact-one，review 输出 exact-two。",
+      "evidence_refs": [
+        "HG10-traceability-and-attempt3-immutability",
+        "HG11-budget",
+        "HG12-exact-two-and-authority-boundary"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100
+  },
+  "finding_counts": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "required_fixes": [],
+  "nice_to_have": [],
+  "verification_summary": [
+    "attempt4 packet、dedup、subject、Execution Result 与 attempt1 到 attempt3 acceptance Result 摘要 current-turn 独立复算全部匹配。",
+    "targeted 29/29、full 555/555，fail/skip/cancel/todo 全为 0。",
+    "same-run full=555/555；Node native displayed coverage=94.60/90.01/99.57；same-run raw coverage=8380/8858、3026/3362、697/700，对应 94.603748024385/90.005948839976/99.571428571429。",
+    "候选写集保持 exact-one：tests/domain/small-milestone.test.ts，9 inserted、1 deleted、2 assertions；无 production/config/dependency/helper/test-count drift。",
+    "reviewer 只写 exact-two，且不创建 Result、不改 refs、不合入 main、不声称更大范围完成。"
+  ],
+  "reviewers": [
+    {
+      "role": "Generator",
+      "identity": "codex-subagent:/root/m22_cov_impl_g5_a3_f153",
+      "conclusion": "submitted",
+      "note": "提交不变候选 a8ba3dae 用于 evidence-recovery acceptance；未参与本次独立批准。"
+    },
+    {
+      "role": "Independent Reviewer / Strict Judge / Anti-Slop Judge / Chief Reviewer",
+      "identity": "codex-subagent:/root/m22_cov_accept_g5_a4_f155",
+      "conclusion": "PASS",
+      "note": "100/100；P0/P1/P2=0/0/0；required_fixes 为空；reviewer 本身不创建 Result 或执行集成。"
+    }
+  ]
+}
