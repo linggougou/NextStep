@@ -2939,3 +2939,28 @@
 - 本轮验证只针对 Markdown 计划修订；不运行产品测试、不创建 packet/control、不移动 refs，差异必须保持 exact-three 并通过身份/矛盾反扫与 `git diff --check`。
 - 提交前身份反扫：HEAD=`250d58ba1a24e36354d3607bd4729977443acb51`、唯一父=`8e2dce7ecdc8cba9c85564cffa408fd0f6f3f3e5`、tree=`d2cf5f56f2621bc27be80e18dd39c1d3d3226fb1`；formal/control=`ea04b57de83d6c548dcb1629b1f61832db8375ad` / `100bc6ae2937caf14e6f1e5abc4a88d143583640`，均与 revision 入口一致且未移动。
 - 矛盾反扫未发现“readiness 通过/完成后才派发 reviewer”或 ACK 后正向更新 clone `refs/nextstep/control` 的残留语义；readiness-only、同 host ACK、create-once evidence ref、唯一 ref 差异、blocked/recovery 与不换 reviewer 的必备边界均命中。`git diff --check` 与 exact-three 路径检查通过。
+## 2026-08-28 V2 / M2.2 里程碑验收 Generation 1 计划冻结验证
+
+### 冻结输入与权威边界
+
+- plan entry main=`48d437454432abba4067e71bd38f51d5b5e8d397`，formal F16=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，M2.1 completion control=`179006320df60365357417c1f20fd774ee3ad632`，`plan_generation=5`。
+- 唯一 historical subject=`b68dd8974482517089ab558eb347856f4af6bde9`，tree=`e614d3bbf6750922cfa2ab93e90551b2d9783893`，parent=`411f2ef955ff8498b2fb2b1afa3a3ce97550ea36`，digest=`sha256:f5d8aadf62e5b5a3077fe5edd982ada2f38b06422857948bc567e4b02c2a9aa0`；计划明确拒绝以 live main 替代。
+- S2.3 有效 authority 固定为 candidate/review=`37bbd1c5b51daf44e8f411c2404e958925029b01` / `f2fbac76e9f3f234ca0ba9c9fb9de14795b13ac1`、Execution Result=`sha256:8247ede7fd00352f96c7b74adcdef5efb5e172bf0bb2655115a0fcc2ff80afb2`、package Result=`sha256:89e9b721870d1685fd0e1c0172b88ce9f6d8fec04fc2b867c302443f0d867408`、integration=`cc4c43c0c3e0d0ab7e3d3366c10978b7808612f9`；wrong-stage/fence140 attempt 1 audit=`sha256:c82ef7e2ff65f36864771185c0be08b2d2413af9eeb779abb0968dafac2e6da6` 保持无效。
+- S2.4 有效 authority 固定为 candidate/review=`45a3eb0a1d924b8f2b4c2b5ab6aa9e975526dc21` / `411f2ef955ff8498b2fb2b1afa3a3ce97550ea36`、Execution Result=`sha256:9c647e45d852b10edf703581458d3ec985fecb46f4397794cf7707cc0c5e774b`、package Result=`sha256:08901d9dea24d90e81a5d7535cdde3402c32bd15b7046a3b1082baeffc9f434f`、integration/state checkpoint=`b68dd8974482517089ab558eb347856f4af6bde9`；attempt 1 REVISE Result=`sha256:52b3003f9a07895c79db1139b963b3aaac75a28d9b24541b48efadbe3b6dad7d` 与 intermediate candidate `9c8ee6c...` 保持退回/被取代。
+
+### 计划门禁与范围判断
+
+- identity 精确为 `P5/V2/M2.2/acceptance` / `M2.2-I-X-P` / attempt 1；P3 冻结维度严格为 I/X/P。描述性 `headless-primary-m2.2-descriptive-fixture-set` 已声明不是既有 Profile 真源、第四验收维度或完成 authority。
+- covered S2.3/S2.4、PC-11..PC-13；TG union 精确为 `TG-02,TG-04,TG-07,TG-13,TG-16,TG-19`，包含 PC-12 的 TG-04。
+- targeted 固定四个 domain/CLI test 文件并要求 S2.3 `10/10` + S2.4 `19/19`=`29/29`；fresh full 至少 `555/555`、fail/skip/cancel/todo=`0/0/0/0`；coverage floors Lines/Branches/Functions=`94.36/89.65/99.57`。
+- I/X/P fail-closed、no-local/origin-removed/no-alternates historical clone、同一唯一 reviewer readiness-only→ACK 绑定→controller-only create-once namespaced evidence ref→正式评审、exact-three review、`passed-awaiting-user-signoff` Result 与 signoff request/用户 ACK/分离 completion 三段顺序均已冻结。
+- M2.2 completion 后只允许冻结 V2 cumulative acceptance Generation 1 计划并做独立 entry review，不直接创建 V2 packet。V2 cumulative、52 tests、Profile、V2、alpha、formal、CR-006、P5 保持未完成。
+- 本轮没有运行产品 full tests；计划冻结验证仅检查 Markdown 事实、路径范围、矛盾与格式，不把历史 `555/555` 包装成本轮重跑。
+- 边界偏差：一次只读扫描可能读取原仓库受保护未跟踪文件字节，但无命中输出、无内容使用、无修改/暂存/清理；偏差已报告主控并收紧为后续仅在专属 worktree 操作 exact-three。
+
+### 提交前验证
+
+- `git diff --check` 逐文件通过；差异路径严格等于 `.codex/exec-plan-m2.2-acceptance-generation-1.md`、`.codex/operations-log.md`、`.codex/verification-report.md`。
+- identity、subject、TG、测试阈值、I/X/P-only、readiness/ACK/evidence/ref 时序、exact-three、Result/signoff/completion 分离和后续未完成边界的机械反扫通过；未发现 live main 替代 subject、擅增 Profile 维、遗漏 TG-04、直接创建 V2 packet或提前完成声明。
+- 提交必须为单父、父=`48d437454432abba4067e71bd38f51d5b5e8d397`，提交信息=`plan: 冻结 M2.2 累计验收 Generation 1`；提交后 tracked clean。
+- 质量自检=`100 / 100`，建议=`通过`；该评分只评价计划冻结的身份、authority、门禁、时序和非目标完整性，不替代后续独立 entry review，也不授权 packet。

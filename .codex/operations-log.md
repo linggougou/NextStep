@@ -2953,3 +2953,13 @@
 - ACK 后主控保持 clone 的 frozen `refs/nextstep/control` 不变，以 controller-only provisioning 导入精确 ACK 对象，并用 expected-old=全零 OID 的 create-once CAS 只新增 `refs/nextstep/evidence/m2.1-acceptance-ack-f<N>`，后续禁止更新或删除。开始评审前机械断言 ACK 唯一父、evidence ref OID、无 remote/alternates、formal/control、HEAD/tree/worktree 与唯一新增 ref；随后才把 ACK 边界发给同一 reviewer。
 - evidence 注入或断言失败时状态为 blocked/recovery，不开始评审、不更换 reviewer 冒充同一 attempt。reviewer 不访问原仓库、不修改 refs，也不获得原仓库写权限。
 - 本轮仍只修改计划与两份追加留痕 exact-three；entry re-review 通过前不授权 packet，不创建控制对象、不移动 refs，不宣称 M2.1 或后续阶段完成。
+## 2026-08-28 V2 / M2.2 里程碑验收 Generation 1 计划冻结
+
+- 路线与阶段：`S5 / P5 / V2 / M2.2 / acceptance`；依据 `PROJECT_ROUTE_LOCK.md` 的 P5 顺序门禁与 P3 M2.2 冻结矩阵，推进 M2.2 独立累计验收入口，不涉及新需求、路线变更或阶段切换。
+- 最小可验收闭环：仅冻结 `.codex/exec-plan-m2.2-acceptance-generation-1.md` 并追加本日志与 verification report；本计划及后续 entry review 均不授权 packet、claim/fence、dispatch、正式验收、Result、formal 移动或后续版本完成。
+- 入口边界：main=`48d437454432abba4067e71bd38f51d5b5e8d397`，formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，M2.1 completion control=`179006320df60365357417c1f20fd774ee3ad632`，`plan_generation=5`；M2.1 已通过独立 ACK 与分离 completion CAS formally-completed。
+- 冻结 identity：stage=`P5/V2/M2.2/acceptance`，task=`M2.2-I-X-P`，attempt=`1`；P3 维度严格为 I/X/P，描述性 fixture profile 字面量明确不构成第四维度或既有真源。
+- historical subject=`b68dd8974482517089ab558eb347856f4af6bde9`，tree=`e614d3bbf6750922cfa2ab93e90551b2d9783893`，parent=`411f2ef955ff8498b2fb2b1afa3a3ce97550ea36`，digest=`sha256:f5d8aadf62e5b5a3077fe5edd982ada2f38b06422857948bc567e4b02c2a9aa0`；live main 不得替代。
+- covered=`S2.3/S2.4`、PC=`PC-11..PC-13`、TG union=`TG-02,TG-04,TG-07,TG-13,TG-16,TG-19`，保留 PC-12 的 TG-04；硬门冻结 targeted `29/29`、full 至少 `555/555`、coverage floors `94.36/89.65/99.57`、I/X/P fail-closed、同一 reviewer readiness→ACK→正式评审、controller-only create-once ACK evidence ref、exact-three review 与三段 signoff/completion。
+- 变更边界：写集严格为计划、operations-log、verification-report exact-three；不运行产品 full tests，不创建 control 对象，不修改 refs/main/formal/control，不进入 V2 cumulative 或 alpha。
+- 边界偏差记录：为核对 M2.1 completion 时，一条只读递归 `rg` 的目标误推导到原仓库根，扫描器因此可能读取受保护未跟踪文件字节；命令输出未命中受保护路径，未使用其内容，也未修改、暂存、清理或删除任何文件。发现后立即告知主控并停止所有广域扫描；后续操作严格限定本专属 worktree 的三条允许路径。
