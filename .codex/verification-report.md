@@ -2983,3 +2983,19 @@
 - 必须机械反扫 identity、attempt 1 digest/control、唯一 allowlist、两条断言、测试计数不变、coverage/full floors、新 remediation 与 acceptance attempt 2 双控制链、角色隔离、新 subject、永久 REVISE 和非目标边界。
 - 必须提交为单父、父=`1bb83c945de4ed620a44df370cfdeccbaf59451e`，中文提交信息；提交后 tracked worktree clean。
 - 计划质量自检=`100 / 100`，建议=`提交独立 entry review`。该评分只评价计划候选的范围、可执行性和 fail-closed 完整性，不是独立门禁结论，也不授权后续 packet。
+
+## 2026-08-28 M2.2 coverage remediation 计划 entry review P1 修复验证
+
+### REVISE 输入与精确修复
+
+- 不可变父 candidate=`989eb10a9cf423024cf55c4a16aaa1a88966bd6f`；entry review=`d6ae75dba2cc87679fde1455445072833e09ce77`、tree=`ef753181e213f9278c9e432c894f9391b751b376`、唯一父=`989eb10a9cf423024cf55c4a16aaa1a88966bd6f`，结论=`REVISE / 95`、P0/P1/P2=`0/1/0`。
+- 唯一 required fix 已落到计划第 2 节：`const cyclic: Record<string, unknown> = {}; cyclic.self = cyclic;`；`evaluateSmallMilestonePlan(cyclic)` 精确断言 `INVALID_SMALL_MILESTONE`，`parseSmallMilestonePlan(cyclic)` 精确断言 `RESULT_INTEGRITY_MISMATCH`。
+- 修订明确拒绝旧的 `DEPENDENCY_CYCLE` 外层预期；该错误码属于安全 JSON 通过后图分析的内层契约，不适用于 circular unsafe input。
+- 实现范围仍为 `tests/domain/small-milestone.test.ts`，两条断言仍在同一既有 fail-closed test 内；测试总数、生产代码、Schema、fixture、依赖和 PC/TG/I-X-P 边界均不变化。
+- reviewer 默认 cwd 偏差已留痕：原仓库中短暂创建的本次 exact-two 新文件已立即删除，未读取原内容、未触 refs/既有文件/受保护目标；后续固定隔离 clone workdir。
+
+### 修订提交检查
+
+- 差异路径必须严格等于 `.codex/exec-plan-m2.2-coverage-remediation-generation-1.md`、`.codex/operations-log.md`、`.codex/verification-report.md`；`git diff --check` 必须通过。
+- 修订提交唯一父必须为 `989eb10a9cf423024cf55c4a16aaa1a88966bd6f`，不得 amend/rebase/改写原 candidate；中文提交信息，提交后 tracked clean。
+- 质量自检=`100 / 100`，建议=`重新独立 entry review`。该结论只证明唯一 P1 已按 runtime evidence 窄修复，不替代重新独立评审，也不授权 remediation packet。

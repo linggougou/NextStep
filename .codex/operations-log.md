@@ -2976,3 +2976,11 @@
 - 非目标：本计划不授权 user-signoff、M2.2 completion、formal、V2、alpha、CR-006、P5 或 qualified real runs 状态变化；本轮只修改计划与两份追加留痕 exact-three，不运行产品测试、不创建控制对象或移动 refs。
 - 边界偏差补记：此前 alpha pack dry-run 及早期 M2.2 广域只读扫描可能读取过原仓库受保护未跟踪目标的字节，但未打开、输出、使用或修改其内容。发现后相关操作已停止；后续研究统一迁移至 `git clone --no-local`、origin-removed、无 alternates 的隔离 clone，并仅做精确路径读取。本记录不包含受保护目标内容。
 - 状态：计划候选待独立 entry review；在其 PASS 前不得创建 remediation packet。
+
+## 2026-08-28 M2.2 coverage remediation 计划 entry review P1 窄修订
+
+- 不改写历史：原计划 candidate=`989eb10a9cf423024cf55c4a16aaa1a88966bd6f` 保持不可变；独立 entry review=`d6ae75dba2cc87679fde1455445072833e09ce77`，结论=`REVISE / 95`、P0/P1/P2=`0/1/0`。本轮只在其上形成新的单父修正提交，不 amend/rebase。
+- 唯一 P1：计划把 circular unsafe input 交给 `evaluateSmallMilestonePlan` 的外层错误码误写为 `DEPENDENCY_CYCLE`；fresh runtime probe 证明它在图分析前精确返回 `INVALID_SMALL_MILESTONE`。`parseSmallMilestonePlan` 的 `RESULT_INTEGRITY_MISMATCH` 预期成立。
+- 修复内容：计划第 2 节固定 `const cyclic: Record<string, unknown> = {}; cyclic.self = cyclic;`，并要求在同一既有测试体内分别对 `evaluateSmallMilestonePlan(cyclic)` / `parseSmallMilestonePlan(cyclic)` 断言 `INVALID_SMALL_MILESTONE` / `RESULT_INTEGRITY_MISMATCH`；仍不新增 test count、不改生产代码或实现 allowlist。
+- reviewer 工作目录偏差：reviewer 曾因默认 cwd 短暂在原仓库创建本次 entry review 的 exact-two 新文件，发现后立即删除；未读取原内容，未触碰 refs、既有文件或受保护未跟踪目标。后续 reviewer 工作目录固定为 no-local、origin-removed、无 alternates 的隔离 clone，禁止依赖默认 cwd。
+- 写集与停点：本轮仍只修改计划、operations-log、verification-report exact-three；重新独立 entry review PASS 前不得创建 remediation packet。

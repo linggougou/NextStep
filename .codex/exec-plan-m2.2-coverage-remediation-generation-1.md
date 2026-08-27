@@ -12,9 +12,9 @@
 ## 2. 唯一实现范围与测试契约
 
 - remediation Execution Packet 的唯一实现 allowlist：`tests/domain/small-milestone.test.ts`。实现 agent 对任何其他路径均无写权限。
-- 只允许在现有测试 `依赖缺失、额外、重复、自依赖、未知、反向、跳级、替代 DAG 与环路精确拒绝` 或等价的既有 fail-closed 测试体内，复用一个最小 cyclic 输入，并加入以下两条断言：
-  1. `evaluateSmallMilestonePlan` 对 cyclic candidate 按既有错误契约 fail closed，精确拒绝 `DEPENDENCY_CYCLE`；
-  2. `parseSmallMilestonePlan` 对由同一 cyclic 语义构造的伪造结果按既有结果完整性契约 fail closed，精确拒绝 `RESULT_INTEGRITY_MISMATCH`。
+- 只允许在现有测试 `依赖缺失、额外、重复、自依赖、未知、反向、跳级、替代 DAG 与环路精确拒绝` 或等价的既有 fail-closed 测试体内，精确构造同一个不可安全 JSON 化的 cyclic 输入：`const cyclic: Record<string, unknown> = {}; cyclic.self = cyclic;`，并加入以下两条断言：
+  1. 对 `evaluateSmallMilestonePlan(cyclic)` 断言真实外层错误契约 `INVALID_SMALL_MILESTONE`；该入口在图分析前即因输入不是 safe JSON 而 fail closed，不得误写为内层图错误 `DEPENDENCY_CYCLE`；
+  2. 对 `parseSmallMilestonePlan(cyclic)` 断言真实结果完整性错误契约 `RESULT_INTEGRITY_MISMATCH`。
 - 不得新增 `test(...)`/`it(...)` 用例，不得改变测试总数；不得新增 fixture、快照、helper 文件或依赖。只允许最小内联构造/克隆和两条 `assert.throws` 断言，不扩大到其他失败面。
 - 不得修改 `src/**`、Schema、CLI、Skill、package/lock、配置或生产行为；即使断言暴露生产差异，也必须停止并登记新变更入口，不得在本 remediation packet 内修生产代码。
 - 这是测试专用的覆盖缺口修复，不改变 PC-11..PC-13、TG union、I/X/P 维度、M2.2 产品语义或 P3/P4/S4 真源。
