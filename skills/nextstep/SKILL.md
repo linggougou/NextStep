@@ -192,3 +192,26 @@ The five rollback entries are frozen and must remain exact:
 - `awaiting-archive`
 
 `source-validate` is a read-only candidate consumer. 不得修改或移动 formal/control、目标项目状态、fixture 字节或工作树；it does not write files or invoke Git. 不实现 host bootstrap 或宿主探测，不得声明 `full` support. 不冻结或扩大 P4 API 或 Schema，不恢复 Web/UI，不增加数据库或常驻服务，不执行正式提升，也不宣称 S1.6、M1.2、V1 或 P5 已完成。
+
+## S2.1 Version Chain Unique Ownership
+
+Enter S2.1 only when project truth and control state explicitly identify `V2 / M2.1 / S2.1`, V1 is formally complete, and the current packet/claim/dispatch identity has been independently fixed. The host AI organizes a structured candidate; the TypeScript kernel only performs deterministic validation. It does not parse natural language, plan milestones, generate tasks, write project files, invoke Git, or move refs.
+
+Bind the candidate to the same target-project identity used by the accepted Acceptance Profile:
+
+- `project.repository_id` is the content-derived repository identity.
+- `project.formal_baseline` is the exact accepted upstream formal OID.
+- The chain is exactly `V1`, `V2`, `V3`, `V4`, `Final Acceptance` in that order.
+- `PC-01..PC-20` each have exactly one primary version matching the signed P3 matrix; Final Acceptance owns no new PC.
+- Backlog items may contain only optional enhancements and their `pc_ids` arrays must remain empty.
+
+Build the local tool, then pass exactly one RFC 8785/JCS candidate through stdin:
+
+```bash
+pnpm build
+node dist/src/cli/version-chain.js
+```
+
+Success emits exactly one deterministic JCS receipt with `VERSION_CHAIN_ACCEPTED`, a 20/20 ownership matrix, zero duplicates, zero omissions, zero Backlog PC entries, and stable SHA-256 digests. The S2.1 CLI uses this narrow local receipt contract because it does not expand the global machine-receipt registry. Invalid JSON/JCS, unknown schema versions or fields, missing fields, sensitive input, arguments, duplicate or missing ownership, unknown PC IDs, Backlog smuggling, missing/duplicate/out-of-order version nodes, owner drift, or inconsistent summaries fail closed with one receipt, one generic stderr diagnostic, and a non-zero exit code. Rejection reasons are deterministically sorted and do not include submitted sensitive values.
+
+S2.1 output is planning evidence only. It does not create large or small milestones, a dependency graph, an Execution Packet, a development task, a dispatch, an acceptance conclusion, or a formal/control promotion. S2.2, S2.3, and S2.4 remain separately gated. Do not claim PC-09, M2.1, V2, or P5 complete from an accepted S2.1 receipt.

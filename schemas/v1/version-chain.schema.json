@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nextstep.local/schemas/v1/version-chain.schema.json",
+  "title": "NextStep Version Chain Candidate 1.0",
+  "description": "S2.1 的版本链唯一主归属候选；只描述 V1..V4/Final Acceptance、PC 主归属与 Backlog 边界。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "project",
+    "versions",
+    "backlog",
+    "summary"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "record_type": { "const": "version-chain-candidate" },
+    "project": { "$ref": "#/definitions/project" },
+    "versions": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": { "$ref": "#/definitions/version" }
+    },
+    "backlog": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/backlogItem" }
+    },
+    "summary": { "$ref": "#/definitions/summary" }
+  },
+  "definitions": {
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "oid": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$"
+    },
+    "pcId": {
+      "type": "string",
+      "pattern": "^PC-[0-9]{2}$"
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository_id", "formal_baseline"],
+      "properties": {
+        "repository_id": { "$ref": "#/definitions/digest" },
+        "formal_baseline": { "$ref": "#/definitions/oid" }
+      }
+    },
+    "version": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version_id", "primary_pc_ids"],
+      "properties": {
+        "version_id": {
+          "enum": ["V1", "V2", "V3", "V4", "Final Acceptance"]
+        },
+        "primary_pc_ids": {
+          "type": "array",
+          "maxItems": 20,
+          "items": { "$ref": "#/definitions/pcId" }
+        }
+      }
+    },
+    "backlogItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["item_id", "description", "pc_ids"],
+      "properties": {
+        "item_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9.-]*$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pc_ids": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/pcId" }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version_count",
+        "primary_pc_count",
+        "duplicate_primary_pc_count",
+        "backlog_pc_count"
+      ],
+      "properties": {
+        "version_count": { "type": "integer", "minimum": 0 },
+        "primary_pc_count": { "type": "integer", "minimum": 0 },
+        "duplicate_primary_pc_count": { "type": "integer", "minimum": 0 },
+        "backlog_pc_count": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

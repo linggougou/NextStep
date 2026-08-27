@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "record_type": "version-chain-candidate",
+  "project": {
+    "repository_id": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "formal_baseline": "8ffaf658e112a5ba26a9f83882f5f71f1ae79454"
+  },
+  "versions": [
+    { "version_id": "V1", "primary_pc_ids": ["PC-01", "PC-02", "PC-03", "PC-04", "PC-05", "PC-06", "PC-07", "PC-08"] },
+    { "version_id": "V2", "primary_pc_ids": ["PC-09", "PC-10", "PC-11", "PC-12", "PC-13"] },
+    { "version_id": "V3", "primary_pc_ids": ["PC-14", "PC-15", "PC-16", "PC-17", "PC-18"] },
+    { "version_id": "V4", "primary_pc_ids": ["PC-19", "PC-20"] },
+    { "version_id": "Final Acceptance", "primary_pc_ids": [] }
+  ],
+  "backlog": [
+    { "item_id": "optional-dashboard", "description": "可选状态看板", "pc_ids": [] }
+  ],
+  "summary": {
+    "version_count": 5,
+    "primary_pc_count": 20,
+    "duplicate_primary_pc_count": 0,
+    "backlog_pc_count": 0
+  }
+}
