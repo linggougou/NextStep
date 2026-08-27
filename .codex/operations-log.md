@@ -2989,8 +2989,16 @@
 
 - 从 current main=`ea342c25bda8191f1dbc001458acb130ce1d581a` 创建隔离 worktree/branch `codex/m22-coverage-remediation-plan-g2`；未读取原仓库工作树或受保护未跟踪目标，未访问或修改 `refs/nextstep`。
 - 固定身份=`P5/V2/M2.2/remediation / M2.2-COV / route_generation 1 / plan_generation 5 / task_attempt 2`，入口 control=`c8d01e75b4a07ec5225af847eebccf4363a3e8dd`，formal 保持 F16。
-- state-sync REVISE digest=`sha256:633528e46fb525ef8f648644007bd6cfbc311dd9fa61732de2ab5d05bba11a57`；attempt 1 candidate/independent acceptance/PASS authority=`68710ca... / ea342c2... / f4a0407e` 保持有效且不可改写。退回原因仅为 original main fresh Branches=`89.64 < 89.70`。
+- state-sync REVISE digest=`sha256:633528e46fb525ef8f648644007bd6cfbc311dd9fa61732de2ab5d05bba11a57`；attempt 1 candidate=`68710ca8146ee79e8ce00bd06c93509455da58f0`、independent review=`ea342c25bda8191f1dbc001458acb130ce1d581a` 保持有效。完整 PASS authority 固定为 kind=`package-acceptance Result`、ref=`results/result-package-acceptance-m2.2-cov-g5-a1-f150-20260828.json`、digest=`sha256:f4a0407ea5350bb10fc1b5724e296207ab742844480366433534f0cb391a8b31`、Result control=`eae5af53317c7c24104a2a8254482904c495a6be`，不得用短哈希或 candidate/review 替代。退回原因仅为 original main fresh Branches=`89.64 < 89.70`。
 - Generation 2 未来 allowlist 精确为 `tests/domain/small-milestone.test.ts`；只在既有“权威 S2.2 parser...”测试体加入一条 null 输入的 `INVALID_SMALL_MILESTONE` 断言，不新增 test、fixture/helper/依赖或生产/config 改动。
 - 控制链冻结为 entry review → 新 packet/claim/fence151/ready/ACK → 唯一实现 subagent → 独立候选 review fence152 → PASS 后线性集成 → original-main-like fresh state-sync。只有 state-sync PASS 才能冻结新 historical subject 并进入 M2.2 acceptance attempt 2。
-- 门槛固定 full>=`555/555`、零 fail/skip/cancel/todo、Lines>=`94.36`、Branches>=`89.70`、Functions>=`99.57`；临时注入实测只作可行性证据，不冒充正式 authority。
+- 门槛固定 full>=`555/555`、零 fail/skip/cancel/todo；同次 Node native displayed>=`94.36/89.70/99.57`，同一 Node native range raw ratios>=`94.36%/89.69%/99.57%` 并记录 covered/total；LCOV 只作旁证。临时注入实测只作可行性证据，不冒充正式 authority。
 - 本轮只写 Generation 2 计划和两份追加留痕 exact-three；不授权实现、user-signoff、formal、V2、alpha、CR-006 或 P5 完成。
+
+## 2026-08-28 M2.2 coverage remediation Generation 2 entry review P1 修订
+
+- 独立 entry review `21a0fe...` 结论=`REVISE / 90`、P0/P1/P2=`0/2/0`；原计划 candidate=`43a4ec72b4cf0674102379167bf6917734a34246` 保持不可变，本轮只在其上创建新的单父修正提交。
+- P1-1 已关闭：attempt 1 PASS authority 完整固定为 kind=`package-acceptance Result`、ref=`results/result-package-acceptance-m2.2-cov-g5-a1-f150-20260828.json`、digest=`sha256:f4a0407ea5350bb10fc1b5724e296207ab742844480366433534f0cb391a8b31`、Result control=`eae5af53317c7c24104a2a8254482904c495a6be`；candidate=`68710ca8146ee79e8ce00bd06c93509455da58f0` 与 review=`ea342c25bda8191f1dbc001458acb130ce1d581a` 保留，但不得替代 Result authority，计划不再使用短哈希 authority。
+- P1-2 已关闭：正式门禁拆为同次 Node native summary 两位 displayed floors=`94.36/89.70/99.57`，以及同一 Node native range raw floors=`94.36%/89.69%/99.57%`；LCOV 只作旁证，禁止替代或混算。
+- 可行性证据按原始比率更正为 Lines=`8360/8858=94.377963%`、Branches=`3003/3348=89.695341%`、Functions=`697/700=99.571429%`；raw Branches 只满足 `89.69%` floor，不声称 raw>=`89.70%`。对应 Node native displayed=`94.38/89.70/99.57`。
+- 写集仍严格为 Generation 2 计划、operations-log、verification-report exact-three；entry re-review PASS 前不授权 packet/fence151/实现/review fence152/集成/state-sync。
