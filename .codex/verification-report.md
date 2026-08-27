@@ -2964,3 +2964,22 @@
 - identity、subject、TG、测试阈值、I/X/P-only、readiness/ACK/evidence/ref 时序、exact-three、Result/signoff/completion 分离和后续未完成边界的机械反扫通过；未发现 live main 替代 subject、擅增 Profile 维、遗漏 TG-04、直接创建 V2 packet或提前完成声明。
 - 提交必须为单父、父=`48d437454432abba4067e71bd38f51d5b5e8d397`，提交信息=`plan: 冻结 M2.2 累计验收 Generation 1`；提交后 tracked clean。
 - 质量自检=`100 / 100`，建议=`通过`；该评分只评价计划冻结的身份、authority、门禁、时序和非目标完整性，不替代后续独立 entry review，也不授权 packet。
+
+## 2026-08-28 M2.2 coverage remediation Generation 1 计划验证
+
+### 冻结事实与范围
+
+- 计划基线/唯一父预期=`1bb83c945de4ed620a44df370cfdeccbaf59451e`；身份精确为 `P5/V2/M2.2/remediation / M2.2-COV / route_generation 1 / plan_generation 5 / attempt 1`。
+- attempt 1 Result digest=`sha256:8f0efa83bdb87ebacf31aff8fb045e6107a1abf5c2ee0f991edc2c1ed20ef1d6` 与 Result control=`c58d803714c13700bdabd3afb1c93ef9ed283f87` 已固定为永久 REVISE authority；计划没有改写、删除或升级该历史。
+- failure delta 精确保留：targeted=`29/29`、full=`555/555`、fail/skip/cancel/todo=`0/0/0/0`、Functions=`99.57` 均通过，但 Lines/Branches=`94.33/89.60` 低于 floors=`94.36/89.65`，因此必须受控补足覆盖并用 attempt 2 重验。
+- 实现 allowlist 精确为 `tests/domain/small-milestone.test.ts`；修改语义限定为既有 fail-closed test 内 cyclic 输入对 `evaluateSmallMilestonePlan` 与 `parseSmallMilestonePlan` 的两条拒绝断言，不改生产代码、不新增测试用例计数。
+- 计划已拆分 remediation packet/claim/fence/ready/ACK、独立实现、独立候选审查、受控 main 集成、新 historical subject，以及 M2.2-I-X-P attempt 2 的新 packet/fence/ACK/独立 reviewer；旧 fence148、ACK、review、Result 和 host 均禁止复用。
+- attempt 2 硬门保持 targeted=`29/29`、full 至少 `555/555`、fail/skip/cancel/todo=`0/0/0/0`、coverage Lines/Branches/Functions 至少 `94.36/89.65/99.57`，并保持 I/X/P-only、PC-11..PC-13 与完整 TG union。
+- 不授权 user-signoff、M2.2 completion、formal、V2、alpha、CR-006、P5 或 qualified real runs；计划提交不创建 packet/control/ref。
+
+### 提交前检查
+
+- 必须验证 `git diff --check` 通过，差异路径严格等于 `.codex/exec-plan-m2.2-coverage-remediation-generation-1.md`、`.codex/operations-log.md`、`.codex/verification-report.md`。
+- 必须机械反扫 identity、attempt 1 digest/control、唯一 allowlist、两条断言、测试计数不变、coverage/full floors、新 remediation 与 acceptance attempt 2 双控制链、角色隔离、新 subject、永久 REVISE 和非目标边界。
+- 必须提交为单父、父=`1bb83c945de4ed620a44df370cfdeccbaf59451e`，中文提交信息；提交后 tracked worktree clean。
+- 计划质量自检=`100 / 100`，建议=`提交独立 entry review`。该评分只评价计划候选的范围、可执行性和 fail-closed 完整性，不是独立门禁结论，也不授权后续 packet。

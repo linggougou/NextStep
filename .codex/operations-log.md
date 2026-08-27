@@ -2963,3 +2963,16 @@
 - covered=`S2.3/S2.4`、PC=`PC-11..PC-13`、TG union=`TG-02,TG-04,TG-07,TG-13,TG-16,TG-19`，保留 PC-12 的 TG-04；硬门冻结 targeted `29/29`、full 至少 `555/555`、coverage floors `94.36/89.65/99.57`、I/X/P fail-closed、同一 reviewer readiness→ACK→正式评审、controller-only create-once ACK evidence ref、exact-three review 与三段 signoff/completion。
 - 变更边界：写集严格为计划、operations-log、verification-report exact-three；不运行产品 full tests，不创建 control 对象，不修改 refs/main/formal/control，不进入 V2 cumulative 或 alpha。
 - 边界偏差记录：为核对 M2.1 completion 时，一条只读递归 `rg` 的目标误推导到原仓库根，扫描器因此可能读取受保护未跟踪文件字节；命令输出未命中受保护路径，未使用其内容，也未修改、暂存、清理或删除任何文件。发现后立即告知主控并停止所有广域扫描；后续操作严格限定本专属 worktree 的三条允许路径。
+
+## 2026-08-28 M2.2 coverage remediation Generation 1 计划冻结
+
+- 路线与生命周期：继续处于 `S5 / P5 产品落地`，本轮只为 M2.2 attempt 1 coverage 硬门失败建立最小修复计划，不改变产品定位、P3/P4/S4 真源、PC/TG 或既有门禁，不涉及新需求或阶段切换。
+- 固定工作区：从 main=`1bb83c945de4ed620a44df370cfdeccbaf59451e` 创建隔离 branch/worktree `codex/m22-coverage-remediation-plan`；原仓库受保护未跟踪目标未被本工作区复制、读取、修改、暂存或清理。
+- 冻结身份：`stage_id=P5/V2/M2.2/remediation`、`task_id=M2.2-COV`、`route_generation=1`、`plan_generation=5`、`task_attempt=1`；formal F16=`ea04b57de83d6c548dcb1629b1f61832db8375ad` 保持不动。
+- 永久退回 authority：M2.2-I-X-P attempt 1 Result digest=`sha256:8f0efa83bdb87ebacf31aff8fb045e6107a1abf5c2ee0f991edc2c1ed20ef1d6`、control=`c58d803714c13700bdabd3afb1c93ef9ed283f87` 永久为 `REVISE`，不得重写或升级；触发原因是 Lines/Branches=`94.33/89.60` 低于 `94.36/89.65`，不是产品实现失败。
+- 唯一实现范围：未来 remediation packet allowlist 只能是 `tests/domain/small-milestone.test.ts`；只在既有 fail-closed test 中加入 cyclic 输入针对 `evaluateSmallMilestonePlan` / `parseSmallMilestonePlan` 的两条断言，不修改生产代码、不新增测试用例计数。
+- 执行链：计划独立 entry review → 新 remediation packet/claim/fence/ready/ACK → 唯一隔离实现 subagent → 独立候选审查 → 受控 main 集成 → 冻结新 historical subject → 全新 M2.2-I-X-P attempt 2 packet/fence/独立 reviewer 重验。所有 control 变化必须是分离的 expected-old 单父 CAS。
+- 门禁：fresh coverage Lines/Branches/Functions 至少 `94.36/89.65/99.57`，full 至少 `555/555` 且 fail/skip/cancel/todo=`0/0/0/0`；targeted 保持 `29/29`，`git diff --check` 通过。
+- 非目标：本计划不授权 user-signoff、M2.2 completion、formal、V2、alpha、CR-006、P5 或 qualified real runs 状态变化；本轮只修改计划与两份追加留痕 exact-three，不运行产品测试、不创建控制对象或移动 refs。
+- 边界偏差补记：此前 alpha pack dry-run 及早期 M2.2 广域只读扫描可能读取过原仓库受保护未跟踪目标的字节，但未打开、输出、使用或修改其内容。发现后相关操作已停止；后续研究统一迁移至 `git clone --no-local`、origin-removed、无 alternates 的隔离 clone，并仅做精确路径读取。本记录不包含受保护目标内容。
+- 状态：计划候选待独立 entry review；在其 PASS 前不得创建 remediation packet。
