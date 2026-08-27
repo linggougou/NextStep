@@ -2904,3 +2904,12 @@
 - 唯一实现 agent=`codex-subagent:/root/s23_impl_g5_a1_f140`，隔离 worktree 固定 HEAD=`6ec262f...`；offline frozen install downloaded=`0`，`node_modules` 非 symlink，TypeScript=`7.0.2`，初始 tracked clean。ACK CAS=`ecc2c2d778109694c3c05501bb5f9876296efbef`，accepted_at=`2026-08-27T10:57:00Z`。
 - S2.3 冻结边界：18 个节点、17 条依赖到被依赖者方向的精确线性边、唯一根 S1.1、唯一终点 S4.3、逐行 P3 字段语义；“无环但边集合不同”仍须拒绝。
 - 当前状态：S2.3 implementation running；独立验收、main 集成、S2.4、M2.1/M2.2、V2、alpha、formal 与 P5 均未完成。
+
+## 2026-08-27 S2.3 attempt 1 身份拦截与 corrected attempt 2
+
+- P3 冻结真源明确 `M2.1=S2.1/S2.2`、`M2.2=S2.3/S2.4`；attempt 1 packet/ready/ACK 错把 stage 写为 `P5/V2/M2.1/S2.3`。只读 S2.4 预研发现后，主控立即中断 fence140 worker。
+- 中断时 attempt 1 只有 allowlist 内三组未跟踪 RED 测试路径，tracked clean，无 candidate commit、无 GREEN、无主线集成。其工作树保留为不可变故障证据，不复用到后续 attempt。
+- identity audit Result digest=`sha256:c82ef7e2ff65f36864771185c0be08b2d2413af9eeb779abb0968dafac2e6da6`，control=`df8533180d99f470b5cd738e9f16dd7724c53824`；attempt 1=`identity-invalid`，fence140 永不进入验收链。
+- corrected attempt 2 packet identity=`P5/V2/M2.2/S2.3`，working parent=`30e617cddff404ed8501ebb18a74348e372ee5e1`，digest=`sha256:0d889dfe6138aa2a06d8a48001e7d5b701858034bf37fe57b93434978e579ddd`，dedup=`sha256:4c0b236e826ecce225ce2256d81cb7f018a139379aa0d2f6b45eb7ea8b20f2df`，packet control=`5403bb694a667e27d09fd0b8a44588afaaf37490`。
+- 新 claim/fence141=`77541c75b2f4d86db56e1ad49ed43828d83edf76`；ready/outbox payload digest=`sha256:ebd0b4b3c2e12e361375ee99501dee069d5f646add08f7036ee4054f76237f0b`，control=`0ff41e0ac7ab5fcf733975d7bbf5bf75a57a841b`；唯一全新 worker=`codex-subagent:/root/s23_impl_g5_a2_f141`，ACK control=`86f3516248a43e748c263813433c0e9256484c5e`。
+- attempt 2 使用全新 worktree，offline frozen downloaded=0、node_modules 非 symlink、TypeScript=7.0.2、初始 clean，并被明确禁止读取或复制 attempt 1 RED 文件。当前仅 corrected attempt 2 implementation running。

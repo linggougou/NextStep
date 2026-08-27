@@ -2849,3 +2849,12 @@
 - 工作树 readiness：HEAD/tree=`6ec262fbac45de3d0f84c05a4a5582049139f219` / `596a2948196f01454192ebe3e2090b8280b4a897`，离线依赖下载 0，`node_modules` 普通目录，TypeScript `7.0.2`，ACK 前 tracked clean。
 - packet allowlist 精确为 small-milestone Schema/domain/CLI、两份测试、fixture 目录和 Skill；docs、`.codex`、package/lock、S2.1/S2.2、refs 均禁止。实现 agent 不具备自验收、Result/control/main/formal 权限。
 - 完成边界：本验证只放行 S2.3 TDD 编码，不构成候选、独立验收、PC-11、M2.2、V2、alpha、formal 或 P5 完成证据。
+
+## 2026-08-27 S2.3 控制身份纠错验证
+
+- 冻结身份反查：P3 小里程碑表与验收矩阵均将 S2.3、S2.4 归属 M2.2；attempt 1 的 `P5/V2/M2.1/S2.3` 因此不是可容忍文本偏差，而是 packet/control subject identity 错误。
+- fail-closed 时点：fence140 worker 被中断时 HEAD 仍为 `6ec262f...`，tracked clean；只有 `tests/cli/small-milestone.test.ts`、`tests/domain/small-milestone.test.ts`、`tests/fixtures/small-milestone/` 三组 allowlist RED 路径未跟踪，无提交和 GREEN 证据。
+- identity audit Result 排除 `result_digest` 后 RFC8785/JCS 重算=`sha256:c82ef7e2ff65f36864771185c0be08b2d2413af9eeb779abb0968dafac2e6da6`；审计 CAS 为 `ecc2c2d -> df85331` 单父链，formal F16 未移动。
+- corrected attempt 2 packet/dedup RFC8785/JCS 重算分别为 `sha256:0d889dfe6138aa2a06d8a48001e7d5b701858034bf37fe57b93434978e579ddd` / `sha256:4c0b236e826ecce225ce2256d81cb7f018a139379aa0d2f6b45eb7ea8b20f2df`；stage 精确为 `P5/V2/M2.2/S2.3`。
+- corrected CAS 链：identity audit=`df85331` → packet=`5403bb6` → claim/fence141=`77541c7` → ready/outbox=`0ff41e0` → ACK=`86f3516`；每步单父 expected-old，ready payload JCS=`sha256:ebd0b4b3c2e12e361375ee99501dee069d5f646add08f7036ee4054f76237f0b`。
+- 当前门禁：attempt 1 永久无效；attempt 2 只获 TDD 编码权限，候选、独立验收、main、S2.4、M2.2、V2、alpha、formal 与 P5 仍受后续证据约束。
