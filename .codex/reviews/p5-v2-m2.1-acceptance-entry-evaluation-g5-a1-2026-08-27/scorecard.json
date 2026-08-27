@@ -1,0 +1,157 @@
+{
+  "review_id": "p5-v2-m2.1-acceptance-entry-evaluation-g5-a1-2026-08-27",
+  "task_id": "M2.1-ENTRY-EVALUATION",
+  "lane": "P5/V2/M2.1/acceptance-entry",
+  "review_level": "L3",
+  "rubric_id": "nextstep-milestone-acceptance-entry-readiness-v2",
+  "subject_identity": {
+    "commit": "8e2dce7ecdc8cba9c85564cffa408fd0f6f3f3e5",
+    "tree": "ef958c0940863709f10a6a609b7119105b72bd3c",
+    "parent": "b68dd8974482517089ab558eb347856f4af6bde9",
+    "formal": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "control": "100bc6ae2937caf14e6f1e5abc4a88d143583640"
+  },
+  "artifact_refs": [
+    "git:8e2dce7ecdc8cba9c85564cffa408fd0f6f3f3e5",
+    "formal:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "control:100bc6ae2937caf14e6f1e5abc4a88d143583640",
+    "control:checkpoint.json",
+    "control:registry.json",
+    "control:results/result-package-acceptance-s2.1-g5-a1-f135-20260827.json",
+    "control:results/result-package-acceptance-s2.2-g5-a3-f139-20260827.json",
+    ".codex/exec-plan-m2.1-acceptance-generation-1.md",
+    "PROJECT_ROUTE_LOCK.md",
+    "docs/PLANS.md"
+  ],
+  "hard_gates": [
+    {
+      "id": "entry_subject_identity",
+      "status": "pass",
+      "evidence": "送审提交 `8e2dce7ecdc8cba9c85564cffa408fd0f6f3f3e5` 的唯一父为 `b68dd8974482517089ab558eb347856f4af6bde9`，tree=`ef958c0940863709f10a6a609b7119105b72bd3c`；`git diff --name-only HEAD^ HEAD` 精确为 `.codex/exec-plan-m2.1-acceptance-generation-1.md`、`.codex/operations-log.md`、`.codex/verification-report.md` 三路径。"
+    },
+    {
+      "id": "frozen_subject_and_entry_control",
+      "status": "pass",
+      "evidence": "计划固定 historical subject=`6ec262fbac45de3d0f84c05a4a5582049139f219`、tree=`596a2948196f01454192ebe3e2090b8280b4a897`、parent=`960d16ded99104ee7409ec6938e501db204ea8fa`；独立复算 `sha256(JCS({commit_oid,parent_oid,tree_oid}))`=`sha256:8ca135a89e6b586e810b04f83d62bde9da02b6ca7852c8786a3de13301534c61`，与计划一致。live formal/control 分别为 `ea04b57de83d6c548dcb1629b1f61832db8375ad` / `100bc6ae2937caf14e6f1e5abc4a88d143583640`，与计划入口一致。"
+    },
+    {
+      "id": "route_and_control_state_sync",
+      "status": "pass",
+      "evidence": "`PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md` 与 control `checkpoint.json` 一致声明：当前 `plan_generation=5`，S2.1..S2.4 已 gate passed 且在 main，下一唯一入口是冻结 `P5/V2/M2.1/acceptance` 计划并完成独立 entry assessment；不得直接创建 packet。`checkpoint.pending_dispatch_messages=[]`、`unconfirmed_tombstones=[]`。"
+    },
+    {
+      "id": "authority_chain_scope",
+      "status": "pass",
+      "evidence": "计划正确绑定 S2.1 candidate/review/integration/Result=`67dae282...`/`3424a8a5...`/`24ef30a3...`/`sha256:938c6779...`，以及 S2.2 candidate/review/integration/Result=`d35e63d4...`/`6c48b6c4...`/`6ec262fb...`/`sha256:332323df...`；两份 invalid audit `sha256:f6c76810...`、`sha256:08cf20a2...` 继续标记为无效历史，`88eaa581...` / `91ed44a1...` 仅限 tree/集成等价，不冒充 acceptance authority。"
+    },
+    {
+      "id": "verification_and_scope_honesty",
+      "status": "pass",
+      "evidence": "HG7-HG12 明确冻结 targeted `23/23`、fresh full `>=526/526`、coverage floor `93.99/89.20/99.49`、I/X/P/Profile 四维、零副作用与产品边界；HG10 同时禁止把结论扩展到 PC-11..13、M2.2、V2、alpha、formal、CR-006、P5 或真实项目 `qualified runs`。"
+    },
+    {
+      "id": "ack_clone_control_chain_executability",
+      "status": "fail",
+      "evidence": "计划第 36 行规定“formal/control 只允许在 ACK 前由主控按冻结值注入 clone 内只读 ref”，且 HG5 同时要求 `git clone --no-local`、移除 origin、detached checkout historical subject；但第 33 行 HG2 要求 reviewer 在验收时核对 packet/dedup/claim/fence/ready/outbox/ACK/control 单父链，第 37 行 HG6 与第 57 行步骤 5.4 又要求 dispatch ACK CAS 完成后才允许评审。由于 ACK 发生在 clone 注入窗口之后，origin 又已移除，计划没有留下任何可执行路径让独立 reviewer 在隔离 clone 内获得并验证 ACK 后的 control/ACK 证据；这与任务要求的“ACK 后独立验证 ACK/control 单父链、但不得拿到原仓库写权限”直接冲突。"
+    },
+    {
+      "id": "readiness_actor_consistency",
+      "status": "fail",
+      "evidence": "第 37 行 HG6 写的是“独立 reviewer 先只做 readiness”，表明 readiness 属于 reviewer 在 ACK 前的动作；但第 57 行步骤 5.4 写的是“在一次性隔离 clone readiness 通过后派发唯一 reviewer；以另一独立 CAS 固化 dispatch ACK，随后才允许评审”，则 readiness 发生在派发 reviewer 之前。两处对 readiness 的执行者和时序定义互相冲突，导致 packet/claim/ready/outbox/ACK 之后的验收入口无法按单一路径复现。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "identity_and_entry_integrity",
+      "score": 20,
+      "max_score": 20,
+      "reason": "送审提交 exact-three、historical subject 三元组摘要、entry formal/control 与当前路线状态均可独立复算。",
+      "evidence_refs": [
+        "entry_subject_identity",
+        "frozen_subject_and_entry_control",
+        "route_and_control_state_sync"
+      ]
+    },
+    {
+      "id": "authority_scope_and_hard_gate_coverage",
+      "score": 25,
+      "max_score": 25,
+      "reason": "S2.1/S2.2 authority、invalid history 边界、targeted/full/coverage/I-X-P-Profile 与产品非声明边界覆盖完整。",
+      "evidence_refs": [
+        "authority_chain_scope",
+        "verification_and_scope_honesty"
+      ]
+    },
+    {
+      "id": "control_chain_executability",
+      "score": 8,
+      "max_score": 25,
+      "reason": "ACK/control 证据进入隔离 clone 的机制没有闭合；pre-ACK only 注入与 post-ACK review 校验要求相互冲突，导致最关键的角色隔离硬门不可执行。",
+      "evidence_refs": [
+        "ack_clone_control_chain_executability"
+      ]
+    },
+    {
+      "id": "dispatch_and_readiness_state_machine",
+      "score": 7,
+      "max_score": 20,
+      "reason": "readiness 是由 reviewer 先做，还是由主控在派发 reviewer 之前完成，计划内给出了两套互斥顺序，无法形成唯一可复验流程。",
+      "evidence_refs": [
+        "readiness_actor_consistency"
+      ]
+    },
+    {
+      "id": "scope_honesty_and_stop_conditions",
+      "score": 10,
+      "max_score": 10,
+      "reason": "计划没有提前宣称 M2.1/V2/P5 完成，停止条件和 fail-closed 语义保持严格。",
+      "evidence_refs": [
+        "verification_and_scope_honesty"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 70,
+    "penalty_total": 0,
+    "final_score": 70,
+    "max_score": 100
+  },
+  "severity_summary": {
+    "P0": 0,
+    "P1": 2,
+    "P2": 0
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "补齐一个可执行且角色隔离的 ACK/control 证据交付路径：在不授予原仓库写权限的前提下，定义隔离 clone 如何于 ACK 之后获得并只读验证 dispatch ACK control 提交、claim/fence/ready/outbox/ACK 单父链；若继续移除 origin 并禁止 ACK 后注入 refs，就必须改成另一条能独立读取 ACK 证据的只读机制。",
+    "统一 readiness 的执行者与时序：要么明确 reviewer 在 ACK 前仅做 readiness、主控随后固化 ACK 并把 ACK 证据交给同一 reviewer；要么明确 readiness 由主控完成并把 reviewer 的第一步改成 ACK 后审查。两者只能保留一条。"
+  ],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "signal": "REVISE",
+      "conclusion": "身份、authority 与范围边界可复算，但 ACK/control 链进入隔离 clone 的执行路径没有闭合。"
+    },
+    {
+      "role": "Strict Judge",
+      "signal": "REVISE",
+      "score": 70,
+      "conclusion": "硬门文本之间存在不可执行的时序冲突；按 HG12 不能用总分抵消。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "signal": "REVISE",
+      "conclusion": "问题不是措辞细节，而是 reviewer 在 ACK 后无法独立取证的实质性缺口。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "signal": "REVISE",
+      "score": 70,
+      "conclusion": "M2.1 Generation 1 入口计划需要先修复 ACK/control 注入与 readiness 顺序矛盾，修复前不得放行后续 packet。"
+    }
+  ],
+  "reviewed_at": "2026-08-27T13:55:00Z",
+  "verdict_scope": "本结论仅覆盖 subject `8e2dce7ecdc8cba9c85564cffa408fd0f6f3f3e5` 的 M2.1 acceptance Generation 1 计划入口完整性。当前只允许修订并重评该计划；不允许创建 M2.1 acceptance packet、claim/fence、ready/outbox、ACK、review、Result、user-signoff 或 completion CAS。"
+}
