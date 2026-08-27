@@ -2799,3 +2799,11 @@
 - RED 结果：`pnpm build` exit=`1`，核心失败为 `src/domain/version-chain.ts` 与 `src/cli/version-chain.ts` 尚不存在；其余错误是缺失类型导致的级联错误，符合测试先行预期。
 - 依赖准备：复用离线依赖，未修改 lockfile 或产品依赖。
 - 边界：尚无生产实现、候选提交或验收结论；随后只允许最小 GREEN 实现。
+
+## 2026-08-27 V2 S2.1 首次 GREEN 检查点
+
+- 定向验证：build 与 S2.1 domain/CLI 测试 `9/9` 通过，fail/skip/cancel=`0/0/0`。
+- 当前写集：Schema、domain、CLI、两份测试和四个 fixture，共九个 allowlist 路径；Skill 增量尚待完成。
+- 已覆盖：三类正例 20/20、P3 精确主版本矩阵、七类单 mutation 负例、未知版本/字段/缺项/敏感内容/JCS/参数注入、确定性输出与摘要、稳定错误顺序、结果防伪及 S2.2+ 非目标。
+- 契约边界：使用 S2.1 本地 receipt，未越界修改全局 machine-receipt；无新增依赖。
+- 当前状态：首次 GREEN，不等于候选完成或独立验收通过；继续补 Skill、预算检查和 full `pnpm check`。
