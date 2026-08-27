@@ -1,0 +1,6 @@
+{
+  "fixture_id": "expense-reminder",
+  "version_chain_fixture": "expense-reminder.json",
+  "acceptance_profile_fixture": "headless-expense-reminder.json",
+  "deliverable_prefix": "expense"
+}

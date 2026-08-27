@@ -215,3 +215,20 @@ node dist/src/cli/version-chain.js
 Success emits exactly one deterministic JCS receipt with `VERSION_CHAIN_ACCEPTED`, a 20/20 ownership matrix, zero duplicates, zero omissions, zero Backlog PC entries, and stable SHA-256 digests. The S2.1 CLI uses this narrow local receipt contract because it does not expand the global machine-receipt registry. Invalid JSON/JCS, unknown schema versions or fields, missing fields, sensitive input, arguments, duplicate or missing ownership, unknown PC IDs, Backlog smuggling, missing/duplicate/out-of-order version nodes, owner drift, or inconsistent summaries fail closed with one receipt, one generic stderr diagnostic, and a non-zero exit code. Rejection reasons are deterministically sorted and do not include submitted sensitive values.
 
 S2.1 output is planning evidence only. It does not create large or small milestones, a dependency graph, an Execution Packet, a development task, a dispatch, an acceptance conclusion, or a formal/control promotion. S2.2, S2.3, and S2.4 remain separately gated. Do not claim PC-09, M2.1, V2, or P5 complete from an accepted S2.1 receipt.
+
+## S2.2 Major Milestone Exclusive Boundaries
+
+Enter S2.2 only when project truth and control state identify `V2 / M2.1 / S2.2` and the accepted S2.1 result is present in main. The kernel must call `parseVersionChainResult` and `parseAcceptanceProfileDecision`; copied or caller-asserted upstream status is never trusted. The candidate project, Version Chain project, and Acceptance Profile project must bind the same `repository_id` and `formal_baseline`.
+
+The candidate is exactly the P3-frozen ordered set `M1.1`, `M1.2`, `M2.1`, `M2.2`, `M3.1`, `M3.2`, `M3.3`, `M4.1`, `M4.2`. Their scopes partition `PC-01..PC-20` once, agree with S2.1 primary versions, and use globally unique `deliverable_id` values. Final Acceptance remains in the version chain, owns no PC, and is not a major milestone. Shared evidence references do not constitute duplicate deliverables.
+
+Every headless milestone has exact integration, interaction, and product acceptance entries. An accepted UI Profile appends `ui_restoration` only, with the exact accepted `ui_design_source` and `ui_restoration_evidence`; missing, changed, reordered, rejected, or conflicting Profile data fails closed.
+
+Build, then pass one RFC 8785/JCS candidate through stdin:
+
+```bash
+pnpm build
+node dist/src/cli/major-milestone.js
+```
+
+Success emits one deterministic `MAJOR_MILESTONE_ACCEPTED` JCS receipt. Failure emits one value-safe receipt, a generic stderr diagnostic, and exit code 1. S2.2 performs no Git, network, filesystem, task, dispatch, or project write. S2.3 and S2.4 remain separately gated. Do not claim PC-10, M2.1, V2, or P5 complete from an accepted S2.2 receipt.

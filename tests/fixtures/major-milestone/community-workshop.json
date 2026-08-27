@@ -1,0 +1,6 @@
+{
+  "fixture_id": "community-workshop",
+  "version_chain_fixture": "community-workshop.json",
+  "acceptance_profile_fixture": "headless-community-workshop.json",
+  "deliverable_prefix": "workshop"
+}

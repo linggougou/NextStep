@@ -1,0 +1,108 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nextstep.local/schemas/v1/major-milestone.schema.json",
+  "title": "NextStep Major Milestone Candidate 1.0",
+  "description": "S2.2 大里程碑互斥范围候选；上游对象由各自权威 parser 重验。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_type", "project", "version_chain", "acceptance_profile", "milestones", "summary"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "record_type": { "const": "major-milestone-candidate" },
+    "project": { "$ref": "#/definitions/project" },
+    "version_chain": { "type": "object" },
+    "acceptance_profile": { "type": "object" },
+    "milestones": {
+      "type": "array",
+      "maxItems": 10,
+      "items": { "$ref": "#/definitions/milestone" }
+    },
+    "summary": { "$ref": "#/definitions/summary" }
+  },
+  "definitions": {
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "oid": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "pcId": { "type": "string", "pattern": "^PC-[0-9]{2}$" },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository_id", "formal_baseline"],
+      "properties": {
+        "repository_id": { "$ref": "#/definitions/digest" },
+        "formal_baseline": { "$ref": "#/definitions/oid" }
+      }
+    },
+    "deliverable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["deliverable_id", "description"],
+      "properties": {
+        "deliverable_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9.-]*$" },
+        "description": { "type": "string", "minLength": 1 }
+      }
+    },
+    "coreAcceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["acceptance_type", "applicability"],
+      "properties": {
+        "acceptance_type": { "enum": ["integration", "interaction", "product"] },
+        "applicability": { "const": "all-routes" }
+      }
+    },
+    "evidenceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pointer", "value_digest"],
+      "properties": {
+        "pointer": { "type": "string", "minLength": 1 },
+        "value_digest": { "$ref": "#/definitions/digest" }
+      }
+    },
+    "uiAcceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["acceptance_type", "applicability", "ui_design_source", "ui_restoration_evidence"],
+      "properties": {
+        "acceptance_type": { "const": "ui_restoration" },
+        "applicability": { "const": "ui-only" },
+        "ui_design_source": { "$ref": "#/definitions/evidenceRef" },
+        "ui_restoration_evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/evidenceRef" }
+        }
+      }
+    },
+    "milestone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["milestone_id", "version_id", "title", "objective", "pc_ids", "deliverables", "acceptances"],
+      "properties": {
+        "milestone_id": { "type": "string", "minLength": 1 },
+        "version_id": { "enum": ["V1", "V2", "V3", "V4"] },
+        "title": { "type": "string", "minLength": 1 },
+        "objective": { "type": "string", "minLength": 1 },
+        "pc_ids": { "type": "array", "maxItems": 20, "items": { "$ref": "#/definitions/pcId" } },
+        "deliverables": { "type": "array", "minItems": 1, "items": { "$ref": "#/definitions/deliverable" } },
+        "acceptances": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 4,
+          "items": { "oneOf": [{ "$ref": "#/definitions/coreAcceptance" }, { "$ref": "#/definitions/uiAcceptance" }] }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["milestone_count", "scope_pc_count", "duplicate_scope_pc_count", "deliverable_count"],
+      "properties": {
+        "milestone_count": { "type": "integer", "minimum": 0 },
+        "scope_pc_count": { "type": "integer", "minimum": 0 },
+        "duplicate_scope_pc_count": { "type": "integer", "minimum": 0 },
+        "deliverable_count": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}
