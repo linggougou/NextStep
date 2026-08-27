@@ -2860,3 +2860,11 @@
 - acceptance attempt 1 控制链：packet=`1140eb9`、claim/fence137=`54bd966`、ready=`9da7c4d`、ACK=`f017246`；review commit=`c2808b6`，功能结论 PASS。
 - 时间语义拦截：ACK JSON `accepted_at=2026-08-27T09:49:00Z`，但 scorecard `reviewed_at=2026-08-27T09:24:12Z`，review 在控制语义上早于 ACK。该 PASS 程序无效，不得固化为 gate-passed 或合入 main。
 - 恢复：保留 attempt 1 exact-two review 为 immutable invalid evidence；待真实 UTC 超过 ACK 时间后，以新 packet/attempt/fence 和全新 reviewer 重跑。候选代码无须因该程序错误修改。
+
+## 2026-08-27 S2.2 acceptance attempt 2 实时时序恢复
+
+- 实时时钟门禁在 `2026-08-27T09:49:21Z` 打开；attempt 1 temporal audit Result digest=`sha256:f6c7681083f5fdb810f1375cf0ce75aeb759c1d4e554617fc027d15dc55a5041`，control=`a9ce0d8498533fb38a96b4463df0fb699b53ea33`。该审计保留功能 PASS，但 `gate_conclusion=null`、`main_integration_authorized=false`。
+- attempt 2 packet：digest=`sha256:efc676329f2d24267f14b534cba3c3779210ad2a43ce2615b4adc27b7cbec44c`，dedup=`sha256:8458ed23fbc0616e00703c004f62f7951d98f27796d243c2182aafd5faab5f9e`，packet control=`ec0e45fcacc8f869c284e5f6eeff35cd9dc5b39e`。
+- claim/fence138 control=`3b8b23782e61bcc4dc7dd24bbc8fd21213d675bb`；ready/outbox payload digest=`sha256:0c66d7b99c015cb78f7c3bbe57b05a8eaf1fd44be110546cb9fc8f1d91a280d3`，control=`5b5c953c3c4db8a5810462fda458ce1fc78b34d9`。
+- 主控在精确候选 `d35e63d...` 隔离 worktree 完成 offline frozen install，确认 `node_modules` 非 symlink、TypeScript `7.0.2`、HEAD/tree/parent exact 后，才以真实时间 `2026-08-27T09:55:28Z` 固化 ACK control=`5157163db11f54dfd8e7539891a93b77100e1e79`。
+- 全新 reviewer=`codex-subagent:/root/s22_accept_g5_a2_f138` 仅在 ACK CAS 后收到正式验收任务；必须保证 review start、`reviewed_at` 和 review commit time 均晚于 ACK，输出仅限 attempt 2 exact-two 目录。

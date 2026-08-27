@@ -2730,6 +2730,14 @@
 - 硬门禁失败：ACK `accepted_at=2026-08-27T09:49:00Z`，scorecard `reviewed_at=2026-08-27T09:24:12Z`，不满足“review evidence produced after dispatch ACK”。
 - 判定：attempt 1 temporal-invalid；不能创建 accepted Result、不能集成 main、不能放行 S2.3 编码。恢复必须使用新 attempt/fence/reviewer，且新时间戳由真实时钟产生。
 
+## 2026-08-27 S2.2 attempt 2 控制链验证
+
+- 时序审计、packet、claim、ready/outbox、ACK 五个 CAS 均为单父 expected-old：`f017246 -> a9ce0d8 -> ec0e45f -> 3b8b237 -> 5b5c953 -> 5157163`；每步 CAS 前后 formal=`ea04b57...`、main=`b2a5f3f...` 保持不变。
+- temporal audit Result 排除 `result_digest` 后 RFC8785/JCS 复算=`sha256:f6c7681083f5fdb810f1375cf0ce75aeb759c1d4e554617fc027d15dc55a5041`；attempt 2 packet/dedup 与 ready payload 摘要均独立复算匹配。
+- fence 集合最大值为 `138` 且 fence138 唯一；outbox 在 reviewer 握手和环境预置前保持 pending，ACK 后才 closed 并绑定唯一 host。
+- 环境验证：isolated HEAD/tree/parent=`d35e63d/a7ddc9a/b2a5f3f`，offline install downloaded=`0`，`node_modules` 为普通目录，TypeScript=`7.0.2`，ACK 写入时 `Date.now() > accepted_at`。
+- 当前仍无 attempt 2 review Result；只有新 review 的真实时序、exact-two、full regression、P0/P1=0 与 `required_fixes=[]` 同时成立后，才允许主控固化 acceptance Result 与集成 main。
+
 ## 2026-08-27 S2.1 attempt 2 候选与独立验收派发验证
 
 ### 候选硬门禁
