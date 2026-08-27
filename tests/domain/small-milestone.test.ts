@@ -205,6 +205,11 @@ test("权威 S2.2 parser、项目绑定、摘要与结果完整性全部 fail cl
   (summary.summary as Record<string, unknown>).dependency_edge_count = 16;
   assert.throws(() => evaluateSmallMilestonePlan(summary), expectCode("SUMMARY_MISMATCH"));
 
+  const cyclic: Record<string, unknown> = {};
+  cyclic.self = cyclic;
+  assert.throws(() => evaluateSmallMilestonePlan(cyclic), expectCode("INVALID_SMALL_MILESTONE"));
+  assert.throws(() => parseSmallMilestonePlan(cyclic), expectCode("RESULT_INTEGRITY_MISMATCH"));
+
   const result = evaluateSmallMilestonePlan(base);
   const resultMutations: Array<(value: Record<string, unknown>) => void> = [
     (value) => { value.candidate_digest = `sha256:${"0".repeat(64)}`; },
