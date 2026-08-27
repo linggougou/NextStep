@@ -2903,3 +2903,21 @@
 - 实时身份复核：提交前 HEAD=`411f2ef955ff8498b2fb2b1afa3a3ce97550ea36`、formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control=`b7900ae27af69cf175b11ab551e73e420e9a01ed`，与冻结事实一致。
 - `git diff --check` 通过；差异路径严格等于 exact-eleven。九份当前状态入口对旧“下一入口 S2.4 packet/尚未发生”摘要反扫无残留，命中内容均为新的“M2.1 验收计划冻结与独立入口评估”口径；历史留痕不改写。新增差异未把 M2.1、M2.2、V2、`v0.2.0-alpha`、formal、P5、CR-006 或 qualified real runs 3/3 包装为完成。
 - 用户改动保护：全程不读取、修改、暂存或清理原仓库受保护未跟踪目标，不 reset/rebase/clean/push。
+
+## 2026-08-27 V2 / M2.1 里程碑验收 Generation 1 计划冻结验证
+
+### 冻结输入
+
+- HEAD/live main context=`b68dd8974482517089ab558eb347856f4af6bde9`；formal F16=`ea04b57de83d6c548dcb1629b1f61832db8375ad`；入口 control=`100bc6ae2937caf14e6f1e5abc4a88d143583640`；`plan_generation=5`。
+- 唯一验收 subject=`6ec262fbac45de3d0f84c05a4a5582049139f219`，tree=`596a2948196f01454192ebe3e2090b8280b4a897`，parent=`960d16ded99104ee7409ec6938e501db204ea8fa`，digest=`sha256:8ca135a89e6b586e810b04f83d62bde9da02b6ca7852c8786a3de13301534c61`。计划明确排除 live main 替代。
+- S2.1 权威链=`67dae282065926c2a583643cfc348385f1282554` / `3424a8a5e65d7737401cf602d7227bf637194817` / `24ef30a3399c8add07b691d288afc50c07160ee5` / `sha256:938c6779cf5028629f93d2382713de1d7af444ca4b0fa1ad40dec274ae416fb6`。
+- S2.2 权威链=`d35e63d4ca7a6cca3ac3ac662b77a0ca482ad51e` / `6c48b6c47215f45781734572902e1012e3ddef5d` / `6ec262fbac45de3d0f84c05a4a5582049139f219` / `sha256:332323df803af638aac65a6044d0cf17a171dc8ff5744e213385f18fda089c0e`。
+- invalid audit digests=`sha256:f6c7681083f5fdb810f1375cf0ce75aeb759c1d4e554617fc027d15dc55a5041` / `sha256:08cf20a2c70e02833444c5ae7893ab007bc5c830441f3119ee2f60c115a6c9be`；程序性 candidate/review=`88eaa581a466dc7777825b41079b490ccb5efb8d` / `91ed44a192685bfcba04b032b9fdba4aa9c506cb`，均未被计划升级为 acceptance authority。
+
+### 计划门禁与边界
+
+- 计划已冻结 I/X/P/Profile、targeted `23/23`、full 至少 `526/526`、coverage floors `93.99/89.20/99.49`、PC 唯一主版本 `20/20`、九大里程碑、失败面、零副作用与 Judge Harness。
+- 控制顺序明确拆分为 entry review、packet、claim/fence、ready/outbox、ACK、review、Result、signoff request、user-signoff ACK、completion CAS；计划与 entry review 均不授权 packet。
+- reviewer 未来写集为 exact-three；Result 在用户会签前只能为 `passed-awaiting-user-signoff`，用户 ACK 与 completion 不得合并。
+- 完成边界明确保持 M2.2、V2、`v0.2.0-alpha`、formal、CR-006、P5 与 qualified real runs 未完成。
+- 本轮只修改计划与两份追加留痕 exact-three；不运行产品测试，不创建控制对象，不派发，不移动 refs，不触碰受保护未跟踪目标。

@@ -2935,3 +2935,12 @@
 - 下一唯一入口：不是直接创建 packet。必须先冻结 `P5/V2/M2.1/acceptance` 验收计划并执行独立入口评估；历史验收 subject 固定为 S2.2 状态 checkpoint `6ec262fbac45de3d0f84c05a4a5582049139f219`，不得使用 live main，也不得把程序性 S2.2 review 冒充有效独立验收。
 - 完成边界：CR-006 继续 `change_request_closed=false`，qualified real runs 继续 `0/3`；M2.1、M2.2、V2、alpha、formal、P5 均未完成。
 - 验证边界：本轮仅同步 Markdown 状态真源，不重复运行产品测试；引用的 `555/555` 与 coverage 是主控已核定的 root fresh 证据。提交前执行 `git diff --check`、exact-eleven 路径核对与旧当前停点反扫。
+
+## 2026-08-27 V2 / M2.1 里程碑验收 Generation 1 计划冻结
+
+- 新建 `.codex/exec-plan-m2.1-acceptance-generation-1.md`，固定 `stage_id=P5/V2/M2.1/acceptance`、`task_id=M2.1-I-X-P`、attempt 1、`plan_generation=5`、Profile=`headless-primary-with-profile-fixture-matrix` 与 I/X/P/Profile 四维验收。
+- 唯一历史 subject=`6ec262fbac45de3d0f84c05a4a5582049139f219`、tree=`596a2948196f01454192ebe3e2090b8280b4a897`、parent=`960d16ded99104ee7409ec6938e501db204ea8fa`、digest=`sha256:8ca135a89e6b586e810b04f83d62bde9da02b6ca7852c8786a3de13301534c61`；live main=`b68dd8974482517089ab558eb347856f4af6bde9` 仅为上下文，不得替代 subject。
+- 权威依赖分别绑定 S2.1 candidate/review/integration/Result 与 S2.2 candidate/有效独立 review/integration/Result；S2.2 attempt 1 时间无效、attempt 2 角色越权无效及程序性 candidate/review 只保留为历史或集成等价证据，不具备 acceptance authority。
+- 硬门冻结身份/control/authority/集成等价/no-local 隔离/ACK 后时序、detached subject targeted `23/23`、full 至少 `526/526`、coverage floors `93.99/89.20/99.49`、PC 主版本 `20/20`、九大里程碑、X/Profile 失败面、PC-09..10 产品边界、零副作用与 Judge Harness。
+- reviewer 未来输出固定为专属目录 exact-three `milestone-acceptance.json`、`scorecard.json`、`verdict.md`；Result 最多只能进入 `passed-awaiting-user-signoff`，用户会签 ACK 与 completion 必须是后续两个独立 CAS。
+- 本轮写集严格为计划文件及两份追加留痕 exact-three；不创建 packet/control 对象，不派发 reviewer，不移动 main/formal/control，不声明 M2.1、M2.2、V2、alpha、formal、CR-006 或 P5 完成。
