@@ -28,6 +28,7 @@ async function repository(): Promise<string> {
   fixture.checkpoint.formal_oid = formal;
   fixture.checkpoint.control_parent_oid = parent;
   fixture.checkpoint.version_signoffs.V1.formal_oid = formal;
+  fixture.registry.tasks[2].dispatch_claim.lease_expires_at = new Date(Date.now() + 24 * 60 * 60 * 1_000).toISOString();
   await writeFile(resolve(root, "checkpoint.json"), JSON.stringify(fixture.checkpoint));
   await writeFile(resolve(root, "registry.json"), JSON.stringify(fixture.registry));
   git(root, "add", "checkpoint.json", "registry.json");
@@ -62,6 +63,7 @@ test("CLI 仅接受绝对 --project-root，成功 stdout 恰一份 JCS JSON", as
   const projection = parseCanonicalJsonBytes(Buffer.from(result.stdout));
   assert.equal(canonicalizeJson(projection), result.stdout);
   assert.equal((projection as any).status, "available");
+  assert.equal((projection as any).freshness, "current");
   assert.equal(git(root, "status", "--porcelain"), before);
   assert.doesNotMatch(`${result.stdout}${result.stderr}`, /secret-that-must-not-appear|private-chat|claim|fence/);
 });
