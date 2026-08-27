@@ -1,0 +1,262 @@
+{
+  "review_id": "p5-v2-m2.2-coverage-remediation-g3-plan-entry-review-a1-2026-08-28",
+  "task_id": "M2.2-COV",
+  "task_attempt": 3,
+  "stage_id": "P5/V2/M2.2/remediation",
+  "route_generation": 1,
+  "plan_generation": 5,
+  "lane": "entry-review",
+  "review_level": "L2",
+  "rubric_id": "nextstep-remediation-generation-3-plan-entry-v1",
+  "verdict": "PASS",
+  "artifact_refs": [
+    {
+      "kind": "reviewed-plan-commit",
+      "commit": "c4445e5a8dbd7dd5102355a34dfa8248bb04f069",
+      "tree": "3e6625574f9354fcdb9debf84ffad2c36e5cf5f4",
+      "parent": "0f3186979873216fe792cf88c0f4d9a4c61dff0a",
+      "parent_tree": "6cb6821a34a595c13754d2fa3bd9f8c888e6884d"
+    },
+    {
+      "kind": "plan",
+      "path": ".codex/exec-plan-m2.2-coverage-remediation-generation-3.md",
+      "raw_sha256": "sha256:015c896ee5b044f0bf7baca6e7b2846f33163aaf692a2805d33a241a7f39aee3"
+    },
+    {
+      "kind": "attempt-2-candidate",
+      "commit": "8d6a70d09c03d0cb6a4938bfbac2c512fe9df1f9",
+      "parent": "0f3186979873216fe792cf88c0f4d9a4c61dff0a",
+      "status": "historical-only"
+    },
+    {
+      "kind": "attempt-2-independent-review",
+      "commit": "1b2b541c5f4fa0d41fe1a5aa8f36e1fa175f119f",
+      "parent": "8d6a70d09c03d0cb6a4938bfbac2c512fe9df1f9",
+      "verdict": "REVISE",
+      "score": 96,
+      "status": "historical-only"
+    },
+    {
+      "kind": "attempt-2-package-acceptance-result",
+      "ref": "results/result-package-acceptance-m2.2-cov-g5-a2-f152-20260828.json",
+      "digest": "sha256:6852fa81021d6fffddd9bd1fb1623ea5d4a69939750773009260ae9b45187f99",
+      "control": "4be4583553ece90ce80b18de6220d602d5382dd3",
+      "status": "revision-required-historical-only"
+    }
+  ],
+  "subject_identity": {
+    "commit": "c4445e5a8dbd7dd5102355a34dfa8248bb04f069",
+    "tree": "3e6625574f9354fcdb9debf84ffad2c36e5cf5f4",
+    "unique_parent": "0f3186979873216fe792cf88c0f4d9a4c61dff0a",
+    "subject_jcs_digest": "sha256:a779a44f49900a2b23fdd7484149fe17fe5c2ed0c59383a8fd3f519ddbf06a3e",
+    "formal": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "control": "4be4583553ece90ce80b18de6220d602d5382dd3",
+    "exact_write_set": [
+      ".codex/exec-plan-m2.2-coverage-remediation-generation-3.md",
+      ".codex/operations-log.md",
+      ".codex/verification-report.md"
+    ],
+    "exact_three": true
+  },
+  "implementation_contract": {
+    "allowlist": ["tests/domain/small-milestone.test.ts"],
+    "exact_one": true,
+    "import_before": "import { evaluateVersionChain } from \"../../src/domain/version-chain.ts\";",
+    "import_after": "import { VersionChainError, evaluateVersionChain, parseVersionChainResult } from \"../../src/domain/version-chain.ts\";",
+    "assertions": [
+      {
+        "call": "parseVersionChainResult(cyclic)",
+        "error_class": "VersionChainError",
+        "required_reason_code": "RESULT_INTEGRITY_MISMATCH"
+      },
+      {
+        "call": "evaluateVersionChain(null)",
+        "error_class": "VersionChainError",
+        "required_reason_code": "INVALID_VERSION_CHAIN"
+      }
+    ],
+    "numstat": {"insertions": 9, "deletions": 1, "net": 8},
+    "new_test_or_it": 0,
+    "new_fixture_snapshot_helper": 0,
+    "production_config_schema_cli_skill_package_lock_dependency_changes": 0,
+    "attempt_2_small_milestone_null_assertion_forbidden": true
+  },
+  "coverage_contract": {
+    "feasibility_run_count": 2,
+    "each_run_full": "555/555",
+    "each_run_fail_skip_cancel_todo": "0/0/0/0",
+    "each_run_node_native_displayed": {
+      "lines": 94.47,
+      "branches": 89.85,
+      "functions": 99.57
+    },
+    "each_run_same_run_raw": {
+      "lines": {"covered": 8368, "total": 8858, "ratio_percent": 94.46827726349063},
+      "branches": {"covered": 3009, "total": 3349, "ratio_percent": 89.84771573604061},
+      "functions": {"covered": 697, "total": 700, "ratio_percent": 99.57142857142857}
+    },
+    "feasibility_only": true,
+    "node_native_displayed_floors": {
+      "lines": 94.40,
+      "branches": 89.75,
+      "functions": 99.57
+    },
+    "same_run_raw_ratio_floors": {
+      "lines": 94.40,
+      "branches": 89.75,
+      "functions": 99.57
+    },
+    "formal_layers": ["implementation", "fence154-independent-review", "original-main-like-state-sync"],
+    "domain_required": "6/6",
+    "targeted_required": "29/29",
+    "full_required": ">=555/555 with zero fail/skip/cancel/todo",
+    "lcov_role": "corroborative-only; forbidden as replacement, concatenation, mixed gate input or source for raw-count inference"
+  },
+  "isolation": {
+    "clone": "/private/tmp/nextstep-m22-cov-g3-entry.nP9VKU/review",
+    "clone_mode": "git-clone-no-local",
+    "remote_count": 0,
+    "alternates": false,
+    "detached_head": true,
+    "worktree_clean_before_review": true,
+    "original_worktree_accessed": false,
+    "other_clone_or_worktree_accessed": false,
+    "protected_untracked_target_accessed": false,
+    "network_used": false,
+    "product_tests_run": false,
+    "candidate_modified": false,
+    "named_refs_modified": false
+  },
+  "hard_gates": [
+    {
+      "id": "HG1-identity-and-exact-three",
+      "status": "pass",
+      "evidence": "detached candidate commit/tree/唯一父精确为 c4445e5a8dbd7dd5102355a34dfa8248bb04f069 / 3e6625574f9354fcdb9debf84ffad2c36e5cf5f4 / 0f3186979873216fe792cf88c0f4d9a4c61dff0a。formal/control 精确为 ea04b57de83d6c548dcb1629b1f61832db8375ad / 4be4583553ece90ce80b18de6220d602d5382dd3；候选相对父只改 Generation 3 plan、operations-log、verification-report exact-three，git diff --check 通过。"
+    },
+    {
+      "id": "HG2-attempt2-historical-only",
+      "status": "pass",
+      "evidence": "attempt 2 单父链为 0f318697 -> 8d6a70d09c03d0cb6a4938bfbac2c512fe9df1f9 -> 1b2b541c5f4fa0d41fe1a5aa8f36e1fa175f119f；review=REVISE/96、P0/P1/P2=0/1/0。Result 排除 result_digest 后用项目 RFC8785/JCS 复算精确为 sha256:6852fa81021d6fffddd9bd1fb1623ea5d4a69939750773009260ae9b45187f99。计划和两份留痕均将 candidate/review/Result 标为 historical-only，明确禁止集成、改写或冒充 PASS authority。"
+    },
+    {
+      "id": "HG3-exact-one-public-contract-patch",
+      "status": "pass",
+      "evidence": "唯一 allowlist 为 tests/domain/small-milestone.test.ts。目标 import、cyclic 插入点、VersionChainError、parseVersionChainResult/evaluateVersionChain 公开入口与 RESULT_INTEGRITY_MISMATCH/INVALID_VERSION_CHAIN 错误码均在父树真实存在；冻结补丁仅做 import replacement 和两条四行公开契约断言，精确 9+/1-、净增8。"
+    },
+    {
+      "id": "HG4-zero-test-count-and-anti-padding",
+      "status": "pass",
+      "evidence": "计划明确新增 test()/it()=0、fixture/snapshot/helper=0、生产/config/Schema/CLI/Skill/package/lock/dependency=0，禁止 coverage ignore/no-op/unreachable/threshold/config padding；产品契约差异必须 fail closed 并进入新变更分流。attempt 2 的 evaluateSmallMilestonePlan(null) 断言被明确禁止带入。"
+    },
+    {
+      "id": "HG5-feasibility-evidence-arithmetic-and-authority-boundary",
+      "status": "pass",
+      "evidence": "计划与两份留痕一致记录连续两次 fresh full 均为 555/555、零 fail/skip/cancel/todo、displayed=94.47/89.85/99.57；raw 算术独立复算为 8368/8858=94.46827726349063%、3009/3349=89.84771573604061%、697/700=99.57142857142857%。研究证据被限定为 feasibility-only，不替代 implementation/review/state-sync authority。"
+    },
+    {
+      "id": "HG6-strengthened-displayed-and-raw-hard-gates",
+      "status": "pass",
+      "evidence": "implementation、fence154 independent review、original-main-like state-sync 三层统一门槛为 Node native displayed>=94.40/89.75/99.57 且同次 raw>=94.40%/89.75%/99.57%，并要求 raw covered/total；domain=6/6、targeted=29/29、full>=555/555、全零失败、diff-check、exact-one/numstat/anti-padding/clean 均进入正式门禁。LCOV 仅旁证。"
+    },
+    {
+      "id": "HG7-fence153-implementation-chain",
+      "status": "pass",
+      "evidence": "entry PASS 后仍须重新核对 live main/formal/control 与 attempt2 historical-only 状态；packet、claim/fence153、ready/outbox、ACK 分别要求独立 expected-old 单父 control CAS。唯一新实现者与计划作者、entry reviewer、Generation1/2 实现者分离，固定 parent/tree 与 exact-one allowlist；ACK 前 readiness-only，ACK 后才可 offline/frozen 安装、probe、apply_patch、验证和提交。"
+    },
+    {
+      "id": "HG8-fence154-independent-review-chain",
+      "status": "pass",
+      "evidence": "fence154 reviewer 必须是未参与计划、entry review、Generation1/2/3 实现及既往 M2.2-COV 候选审查的唯一新 reviewer；使用独立 packet/claim/ready/ACK 链，只消费候选与控制证据，不改 candidate/main/control/formal/Result，并 fresh 复验 exact-one、9+/1-、两条公共契约断言、三类测试及 strengthened 双口径覆盖门槛。"
+    },
+    {
+      "id": "HG9-linear-integration-and-original-main-like-state-sync",
+      "status": "pass",
+      "evidence": "只有 fence154 PASS/100、零严重度、空 required_fixes 后才可在 live main 等于 expected-old 时线性 fast-forward Generation3 candidate；attempt2 历史禁止随带集成。集成后 original-main-like 环境必须重新 fresh 执行 domain/targeted/full 与同次 displayed/raw，不能复用实现或 reviewer 证据；仅 state-sync PASS Result 的独立单父 control CAS 后才可冻结新 historical subject。"
+    },
+    {
+      "id": "HG10-nonauthorization-and-stop-point",
+      "status": "pass",
+      "evidence": "计划候选与本 entry review 均不授权 packet、fence153、dispatch、实现、fence154 review、main integration、state-sync CAS 或 M2.2 acceptance attempt2；control 中尚无 f153/f154 attempt3 对象。也不授权 user signoff、M2.2 completed、formal、V2 cumulative/alpha、CR-006、P5 或 qualified real runs 状态变化。"
+    },
+    {
+      "id": "HG11-review-isolation-and-no-side-effects",
+      "status": "pass",
+      "evidence": "评审在 fresh git clone --no-local 中执行，origin 已移除、remote=0、无 alternates、detached HEAD、开始时 clean；未访问原工作树、其他 clone/worktree、受保护目标或网络，未运行产品测试，未修改候选或任何 ref。"
+    }
+  ],
+  "verification": {
+    "full_tests_run": false,
+    "runtime_product_probe_run": false,
+    "candidate_changed_paths": [
+      ".codex/exec-plan-m2.2-coverage-remediation-generation-3.md",
+      ".codex/operations-log.md",
+      ".codex/verification-report.md"
+    ],
+    "candidate_numstat": {"insertions": 110, "deletions": 0},
+    "candidate_git_diff_check": "pass",
+    "attempt_2_result_digest_recomputed": true,
+    "research_ratio_arithmetic_recomputed": true,
+    "public_contracts_source_inspected": true,
+    "premature_f153_f154_control_objects": 0
+  },
+  "dimensions": [
+    {
+      "id": "D1",
+      "name": "身份、历史与 authority",
+      "score": 25,
+      "max_score": 25,
+      "reason": "candidate exact identity、formal/control、attempt2 单父历史与 REVISE Result JCS 均机械成立，historical-only 禁集成语义无漂移。",
+      "evidence_refs": ["HG1-identity-and-exact-three", "HG2-attempt2-historical-only"]
+    },
+    {
+      "id": "D2",
+      "name": "精确补丁与公共契约",
+      "score": 25,
+      "max_score": 25,
+      "reason": "exact-one allowlist、import replacement、两条真实 public-contract assertions、9+/1- 与零 test/生产/config 扩张精确。",
+      "evidence_refs": ["HG3-exact-one-public-contract-patch", "HG4-zero-test-count-and-anti-padding"]
+    },
+    {
+      "id": "D3",
+      "name": "覆盖率证据与 strengthened 门槛",
+      "score": 25,
+      "max_score": 25,
+      "reason": "连续两次 feasibility 数值与 raw 算术成立，三层 displayed/raw strengthened hard gates、测试与 anti-padding 门禁完整且可重算。",
+      "evidence_refs": ["HG5-feasibility-evidence-arithmetic-and-authority-boundary", "HG6-strengthened-displayed-and-raw-hard-gates"]
+    },
+    {
+      "id": "D4",
+      "name": "控制链、角色隔离与权限边界",
+      "score": 25,
+      "max_score": 25,
+      "reason": "fence153 实现、fence154 独立 review、线性集成、original-main-like state-sync、角色分离、停点与非授权边界全部完整。",
+      "evidence_refs": ["HG7-fence153-implementation-chain", "HG8-fence154-independent-review-chain", "HG9-linear-integration-and-original-main-like-state-sync", "HG10-nonauthorization-and-stop-point", "HG11-review-isolation-and-no-side-effects"]
+    }
+  ],
+  "findings": [],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100,
+    "severity_counts": {"P0": 0, "P1": 0, "P2": 0}
+  },
+  "required_fixes": [],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "PASS：candidate identity、attempt2 historical-only、Result JCS、补丁算术、覆盖率算术和全部控制边界均成立。"
+    },
+    {
+      "role": "Strict Judge / Anti-Slop Judge",
+      "conclusion": "PASS：无 authority 冒领、无 attempt2 代码继承、无 coverage 混算/padding、无角色复用、无提前授权或完成声明。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "PASS / 100；P0/P1/P2=0/0/0；required_fixes=[]。只允许主控进入 Generation3 packet preparation 门禁，本评审不创建 packet 或授权任何后续动作。"
+    }
+  ],
+  "reviewed_at": "2026-08-27T18:55:26Z"
+}
