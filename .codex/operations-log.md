@@ -2923,3 +2923,15 @@
 - exact-eleven：只修改路线锁、README、PLANS、PRODUCT_SENSE、CR-006 详情/索引、两份活动计划、QA 索引及本 operations/verification 追加留痕；不读取、修改、暂存或清理三个受保护未跟踪目标。
 - 下一唯一入口：准备 `P5/V2/M2.2/S2.4 generation 5 attempt 1` Execution Packet。该 packet、control CAS、claim/fence、dispatch 和编码均未发生；S2.4、M2.2、V2、`v0.2.0-alpha`、formal、P5、CR-006 与 qualified real runs 3/3 均未完成。
 - 状态：已结束。状态同步候选需由主控审查并集成后，才可执行对应 control state-sync CAS 或创建 S2.4 packet。
+
+## 2026-08-27 S2.4 有效验收后 main 状态同步
+
+- 生命周期与路线：继续处于 `S5 / P5 产品落地`。本轮只同步 S2.4 已有效验收并进入 main 的冻结事实，不引入新需求、不改变产品定位、技术栈或既有门禁。
+- 唯一工作区与固定基线：`/Users/ling/.codex/worktrees/nextstep-s24-state-sync-20260827`，单父 parent/baseline=`411f2ef955ff8498b2fb2b1afa3a3ce97550ea36`；live main 仍要求运行时解析，不把本状态同步提交自身冒充 current。
+- 写集：严格限定 `.codex/operations-log.md`、`.codex/verification-report.md`、`PROJECT_ROUTE_LOCK.md`、`README.md`、`docs/PLANS.md`、`docs/PRODUCT_SENSE.md`、`docs/change-requests/006-scalability-guardrails.md`、`docs/change-requests/index.md`、`docs/exec-plans/active/p5-product-implementation-milestones.md`、`docs/exec-plans/active/p5-scalability-guardrails.md`、`docs/qa/index.md`；不读取、修改、暂存或清理原仓库受保护未跟踪目标。
+- 有效事实：S2.4 attempt 2 implementation=`45a3eb0a1d924b8f2b4c2b5ab6aa9e975526dc21`、independent review=`411f2ef955ff8498b2fb2b1afa3a3ce97550ea36`，package acceptance=`PASS / 100`、P0/P1/P2=`0/0/0`，Result digest=`sha256:08901d9dea24d90e81a5d7535cdde3402c32bd15b7046a3b1082baeffc9f434f`；root fresh `555/555`、coverage Lines/Branches/Functions=`94.36/89.65/99.57`，状态=`gate-passed/present-in-main`。
+- 历史保留：S2.4 attempt 1 candidate/review/REVISE 与错误 S2.3 `P5/V2/M2.1/S2.3` attempt 1/fence140 均保持历史可追溯，不作为当前放行主体。
+- 固定 refs：formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动；control=`b7900ae27af69cf175b11ab551e73e420e9a01ed`；`plan_generation=5`。
+- 下一唯一入口：不是直接创建 packet。必须先冻结 `P5/V2/M2.1/acceptance` 验收计划并执行独立入口评估；历史验收 subject 固定为 S2.2 状态 checkpoint `6ec262fbac45de3d0f84c05a4a5582049139f219`，不得使用 live main，也不得把程序性 S2.2 review 冒充有效独立验收。
+- 完成边界：CR-006 继续 `change_request_closed=false`，qualified real runs 继续 `0/3`；M2.1、M2.2、V2、alpha、formal、P5 均未完成。
+- 验证边界：本轮仅同步 Markdown 状态真源，不重复运行产品测试；引用的 `555/555` 与 coverage 是主控已核定的 root fresh 证据。提交前执行 `git diff --check`、exact-eleven 路径核对与旧当前停点反扫。

@@ -2880,3 +2880,26 @@
 - `git diff --check` 通过；差异路径严格等于 exact-eleven；`PROJECT_ROUTE_LOCK.md` 对错误 current 身份 `P5/V2/M2.1/S2.3` 反扫无命中；九份状态入口的当前下一入口均为 `P5/V2/M2.2/S2.4`，未残留 S2.3 packet preparation 停点；新增差异未把 S2.4、M2.2、V2、`v0.2.0-alpha`、formal、P5、CR-006 或 qualified real runs 3/3 包装为完成。
 - 用户改动保护：全程不读取、修改、暂存或清理三个受保护未跟踪目标，不 reset/rebase/clean/push。
 - 同步质量自检：`100 / 100`，建议通过；该分数只评价 exact-eleven 状态同步的一致性与边界，不替代 S2.3 独立验收或任何后续产品门禁。
+
+## 2026-08-27 S2.4 gate-passed/present-in-main 状态同步验证
+
+### 固定身份与验收结论
+
+- 状态同步 parent/baseline=`411f2ef955ff8498b2fb2b1afa3a3ce97550ea36`；S2.4 attempt 2 implementation=`45a3eb0a1d924b8f2b4c2b5ab6aa9e975526dc21`、independent review=`411f2ef955ff8498b2fb2b1afa3a3ce97550ea36`。
+- 独立 package acceptance=`PASS / 100`、P0/P1/P2=`0/0/0`；root fresh `555/555`，coverage Lines/Branches/Functions=`94.36/89.65/99.57`；Result digest=`sha256:08901d9dea24d90e81a5d7535cdde3402c32bd15b7046a3b1082baeffc9f434f`。
+- S2.4 attempt 1 candidate/review/REVISE 与错误 S2.3 M2.1 identity/fence140 只作为不可变历史保留。
+- formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动；control=`b7900ae27af69cf175b11ab551e73e420e9a01ed`；`plan_generation=5`。
+
+### 同步范围与 fail-closed 边界
+
+- 状态同步限定 exact-eleven：路线锁、README、PLANS、PRODUCT_SENSE、CR-006 详情/索引、两份 P5 活动计划、QA 索引及两份 `.codex` 追加留痕。
+- 权威状态统一为“S2.4 `gate-passed/present-in-main`；下一唯一入口为 `P5/V2/M2.1/acceptance` 验收计划冻结与独立入口评估”。
+- M2.1 历史验收 subject 必须固定为 S2.2 状态 checkpoint `6ec262fbac45de3d0f84c05a4a5582049139f219`；禁止用 live main 替代，禁止把程序性 S2.2 review 冒充有效独立验收，禁止跳过入口评估直接创建 packet。
+- CR-006 保持 `change_request_closed=false`，qualified real runs 保持 `0/3`；M2.1、M2.2、V2、`v0.2.0-alpha`、formal、P5 均未完成。
+- 本轮只同步 Markdown 状态真源，不重复运行产品 build/typecheck/test；`555/555` 与 coverage 是主控已核定的 root fresh 结果，不包装为本轮重跑。
+
+### 本地检查与门禁判断
+
+- 实时身份复核：提交前 HEAD=`411f2ef955ff8498b2fb2b1afa3a3ce97550ea36`、formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control=`b7900ae27af69cf175b11ab551e73e420e9a01ed`，与冻结事实一致。
+- `git diff --check` 通过；差异路径严格等于 exact-eleven。九份当前状态入口对旧“下一入口 S2.4 packet/尚未发生”摘要反扫无残留，命中内容均为新的“M2.1 验收计划冻结与独立入口评估”口径；历史留痕不改写。新增差异未把 M2.1、M2.2、V2、`v0.2.0-alpha`、formal、P5、CR-006 或 qualified real runs 3/3 包装为完成。
+- 用户改动保护：全程不读取、修改、暂存或清理原仓库受保护未跟踪目标，不 reset/rebase/clean/push。

@@ -4,8 +4,8 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：V2 / M2.2；S2.1、S2.2、S2.3 gate passed 且已在 main；下一唯一入口为 S2.4 Execution Packet preparation
-- 当前状态：corrected S2.3 implementation/review 已以 main commits=`5f74d06` / `e3f0b24` 合入；独立 package acceptance=`PASS / 100`、P0/P1/P2=`0/0/0`，Result digest=`sha256:89e9b721870d1685fd0e1c0172b88ce9f6d8fec04fc2b867c302443f0d867408`，root fresh `536/536`、coverage=`94.14/89.31/99.52`。错误 `P5/V2/M2.1/S2.3` attempt 1 与 fence140 永久无效。本状态同步固定父/基线=`e3f0b244e44fa6786328df58fe4ecab7a1852014`；live main 必须运行时解析。formal=F16 未移动，control=`ebca4713db2f00f3a1c5db044f67004a06d9487c`，`plan_generation=5`。`change_request_closed=false`；S2.3=`gate-passed/present-in-main`，下一唯一入口为准备 `P5/V2/M2.2/S2.4 generation 5 attempt 1` Execution Packet，packet/CAS/编码尚未发生。S2.4、M2.2、V2、`v0.2.0-alpha`、formal、P5 均未完成；qualified real runs 仍为 0/3。
+- 当前活动里程碑：V2；S2.1..S2.4 gate passed 且已在 main；下一唯一入口为 M2.1 验收计划冻结与独立入口评估
+- 当前状态：S2.4 attempt 2 implementation=`45a3eb0a1d924b8f2b4c2b5ab6aa9e975526dc21`、independent review=`411f2ef955ff8498b2fb2b1afa3a3ce97550ea36`，独立 package acceptance=`PASS / 100`、P0/P1/P2=`0/0/0`，Result digest=`sha256:08901d9dea24d90e81a5d7535cdde3402c32bd15b7046a3b1082baeffc9f434f`，root fresh `555/555`、coverage=`94.36/89.65/99.57`。S2.4 attempt 1 candidate/review/REVISE 与错误 `P5/V2/M2.1/S2.3` attempt 1/fence140 均历史保留。本状态同步固定父/基线=`411f2ef955ff8498b2fb2b1afa3a3ce97550ea36`；live main 必须运行时解析。formal=F16 未移动，control=`b7900ae27af69cf175b11ab551e73e420e9a01ed`，`plan_generation=5`。`change_request_closed=false`；S2.4=`gate-passed/present-in-main`。下一唯一入口不是直接 packet：先冻结 `P5/V2/M2.1/acceptance` 验收计划并执行独立入口评估，历史 subject 固定为 S2.2 状态 checkpoint `6ec262fbac45de3d0f84c05a4a5582049139f219`，不得使用 live main 或程序性 S2.2 review 替代。M2.1、M2.2、V2、`v0.2.0-alpha`、formal、P5 均未完成；qualified real runs 仍为 0/3。
 
 ## 当前活动计划
 
@@ -28,7 +28,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。CR-006 SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，但 CR-006 未关闭，qualified real runs 仍为 0/3。V2 S2.1、S2.2、corrected S2.3 已通过独立 package acceptance 并进入 main；下一唯一入口为准备 `P5/V2/M2.2/S2.4` Execution Packet，该 packet/CAS/编码尚未发生。S2.4、M2.2、V2、`v0.2.0-alpha`、formal 与 P5 尚未完成。
+P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。CR-006 SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，但 CR-006 未关闭，qualified real runs 仍为 0/3。V2 S2.1..S2.4 已通过独立 package acceptance 并进入 main；下一唯一入口为冻结 `P5/V2/M2.1/acceptance` 验收计划并执行独立入口评估，其历史 subject 必须是 `6ec262fbac45de3d0f84c05a4a5582049139f219`。M2.1、M2.2、V2、`v0.2.0-alpha`、formal 与 P5 尚未完成。
 
 实施顺序保持 P3 已会签结构：
 

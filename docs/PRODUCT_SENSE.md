@@ -71,9 +71,9 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 
 ## 当前阶段
 
-- 当前里程碑：P5 / V2 / M2.2；S2.1、S2.2、corrected S2.3 gate passed 且已在 main；下一入口为 S2.4 Execution Packet preparation
+- 当前里程碑：P5 / V2；S2.1..S2.4 gate passed 且已在 main；下一入口为 M2.1 验收计划冻结与独立入口评估
 - 当前生命周期阶段：S5 开发落地
-- 当前状态：V1 已 formally-completed；corrected S2.3 implementation/review 已以程序性 main commits=`5f74d06` / `e3f0b24` 进入 main。独立 package acceptance=`PASS / 100`、P0/P1/P2=`0/0/0`，Result digest=`sha256:89e9b721870d1685fd0e1c0172b88ce9f6d8fec04fc2b867c302443f0d867408`，root fresh `536/536`、coverage=`94.14/89.31/99.52`；错误 attempt 1 M2.1 身份与 fence140 永久无效。本状态同步固定父/基线=`e3f0b244e44fa6786328df58fe4ecab7a1852014`；live main 只能运行时解析。formal=F16 未移动，control=`ebca4713db2f00f3a1c5db044f67004a06d9487c`，`plan_generation=5`。CR-006 仍为 `change_request_closed=false`，qualified real runs 0/3；S2.3=`gate-passed/present-in-main`，下一唯一入口为准备 `P5/V2/M2.2/S2.4` Execution Packet，packet/CAS/编码尚未发生。S2.4、M2.2、V2、`v0.2.0-alpha`、formal 或 P5 均未完成。
+- 当前状态：V1 已 formally-completed；S2.1..S2.4 均已有效验收并进入 main。S2.4 attempt 2 implementation/review=`45a3eb0` / `411f2ef`，独立 package acceptance=`PASS / 100`、P0/P1/P2=`0/0/0`，Result digest=`sha256:08901d9dea24d90e81a5d7535cdde3402c32bd15b7046a3b1082baeffc9f434f`，root fresh `555/555`、coverage=`94.36/89.65/99.57`；attempt 1 candidate/review/REVISE 与错误 S2.3 M2.1 身份/fence140 只作历史保留。本状态同步固定父/基线=`411f2ef955ff8498b2fb2b1afa3a3ce97550ea36`；live main 只能运行时解析。formal=F16 未移动，control=`b7900ae27af69cf175b11ab551e73e420e9a01ed`，`plan_generation=5`。CR-006 仍为 `change_request_closed=false`，qualified real runs 0/3；S2.4=`gate-passed/present-in-main`。下一唯一入口不是直接 packet，而是冻结 `P5/V2/M2.1/acceptance` 验收计划并执行独立入口评估；历史 subject 固定为 `6ec262fbac45de3d0f84c05a4a5582049139f219`，不得替换为 live main 或程序性 S2.2 review。M2.1、M2.2、V2、`v0.2.0-alpha`、formal 或 P5 均未完成。
 - 当前正式状态、边界和下一入口以 `PROJECT_ROUTE_LOCK.md` 与 `docs/PLANS.md` 为准；若与本页摘要冲突，以两者为准。
 
 ## S3 已会签交付物
@@ -92,7 +92,7 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 
 ## 当前交付物
 
-- P5 主路线活动计划：`docs/exec-plans/active/p5-product-implementation-milestones.md`，V1 已 formally-completed，S2.1、S2.2、corrected S2.3 gate passed 且已在 main，下一入口为 S2.4 packet
+- P5 主路线活动计划：`docs/exec-plans/active/p5-product-implementation-milestones.md`，V1 已 formally-completed，S2.1..S2.4 gate passed 且已在 main，下一入口为 M2.1 验收计划冻结与独立入口评估
 - P5 可承受性护栏计划：`docs/exec-plans/active/p5-scalability-guardrails.md`，三个互斥 SG package gate 与 cumulative gate 均已通过，但 CR-006 未自动关闭，也不提前满足 PC-12、PC-19、V2 或 V4
 - P3 版本与里程碑拆解：`docs/exec-plans/completed/p3-version-and-milestone-breakdown.md`，已会签并归档
-- 当前变更入口：`docs/change-requests/006-scalability-guardrails.md` 仍为 `change_request_closed=false`；corrected S2.3 已独立有效验收并呈现于 main，下一唯一入口为 `P5/V2/M2.2/S2.4` packet preparation；CR-005 已完成并关闭，CR-006 与 qualified real runs 3/3 均未完成
+- 当前变更入口：`docs/change-requests/006-scalability-guardrails.md` 仍为 `change_request_closed=false`；S2.4 已独立有效验收并呈现于 main，下一唯一入口为 `P5/V2/M2.1/acceptance` 验收计划冻结与独立入口评估；CR-005 已完成并关闭，CR-006 与 qualified real runs 3/3 均未完成
