@@ -3034,3 +3034,27 @@
 - 必须反扫短哈希 PASS authority、raw Branches>=`89.70%`、LCOV 替代/混算正式门禁和未关闭的两个 P1；计划其余 identity、fence151/fence152、唯一 allowlist、线性集成、state-sync PASS 与非授权边界不得漂移。
 - 修订提交唯一父必须为 `43a4ec72b4cf0674102379167bf6917734a34246`，中文提交信息，提交后 tracked clean。
 - 修订质量自检=`100 / 100`，建议=`重新独立 entry review`；该结论不替代重新评审，也不授权任何后续控制或实现动作。
+
+## 2026-08-28 M2.2 coverage remediation Generation 3 计划验证
+
+### 冻结输入与 historical-only 边界
+
+- live refs 已从 Git 对象独立读取为 main=`0f3186979873216fe792cf88c0f4d9a4c61dff0a`、formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control=`4be4583553ece90ce80b18de6220d602d5382dd3`；计划 parent tree=`6cb6821a34a595c13754d2fa3bd9f8c888e6884d`。
+- attempt 2 candidate/review 父链已核对为 `0f318697... -> 8d6a70d09c03d0cb6a4938bfbac2c512fe9df1f9 -> 1b2b541c5f4fa0d41fe1a5aa8f36e1fa175f119f`；control Result ref=`results/result-package-acceptance-m2.2-cov-g5-a2-f152-20260828.json`、digest=`sha256:6852fa81021d6fffddd9bd1fb1623ea5d4a69939750773009260ae9b45187f99`、`REVISE / 96`、P0/P1/P2=`0/1/0` 均匹配。计划明确冻结为 historical-only 且禁止集成。
+- 身份精确为 `P5/V2/M2.2/remediation / M2.2-COV / route_generation 1 / plan_generation 5 / task_attempt 3`；本轮不改变路线、生命周期、formal、main、control、M2.2/V2/alpha/CR-006/P5 或 qualified real runs 状态。
+
+### 精确实现契约与门禁覆盖
+
+- 唯一未来 allowlist=`tests/domain/small-milestone.test.ts`。现有目标 import、`VersionChainError` export、`parseVersionChainResult`/`evaluateVersionChain` 公开入口、`reasons` 结构及目标 cyclic 插入点均已只读核对。
+- 计划冻结 import 精确替换和两条四行 assert.throws；第一条要求 `parseVersionChainResult(cyclic)` 的 `VersionChainError.reasons` 包含 `RESULT_INTEGRITY_MISMATCH`，第二条要求 `evaluateVersionChain(null)` 的 `VersionChainError.reasons` 包含 `INVALID_VERSION_CHAIN`。精确 numstat=`9+/1-`、净增=`8`、新增 test/helper/fixture/生产/config/依赖=`0`。
+- 连续两次研究 full=`555/555`、零 fail/skip/cancel/todo、displayed=`94.47/89.85/99.57`、raw=`8368/8858=94.468277%, 3009/3349=89.847716%, 697/700=99.571429%` 被限定为 feasibility-only；没有冒充正式 candidate/review/state-sync authority。
+- 三层正式环境统一 hard gates 已冻结为 displayed>=`94.40/89.75/99.57`、same-run raw>=`94.40%/89.75%/99.57%`，并要求记录 raw covered/total；LCOV 仅旁证，禁止替代、拼接、混算或从 displayed 反推 raw。
+- domain=`6/6`、targeted=`29/29`、fresh full>=`555/555`、fail/skip/cancel/todo=`0/0/0/0`、exact-one、`9+/1-`、零 padding、`git diff --check` 和 clean 均进入 implementation、fence154 review 与 original-main-like state-sync 的完整门禁。
+- 控制链完整拆分为 entry review `PASS / 100`、packet、fence153 claim、ready/outbox、ACK、唯一新实现者、另一个新 reviewer fence154、条件式线性集成、fresh state-sync 与其后 M2.2 acceptance attempt 2；ACK 前 readiness-only 和每步独立 expected-old 单父 CAS 均明确。
+
+### 提交前机械检查
+
+- 必须执行 `git diff --check`，并证明差异路径严格等于 `.codex/exec-plan-m2.2-coverage-remediation-generation-3.md`、`.codex/operations-log.md`、`.codex/verification-report.md`。
+- 必须反扫 identity、三项 live refs、attempt 2 candidate/review/Result digest 与 historical-only 禁集成、唯一 allowlist、精确 import、两条错误码、`9+/1-`、连续两次研究值、strengthened displayed/raw floors、fence153/fence154、角色隔离、线性集成、state-sync、M2.2 acceptance attempt 2 条件和全部非授权边界。
+- 提交必须为单父、唯一父=`0f3186979873216fe792cf88c0f4d9a4c61dff0a`，中文提交信息；提交后 tracked/all status clean。
+- 本轮不运行产品测试；验证只检查计划候选的事实、结构、路径、格式和矛盾，不替代未来独立 entry review。计划只有 independent entry review=`PASS / 100` 才可进入 packet preparation。

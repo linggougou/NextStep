@@ -3002,3 +3002,14 @@
 - P1-2 已关闭：正式门禁拆为同次 Node native summary 两位 displayed floors=`94.36/89.70/99.57`，以及同一 Node native range raw floors=`94.36%/89.69%/99.57%`；LCOV 只作旁证，禁止替代或混算。
 - 可行性证据按原始比率更正为 Lines=`8360/8858=94.377963%`、Branches=`3003/3348=89.695341%`、Functions=`697/700=99.571429%`；raw Branches 只满足 `89.69%` floor，不声称 raw>=`89.70%`。对应 Node native displayed=`94.38/89.70/99.57`。
 - 写集仍严格为 Generation 2 计划、operations-log、verification-report exact-three；entry re-review PASS 前不授权 packet/fence151/实现/review fence152/集成/state-sync。
+
+## 2026-08-28 M2.2 coverage remediation Generation 3 计划冻结
+
+- 从精确 main parent=`0f3186979873216fe792cf88c0f4d9a4c61dff0a` 创建隔离 worktree/branch `codex/m22-cov-g3-plan`；HEAD tree=`6cb6821a34a595c13754d2fa3bd9f8c888e6884d`，开始时 tracked/untracked clean。未读取原工作树或受保护未跟踪目标。
+- 固定身份=`P5/V2/M2.2/remediation / M2.2-COV / route_generation 1 / plan_generation 5 / task_attempt 3`，入口 main=`0f318697...`、formal F16=`ea04b57...`、control=`4be4583553ece90ce80b18de6220d602d5382dd3`。
+- attempt 2 candidate=`8d6a70d09c03d0cb6a4938bfbac2c512fe9df1f9`、review=`1b2b541c5f4fa0d41fe1a5aa8f36e1fa175f119f`、Result=`sha256:6852fa81021d6fffddd9bd1fb1623ea5d4a69939750773009260ae9b45187f99` 固定为 `REVISE / 96` historical-only；不得集成、改写或冒充 PASS。唯一 P1 是 independent fresh Lines displayed/raw=`94.34 / 8357/8858=94.3440957%` 未达当轮门槛。
+- Generation 3 唯一未来 allowlist=`tests/domain/small-milestone.test.ts`；精确补丁只扩展 version-chain import，并在既有 fail-closed 测试的 cyclic assertions 后加入 `parseVersionChainResult(cyclic)` / `evaluateVersionChain(null)` 两条 `VersionChainError.reasons` 精确码断言。候选必须 exact-one、numstat=`9+/1-`、净增=`8`，不得继承 attempt 2 small-milestone null 断言或修改生产/config/依赖。
+- 隔离研究对精确补丁连续两次 fresh full 都为 `555/555`、零 fail/skip/cancel/todo；displayed=`94.47/89.85/99.57`，raw=`8368/8858=94.468277%, 3009/3349=89.847716%, 697/700=99.571429%`。研究证据只证明可行性，不是候选或验收 authority。
+- implementation、fence154 reviewer、original-main-like state-sync 统一 strengthened hard gates：Node native displayed>=`94.40/89.75/99.57` 且 same-run raw>=`94.40%/89.75%/99.57%`；domain=`6/6`、targeted=`29/29`、full>=`555/555`、全零失败。LCOV 只作旁证，禁止替代、拼接或混算。
+- 控制链冻结为独立 entry review `PASS / 100` → packet → claim/fence153 → ready/outbox → ACK → 唯一新实现者 → 新独立 reviewer fence154 → PASS 后线性集成 → original-main-like fresh state-sync → 条件式 M2.2 acceptance attempt 2。每个控制动作均须独立 expected-old 单父 CAS。
+- 本轮只写 Generation 3 计划和两份追加留痕 exact-three；计划作者不参与 entry review 或后续实现，不授权用户会签、formal、V2、alpha、CR-006、P5 或 qualified real runs 状态变化。
