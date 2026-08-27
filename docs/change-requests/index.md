@@ -13,7 +13,7 @@
 
 ## 已接受未关闭变更
 
-- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，但 `change_request_closed=false`，风险及真实运行 `0/3` 保留。V2 S2.2 candidate=`d35e63d`；attempt 1 temporal-invalid audit digest=`sha256:f6c7681083f5fdb810f1375cf0ce75aeb759c1d4e554617fc027d15dc55a5041`，attempt 2 role-authority-invalid audit digest=`sha256:08cf20a2c70e02833444c5ae7893ab007bc5c830441f3119ee2f60c115a6c9be`，两者均保留为无效历史；attempt 3 独立 review=`6c48b6c`、`PASS / 100`、P0/P1/P2=`0/0/0`、fresh `526/526`、coverage=`93.99/89.20/99.49`，有效 Result digest=`sha256:332323df803af638aac65a6044d0cf17a171dc8ff5744e213385f18fda089c0e`。S2.2=`gate-passed/present-in-main`；formal 仍为 F16，control=`6b4cb573655beb107d751004c9fc2b0b2c35490f`；下一唯一入口为 S2.3 Execution Packet preparation，S2.3/S2.4/M2.1/V2/`v0.2.0-alpha`/formal/P5 未完成。
+- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，但 `change_request_closed=false`，风险及 qualified real runs `0/3` 保留。V2 corrected S2.3 implementation/review 已以 main commits=`5f74d06` / `e3f0b24` 合入；独立 package acceptance=`PASS / 100`、P0/P1/P2=`0/0/0`、root fresh `536/536`、coverage=`94.14/89.31/99.52`，Result digest=`sha256:89e9b721870d1685fd0e1c0172b88ce9f6d8fec04fc2b867c302443f0d867408`。错误 attempt 1 M2.1 身份与 fence140 永久无效；S2.3=`gate-passed/present-in-main`。formal 仍为 F16，control=`ebca4713db2f00f3a1c5db044f67004a06d9487c`；下一唯一入口为 `P5/V2/M2.2/S2.4` Execution Packet preparation，packet/CAS/编码尚未发生，S2.4/M2.2/V2/`v0.2.0-alpha`/formal/P5 未完成。
 
 ## 分流规则
 

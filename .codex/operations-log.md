@@ -2913,3 +2913,13 @@
 - corrected attempt 2 packet identity=`P5/V2/M2.2/S2.3`，working parent=`30e617cddff404ed8501ebb18a74348e372ee5e1`，digest=`sha256:0d889dfe6138aa2a06d8a48001e7d5b701858034bf37fe57b93434978e579ddd`，dedup=`sha256:4c0b236e826ecce225ce2256d81cb7f018a139379aa0d2f6b45eb7ea8b20f2df`，packet control=`5403bb694a667e27d09fd0b8a44588afaaf37490`。
 - 新 claim/fence141=`77541c75b2f4d86db56e1ad49ed43828d83edf76`；ready/outbox payload digest=`sha256:ebd0b4b3c2e12e361375ee99501dee069d5f646add08f7036ee4054f76237f0b`，control=`0ff41e0ac7ab5fcf733975d7bbf5bf75a57a841b`；唯一全新 worker=`codex-subagent:/root/s23_impl_g5_a2_f141`，ACK control=`86f3516248a43e748c263813433c0e9256484c5e`。
 - attempt 2 使用全新 worktree，offline frozen downloaded=0、node_modules 非 symlink、TypeScript=7.0.2、初始 clean，并被明确禁止读取或复制 attempt 1 RED 文件。当前仅 corrected attempt 2 implementation running。
+
+## 2026-08-27 S2.3 有效验收后 main 状态同步
+
+- 生命周期与路线：继续处于 `S5 / P5 产品落地`，当前活动入口为 `V2 / M2.2 / S2.3 gate-passed/present-in-main`；本轮只同步已核定事实，不引入新需求或改变门禁。
+- 固定基线：状态同步 parent=`e3f0b244e44fa6786328df58fe4ecab7a1852014`；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动；Result control=`ebca4713db2f00f3a1c5db044f67004a06d9487c`，`plan_generation=5`。
+- 有效结果：corrected implementation/review 已以 main commits=`5f74d06` / `e3f0b24` 合入；独立 package acceptance=`PASS / 100`、P0/P1/P2=`0/0/0`，Result digest=`sha256:89e9b721870d1685fd0e1c0172b88ce9f6d8fec04fc2b867c302443f0d867408`；root fresh `536/536`、coverage Lines/Branches/Functions=`94.14/89.31/99.52`。
+- 无效历史：错误 `P5/V2/M2.1/S2.3` attempt 1 与 fence140 永久无效，不得参与候选、验收或后续 S2.4 输入；有效归属固定为 `P5/V2/M2.2/S2.3`。
+- exact-eleven：只修改路线锁、README、PLANS、PRODUCT_SENSE、CR-006 详情/索引、两份活动计划、QA 索引及本 operations/verification 追加留痕；不读取、修改、暂存或清理三个受保护未跟踪目标。
+- 下一唯一入口：准备 `P5/V2/M2.2/S2.4 generation 5 attempt 1` Execution Packet。该 packet、control CAS、claim/fence、dispatch 和编码均未发生；S2.4、M2.2、V2、`v0.2.0-alpha`、formal、P5、CR-006 与 qualified real runs 3/3 均未完成。
+- 状态：已结束。状态同步候选需由主控审查并集成后，才可执行对应 control state-sync CAS 或创建 S2.4 packet。

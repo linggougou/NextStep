@@ -4,7 +4,7 @@
 - 变更入口：[CR-006](../../change-requests/006-scalability-guardrails.md)
 - 生命周期阶段：S5 开发落地
 - 路线位置：P5 跨版本基础护栏；不新增版本，不改变 V2 首个产品 packet 前门禁
-- 当前状态：SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，CR-006 仍为 `change_request_closed=false`，真实运行仍为 0/3。V2 S2.1、S2.2 package acceptance 均为 `PASS / 100` 并进入 main。S2.2 candidate=`d35e63d4ca7a6cca3ac3ac662b77a0ca482ad51e`；attempt 1 temporal-invalid audit digest=`sha256:f6c7681083f5fdb810f1375cf0ce75aeb759c1d4e554617fc027d15dc55a5041`，attempt 2 role-authority-invalid audit digest=`sha256:08cf20a2c70e02833444c5ae7893ab007bc5c830441f3119ee2f60c115a6c9be`，两者均保留为无效历史；attempt 3 独立 review=`6c48b6c`、fresh `526/526`、coverage=`93.99/89.20/99.49`，有效 Result digest=`sha256:332323df803af638aac65a6044d0cf17a171dc8ff5744e213385f18fda089c0e`。本状态同步固定父/基线=`960d16ded99104ee7409ec6938e501db204ea8fa`，live main 运行时解析；formal=F16 未移动，control=`6b4cb573655beb107d751004c9fc2b0b2c35490f`，`plan_generation=5`。S2.2 精确状态=`gate-passed/present-in-main`；下一唯一入口为准备 S2.3 Execution Packet；不据此关闭 CR-006 或声明 S2.3/S2.4、M2.1、V2、`v0.2.0-alpha`、formal、P5 完成
+- 当前状态：SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，CR-006 仍为 `change_request_closed=false`，qualified real runs 仍为 0/3。V2 S2.1、S2.2、corrected S2.3 package acceptance 均为 `PASS / 100` 并进入 main。S2.3 implementation/review main commits=`5f74d06` / `e3f0b24`，Result digest=`sha256:89e9b721870d1685fd0e1c0172b88ce9f6d8fec04fc2b867c302443f0d867408`，root fresh `536/536`、coverage=`94.14/89.31/99.52`；错误 attempt 1 M2.1 身份与 fence140 永久无效。本状态同步固定父/基线=`e3f0b244e44fa6786328df58fe4ecab7a1852014`，live main 运行时解析；formal=F16 未移动，control=`ebca4713db2f00f3a1c5db044f67004a06d9487c`，`plan_generation=5`。S2.3 精确状态=`gate-passed/present-in-main`；下一唯一入口为准备 `P5/V2/M2.2/S2.4` Execution Packet，packet/CAS/编码尚未发生；不据此关闭 CR-006 或声明 S2.4、M2.2、V2、`v0.2.0-alpha`、formal、P5 完成
 
 ## 1. 阶段目标
 
@@ -253,8 +253,8 @@ GREEN 只实现 Schema、单次记录验证、去重、聚合与离线 CLI，并
 
 累积结论=`PASS / 97`，P0/P1/P2=`0/0/3`；cumulative packet=`6c49825`、claim/fence 132=`4a3e6ab`、ready=`5414c63`、ACK=`8231caf`，`accepted_subject_main=37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa`、`cumulative_review_commit=813e9fd5240b1af6413a274daa7e307757bbb246`、Result control=`1ac071b`、digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。累计验收历史 snapshot=`503/503`、coverage=`93.50/88.62/99.22`，三个固定负例均通过。
 
-SG-1 两项 P2、SG-2 一项 P2 与 SG-3 两条边界继续 carry forward；精确状态仍为“真实项目价值验证框架可用，真实运行 0/3”。`change_request_closed=false`。V2 entry 复评历史保持不变；S2.1、S2.2 已独立 `PASS / 100` 并进入 main。下一唯一入口为准备 S2.3 Execution Packet；S2.2 PASS 不推进 formal，也不完成 S2.3/S2.4、M2.1、V2 或 `v0.2.0-alpha`。
+SG-1 两项 P2、SG-2 一项 P2 与 SG-3 两条边界继续 carry forward；精确状态仍为“真实项目价值验证框架可用，qualified real runs 0/3”。`change_request_closed=false`。V2 entry 复评历史保持不变；S2.1、S2.2、corrected S2.3 已独立 `PASS / 100` 并进入 main。下一唯一入口为准备 `P5/V2/M2.2/S2.4` Execution Packet；S2.3 PASS 不推进 formal，也不完成 S2.4、M2.2、V2 或 `v0.2.0-alpha`。
 
 ## 8. 阶段出口
 
-本计划的实现与 cumulative gate 出口已经通过，同时明确留下“真实运行 0/3，PC-12/PC-19/V2/V4 均未由本计划完成”的状态。该 PASS 不自动归档本计划或关闭 CR-006。S2.1、S2.2 已通过并在 main，下一入口为 S2.3 packet preparation；这不改变本护栏计划的关闭边界，也不完成 S2.3/S2.4、M2.1、V2、`v0.2.0-alpha`、formal 或 P5。
+本计划的实现与 cumulative gate 出口已经通过，同时明确留下“qualified real runs 0/3，PC-12/PC-19/V2/V4 均未由本计划完成”的状态。该 PASS 不自动归档本计划或关闭 CR-006。S2.1、S2.2、corrected S2.3 已通过并在 main，下一入口为 `P5/V2/M2.2/S2.4` packet preparation；这不改变本护栏计划的关闭边界，也不完成 S2.4、M2.2、V2、`v0.2.0-alpha`、formal 或 P5。

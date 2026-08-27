@@ -2,7 +2,7 @@
 
 NextStep 是以 Skill 为主交互入口、以项目文档和 Git 为正式真源的 AI 项目闭环落地系统。
 
-当前处于 `S5 / P5`。V1 已正式完成；CR-006 三个 package gate 与 cumulative gate 均已通过，但 `change_request_closed=false`。V2 S2.1、S2.2 均已通过独立 package acceptance 并进入 main；下一唯一入口是准备 S2.3 Execution Packet。S2.2 通过不等于 M2.1、V2、`v0.2.0-alpha`、formal 或 P5 完成。
+当前处于 `S5 / P5`。V1 已正式完成；CR-006 三个 package gate 与 cumulative gate 均已通过，但 `change_request_closed=false`、qualified real runs 仍为 `0/3`。V2 S2.1、S2.2、corrected S2.3 均已通过独立 package acceptance 并进入 main；S2.3 Result digest=`sha256:89e9b721870d1685fd0e1c0172b88ce9f6d8fec04fc2b867c302443f0d867408`，root fresh `536/536`、coverage=`94.14/89.31/99.52`。错误的 attempt 1 M2.1 身份与 fence140 永久无效。下一唯一入口是准备 `P5/V2/M2.2/S2.4` Execution Packet；packet/CAS/编码尚未发生，S2.4、M2.2、V2、`v0.2.0-alpha`、formal 或 P5 均未完成。
 
 ## 环境
 
@@ -38,7 +38,7 @@ pnpm check
 - 累计验收历史测量为 `503/503`、coverage Lines/Branches/Functions=`93.50/88.62/99.22`；首次 V2 入口复评 snapshot 为 `503/503`、`93.48/88.59/99.22`，随后主线复跑 snapshot 为 `503/503`、`93.53/88.69/99.22`。末两位存在运行波动，current gate 只固定 tests=`503/503`、fail/skip/cancel/todo=`0/0/0/0`、各 coverage 维度 `>=80%`；live 百分比必须 fresh 运行生成，不作为提交身份字段。累计 Result digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`，三个固定负例均通过。
 - SG-1 两项 P2、SG-2 一项 P2 与 SG-3 两条边界继续保留；精确状态仍是“真实项目价值验证框架可用，真实运行 0/3”。
 - S2.2 acceptance attempt 1 因时间语义无效，audit Result digest=`sha256:f6c7681083f5fdb810f1375cf0ce75aeb759c1d4e554617fc027d15dc55a5041`；attempt 2 因 reviewer 越权写 Result/control/main 且与 HG10 声明矛盾而无效，audit Result digest=`sha256:08cf20a2c70e02833444c5ae7893ab007bc5c830441f3119ee2f60c115a6c9be`。两次无效历史均保留，不作为放行证据。
-- S2.2 attempt 3 在 `git clone --no-local`、移除 origin 的一次性隔离副本中，由独立 review=`6c48b6c` 得到 `PASS / 100`、P0/P1/P2=`0/0/0`；fresh `526/526`、coverage Lines/Branches/Functions=`93.99/89.20/99.49`，有效 Result digest=`sha256:332323df803af638aac65a6044d0cf17a171dc8ff5744e213385f18fda089c0e`。S2.2 精确状态为 `gate-passed/present-in-main`；下一唯一入口为准备 `S2.3 generation 5 attempt 1` Execution Packet。S2.3、S2.4、M2.1、V2、`v0.2.0-alpha`、formal、P5 与真实运行 3/3 均未完成。
+- S2.2 attempt 3 在 `git clone --no-local`、移除 origin 的一次性隔离副本中，由独立 review=`6c48b6c` 得到 `PASS / 100`；corrected S2.3 implementation/review 已以 main commits=`5f74d06` / `e3f0b24` 合入，独立 package acceptance=`PASS / 100`、P0/P1/P2=`0/0/0`，Result digest=`sha256:89e9b721870d1685fd0e1c0172b88ce9f6d8fec04fc2b867c302443f0d867408`，root fresh `536/536`、coverage Lines/Branches/Functions=`94.14/89.31/99.52`。错误 `P5/V2/M2.1/S2.3` attempt 1 与 fence140 永久无效。S2.3 精确状态为 `gate-passed/present-in-main`；下一唯一入口为准备 `P5/V2/M2.2/S2.4 generation 5 attempt 1` Execution Packet，该 packet/CAS/编码尚未发生。S2.4、M2.2、V2、`v0.2.0-alpha`、formal、P5 与 qualified real runs 3/3 均未完成。
 - 不接入 Codex SDK/App Server，不声明宿主 `full` 支持。
 - 不恢复 Web/UI 分支，不引入常驻服务或数据库。
 

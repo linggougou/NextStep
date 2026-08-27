@@ -2858,3 +2858,25 @@
 - corrected attempt 2 packet/dedup RFC8785/JCS 重算分别为 `sha256:0d889dfe6138aa2a06d8a48001e7d5b701858034bf37fe57b93434978e579ddd` / `sha256:4c0b236e826ecce225ce2256d81cb7f018a139379aa0d2f6b45eb7ea8b20f2df`；stage 精确为 `P5/V2/M2.2/S2.3`。
 - corrected CAS 链：identity audit=`df85331` → packet=`5403bb6` → claim/fence141=`77541c7` → ready/outbox=`0ff41e0` → ACK=`86f3516`；每步单父 expected-old，ready payload JCS=`sha256:ebd0b4b3c2e12e361375ee99501dee069d5f646add08f7036ee4054f76237f0b`。
 - 当前门禁：attempt 1 永久无效；attempt 2 只获 TDD 编码权限，候选、独立验收、main、S2.4、M2.2、V2、alpha、formal 与 P5 仍受后续证据约束。
+
+## 2026-08-27 S2.3 gate-passed/present-in-main 状态同步验证
+
+### 固定身份与验收结论
+
+- 状态同步 parent/baseline=`e3f0b244e44fa6786328df58fe4ecab7a1852014`；程序性 main implementation/review=`5f74d06` / `e3f0b24`。
+- corrected S2.3 独立 package acceptance=`PASS / 100`、P0/P1/P2=`0/0/0`、`required_fixes=[]`；root fresh `536/536`、fail/skip/cancel/todo=`0/0/0/0`，coverage Lines/Branches/Functions=`94.14/89.31/99.52`；Result digest=`sha256:89e9b721870d1685fd0e1c0172b88ce9f6d8fec04fc2b867c302443f0d867408`。
+- formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动；Result control=`ebca4713db2f00f3a1c5db044f67004a06d9487c`；`plan_generation=5`。
+- 错误 `P5/V2/M2.1/S2.3` attempt 1、fence140 与 RED-only 工作树永久无效；有效身份固定为 `P5/V2/M2.2/S2.3`。
+
+### 同步范围与 fail-closed 边界
+
+- 状态同步限定 exact-eleven：路线锁、README、PLANS、PRODUCT_SENSE、CR-006 详情/索引、两份 P5 活动计划、QA 索引及两份 `.codex` 追加留痕。
+- 权威状态统一为“S2.3 `gate-passed/present-in-main`；下一唯一入口为 `P5/V2/M2.2/S2.4 generation 5 attempt 1` Execution Packet preparation”。
+- S2.4 packet/CAS/claim/fence/dispatch/编码均未发生；CR-006 保持 `change_request_closed=false`，qualified real runs 保持 `0/3`；S2.4、M2.2、V2、`v0.2.0-alpha`、formal、P5 均未完成。
+- 本轮只同步 Markdown 状态真源，不重复运行产品测试；`536/536` 与 coverage 是 main integration 后主控已核定的 fresh 结果，不包装为本轮文档任务重跑。
+
+### 本地检查与门禁判断
+
+- `git diff --check` 通过；差异路径严格等于 exact-eleven；`PROJECT_ROUTE_LOCK.md` 对错误 current 身份 `P5/V2/M2.1/S2.3` 反扫无命中；九份状态入口的当前下一入口均为 `P5/V2/M2.2/S2.4`，未残留 S2.3 packet preparation 停点；新增差异未把 S2.4、M2.2、V2、`v0.2.0-alpha`、formal、P5、CR-006 或 qualified real runs 3/3 包装为完成。
+- 用户改动保护：全程不读取、修改、暂存或清理三个受保护未跟踪目标，不 reset/rebase/clean/push。
+- 同步质量自检：`100 / 100`，建议通过；该分数只评价 exact-eleven 状态同步的一致性与边界，不替代 S2.3 独立验收或任何后续产品门禁。
