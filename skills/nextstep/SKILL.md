@@ -232,3 +232,20 @@ node dist/src/cli/major-milestone.js
 ```
 
 Success emits one deterministic `MAJOR_MILESTONE_ACCEPTED` JCS receipt. Failure emits one value-safe receipt, a generic stderr diagnostic, and exit code 1. S2.2 performs no Git, network, filesystem, task, dispatch, or project write. S2.3 and S2.4 remain separately gated. Do not claim PC-10, M2.1, V2, or P5 complete from an accepted S2.2 receipt.
+
+## S2.3 Small Milestone Closure And Dependencies
+
+Enter S2.3 only when project truth and control state identify `V2 / M2.2 / S2.3` and the accepted S2.2 result is present in main. The kernel must call `parseMajorMilestonePlan`; copied status, metrics, project identity, milestones, or acceptance data are never trusted. The candidate project and the accepted S2.2 project must bind the same `repository_id` and `formal_baseline`.
+
+The candidate is exactly the P3-frozen ordered set `S1.1` through `S4.3`. All 18 rows preserve their major-milestone owner, title, inputs, outputs, definition of done, tests, non-goals, dependency, and failure-return semantics. The dependency graph is the exact 17-edge dependency-to-dependent linear DAG: `S1.1` is the only root, `S4.3` is the only terminal, every later node depends only on its immediate predecessor, and cycles or alternative acyclic graphs fail closed.
+
+Build, then pass one RFC 8785/JCS candidate through stdin:
+
+```bash
+pnpm build
+node dist/src/cli/small-milestone.js
+```
+
+Success emits one deterministic `SMALL_MILESTONE_ACCEPTED` JCS receipt with 18/18 milestones, 9/9 major-milestone ownership coverage, 17/17 edges, one root, one terminal, and zero cycles. Invalid JSON/JCS, arguments, unknown or sensitive fields, a forged S2.2 plan, project drift, missing/duplicate/reordered/unknown milestones, any P3 row rewrite, unknown/missing/duplicate/self/cyclic/alternative dependency edges, or forged summaries and results fail closed with one value-safe receipt, a generic stderr diagnostic, and exit code 1.
+
+S2.3 is a pure candidate validator. It performs no Git, network, filesystem, Execution Packet, development-task, claim/fence, dispatch, formal/control, project-write, or execution action. S2.4 remains separately gated. Do not claim PC-11, M2.2, V2, or P5 complete from an accepted S2.3 receipt.

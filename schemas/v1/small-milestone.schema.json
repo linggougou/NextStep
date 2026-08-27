@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nextstep.local/schemas/v1/small-milestone.schema.json",
+  "title": "NextStep Small Milestone Candidate 1.0",
+  "description": "S2.3 小里程碑闭环候选；major_milestone_plan 必须由权威 S2.2 parser 重验。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_type", "project", "major_milestone_plan", "milestones", "dependency_edges", "summary"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "record_type": { "const": "small-milestone-candidate" },
+    "project": { "$ref": "#/definitions/project" },
+    "major_milestone_plan": { "type": "object" },
+    "milestones": { "type": "array", "maxItems": 19, "items": { "$ref": "#/definitions/milestone" } },
+    "dependency_edges": { "type": "array", "maxItems": 19, "items": { "$ref": "#/definitions/dependencyEdge" } },
+    "summary": { "$ref": "#/definitions/summary" }
+  },
+  "definitions": {
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "oid": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "smallMilestoneId": { "type": "string", "pattern": "^S[0-9]+\\.[0-9]+$" },
+    "majorMilestoneId": { "type": "string", "pattern": "^M[0-9]+\\.[0-9]+$" },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository_id", "formal_baseline"],
+      "properties": {
+        "repository_id": { "$ref": "#/definitions/digest" },
+        "formal_baseline": { "$ref": "#/definitions/oid" }
+      }
+    },
+    "milestone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["milestone_id", "major_milestone_id", "title", "inputs", "outputs", "definition_of_done", "tests", "non_goals", "depends_on", "failure_return"],
+      "properties": {
+        "milestone_id": { "$ref": "#/definitions/smallMilestoneId" },
+        "major_milestone_id": { "$ref": "#/definitions/majorMilestoneId" },
+        "title": { "type": "string", "minLength": 1 },
+        "inputs": { "type": "string", "minLength": 1 },
+        "outputs": { "type": "string", "minLength": 1 },
+        "definition_of_done": { "type": "string", "minLength": 1 },
+        "tests": { "type": "string", "minLength": 1 },
+        "non_goals": { "type": "string", "minLength": 1 },
+        "depends_on": { "type": "array", "maxItems": 18, "items": { "$ref": "#/definitions/smallMilestoneId" } },
+        "failure_return": { "type": "string", "minLength": 1 }
+      }
+    },
+    "dependencyEdge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dependency_id", "dependent_id"],
+      "properties": {
+        "dependency_id": { "$ref": "#/definitions/smallMilestoneId" },
+        "dependent_id": { "$ref": "#/definitions/smallMilestoneId" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["milestone_count", "major_milestone_count", "dependency_edge_count", "root_milestone_id", "terminal_milestone_id", "cycle_count"],
+      "properties": {
+        "milestone_count": { "type": "integer", "minimum": 0 },
+        "major_milestone_count": { "type": "integer", "minimum": 0 },
+        "dependency_edge_count": { "type": "integer", "minimum": 0 },
+        "root_milestone_id": { "$ref": "#/definitions/smallMilestoneId" },
+        "terminal_milestone_id": { "$ref": "#/definitions/smallMilestoneId" },
+        "cycle_count": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}
