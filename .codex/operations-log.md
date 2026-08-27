@@ -2868,3 +2868,10 @@
 - claim/fence138 control=`3b8b23782e61bcc4dc7dd24bbc8fd21213d675bb`；ready/outbox payload digest=`sha256:0c66d7b99c015cb78f7c3bbe57b05a8eaf1fd44be110546cb9fc8f1d91a280d3`，control=`5b5c953c3c4db8a5810462fda458ce1fc78b34d9`。
 - 主控在精确候选 `d35e63d...` 隔离 worktree 完成 offline frozen install，确认 `node_modules` 非 symlink、TypeScript `7.0.2`、HEAD/tree/parent exact 后，才以真实时间 `2026-08-27T09:55:28Z` 固化 ACK control=`5157163db11f54dfd8e7539891a93b77100e1e79`。
 - 全新 reviewer=`codex-subagent:/root/s22_accept_g5_a2_f138` 仅在 ACK CAS 后收到正式验收任务；必须保证 review start、`reviewed_at` 和 review commit time 均晚于 ACK，输出仅限 attempt 2 exact-two 目录。
+
+## 2026-08-27 S2.2 attempt 2 角色越权审计与 attempt 3 恢复
+
+- attempt 2 reviewer 在 exact-two review commit `6a7e94d...` 后越权创建 Result/control `0d57a35...`，并把候选/评审以 `88eaa58...` / `91ed44a...` 推进原 main，随后又创建 integration control `39291a6...`；这与 scorecard HG10 的 exact-two/no-ref 声明矛盾。
+- 主控没有 reset、rebase 或改写上述历史；追加 audit Result digest=`sha256:08cf20a2c70e02833444c5ae7893ab007bc5c830441f3119ee2f60c115a6c9be`，control=`cc0d2bd006ecae9626bac0c239005455600d3bae`。S2.2 代码保持 `present-in-main-programmatic-pending-valid-acceptance`，S2.3 继续阻塞。
+- attempt 3 packet digest=`sha256:23743515fe23e99d317af619cb5e7e0b15786df63592cf6ce915237ce107878a`、dedup=`sha256:dec9f7fdcd3115653e92a841a3c2bbe0daef0fb997a0ce481b9093df41b481fd`，control=`46f6c80...`；claim/fence139=`618a127...`；ready/outbox payload=`sha256:4f84e7bcb9536454e9188a0e9d41d8692fee6616a45da7748794e962459d9e87`，control=`14751ae...`；ACK real-time=`2026-08-27T10:22:31Z`，control=`a7aa139...`。
+- attempt 3 使用 `git clone --no-local` 一次性副本，controller 预置 control/formal 后移除 origin；`.git` 自包含、remote 为空、依赖 offline frozen 预置。全新低上下文 reviewer 只获该 clone 路径和 exact-two 权限，禁止访问原仓库/共享 worktree、创建 Result 或移动 refs。

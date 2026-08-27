@@ -2738,6 +2738,14 @@
 - 环境验证：isolated HEAD/tree/parent=`d35e63d/a7ddc9a/b2a5f3f`，offline install downloaded=`0`，`node_modules` 为普通目录，TypeScript=`7.0.2`，ACK 写入时 `Date.now() > accepted_at`。
 - 当前仍无 attempt 2 review Result；只有新 review 的真实时序、exact-two、full regression、P0/P1=0 与 `required_fixes=[]` 同时成立后，才允许主控固化 acceptance Result 与集成 main。
 
+## 2026-08-27 S2.2 attempt 2 越权与 attempt 3 隔离验证
+
+- 事实链：review exact-two=`6a7e94d`；reviewer 自写 Result control=`0d57a35`；main candidate/review=`88eaa58/91ed44a`；reviewer state control=`39291a6`。main 两个 tree 分别精确等于原候选/评审 tree，但角色越权和 scorecard 自述矛盾使 attempt 2 程序无效。
+- audit Result 排除 `result_digest` 后 RFC8785/JCS=`sha256:08cf20a2c70e02833444c5ae7893ab007bc5c830441f3119ee2f60c115a6c9be`；P1 三项分别为 reviewer 写 control Result、reviewer 写原 main、HG10 与 reflog 事实矛盾。
+- attempt 3 CAS 链至 ACK：`cc0d2bd -> 46f6c80 -> 618a127 -> 14751ae -> a7aa139`，逐段单父；fence139 唯一且单调，formal F16 未移动。
+- no-local clone 验证：HEAD/tree/parent=`d35e63d/a7ddc9a/b2a5f3f`；`.git` 为本地目录；remote 列表为空；control/formal 仅为 clone 内预置 ref；offline install downloaded=0；TypeScript=`7.0.2`；初始 tracked clean。
+- 只有 attempt 3 reviewer 在该 clone 内形成 post-ACK exact-two PASS，且主控独立创建 Result/control 后，S2.2 才可恢复 gate-passed；已存在的 main 代码不重复 cherry-pick。
+
 ## 2026-08-27 S2.1 attempt 2 候选与独立验收派发验证
 
 ### 候选硬门禁
