@@ -1,0 +1,215 @@
+{
+  "review_id": "p5-v2-m2.2-coverage-remediation-g2-plan-entry-review-a2-2026-08-28",
+  "task_id": "M2.2-COV",
+  "lane": "entry-review",
+  "review_level": "L2",
+  "rubric_id": "nextstep-remediation-generation-2-plan-entry-v1",
+  "verdict": "PASS",
+  "artifact_refs": [
+    {
+      "kind": "reviewed-plan-commit",
+      "commit": "7daed5ede0c90eb24d0914fed51aa4d194194bf6",
+      "tree": "719738468ff4bcfed8b6f2498d28e3a634f5b22e",
+      "parent": "43a4ec72b4cf0674102379167bf6917734a34246"
+    },
+    {
+      "kind": "plan",
+      "path": ".codex/exec-plan-m2.2-coverage-remediation-generation-2.md"
+    },
+    {
+      "kind": "previous-entry-review",
+      "commit": "21a0fe041faa47b94bc365c42789d9d1644a981f",
+      "verdict": "REVISE",
+      "required_fix_count": 2
+    },
+    {
+      "kind": "attempt-1-candidate",
+      "commit": "68710ca8146ee79e8ce00bd06c93509455da58f0"
+    },
+    {
+      "kind": "attempt-1-independent-review",
+      "commit": "ea342c25bda8191f1dbc001458acb130ce1d581a",
+      "verdict": "PASS"
+    }
+  ],
+  "attempt_1_pass_authority": {
+    "kind": "package-acceptance Result",
+    "ref": "results/result-package-acceptance-m2.2-cov-g5-a1-f150-20260828.json",
+    "digest": "sha256:f4a0407ea5350bb10fc1b5724e296207ab742844480366433534f0cb391a8b31",
+    "result_control_oid": "eae5af53317c7c24104a2a8254482904c495a6be",
+    "candidate_commit": "68710ca8146ee79e8ce00bd06c93509455da58f0",
+    "independent_review_commit": "ea342c25bda8191f1dbc001458acb130ce1d581a"
+  },
+  "coverage_contract": {
+    "node_native_displayed_floors": {
+      "lines": 94.36,
+      "branches": 89.70,
+      "functions": 99.57
+    },
+    "same_range_raw_ratio_floors": {
+      "lines": 94.36,
+      "branches": 89.69,
+      "functions": 99.57
+    },
+    "feasibility_raw": {
+      "lines": { "covered": 8360, "total": 8858, "ratio": 94.377963 },
+      "branches": { "covered": 3003, "total": 3348, "ratio": 89.695341 },
+      "functions": { "covered": 697, "total": 700, "ratio": 99.571429 }
+    },
+    "feasibility_displayed": {
+      "lines": 94.38,
+      "branches": 89.70,
+      "functions": 99.57
+    },
+    "lcov_role": "corroborative-only; forbidden as replacement, concatenation or mixed gate input",
+    "raw_branches_89_70_claim": false
+  },
+  "isolation": {
+    "clone": "/private/tmp/nextstep-m22-cov-g2-entry-a2.v2ZaqH/review",
+    "clone_mode": "git-clone-no-local",
+    "remote_count": 0,
+    "alternates": false,
+    "detached_head": true,
+    "original_worktree_accessed": false,
+    "old_clone_accessed": false,
+    "other_worktree_accessed": false,
+    "network_used": false
+  },
+  "hard_gates": [
+    {
+      "id": "HG1-identity-and-exact-three",
+      "status": "pass",
+      "evidence": "detached candidate commit/tree/unique parent 精确为 7daed5ede0c90eb24d0914fed51aa4d194194bf6 / 719738468ff4bcfed8b6f2498d28e3a634f5b22e / 43a4ec72b4cf0674102379167bf6917734a34246。相对父只修改 Generation 2 plan、operations-log、verification-report exact-three，33 insertions/9 deletions；git diff --check 通过。"
+    },
+    {
+      "id": "HG2-p1-pass-authority-closed",
+      "status": "pass",
+      "evidence": "上轮 P1-001 已关闭：计划和两份留痕一致冻结 kind=package-acceptance Result、完整 ref=results/result-package-acceptance-m2.2-cov-g5-a1-f150-20260828.json、完整 digest=sha256:f4a0407ea5350bb10fc1b5724e296207ab742844480366433534f0cb391a8b31、Result control=eae5af53317c7c24104a2a8254482904c495a6be；candidate、review、短哈希和 state-sync Result 均被明确禁止替代 PASS authority。"
+    },
+    {
+      "id": "HG3-attempt1-pass-versus-state-sync-revise",
+      "status": "pass",
+      "evidence": "attempt 1 candidate=68710ca 与 independent review=ea342c2 的 PASS 历史保持不可变；state-sync REVISE digest=sha256:633528e46fb525ef8f648644007bd6cfbc311dd9fa61732de2ab5d05bba11a57 只表示 original-main-like Branches=89.64 未达本轮 displayed floor=89.70，不降级或改写 attempt 1 authority。"
+    },
+    {
+      "id": "HG4-p1-coverage-comparator-closed",
+      "status": "pass",
+      "evidence": "上轮 P1-002 已关闭：同次 pnpm check 的 Node native 两位 displayed floors 固定为 94.36/89.70/99.57；同一 Node native range raw ratio floors 分别为 94.36%/89.69%/99.57%，并强制记录 covered/total。raw 3003/3348=89.695341% 只满足 89.69%，计划明确禁止声称 raw>=89.70%；LCOV 仅旁证且禁止替代、拼接或混算。"
+    },
+    {
+      "id": "HG5-null-public-contract",
+      "status": "pass",
+      "evidence": "计划只允许既有测试体中的 `assert.throws(() => evaluateSmallMilestonePlan(null), expectCode(\"INVALID_SMALL_MILESTONE\"));`。offline/frozen 安装 downloaded=0；不落盘内联 runtime probe 实测抛 SmallMilestoneError，唯一 reason code=INVALID_SMALL_MILESTONE。按任务边界未运行 full tests。"
+    },
+    {
+      "id": "HG6-allowlist-and-anti-padding",
+      "status": "pass",
+      "evidence": "未来实现 allowlist 精确为 tests/domain/small-milestone.test.ts，只允许一条 null assertion；禁止新增 test()/it()、fixture、snapshot、helper、依赖或文件，禁止修改 cyclic 断言、生产、Schema、CLI、Skill、package/lock、coverage 配置或产品语义。生产契约差异必须 fail closed 并进入新变更分流。"
+    },
+    {
+      "id": "HG7-fence151-fence152-role-separation",
+      "status": "pass",
+      "evidence": "packet、claim/fence151、ready/outbox、ACK 分别要求独立 expected-old 单父 CAS；唯一实现 agent 与计划、entry review、控制面、attempt 1 实现/候选审查隔离，ACK 前 readiness-only。候选由另一个未参与计划、entry review、实现或控制写入的唯一 reviewer 在 fence152 审查，reviewer 不改候选或 refs。"
+    },
+    {
+      "id": "HG8-original-main-like-state-sync-and-boundary",
+      "status": "pass",
+      "evidence": "candidate PASS 后只允许线性 fast-forward；original-main-like 环境必须 fresh 重跑 full、displayed 和 same-range raw 双门禁，不能复用实现/reviewer 证据。仅 state-sync PASS 后可固化新 historical subject 并进入 M2.2 attempt 2。计划/entry review 不授权 packet、fence、实现、集成、CAS、user-signoff、formal、V2、alpha、CR-006、P5 或 qualified real runs 变化。"
+    },
+    {
+      "id": "HG9-isolation",
+      "status": "pass",
+      "evidence": "复审在全新 git clone --no-local 中执行；origin 已移除、remote=0、无 alternates、detached HEAD。未访问旧 clone、原仓库工作树、受保护目标、其他 worktree 或网络，未修改 main/formal/control 或任何 refs。"
+    }
+  ],
+  "verification": {
+    "runtime_probe": {
+      "setup": "corepack pnpm install --offline --frozen-lockfile",
+      "downloaded": 0,
+      "command_kind": "inline Node TypeScript import; no probe file",
+      "input": null,
+      "threw": true,
+      "error_class": "SmallMilestoneError",
+      "reason_codes": ["INVALID_SMALL_MILESTONE"]
+    },
+    "full_tests_run": false,
+    "candidate_changed_paths": [
+      ".codex/exec-plan-m2.2-coverage-remediation-generation-2.md",
+      ".codex/operations-log.md",
+      ".codex/verification-report.md"
+    ],
+    "candidate_numstat": {
+      "insertions": 33,
+      "deletions": 9
+    },
+    "git_diff_check": "pass",
+    "p1_closure": {
+      "P1-001": "closed",
+      "P1-002": "closed"
+    }
+  },
+  "dimensions": [
+    {
+      "id": "D1",
+      "name": "身份、authority 与状态语义",
+      "score": 25,
+      "max_score": 25,
+      "reason": "candidate exact identity、完整 PASS Result authority 和 attempt 1 PASS/state-sync REVISE 区分均机械完整。",
+      "evidence_refs": ["HG1-identity-and-exact-three", "HG2-p1-pass-authority-closed", "HG3-attempt1-pass-versus-state-sync-revise"]
+    },
+    {
+      "id": "D2",
+      "name": "覆盖率双口径与可重算性",
+      "score": 25,
+      "max_score": 25,
+      "reason": "displayed 与 same-range raw floors 分离，raw feasibility 诚实落在 89.69 floor，LCOV 旁证边界明确。",
+      "evidence_refs": ["HG4-p1-coverage-comparator-closed"]
+    },
+    {
+      "id": "D3",
+      "name": "公共契约、范围与 anti-padding",
+      "score": 25,
+      "max_score": 25,
+      "reason": "null public contract 经 runtime probe 对齐；唯一 allowlist、单断言、零 test count 和零生产/config 扩张均精确。",
+      "evidence_refs": ["HG5-null-public-contract", "HG6-allowlist-and-anti-padding"]
+    },
+    {
+      "id": "D4",
+      "name": "角色隔离、state-sync 与权限边界",
+      "score": 25,
+      "max_score": 25,
+      "reason": "fence151/fence152、ACK 时序、线性集成、original-main-like fresh state-sync、非授权与隔离边界均成立。",
+      "evidence_refs": ["HG7-fence151-fence152-role-separation", "HG8-original-main-like-state-sync-and-boundary", "HG9-isolation"]
+    }
+  ],
+  "findings": [],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100,
+    "severity_counts": {
+      "P0": 0,
+      "P1": 0,
+      "P2": 0
+    }
+  },
+  "required_fixes": [],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "PASS：candidate identity、两个 P1 的机械闭环和 null runtime probe 全部成立。"
+    },
+    {
+      "role": "Strict Judge / Anti-Slop Judge",
+      "conclusion": "PASS：无短 authority、无 raw 89.70 冒领、无 LCOV 混算、无 allowlist 或权限扩张。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "PASS / 100；P0/P1/P2=0/0/0；required_fixes=[]。允许进入后续 Generation 2 packet preparation 门禁，但本评审不创建 packet 或执行后续动作。"
+    }
+  ],
+  "reviewed_at": "2026-08-27T17:55:33Z"
+}
