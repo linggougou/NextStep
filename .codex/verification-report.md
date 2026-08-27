@@ -2723,6 +2723,13 @@
 - S2.2 单父 control 链：packet=`32943f7`、claim/fence136=`808e7e1`、ready/outbox=`e996d8f`、ACK=`e005c07`；ready payload JCS digest=`sha256:da6c1e5c9f58726331257707aaa0f60c404941ec2c2a57e3b5f45d2efb4e9d2e`。
 - 实现 worktree 固定 parent=`b2a5f3f...`，offline frozen 依赖存在且非 symlink，TypeScript=`7.0.2`，ACK 前工作区干净。独立验收、main/formal 推进仍未发生。
 
+## 2026-08-27 S2.2 acceptance attempt 1 时间语义验证
+
+- candidate/Execution Result 功能证据通过：exact-9，定向 `12/12`，full `526/526`，coverage=`93.97/89.14/99.49`，Result digest=`sha256:a26c4e6a7822ca74b4f6fe971c086ab7a1e2fdb912523c4b60729c1189b9e15d`。
+- review commit/tree/parent=`c2808b6153dcf270a504fef76e7e2949cef98928` / `2e80ea24191fca931616633fb18845071ccc4c06` / `d35e63d4ca7a6cca3ac3ac662b77a0ca482ad51e`，写集 exact-two。
+- 硬门禁失败：ACK `accepted_at=2026-08-27T09:49:00Z`，scorecard `reviewed_at=2026-08-27T09:24:12Z`，不满足“review evidence produced after dispatch ACK”。
+- 判定：attempt 1 temporal-invalid；不能创建 accepted Result、不能集成 main、不能放行 S2.3 编码。恢复必须使用新 attempt/fence/reviewer，且新时间戳由真实时钟产生。
+
 ## 2026-08-27 S2.1 attempt 2 候选与独立验收派发验证
 
 ### 候选硬门禁

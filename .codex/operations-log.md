@@ -2852,3 +2852,11 @@
 - S2.2 packet：`ep-p5-v2-m2.1-s2.2-g5-a1-20260827`，working parent=`b2a5f3f...`，digest=`sha256:e274469741d5d0f0f5602d22e50d83a4337494b7e03b266f4f836d3a1ac57dd1`，dedup=`sha256:144495af43be17b1e0324f748087bed9fbff1dde8e98896aaa4bdda1b3cf333b`，packet control=`32943f7`。
 - S2.2 dispatch：claim/fence136=`808e7e1`；ready/outbox payload digest=`sha256:da6c1e5c9f58726331257707aaa0f60c404941ec2c2a57e3b5f45d2efb4e9d2e`，control=`e996d8f`；唯一 worker=`codex-subagent:/root/s22_impl_g5_a1_f136` readiness 通过后 ACK control=`e005c073420f2d10d5cb6244f58cbc7c68d7fdfc`。
 - S2.2 边界：只实现 9 个大里程碑/20 PC 互斥范围与 Profile 绑定；S2.3/S2.4、PC-10/M2.1/V2/alpha/formal/P5 完成保持阻塞。
+
+## 2026-08-27 S2.2 candidate 与 acceptance attempt 1 时间语义拦截
+
+- 候选：commit=`d35e63d4ca7a6cca3ac3ac662b77a0ca482ad51e`，tree=`a7ddc9a9492f6a8ea7ff6f59b7d664ea1ece25e2`，唯一父=`b2a5f3f...`，exact-9；主控 fresh `pnpm check=526/526`，coverage=`93.97/89.14/99.49`。
+- Execution Result：digest=`sha256:a26c4e6a7822ca74b4f6fe971c086ab7a1e2fdb912523c4b60729c1189b9e15d`，control=`fd407d6`。
+- acceptance attempt 1 控制链：packet=`1140eb9`、claim/fence137=`54bd966`、ready=`9da7c4d`、ACK=`f017246`；review commit=`c2808b6`，功能结论 PASS。
+- 时间语义拦截：ACK JSON `accepted_at=2026-08-27T09:49:00Z`，但 scorecard `reviewed_at=2026-08-27T09:24:12Z`，review 在控制语义上早于 ACK。该 PASS 程序无效，不得固化为 gate-passed 或合入 main。
+- 恢复：保留 attempt 1 exact-two review 为 immutable invalid evidence；待真实 UTC 超过 ACK 时间后，以新 packet/attempt/fence 和全新 reviewer 重跑。候选代码无须因该程序错误修改。
