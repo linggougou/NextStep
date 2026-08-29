@@ -3082,3 +3082,24 @@
 - 必须通过 `git diff --check`；差异路径严格等于 `.codex/exec-plan-v2-cumulative-acceptance-generation-1.md`、`.codex/operations-log.md`、`.codex/verification-report.md`。
 - 必须反扫 formal/control/generation/subject、两组 exact authority、`entry_evidence_only`、coverage union、I/X/P/Profile、52/555/coverage floors、角色/ACK 时序、exact-three、signoff/completion 分离与全部未完成边界。
 - 提交必须为单父，唯一父=`43df63566b4edd8496f3ad1e62533b980767abd8`，中文提交信息；提交后 tracked clean。本验证不替代独立 entry review，也不授权后续 packet。
+
+## 2026-08-29 V2 累计验收 entry review REVISE 修订验证
+
+### REVISE authority 与唯一修复
+
+- review commit=`d271513adadb15316c113c9982060ad457159c76`、tree=`cccc72f520307963981b772ff0628ee3647f1d94`、唯一父=`e741bbba4d0881954b2404d5eb5918c1fc8d9dcc`；`REVISE / 78`、P0/P1/P2=`1/0/0`、required fixes=`1`。
+- scorecard raw digest=`sha256:039be69cb7a720430459d7d108c4fd1ece308b8d25bd7df0691ed7e5476cc1a3`；verdict raw digest=`sha256:041a4e2d25ad7992bfbe600151e32bbee57f3358206ad7e6b0e8c7d000d8436a`。
+- 唯一 required fix 精确收敛为：在派发下一 entry reviewer 前，由 controller 向 no-local/origin-removed/no-alternates clone 预置并证明 `3c0853b...`、`381224e...`、`a823f63...`、`5e95f22...` 及必要父链/tree/content 可寻址。
+
+### 新硬门机械覆盖
+
+- 四项 commit/tree/parent 与 exact-three/exact-two 路径集合已写入计划；各 acceptance/signoff/identity artifact 的 JCS/raw digest 均固定。
+- 派发前断言覆盖 `git cat-file` 类型/可寻址性、`git rev-list --parents -n 1` 单父、`git ls-tree` / `git diff-tree` 路径集合、RFC8785/JCS 与 raw content digest，以及 provisioning 前后 remote/alternates/shallow/HEAD/tree/worktree/formal/control/subject/refs 不变性。
+- 任一断言失败必须 `blocked-before-entry-review`；不派发、不生成 verdict、不降级为文本 OID、不允许 reviewer 访问原仓库。
+- coverage floors=`94.40/89.75/99.57`、历史实际 fresh=`94.57/90.01/99.57`、formal/control/subject、plan generation、PC/TG/Profile、52/555、Result/signoff/completion 与全部未完成边界保持不变。
+
+### 提交前验证
+
+- 差异必须 exact-three：`.codex/exec-plan-v2-cumulative-acceptance-generation-1.md`、`.codex/operations-log.md`、`.codex/verification-report.md`；`git diff --check` 必须通过。
+- 必须反扫旧矛盾：禁止“reviewer 自行从原仓库补取对象”、禁止对象不可寻址仍启动 review、禁止 provisioning 更新 frozen refs、禁止只查文本 OID/文件名而不复算 tree/content digest。
+- 修订提交必须为单父，唯一父=`d271513adadb15316c113c9982060ad457159c76`，中文提交信息；提交后 tracked clean。本修订不自行评审，也不授权 V2 packet。

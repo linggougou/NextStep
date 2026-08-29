@@ -71,7 +71,27 @@ V2 通过不表示 `v0.2.0-alpha` 已打包或发布，不移动 formal，不关
 - 同次 full run 的 Node native displayed 与同一 range raw coverage 均不得低于 Lines/Branches/Functions=`94.40/89.75/99.57`；记录 raw covered/total 与精确比例。LCOV 只能旁证，不得跨 run 拼接或替代。
 - `git diff --check` 必须通过；测试前后 HEAD/tree、tracked 状态、冻结 refs 与依赖清单必须不变。
 
-## 5. 独立累计验收硬门
+## 5. Entry review evidence provisioning 硬门
+
+下一轮 entry review 的 controller 在派发任何 reviewer 前，必须先在该 reviewer 唯一使用的 no-local、origin-removed、无 alternates clone 中，以 controller-only object provisioning 预置下列 immutable authority。可使用经 `git bundle verify` 的离线 bundle 与 `git bundle unbundle` 导入对象，但不得为此移动或重写 clone 的 frozen formal/control/subject refs，也不得让 reviewer 访问原仓库或对象来源仓库。
+
+| commit | tree | 唯一父 | 必须可核验的内容 |
+|---|---|---|---|
+| `3c0853b56b7a09b3299e49893f64a721ab3597ea` | `f840cb0e1aa2b1030fece5d7426f945997a955bd` | `6ec262fbac45de3d0f84c05a4a5582049139f219` | M2.1 acceptance exact-three；acceptance JCS=`sha256:035d229410361ae22604ae02a254937997ced487435a567ede11278eeddf7b25`、scorecard JCS=`sha256:da31dc7dae7f599542503d1a70c323078248bc2a715e55e17041885eb5286dbf`、verdict raw=`sha256:88eba0eda63e37ec26d18033c149fb46b61192572c3ad46c9ca790db6d9a31a8` |
+| `381224e6301c4a2d58841a99c233439c9b2e1e56` | `0cb097f038e8b3f5518e809c43d496ed0e007a13` | `43df63566b4edd8496f3ad1e62533b980767abd8` | M2.2 acceptance exact-three；acceptance JCS=`sha256:818ab1ccab3fc01289e1484144cea2d2a009fa812bc8475742c8eeb01bae7985`、scorecard JCS=`sha256:20c6887bd91c85e6cc219acd6c10acf19f5a38dada3c6ccaabda4a792abbecd7`、verdict raw=`sha256:12cf5e8e8f13d647941467de71d4f1ee5c0a8d7d0986f20f242ec1e5b0fd2540` |
+| `a823f63b35475aeb03d853559af187354cdc6883` | `0432861e56929bd09f7c14c0e4da6b401d3ee36b` | `3b0ce5435a259247b1849788664d39a4406038df` | M2.1 signoff package review exact-two；scorecard JCS=`sha256:977f57c38df8b8b390550a6c2515bb988b1b4402ef8c53283826ae2b5b7cc601`、verdict raw=`sha256:c669cb7cd7cc28d89cd2d01d8f8c7d195b158b23cf96c54bc4e55e72194fd513` |
+| `5e95f22dae75253ff8f35e022676aa02ad697ad8` | `293eb9dec987a4b602ef50687d6a7f6c77ab0403` | `48d437454432abba4067e71bd38f51d5b5e8d397` | M2.1 user-signoff identity review exact-two；scorecard JCS=`sha256:c7ee32e976127619d63481d2a2298f0121f17d5398f30d093e8a309030767714`、verdict raw=`sha256:af6c0b19769ae0d75fbe77c9c3afd36805f125536db8b137cd33c4d0e86413a4` |
+
+派发前必须由 controller 完成并持久化以下机械断言；这些断言是 entry review 的前置硬门，不是 reviewer 自报：
+
+1. 对四个 commit、四个 tree、四个直接父以及验证所需祖先/施加差异的 blob 逐项运行 `git cat-file -e` / `git cat-file -t`，全部可寻址且类型正确。
+2. `git rev-list --parents -n 1 <commit>` 必须精确匹配表中唯一父；不得接受 merge commit、浅克隆边界、graft/replace 或仅文本 OID。
+3. `git ls-tree -r --name-only <commit>` 与相对唯一父的 `git diff-tree --name-only -r` 必须证明写集精确为：两个 acceptance commit 各自 exact-three `milestone-acceptance.json / scorecard.json / verdict.md`，两个 M2.1 signoff/identity review commit 各自 exact-two `scorecard.json / verdict.md`。
+4. controller 对上述 JSON 按既有 RFC8785/JCS 合同复算，对 Markdown 按 raw bytes 复算，必须精确匹配表中 digest；同时核对 tree OID、blob OID 与内容路径，不得只检查文件名存在。
+5. provisioning 前后必须证明 clone 仍无 remote、无 alternates、非 shallow；HEAD/tree/worktree、`refs/nextstep/formal`、`refs/nextstep/control`、historical subject 及全部既有 refs 精确不变。object database 增加允许对象不等于 ref movement。
+6. 任一对象、父链、tree、路径集合、content digest 或不变性断言失败，状态必须为 `blocked-before-entry-review`：不派发、不启动 reviewer、不创建 entry verdict，不降级为文本引用或让 reviewer 回访原仓库补证。
+
+## 6. 独立累计验收硬门
 
 1. **HG1 identity**：复算 `43df635...` commit/tree/唯一父/digest，拒绝 live main、formal、review commit、计划提交或 merge commit 替换。
 2. **HG2 control**：从入口 `ef0ba652...` 沿单父链核对 M2.1/M2.2 Result→request→用户 ACK→分离 completion，formal=F16、`plan_generation=5`、pending=0；不得复用旧 fence/ACK/host/Result。
@@ -86,7 +106,7 @@ V2 通过不表示 `v0.2.0-alpha` 已打包或发布，不移动 formal，不关
 11. **HG11 zero side effects**：除 controller-only 单一 ACK evidence ref 外，reviewer 只能读冻结对象、运行本地验证并写专属 exact-three；不得访问原仓库、修改 refs、产品 subject、依赖、外部项目、用户文件或网络状态。
 12. **HG12 Judge Harness**：scorecard 固定 I/X/P/Profile；只有 `PASS / 100`、P0/P1/P2=`0/0/0`、`required_fixes=[]` 才可创建 V2 Result。任一硬门失败必须 `REVISE` 或 `REJECT`。
 
-## 6. 评审输出与角色隔离
+## 7. 评审输出与角色隔离
 
 - 正式 reviewer 必须是未参与 S2.1..S2.4 实现、M2.1/M2.2 验收、coverage remediation、本计划、entry review 和 control 写入的唯一新独立 subagent。
 - readiness-only 与 ACK 后正式验收由同一 reviewer host 连续承担；同一 attempt 不得更换 reviewer。
@@ -94,9 +114,9 @@ V2 通过不表示 `v0.2.0-alpha` 已打包或发布，不移动 formal，不关
 - `version-acceptance.json` 必须包含 subject/control/packet/claim/fence/ACK、authority、I/X/P/Profile、PC/TG/Q4/Q5/Q6、52 targeted、full、coverage raw/displayed、三 fixture 连续性、失败面、零副作用与未完成边界。
 - reviewer 不得创建 Result、signoff request、用户 ACK 或 completion；主控不得把 entry review、readiness、分段 PASS 或历史 Result 包装为 V2 PASS。
 
-## 7. 后续控制面顺序（当前不执行）
+## 8. 后续控制面顺序（当前不执行）
 
-1. 对本计划候选做唯一独立 entry review；REVISE/REJECT 时只修订计划并重新评审。
+1. 主控先按第 5 节 provision entry review clone 并完成全部机械断言；只有硬门通过才派发唯一独立 entry reviewer。REVISE/REJECT 时只修订计划并重新 provision/评审。
 2. entry review PASS 后，主控重新读取 live formal/control/generation/pending/subject，才可用后续独立 expected-old 单父 CAS 创建唯一 V2 packet。
 3. 分离 CAS 创建 claim/fence、ready/outbox；完成 clone provisioning 与 readiness-only 后，另一 CAS 固化 ACK。
 4. 按 HG6 create-once 注入 ACK evidence；全部断言通过后，同一 reviewer 才运行累计验收并提交 exact-three。
@@ -105,7 +125,7 @@ V2 通过不表示 `v0.2.0-alpha` 已打包或发布，不移动 formal，不关
 7. 用户对精确 Result/control 明确会签后，主控重新核对身份并以独立 CAS 固化 user-signoff ACK。
 8. ACK 后以另一独立 CAS 标记 V2 `formally-completed`。completion 不移动 formal，也不自动创建 alpha 包、V3 packet、关闭 CR-006 或完成 P5。
 
-## 8. 当前边界、风险与停止条件
+## 9. 当前边界、风险与停止条件
 
 - 本候选及 entry review 只允许修改 `.codex/exec-plan-v2-cumulative-acceptance-generation-1.md`、`.codex/operations-log.md`、`.codex/verification-report.md`；不得创建 packet/control/ref、派发正式 reviewer 或运行正式 V2 验收。
 - 不修改生产代码、Schema、fixture、依赖、Skill、路线锁、产品真源、main/formal/control 或历史 evidence。

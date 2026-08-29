@@ -3022,3 +3022,10 @@
 - 冻结 V2 并集：S2.1..S2.4、M2.1/M2.2、PC-09..PC-13、TG-02/03/04/06/07/13/16/19、I/X/P + Profile fixture；M2.2 历史验收仍保持 I/X/P-only。
 - future fresh 门禁：八文件 targeted=`52/52`、full>=`555/555` 且全零失败、same-run displayed/raw coverage>=`94.40/89.75/99.57`、三 fixture 连续性、Q4/Q5/Q6、零副作用和独立 Judge Harness；M2.2 attempt 2 Result 的受控实际 fresh=`94.57/90.01/99.57`，仅作历史基线证据。
 - 本轮不运行产品 full tests；只做计划事实核对、路径/格式/矛盾机械验证。写集保持计划与两份追加留痕 exact-three，不创建 packet/control/ref，不移动 formal，不声明 V2/alpha/CR-006/P5 完成。
+
+## 2026-08-29 V2 累计验收 entry review REVISE 窄修订
+
+- 独立 entry review=`d271513adadb15316c113c9982060ad457159c76`、tree=`cccc72f520307963981b772ff0628ee3647f1d94`、唯一父=`e741bbba4d0881954b2404d5eb5918c1fc8d9dcc`，结论=`REVISE / 78`、P0/P1/P2=`1/0/0`；scorecard raw digest=`sha256:039be69cb7a720430459d7d108c4fd1ece308b8d25bd7df0691ed7e5476cc1a3`，verdict raw digest=`sha256:041a4e2d25ad7992bfbe600151e32bbee57f3358206ad7e6b0e8c7d000d8436a`。
+- 唯一 required fix：下一 entry reviewer 的隔离 clone 内必须真实可寻址 M2.1/M2.2 acceptance review、M2.1 signoff package review 与 identity review，不能继续只有文本 OID。
+- 计划新增 controller-only `entry review evidence provisioning`：派发前离线预置四个精确 commit 及必要父链/tree/content，以 cat-file、rev-list、ls-tree/diff-tree 与 content digest 全部机械断言；缺一即 `blocked-before-entry-review`，不启动 review、不让 reviewer 访问原仓库。
+- provisioning 不移动 frozen formal/control/subject 或任何既有 ref；本修订不改变 coverage、identity、authority、PC/TG/Profile 范围和后续 signoff/completion 语义，不创建 packet/control/ref，也不自行评审。
