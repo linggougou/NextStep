@@ -3145,3 +3145,21 @@
 - 差异必须 exact-three：`docs/qa/p5-v2-cumulative-acceptance-attempt-1-2026-08-29.md`、`.codex/operations-log.md`、`.codex/verification-report.md`；`git diff --check` 必须通过。
 - 必须反扫 Result/control/formal/subject/review/plan generation、指标、覆盖范围、carry-forward 与 request/ACK/completion/alpha 非授权边界。
 - 提交必须为单父，唯一父=`fdd0c4b366f92b777df6818eb7ee8a14821d009f`，中文提交信息；提交后 tracked/all status clean。本候选不自行批准，不创建或移动任何 control/formal/evidence ref。
+
+## 2026-08-29 V2 正式完成与 post-V2 状态同步验证
+
+### 控制链与身份
+
+- state-sync parent=`5d389712431c52352df4b5b50d1fa16e97ea3fc0`；formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`；plan_generation=`5`。
+- signoff request=`ff8a8f544d2cf7e463474ccf63e4ae73b84ed560` → user ACK=`44993d1789177cbc1e177c422a0adff4fb8f74b1` → V2 completion=`4f466224a442dd9650905722398bfad743e327fa`，三者均为单父线性链，两个授权动作使用精确 expected-old CAS。
+- Result RFC8785/JCS 排除顶层 `result_digest` 后复算命中 `sha256:f82ce4edd94b587f7f076eb6b52cfffbb2acb0b9b6dd2690a3d1aa4940543ad2`；subject/review/formal/plan generation 与用户批准原文一致。
+- completion checkpoint/registry 均为 V2 `formally-completed`、signoff `approved`；formal 未移动，pending dispatch 为空。
+
+### 同步范围与诚实边界
+
+- 差异必须 exact-eleven：`PROJECT_ROUTE_LOCK.md`、`README.md`、`docs/PLANS.md`、`docs/PRODUCT_SENSE.md`、`docs/exec-plans/active/p5-product-implementation-milestones.md`、`docs/exec-plans/active/p5-scalability-guardrails.md`、`docs/qa/index.md`、`docs/change-requests/index.md`、`docs/change-requests/006-scalability-guardrails.md`、`.codex/operations-log.md`、`.codex/verification-report.md`。
+- 九份当前态入口必须统一为 V2 formally-completed、control=`4f466224a442dd9650905722398bfad743e327fa`、formal F16、下一入口为独立 alpha plan + fresh entry review。
+- 必须反扫旧 M2.1 acceptance-plan current stop、旧 control=`b7900ae...`、V2 未完成等当前态表述；历史段落不改写。
+- alpha packet/package/install/tag 均不得声明存在；CR-006 仍 open、qualified real runs=`0/3`，V3/V4/Final Acceptance/P5 均未完成。
+- 本同步不重复运行产品 full tests；V2 `52/52`、`555/555` 与 coverage=`94.45/89.76/99.57` 引用冻结 Result/独立验收 authority，不冒充本轮 fresh 测试。
+- 提交前必须通过 `git diff --check`、exact-eleven 路径检查、JSON/Markdown current-state 反扫；受保护未跟踪目标不得读取、修改、暂存或清理。

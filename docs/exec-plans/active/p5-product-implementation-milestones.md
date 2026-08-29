@@ -1,6 +1,6 @@
 # P5 产品落地实施里程碑
 
-状态：进行中；V1 已 formally-completed。V2 S2.1..S2.4 package acceptance 均已有效通过并进入 main。S2.4 attempt 2 implementation/review=`45a3eb0` / `411f2ef`，独立验收=`PASS / 100`、P0/P1/P2=`0/0/0`、root fresh `555/555`、coverage=`94.36/89.65/99.57`，Result digest=`sha256:08901d9dea24d90e81a5d7535cdde3402c32bd15b7046a3b1082baeffc9f434f`；attempt 1 candidate/review/REVISE 与错误 S2.3 M2.1 身份/fence140 历史保留。本状态同步固定父/基线=`411f2ef955ff8498b2fb2b1afa3a3ce97550ea36`；live main 必须运行时解析。formal=F16，control=`b7900ae27af69cf175b11ab551e73e420e9a01ed`，`plan_generation=5`。CR-006 仍为 `change_request_closed=false`；S2.4=`gate-passed/present-in-main`。下一唯一入口不是直接 packet，而是冻结 `P5/V2/M2.1/acceptance` 验收计划并执行独立入口评估；历史 subject 固定为 `6ec262fbac45de3d0f84c05a4a5582049139f219`，不得使用 live main 或程序性 S2.2 review 替代。M2.1、M2.2、V2、`v0.2.0-alpha`、formal 或 P5 未完成
+状态：进行中；V1/V2 已 formally-completed。V2 attempt 1=`PASS / 100`，Result digest=`sha256:f82ce4edd94b587f7f076eb6b52cfffbb2acb0b9b6dd2690a3d1aa4940543ad2`，独立 review=`68888402063b36c75c73e8fe937984781b307d71`，用户 ACK=`44993d1789177cbc1e177c422a0adff4fb8f74b1`，completion=`4f466224a442dd9650905722398bfad743e327fa`。本状态同步固定父/基线=`5d389712431c52352df4b5b50d1fa16e97ea3fc0`；live main 必须运行时解析。formal=F16，`plan_generation=5`。CR-006 仍 open、qualified real runs=`0/3`。下一唯一入口为独立 `v0.2.0-alpha` 计划与 fresh entry review；alpha packet/package/install/tag、V3、V4、Final Acceptance 与 P5 未完成
 启动日期：2026-08-08
 
 ## 1. 阶段目标
@@ -11,9 +11,9 @@
 
 - 生命周期阶段：`S5 开发落地`。
 - 项目里程碑：`P5 产品落地`。
-- 当前活动里程碑：`V2 / S2.4 gate-passed/present-in-main / M2.1 acceptance-plan freeze and independent entry assessment`。
+- 当前活动里程碑：`post-V2 / v0.2.0-alpha plan freeze and independent entry assessment`。
 - 本轮启动授权：用户于 2026-08-08 在 P4 会签归档后明确要求继续，授权单独启动 P5 并建立实施里程碑。
-- 路线性质：沿用已会签路线，不改变产品定位、主交互载体、技术栈、版本范围或验收门禁。V1 已完成精确用户会签及分离的 ACK/completion CAS。CR-006 三个 package gate 与 cumulative gate 均已通过但未关闭。S2.1..S2.4 已通过独立 package acceptance 并进入 main；当前唯一入口为冻结 `P5/V2/M2.1/acceptance` 验收计划并执行独立入口评估。该历史验收只能绑定 S2.2 状态 checkpoint `6ec262fbac45de3d0f84c05a4a5582049139f219`，不能绑定 live main，也不能把程序性 S2.2 review 作为有效独立验收。M2.1、M2.2、V2、`v0.2.0-alpha`、formal 与 P5 仍受后续独立门禁约束。
+- 路线性质：沿用已会签路线，不改变产品定位、主交互载体、技术栈、版本范围或验收门禁。V1/V2 均已完成精确用户会签及分离的 ACK/completion CAS。CR-006 三个 package gate 与 cumulative gate 均已通过但未关闭。当前唯一入口为冻结独立 `v0.2.0-alpha` 计划并执行 fresh entry review；V2 completion 不自动授权 alpha packet/package/install/tag。formal、V3、V4、Final Acceptance 与 P5 仍受后续独立门禁约束。
 
 ## 3. 正式上游
 
@@ -158,4 +158,4 @@ P5-M0 不是新增产品版本，不改变 P3 的 PC 主版本归属，也不能
 
 P5 的最终阶段出口是：V1..V4 和 Final Acceptance 全部通过本地可重复验证、独立 I/X/P、适用 Profile 验收和用户会签；交付清单、正式 OID、已知风险、回滚与 PC-20.AR 状态可追溯。此前 P5 保持进行中，不得归档本计划或宣告完整产品完成。
 
-当前 M1.1 attempt 1 为历史 `退回 / 73`，attempt 2 已会签并正式完成；S1.4-S1.6、M1.2 与 V1 均已正式完成。S2.1..S2.4 已有效验收并进入 main。S2.4 attempt 2=`PASS / 100`、P0/P1/P2=`0/0/0`、Result digest=`sha256:08901d9dea24d90e81a5d7535cdde3402c32bd15b7046a3b1082baeffc9f434f`，root fresh `555/555`、coverage=`94.36/89.65/99.57`；attempt 1 REVISE 与错误 S2.3 M2.1 身份/fence140 历史保留。formal=F16 未移动，control=`b7900ae27af69cf175b11ab551e73e420e9a01ed`，`plan_generation=5`。CR-006 `change_request_closed=false`，qualified real runs 0/3；下一唯一入口为 M2.1 验收计划冻结与独立入口评估，历史 subject=`6ec262fbac45de3d0f84c05a4a5582049139f219`。M2.1、M2.2、V2、V4、`v0.2.0-alpha`、formal、P5 均未完成。
+V1/V2 均已 formally-completed；V2 累计验收=`PASS / 100`、P0/P1/P2=`0/0/0`，targeted=`52/52`、full=`555/555`、coverage=`94.45/89.76/99.57`。formal=F16 未移动，control=`4f466224a442dd9650905722398bfad743e327fa`，`plan_generation=5`。CR-006 `change_request_closed=false`，qualified real runs 0/3；下一唯一入口为独立 alpha 计划冻结与 fresh entry review。alpha packet/package/install/tag、V3、V4、Final Acceptance 与 P5 均未完成。

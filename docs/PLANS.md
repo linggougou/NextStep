@@ -4,8 +4,8 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：V2；S2.1..S2.4 gate passed 且已在 main；下一唯一入口为 M2.1 验收计划冻结与独立入口评估
-- 当前状态：S2.4 attempt 2 implementation=`45a3eb0a1d924b8f2b4c2b5ab6aa9e975526dc21`、independent review=`411f2ef955ff8498b2fb2b1afa3a3ce97550ea36`，独立 package acceptance=`PASS / 100`、P0/P1/P2=`0/0/0`，Result digest=`sha256:08901d9dea24d90e81a5d7535cdde3402c32bd15b7046a3b1082baeffc9f434f`，root fresh `555/555`、coverage=`94.36/89.65/99.57`。S2.4 attempt 1 candidate/review/REVISE 与错误 `P5/V2/M2.1/S2.3` attempt 1/fence140 均历史保留。本状态同步固定父/基线=`411f2ef955ff8498b2fb2b1afa3a3ce97550ea36`；live main 必须运行时解析。formal=F16 未移动，control=`b7900ae27af69cf175b11ab551e73e420e9a01ed`，`plan_generation=5`。`change_request_closed=false`；S2.4=`gate-passed/present-in-main`。下一唯一入口不是直接 packet：先冻结 `P5/V2/M2.1/acceptance` 验收计划并执行独立入口评估，历史 subject 固定为 S2.2 状态 checkpoint `6ec262fbac45de3d0f84c05a4a5582049139f219`，不得使用 live main 或程序性 S2.2 review 替代。M2.1、M2.2、V2、`v0.2.0-alpha`、formal、P5 均未完成；qualified real runs 仍为 0/3。
+- 当前活动里程碑：V2 已 formally-completed；当前唯一入口为独立 `v0.2.0-alpha` 计划冻结与 fresh entry review
+- 当前状态：V2 attempt 1=`PASS / 100`，I/X/P/Profile=`25/25/25/25`，targeted=`52/52`、full=`555/555`、coverage=`94.45/89.76/99.57`；Result digest=`sha256:f82ce4edd94b587f7f076eb6b52cfffbb2acb0b9b6dd2690a3d1aa4940543ad2`，Result control=`82e20134381a8a21891babaca6484f54de236974`，用户 ACK=`44993d1789177cbc1e177c422a0adff4fb8f74b1`，completion=`4f466224a442dd9650905722398bfad743e327fa`。本状态同步固定父/基线=`5d389712431c52352df4b5b50d1fa16e97ea3fc0`；live main 必须运行时解析。formal=F16 未移动，`plan_generation=5`。下一步只能先形成独立 alpha 计划并完成 entry review；alpha packet/package/install/tag 尚不存在。CR-006 仍 open、qualified real runs=`0/3`；V3、V4、Final Acceptance 与 P5 均未完成。
 
 ## 当前活动计划
 
@@ -28,7 +28,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。M1.1、M1.2、S1.4-S1.6 与 V1 已正式完成，CR-004/CR-005 已关闭。CR-006 SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，但 CR-006 未关闭，qualified real runs 仍为 0/3。V2 S2.1..S2.4 已通过独立 package acceptance 并进入 main；下一唯一入口为冻结 `P5/V2/M2.1/acceptance` 验收计划并执行独立入口评估，其历史 subject 必须是 `6ec262fbac45de3d0f84c05a4a5582049139f219`。M2.1、M2.2、V2、`v0.2.0-alpha`、formal 与 P5 尚未完成。
+P5 已于 2026-08-08 单独启动。V1、M2.1、M2.2 与 V2 已 formally-completed，CR-004/CR-005 已关闭。CR-006 SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，但 CR-006 未关闭，qualified real runs 仍为 0/3。当前唯一入口为冻结独立 `v0.2.0-alpha` 计划并完成 fresh entry review；不得直接创建 alpha packet/package/install/tag。formal 仍为 F16；V3、V4、Final Acceptance 与 P5 尚未完成。
 
 实施顺序保持 P3 已会签结构：
 

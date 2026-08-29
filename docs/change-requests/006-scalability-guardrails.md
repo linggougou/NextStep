@@ -1,6 +1,6 @@
 # 可承受性护栏：复杂度预算、状态投影与真实项目价值验证
 
-- 状态：cumulative-gate-passed-v2-s2.4-gate-passed（`change_request_closed=false`；SG-3 前序 attempt 1 contract-revision、S2.2 两次程序无效验收、S2.3 attempt 1 identity-invalid/fence140 与 S2.4 attempt 1 REVISE 均只读保留）
+- 状态：cumulative-gate-passed-v2-formally-completed（`change_request_closed=false`；SG-3 前序 attempt 1 contract-revision、S2.2 两次程序无效验收、S2.3 attempt 1 identity-invalid/fence140 与 S2.4 attempt 1 REVISE 均只读保留）
 - 记录日期：2026-08-25
 - 来源：V1 完成后的项目分析与用户对工作膨胀风险的明确反馈
 - 所属阶段：P5 / 跨版本可承受性护栏
@@ -21,7 +21,7 @@ V1 已证明 NextStep 的可靠性内核和证据链可以运行，但控制提�
 - 是否改变当前路线：否。保持 `P5-M0 -> V1 -> V2 -> V3 -> V4 -> Final Acceptance`，不新增产品版本，不改变 PC 主版本归属、技术栈、主载体、正式提升或验收门禁；但本 CR 新增计划范围、任务和 DoD，必须按 P4/S4 把 `plan_generation` 从 4 单向推进到 5。
 - 是否影响当前阶段出口：不替代任何既有出口。三个护栏任务包通过，只证明可承受性工具和验证框架可用。
 - 是否需要更新 `PROJECT_ROUTE_LOCK.md`：不改变路线结构，但必须同步当前阶段、代际缺口和授权停点；本 replacement 已更新路线锁的状态字段。若实施发现必须改变 PC、数据模型、正式 ref、控制协议或门禁，再停止并另开 Change Request。
-- 与当前入口的关系：V1 仍为 formally-completed。SG-1、SG-2、SG-3 的 generation 5 package gate 与 cumulative gate 均已通过；累计结论只关闭 cumulative gate，不自动关闭 CR-006。SG-3 包级状态精确为“真实项目价值验证框架可用，qualified real runs 0/3”。V2 S2.1..S2.4 已通过独立 package acceptance 并进入 main。S2.4 attempt 2=`PASS / 100`、Result digest=`sha256:08901d9dea24d90e81a5d7535cdde3402c32bd15b7046a3b1082baeffc9f434f`；attempt 1 REVISE 与错误 S2.3 attempt 1 M2.1 身份/fence140 历史保留。下一唯一入口是 `P5/V2/M2.1/acceptance` 验收计划冻结与独立入口评估，历史 subject 固定为 `6ec262fbac45de3d0f84c05a4a5582049139f219`。S2.4 PASS 不关闭 CR-006，也不完成 M2.1、M2.2、V2、`v0.2.0-alpha`、formal 或 P5。
+- 与当前入口的关系：V1/V2 均已 formally-completed。SG-1、SG-2、SG-3 的 generation 5 package gate 与 cumulative gate 均已通过；累计结论只关闭 cumulative gate，不自动关闭 CR-006。SG-3 包级状态精确为“真实项目价值验证框架可用，qualified real runs 0/3”。V2 的正式完成来自独立版本累计验收、用户会签与分离 completion CAS，不来自本 CR。下一唯一入口是独立 alpha 计划与 fresh entry review；alpha packet/package/install/tag 尚不存在，formal 与 P5 未完成。
 
 ### 2.1 控制代际影响
 
@@ -115,9 +115,9 @@ V1 已证明 NextStep 的可靠性内核和证据链可以运行，但控制提�
 - cumulative replacement review=`813e9fd5240b1af6413a274daa7e307757bbb246`（旧 `dbb1c2d` 因未来 `reviewed_at` 废弃），`PASS / 97`，P0/P1/P2=`0/0/3`；Result control=`1ac071b0087514390238381fa71cc4b4182983bc`，digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。
 - cumulative fresh 验证=`503/503`，coverage Lines/Branches/Functions=`93.50/88.62/99.22`，预算超限、状态冲突/过期、synthetic 冒充 real 三个固定负例通过。
 - carry-forward：SG-1 两项 P2（RED 原始终端 transcript 未内容寻址固化、main 曾在正式 Result 前提前 cherry-pick）、SG-2 一项 P2（RED 原始终端 transcript 未独立固化）与 SG-3 两条边界（不抵抗恶意磁盘整体重写、真实运行仍为 0/3）继续保留。
-- 当前控制身份：S2.2 candidate=`d35e63d4ca7a6cca3ac3ac662b77a0ca482ad51e`，程序性 main candidate/review=`88eaa58` / `91ed44a`，有效 attempt 3 review=`6c48b6c`，Result digest=`sha256:332323df803af638aac65a6044d0cf17a171dc8ff5744e213385f18fda089c0e`。本状态同步固定父/基线=`960d16ded99104ee7409ec6938e501db204ea8fa`；live main 必须运行时解析。formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`6b4cb573655beb107d751004c9fc2b0b2c35490f`，`plan_generation=5`。
+- 历史 S2.2 状态同步身份：candidate=`d35e63d4ca7a6cca3ac3ac662b77a0ca482ad51e`，程序性 main candidate/review=`88eaa58` / `91ed44a`，有效 attempt 3 review=`6c48b6c`，Result digest=`sha256:332323df803af638aac65a6044d0cf17a171dc8ff5744e213385f18fda089c0e`。该段只作历史，不再冒充 current control。
 - V2 entry 复评链：首次复评=`REVISE / 88`；attempt 2 review=`cb28627c9ddcbf231d40b55880753495e141b88f` 因同一 reviewer 创作被审尾差 subject=`ccc182e484e07300b517fd371ecb327367754c6e` 后自审而程序失效；独立 attempt 3 review=`bd78c043d6e16da3debadcd7c7395c31624a33ac`、tree=`1509a2172cdf72bb40f40eab62dbdf793fb45965`，`PASS / 100`、P0/P1/P2=`0/0/0`，fresh `503/503`、fail/skip/cancel/todo=`0/0/0/0`、coverage=`93.53/88.69/99.22`，supersede attempt 2。
 - S2.1 历史状态：candidate=`67dae282065926c2a583643cfc348385f1282554`、独立 review=`3424a8a5e65d7737401cf602d7227bf637194817`，`PASS / 100`、P0/P1/P2=`0/0/0`，Result digest=`sha256:938c6779cf5028629f93d2382713de1d7af444ca4b0fa1ad40dec274ae416fb6`；验收 fresh `514/514`、coverage=`93.61/88.74/99.27`，main fresh `514/514`、coverage=`93.63/88.80/99.27`，integration checkpoint=`24ef30a3399c8add07b691d288afc50c07160ee5`。
 - S2.2 有效状态：attempt 1 temporal-invalid audit digest=`sha256:f6c7681083f5fdb810f1375cf0ce75aeb759c1d4e554617fc027d15dc55a5041`；attempt 2 role-authority-invalid audit digest=`sha256:08cf20a2c70e02833444c5ae7893ab007bc5c830441f3119ee2f60c115a6c9be`。attempt 3 在 no-local、origin-removed 隔离副本中由独立 review=`6c48b6c` 得到 `PASS / 100`、P0/P1/P2=`0/0/0`、fresh `526/526`、coverage=`93.99/89.20/99.49`，有效 Result digest=`sha256:332323df803af638aac65a6044d0cf17a171dc8ff5744e213385f18fda089c0e`；精确状态=`gate-passed/present-in-main`。
 - S2.4 有效状态：attempt 2 implementation=`45a3eb0a1d924b8f2b4c2b5ab6aa9e975526dc21`、independent review=`411f2ef955ff8498b2fb2b1afa3a3ce97550ea36`，独立 package acceptance=`PASS / 100`、P0/P1/P2=`0/0/0`，root fresh `555/555`、coverage=`94.36/89.65/99.57`，Result digest=`sha256:08901d9dea24d90e81a5d7535cdde3402c32bd15b7046a3b1082baeffc9f434f`；精确状态=`gate-passed/present-in-main`。attempt 1 candidate/review/REVISE 与错误 S2.3 M2.1 identity/fence140 仅作历史证据。
-- 当前下一动作：不改变三个护栏任务包、规模上限、DoD 或 `plan_generation=5`；下一唯一入口不是直接 packet，而是冻结 `P5/V2/M2.1/acceptance` 验收计划并执行独立入口评估。历史 subject 必须固定为 `6ec262fbac45de3d0f84c05a4a5582049139f219`，不得使用 live main 或程序性 S2.2 review 替代。formal 不移动；CR-006、M2.1、M2.2、V2、V4、`v0.2.0-alpha`、P5 与 qualified real runs 3/3 均未完成。
+- 当前下一动作：不改变三个护栏任务包、规模上限、DoD 或 `plan_generation=5`；V2 已 formally-completed，live control=`4f466224a442dd9650905722398bfad743e327fa`，formal 不移动。下一唯一入口是独立 alpha 计划与 fresh entry review；不得直接创建 alpha packet/package/install/tag。CR-006 仍 open，qualified real runs=`0/3`；V3、V4、Final Acceptance 与 P5 均未完成。

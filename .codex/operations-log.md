@@ -3046,3 +3046,11 @@
 - 忠实登记 `PASS / 100`、I/X/P/Profile=`25/25/25/25`、P0/P1/P2=`0/0/0`、targeted=`52/52`、full=`555/555`、displayed coverage=`94.45/89.76/99.57`、raw coverage=`8366/8858, 3008/3351, 697/700`、Q4/Q5/Q6 门禁。
 - 报告明确保留 fixture/headless/manual-isolated、qualified real runs 0/3、CR-006 open、alpha 未打包、formal 不移动、V3/V4/Final Acceptance/P5 未完成等边界。
 - 下一动作仅为将此 exact-three 候选交给新的独立会签包 reviewer；只有 PASS 后才允许创建 signoff-request control CAS，并向用户展示精确批准原文。
+
+## 2026-08-29 V2 用户会签、独立 completion CAS 与状态同步
+
+- 用户精确确认 V2 attempt 1 Result digest=`sha256:f82ce4edd94b587f7f076eb6b52cfffbb2acb0b9b6dd2690a3d1aa4940543ad2` 与 Result control=`82e20134381a8a21891babaca6484f54de236974`，接受 I/X/P/Profile 累计验收与 carry-forward 边界。
+- 主控重新核对 formal F16、live request control、Result RFC8785/JCS、historical subject=`43df63566b4edd8496f3ad1e62533b980767abd8`、acceptance review=`68888402063b36c75c73e8fe937984781b307d71`、signoff package review=`5d389712431c52352df4b5b50d1fa16e97ea3fc0` 与 plan_generation=`5`，全部 exact。
+- user-signoff ACK CAS=`44993d1789177cbc1e177c422a0adff4fb8f74b1`，唯一父/expected-old=`ff8a8f544d2cf7e463474ccf63e4ae73b84ed560`；随后分离的 V2 completion CAS=`4f466224a442dd9650905722398bfad743e327fa`，唯一父/expected-old=`44993d1789177cbc1e177c422a0adff4fb8f74b1`。
+- formal 保持 `ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动；V2 精确状态=`formally-completed`。CR-006 仍 open、qualified real runs=`0/3`，alpha/V3/V4/Final Acceptance/P5 均未完成。
+- 状态同步限定 exact-eleven：路线锁、README、PLANS、PRODUCT_SENSE、两份 P5 活动计划、QA index、CR index/CR-006 详情及两份 `.codex` 追加留痕。下一唯一入口是独立 alpha 计划与 fresh entry review；本轮不创建 alpha packet/package/install/tag。

@@ -1,10 +1,10 @@
 # P5 可承受性护栏实施计划
 
-- 状态：cumulative-gate-passed-v2-s2.1-gate-passed（`change_request_closed=false`）
+- 状态：cumulative-gate-passed-v2-formally-completed（`change_request_closed=false`）
 - 变更入口：[CR-006](../../change-requests/006-scalability-guardrails.md)
 - 生命周期阶段：S5 开发落地
 - 路线位置：P5 跨版本基础护栏；不新增版本，不改变 V2 首个产品 packet 前门禁
-- 当前状态：SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，CR-006 仍为 `change_request_closed=false`，qualified real runs 仍为 0/3。V2 S2.1..S2.4 package acceptance 均已有效通过并进入 main。S2.4 attempt 2 implementation/review=`45a3eb0` / `411f2ef`，Result digest=`sha256:08901d9dea24d90e81a5d7535cdde3402c32bd15b7046a3b1082baeffc9f434f`，root fresh `555/555`、coverage=`94.36/89.65/99.57`；attempt 1 REVISE 与错误 S2.3 M2.1 identity/fence140 历史保留。本状态同步固定父/基线=`411f2ef955ff8498b2fb2b1afa3a3ce97550ea36`，live main 运行时解析；formal=F16 未移动，control=`b7900ae27af69cf175b11ab551e73e420e9a01ed`，`plan_generation=5`。S2.4 精确状态=`gate-passed/present-in-main`；下一唯一入口为 M2.1 验收计划冻结与独立入口评估，历史 subject 固定为 `6ec262fbac45de3d0f84c05a4a5582049139f219`；不据此关闭 CR-006 或声明 M2.1、M2.2、V2、`v0.2.0-alpha`、formal、P5 完成
+- 当前状态：SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，CR-006 仍为 `change_request_closed=false`，qualified real runs 仍为 0/3。V2 已由独立版本累计验收、用户会签与分离 completion CAS 标记为 formally-completed；这不是本护栏计划自身完成 V2，也不关闭 CR-006。本状态同步固定父/基线=`5d389712431c52352df4b5b50d1fa16e97ea3fc0`，live main 运行时解析；formal=F16 未移动，control=`4f466224a442dd9650905722398bfad743e327fa`，`plan_generation=5`。下一唯一入口为独立 alpha 计划与 fresh entry review；alpha packet/package/install/tag 尚不存在
 
 ## 1. 阶段目标
 
@@ -253,8 +253,8 @@ GREEN 只实现 Schema、单次记录验证、去重、聚合与离线 CLI，并
 
 累积结论=`PASS / 97`，P0/P1/P2=`0/0/3`；cumulative packet=`6c49825`、claim/fence 132=`4a3e6ab`、ready=`5414c63`、ACK=`8231caf`，`accepted_subject_main=37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa`、`cumulative_review_commit=813e9fd5240b1af6413a274daa7e307757bbb246`、Result control=`1ac071b`、digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。累计验收历史 snapshot=`503/503`、coverage=`93.50/88.62/99.22`，三个固定负例均通过。
 
-SG-1 两项 P2、SG-2 一项 P2 与 SG-3 两条边界继续 carry forward；精确状态仍为“真实项目价值验证框架可用，qualified real runs 0/3”。`change_request_closed=false`。V2 entry 复评历史保持不变；S2.1..S2.4 已独立有效验收并进入 main。下一唯一入口为 `P5/V2/M2.1/acceptance` 验收计划冻结与独立入口评估，且历史 subject 必须是 `6ec262fbac45de3d0f84c05a4a5582049139f219`；S2.4 PASS 不推进 formal，也不完成 M2.1、M2.2、V2 或 `v0.2.0-alpha`。
+SG-1 两项 P2、SG-2 一项 P2 与 SG-3 两条边界继续 carry forward；精确状态仍为“真实项目价值验证框架可用，qualified real runs 0/3”。`change_request_closed=false`。V2 已由其独立版本验收链 formally-completed；本护栏累计 PASS 不替代该 authority。下一唯一入口为独立 alpha 计划与 fresh entry review，且 alpha packet/package/install/tag 尚不存在。
 
 ## 8. 阶段出口
 
-本计划的实现与 cumulative gate 出口已经通过，同时明确留下“qualified real runs 0/3，PC-12/PC-19/V2/V4 均未由本计划完成”的状态。该 PASS 不自动归档本计划或关闭 CR-006。S2.1..S2.4 已通过并在 main，下一入口为 M2.1 验收计划冻结与独立入口评估；这不改变本护栏计划的关闭边界，也不完成 M2.1、M2.2、V2、`v0.2.0-alpha`、formal 或 P5。
+本计划的实现与 cumulative gate 出口已经通过，同时明确留下“qualified real runs 0/3，PC-12/PC-19/V2/V4 均未由本计划完成”的历史 authority 边界。V2 后续由独立版本验收链 formally-completed，不改变本护栏计划的结论来源，也不自动归档本计划或关闭 CR-006。下一入口为独立 alpha 计划与 fresh entry review；这不表示 alpha package/tag、V3、V4、Final Acceptance 或 P5 完成。

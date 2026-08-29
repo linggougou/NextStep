@@ -13,7 +13,7 @@
 
 ## 已接受未关闭变更
 
-- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，但 `change_request_closed=false`，风险及 qualified real runs `0/3` 保留。V2 S2.4 attempt 2 implementation/review=`45a3eb0` / `411f2ef`，独立 package acceptance=`PASS / 100`、P0/P1/P2=`0/0/0`、root fresh `555/555`、coverage=`94.36/89.65/99.57`，Result digest=`sha256:08901d9dea24d90e81a5d7535cdde3402c32bd15b7046a3b1082baeffc9f434f`；S2.4=`gate-passed/present-in-main`。attempt 1 REVISE 与错误 S2.3 M2.1 身份/fence140 历史保留。formal 仍为 F16，control=`b7900ae27af69cf175b11ab551e73e420e9a01ed`；下一唯一入口为 M2.1 验收计划冻结与独立入口评估，历史 subject=`6ec262fbac45de3d0f84c05a4a5582049139f219`，M2.1/M2.2/V2/`v0.2.0-alpha`/formal/P5 未完成。
+- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，但 `change_request_closed=false`，风险及 qualified real runs `0/3` 保留。V2 已由独立版本累计验收、用户会签与分离 completion CAS formally-completed；这不自动关闭 CR-006。formal 仍为 F16，control=`4f466224a442dd9650905722398bfad743e327fa`；下一唯一入口为独立 alpha 计划与 fresh entry review，alpha packet/package/install/tag 未创建。
 
 ## 分流规则
 
