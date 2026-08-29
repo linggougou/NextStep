@@ -3013,3 +3013,12 @@
 - implementation、fence154 reviewer、original-main-like state-sync 统一 strengthened hard gates：Node native displayed>=`94.40/89.75/99.57` 且 same-run raw>=`94.40%/89.75%/99.57%`；domain=`6/6`、targeted=`29/29`、full>=`555/555`、全零失败。LCOV 只作旁证，禁止替代、拼接或混算。
 - 控制链冻结为独立 entry review `PASS / 100` → packet → claim/fence153 → ready/outbox → ACK → 唯一新实现者 → 新独立 reviewer fence154 → PASS 后线性集成 → original-main-like fresh state-sync → 条件式 M2.2 acceptance attempt 2。每个控制动作均须独立 expected-old 单父 CAS。
 - 本轮只写 Generation 3 计划和两份追加留痕 exact-three；计划作者不参与 entry review 或后续实现，不授权用户会签、formal、V2、alpha、CR-006、P5 或 qualified real runs 状态变化。
+
+## 2026-08-29 V2 累计验收 Generation 1 计划候选
+
+- 在全新 detached worktree 固定父=`43df63566b4edd8496f3ad1e62533b980767abd8`，只读核对 P3/P5、V1 累计计划、M2.1/M2.2 验收计划及 control Git 对象；未读取、修改、暂存或清理原仓库受保护未跟踪目标。
+- 新建 `.codex/exec-plan-v2-cumulative-acceptance-generation-1.md`，冻结 formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、entry control=`ef0ba6525fd2be8ac13c6d07ed4e4a9f991795d2`、`plan_generation=5`、historical subject=`43df63566b4edd8496f3ad1e62533b980767abd8`。
+- M2.1/M2.2 的 Result、subject、acceptance review、用户 signoff ACK 与分离 completion CAS 均以精确 OID/digest 固定；两份历史 Result 仅为 `entry_evidence_only`，不得拼接为 V2 PASS。
+- 冻结 V2 并集：S2.1..S2.4、M2.1/M2.2、PC-09..PC-13、TG-02/03/04/06/07/13/16/19、I/X/P + Profile fixture；M2.2 历史验收仍保持 I/X/P-only。
+- future fresh 门禁：八文件 targeted=`52/52`、full>=`555/555` 且全零失败、same-run displayed/raw coverage>=`94.36/89.65/99.57`、三 fixture 连续性、Q4/Q5/Q6、零副作用和独立 Judge Harness。
+- 本轮不运行产品 full tests；只做计划事实核对、路径/格式/矛盾机械验证。写集保持计划与两份追加留痕 exact-three，不创建 packet/control/ref，不移动 formal，不声明 V2/alpha/CR-006/P5 完成。

@@ -3058,3 +3058,27 @@
 - 必须反扫 identity、三项 live refs、attempt 2 candidate/review/Result digest 与 historical-only 禁集成、唯一 allowlist、精确 import、两条错误码、`9+/1-`、连续两次研究值、strengthened displayed/raw floors、fence153/fence154、角色隔离、线性集成、state-sync、M2.2 acceptance attempt 2 条件和全部非授权边界。
 - 提交必须为单父、唯一父=`0f3186979873216fe792cf88c0f4d9a4c61dff0a`，中文提交信息；提交后 tracked/all status clean。
 - 本轮不运行产品测试；验证只检查计划候选的事实、结构、路径、格式和矛盾，不替代未来独立 entry review。计划只有 independent entry review=`PASS / 100` 才可进入 packet preparation。
+
+## 2026-08-29 V2 累计验收 Generation 1 计划候选验证
+
+### 冻结输入与 authority
+
+- candidate parent=`43df63566b4edd8496f3ad1e62533b980767abd8`；formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`；entry control=`ef0ba6525fd2be8ac13c6d07ed4e4a9f991795d2`，其唯一父=`d57abec8c8ad71f192142d07b65dc9bc8eef2b7f`；`plan_generation=5`。
+- historical subject=`43df63566b4edd8496f3ad1e62533b980767abd8`、tree=`09057e7fce389b946bccef8b745875df46f1a984`、parent=`a8ba3dae236f3978fd4e97c4ce0062cf81a25b9d`、digest=`sha256:5f6e3b0bbcee3fa7cd1b291b754cffaeb17e22fc09d506758701151464b59d0b`。
+- M2.1 Result=`sha256:e7aea6578a0e74847a8573397883348f2de41f33b406bb8f7b29a1bfebffb34b` / control=`36e1745359cefb3158aa4c4f10bd068468ec606f` / review=`3c0853b56b7a09b3299e49893f64a721ab3597ea` / ACK control=`604ee22a665b83b108f5b0b632da72e368ec6896` / completion=`179006320df60365357417c1f20fd774ee3ad632`。
+- M2.2 Result=`sha256:0f706d9e4724c392b19c61216eb0a0d7760543794169642c1575b10bcd1ccb5e` / control=`7e4327e599331d2334ec6b1580b92448c4d8fa5f` / review=`381224e6301c4a2d58841a99c233439c9b2e1e56` / ACK control=`d57abec8c8ad71f192142d07b65dc9bc8eef2b7f` / completion=`ef0ba6525fd2be8ac13c6d07ed4e4a9f991795d2`。
+- 两份历史 Result 明确为 `entry_evidence_only`；V2 必须在 exact subject 上 fresh 重放，不能拼接分段 PASS。
+
+### 门禁与非授权边界
+
+- coverage union 精确包含 S2.1..S2.4、M2.1/M2.2、PC-09..PC-13、TG-02/03/04/06/07/13/16/19；P3 要求 V2 版本验收为 I/X/P + Profile fixture，且 M2.2 历史结论保持 I/X/P-only。
+- targeted 精确八文件、M2.1=`23/23`、M2.2=`29/29`、累计=`52/52`；fresh full>=`555/555`、全零 fail/skip/cancel/todo；same-run displayed/raw coverage floors=`94.36/89.65/99.57`。
+- 计划冻结 no-local/origin-removed/no-alternates、同一 reviewer readiness→ACK→create-once evidence ref→正式验收、exact-three、Result=`passed-awaiting-user-signoff`、用户 ACK 与 completion 分离。
+- 本轮没有运行产品测试；验证只检查计划事实、机械路径、格式和矛盾，不把历史测试结果包装为 current-turn fresh evidence。
+- 计划和 entry review 都不创建 V2 packet/control/ref，不移动 formal，不声明 V2、alpha、CR-006、qualified real runs 或 P5 完成，也不自行批准候选。
+
+### 提交前检查
+
+- 必须通过 `git diff --check`；差异路径严格等于 `.codex/exec-plan-v2-cumulative-acceptance-generation-1.md`、`.codex/operations-log.md`、`.codex/verification-report.md`。
+- 必须反扫 formal/control/generation/subject、两组 exact authority、`entry_evidence_only`、coverage union、I/X/P/Profile、52/555/coverage floors、角色/ACK 时序、exact-three、signoff/completion 分离与全部未完成边界。
+- 提交必须为单父，唯一父=`43df63566b4edd8496f3ad1e62533b980767abd8`，中文提交信息；提交后 tracked clean。本验证不替代独立 entry review，也不授权后续 packet。
