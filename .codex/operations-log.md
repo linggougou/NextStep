@@ -3029,3 +3029,12 @@
 - 唯一 required fix：下一 entry reviewer 的隔离 clone 内必须真实可寻址 M2.1/M2.2 acceptance review、M2.1 signoff package review 与 identity review，不能继续只有文本 OID。
 - 计划新增 controller-only `entry review evidence provisioning`：派发前离线预置四个精确 commit 及必要父链/tree/content，以 cat-file、rev-list、ls-tree/diff-tree 与 content digest 全部机械断言；缺一即 `blocked-before-entry-review`，不启动 review、不让 reviewer 访问原仓库。
 - provisioning 不移动 frozen formal/control/subject 或任何既有 ref；本修订不改变 coverage、identity、authority、PC/TG/Profile 范围和后续 signoff/completion 语义，不创建 packet/control/ref，也不自行评审。
+
+## 2026-08-29 V2 累计验收 Generation 1 入口评审 PASS 主控登记
+
+- 生命周期与路线继续为 `S5 / P5 产品落地 / V2 cumulative acceptance entry`；本轮最小闭环仅为固化计划门禁，不运行正式 V2 验收、不创建 packet/control/ref。
+- 计划最终候选=`b8fdae247d6b3259e31817c8d9ceba5c4137506f`、tree=`3d57644ab83c47af61be98bcc68317e145bc7c41`、唯一父=`d271513adadb15316c113c9982060ad457159c76`；attempt 1 `REVISE / 78` 及其唯一 required fix 保持历史可追溯。
+- attempt 2 独立 entry review=`e3d1fafbbd1a897e18652f0490660295cb1b7d38`、tree=`24362369422c5decd11eeef8c64553f410306348`、唯一父=`b8fdae247d6b3259e31817c8d9ceba5c4137506f`，结论=`PASS / 100`、P0/P1/P2=`0/0/0`、`required_fixes=[]`。
+- scorecard JCS digest=`sha256:64b74e3d63073c4ca1949d766b30501f38e572cc053a4d9181ee1b197720c5db`；verdict raw digest=`sha256:e76862371295ca27b24e59c57b9439497f705ad1644d471e5974cdc3c8b3346d`。
+- 四个历史 authority object 的 commit/tree/parent、exact-three/exact-two 路径和 JCS/raw digest 已由 controller 与独立 reviewer 分别复算；provisioning 前后 frozen refs、HEAD/tree/worktree 不变，clone 无 remote/alternates 且非 shallow。
+- 下一允许动作仅为：在重新核对 live main/formal/control/subject/generation/pending 后，以后续独立 expected-old control CAS 创建唯一 V2 cumulative acceptance Generation 1 packet。该 packet 本轮未创建；V2、alpha、CR-006、formal、V3/V4/FA、P5 仍未完成。

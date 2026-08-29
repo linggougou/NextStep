@@ -3103,3 +3103,24 @@
 - 差异必须 exact-three：`.codex/exec-plan-v2-cumulative-acceptance-generation-1.md`、`.codex/operations-log.md`、`.codex/verification-report.md`；`git diff --check` 必须通过。
 - 必须反扫旧矛盾：禁止“reviewer 自行从原仓库补取对象”、禁止对象不可寻址仍启动 review、禁止 provisioning 更新 frozen refs、禁止只查文本 OID/文件名而不复算 tree/content digest。
 - 修订提交必须为单父，唯一父=`d271513adadb15316c113c9982060ad457159c76`，中文提交信息；提交后 tracked clean。本修订不自行评审，也不授权 V2 packet。
+
+## 2026-08-29 V2 累计验收 Generation 1 入口评审 attempt 2 主控复核
+
+### 评审身份与结论
+
+- 送审候选=`b8fdae247d6b3259e31817c8d9ceba5c4137506f`、tree=`3d57644ab83c47af61be98bcc68317e145bc7c41`、唯一父=`d271513adadb15316c113c9982060ad457159c76`；attempt 1 REVISE 证据未被改写或丢弃。
+- attempt 2 review=`e3d1fafbbd1a897e18652f0490660295cb1b7d38`、tree=`24362369422c5decd11eeef8c64553f410306348`、唯一父精确为送审候选。
+- Judge Harness L3 结论=`PASS / 100`，P0/P1/P2=`0/0/0`，`required_fixes=[]`；scorecard JCS=`sha256:64b74e3d63073c4ca1949d766b30501f38e572cc053a4d9181ee1b197720c5db`，verdict raw=`sha256:e76862371295ca27b24e59c57b9439497f705ad1644d471e5974cdc3c8b3346d`。
+
+### 硬门复核
+
+- review 写集严格为 `.codex/reviews/p5-v2-cumulative-acceptance-entry-evaluation-g5-a2-2026-08-29/scorecard.json` 与 `verdict.md` exact-two；JSON 可解析，`git diff --check` 通过，review worktree clean。
+- controller 与独立 reviewer 均复核四个历史 authority commit 可寻址，tree/唯一父、两个 exact-three 与两个 exact-two 路径集合、四组 JSON JCS 和 Markdown raw digest 全部匹配冻结值。
+- imported control 保持 `ef0ba6525fd2be8ac13c6d07ed4e4a9f991795d2`，formal 保持 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，`plan_generation=5`、pending dispatch=`0`；review 环境无 remote、无 alternates、非 shallow，provisioning 未改变 refs/HEAD/tree/worktree。
+- 计划完整冻结 M2.1/M2.2、S2.1..S2.4、PC-09..13、TG-02/03/04/06/07/13/16/19、I/X/P/Profile、targeted=`52/52`、full>=`555/555`、same-run displayed/raw coverage>=`94.40/89.75/99.57`、三 fixture 和分离 signoff/completion 时序。
+
+### 门禁判断
+
+- 综合评分=`100 / 100`，建议=`通过`，结论=`通过`。V2 cumulative acceptance Generation 1 计划入口门禁已满足。
+- 本结论只允许后续单独准备受控 V2 packet；不等于 packet 已创建，不授权跳过 claim/fence/readiness/ACK/独立验收/Result/用户会签，不移动 formal，不声明 V2、alpha、CR-006 或 P5 完成。
+- 本轮未运行产品 full tests；计划评审证据不冒充未来正式 V2 fresh 验收证据。
