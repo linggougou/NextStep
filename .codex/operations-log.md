@@ -3038,3 +3038,11 @@
 - scorecard JCS digest=`sha256:64b74e3d63073c4ca1949d766b30501f38e572cc053a4d9181ee1b197720c5db`；verdict raw digest=`sha256:e76862371295ca27b24e59c57b9439497f705ad1644d471e5974cdc3c8b3346d`。
 - 四个历史 authority object 的 commit/tree/parent、exact-three/exact-two 路径和 JCS/raw digest 已由 controller 与独立 reviewer 分别复算；provisioning 前后 frozen refs、HEAD/tree/worktree 不变，clone 无 remote/alternates 且非 shallow。
 - 下一允许动作仅为：在重新核对 live main/formal/control/subject/generation/pending 后，以后续独立 expected-old control CAS 创建唯一 V2 cumulative acceptance Generation 1 packet。该 packet 本轮未创建；V2、alpha、CR-006、formal、V3/V4/FA、P5 仍未完成。
+
+## 2026-08-29 V2 累计验收 attempt 1 用户会签报告候选
+
+- 生命周期保持 `S5 / P5 产品落地`；本轮最小闭环只生成 V2 用户会签报告候选并追加两份留痕 exact-three，不创建 signoff request，不代替用户会签，不执行 ACK/completion，不打 alpha 包。
+- 报告固定 historical subject=`43df63566b4edd8496f3ad1e62533b980767abd8`、formal F16=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、Result control=`82e20134381a8a21891babaca6484f54de236974`、Result digest=`sha256:f82ce4edd94b587f7f076eb6b52cfffbb2acb0b9b6dd2690a3d1aa4940543ad2`、independent review=`68888402063b36c75c73e8fe937984781b307d71`、plan_generation=`5`。
+- 忠实登记 `PASS / 100`、I/X/P/Profile=`25/25/25/25`、P0/P1/P2=`0/0/0`、targeted=`52/52`、full=`555/555`、displayed coverage=`94.45/89.76/99.57`、raw coverage=`8366/8858, 3008/3351, 697/700`、Q4/Q5/Q6 门禁。
+- 报告明确保留 fixture/headless/manual-isolated、qualified real runs 0/3、CR-006 open、alpha 未打包、formal 不移动、V3/V4/Final Acceptance/P5 未完成等边界。
+- 下一动作仅为将此 exact-three 候选交给新的独立会签包 reviewer；只有 PASS 后才允许创建 signoff-request control CAS，并向用户展示精确批准原文。

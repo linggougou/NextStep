@@ -3124,3 +3124,24 @@
 - 综合评分=`100 / 100`，建议=`通过`，结论=`通过`。V2 cumulative acceptance Generation 1 计划入口门禁已满足。
 - 本结论只允许后续单独准备受控 V2 packet；不等于 packet 已创建，不授权跳过 claim/fence/readiness/ACK/独立验收/Result/用户会签，不移动 formal，不声明 V2、alpha、CR-006 或 P5 完成。
 - 本轮未运行产品 full tests；计划评审证据不冒充未来正式 V2 fresh 验收证据。
+
+## 2026-08-29 V2 累计验收 attempt 1 用户会签报告候选验证
+
+### 冻结 authority
+
+- report parent=`fdd0c4b366f92b777df6818eb7ee8a14821d009f`；formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`；Result control=`82e20134381a8a21891babaca6484f54de236974`；plan_generation=`5`。
+- Result 路径=`results/result-version-acceptance-v2-g5-a1-f157-20260829.json`，RFC8785 排除顶层 `result_digest` 后的固定 digest=`sha256:f82ce4edd94b587f7f076eb6b52cfffbb2acb0b9b6dd2690a3d1aa4940543ad2`。
+- historical subject=`43df63566b4edd8496f3ad1e62533b980767abd8`、tree=`09057e7fce389b946bccef8b745875df46f1a984`、唯一父=`a8ba3dae236f3978fd4e97c4ce0062cf81a25b9d`；independent review=`68888402063b36c75c73e8fe937984781b307d71`、tree=`4ac57b0e5b134701d18ab3d5ece2fbd21fd0470e`、唯一父为 historical subject。
+
+### 报告完整性与边界
+
+- 验收范围精确为 M2.1/M2.2、S2.1..S2.4、PC-09..PC-13、TG-02/03/04/06/07/13/16/19；I/X/P/Profile=`25/25/25/25`，P0/P1/P2=`0/0/0`。
+- fresh evidence 固定 build exit 0、targeted=`52/52`、full=`555/555`、零 fail/skip/cancel/todo、displayed=`94.45/89.76/99.57`、raw=`8366/8858, 3008/3351, 697/700`、Q4=`20/20`、Q5=`18/18`、Q6=`3/3`。
+- carry-forward 精确保留：只证明 fixture/headless/manual-isolated 契约；qualified real runs=`0/3`；CR-006 open；alpha/package/install/tag/release 未完成；formal 不移动；V3/V4/Final Acceptance/P5 未完成。
+- 状态机明确分离独立 signoff-package review、signoff-request CAS、用户精确 ACK、V2 completion CAS、后续独立 alpha 计划/packet/实施/验收；broad autonomy 不替代精确 Result 会签。
+
+### 提交前门禁
+
+- 差异必须 exact-three：`docs/qa/p5-v2-cumulative-acceptance-attempt-1-2026-08-29.md`、`.codex/operations-log.md`、`.codex/verification-report.md`；`git diff --check` 必须通过。
+- 必须反扫 Result/control/formal/subject/review/plan generation、指标、覆盖范围、carry-forward 与 request/ACK/completion/alpha 非授权边界。
+- 提交必须为单父，唯一父=`fdd0c4b366f92b777df6818eb7ee8a14821d009f`，中文提交信息；提交后 tracked/all status clean。本候选不自行批准，不创建或移动任何 control/formal/evidence ref。
