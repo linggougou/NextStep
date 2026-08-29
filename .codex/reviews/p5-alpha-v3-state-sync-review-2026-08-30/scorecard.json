@@ -1,0 +1,151 @@
+{
+  "review_id": "p5-alpha-v3-state-sync-review-2026-08-30",
+  "task_id": "ALPHA-V3-STATE-SYNC",
+  "lane": "state-sync-review",
+  "review_level": "L2",
+  "rubric_id": "nextstep-alpha-v3-authority-state-sync-l2-v1",
+  "artifact_refs": [
+    {
+      "kind": "candidate",
+      "commit": "9aeec254ef6fa7b3ac5bf6cbfd3a38437cf5e01e",
+      "parent": "67438b527a7a88c6cc99c661b6f3d260d24e6877",
+      "tree": "d2f372aaf519481c7dfe9a24973589a6fa1e2f6e",
+      "write_set": [
+        ".codex/operations-log.md",
+        ".codex/verification-report.md",
+        "PROJECT_ROUTE_LOCK.md",
+        "README.md",
+        "docs/PLANS.md",
+        "docs/PRODUCT_SENSE.md",
+        "docs/change-requests/006-scalability-guardrails.md",
+        "docs/change-requests/index.md",
+        "docs/exec-plans/active/p5-product-implementation-milestones.md",
+        "docs/exec-plans/active/p5-scalability-guardrails.md",
+        "docs/qa/index.md"
+      ]
+    },
+    {
+      "kind": "authority-status",
+      "formal": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+      "control": "4375910fa2554af9a8126449e07e25d4725ee6da",
+      "alpha_result_control": "25f5e5a18aae9f87ad6f0dce43513fbbe183fcc1",
+      "alpha_result_digest": "sha256:b22a83615695375102a7a3841c27e6936ca6793feab3151a5a5a1e420bf2fbe4",
+      "implementation_subject": "ca9da8d0fa00a4367a1ad6be411bc660a900098e",
+      "review_integration_main": "67438b527a7a88c6cc99c661b6f3d260d24e6877"
+    },
+    {
+      "kind": "frozen-artifact",
+      "path": "/Users/ling/Documents/Codex/NextStep-v0.2.0-alpha/nextstep-0.2.0-alpha.tgz",
+      "sha256": "9871dcb4a03c8a14f1849f73c431df42b3be7a5315dc3d07bcd6e321f5a30a63",
+      "bytes": 121670,
+      "entries": 75,
+      "status": "local-candidate-usable"
+    }
+  ],
+  "hard_gates": [
+    {
+      "id": "HG1-single-parent-tree",
+      "status": "pass",
+      "evidence": "candidate=9aeec254... 的唯一父提交为 67438b527...，tree= d2f372aaf519481c7dfe9a24973589a6fa1e2f6e，与任务固定身份一致。"
+    },
+    {
+      "id": "HG2-exact-eleven-write-set",
+      "status": "pass",
+      "evidence": "diff-tree 相对 parent 精确只写 exact-eleven；git diff --check 为空；两条受保护未跟踪路径均未进入写集。"
+    },
+    {
+      "id": "HG3-live-authority-facts",
+      "status": "pass",
+      "evidence": "PROJECT_ROUTE_LOCK.md:34-46、docs/PLANS.md:7-8、README.md:5/64-66、p5-product-implementation-milestones.md:3/14-16 与 qa/index.md:3 均同步到 live main/control/formal/alpha Result/frozen artifact，且这些 OID 与项目外 tgz sha256/bytes/entries 已 fresh 复核匹配。"
+    },
+    {
+      "id": "HG4-no-overclaim",
+      "status": "pass",
+      "evidence": "README.md:5/73-74、PROJECT_ROUTE_LOCK.md:34/46、docs/change-requests/index.md:16 与 docs/change-requests/006-scalability-guardrails.md:24/123 明确保留 no-tag/no-publish/no-formal-move/no-user-skill-install、CR-006 open、qualified real runs 0/3、V3/V4/Final Acceptance/P5 未完成。"
+    },
+    {
+      "id": "HG5-next-entry-correct",
+      "status": "pass",
+      "evidence": "PROJECT_ROUTE_LOCK.md:34/46、docs/PLANS.md:7-8/31、README.md:73、p5-product-implementation-milestones.md:3/14-16 与 p5-scalability-guardrails.md:7/256/260 一致声明：下一唯一入口是 V3 Generation 1 计划冻结与 fresh 独立 entry review，且 V3 packet、claim/fence、dispatch、编码均未创建。"
+    },
+    {
+      "id": "HG6-v3-v4-scope-unchanged",
+      "status": "pass",
+      "evidence": "docs/PLANS.md:35-39 仍保持 V3= M3.1..M3.3/S3.1..S3.5/PC-14..18、V4= M4.1..M4.2/S4.1..S4.3/PC-19..20；p5-product-implementation-milestones.md:8/16 与 PROJECT_ROUTE_LOCK.md:33/43-45 未改变既定路线、门禁或 V3/V4 范围。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "I",
+      "name": "身份与机械完整性",
+      "score": 25,
+      "max_score": 25,
+      "reason": "父提交、tree、exact-eleven 写集、受保护路径排除与 diff-check 全部准确闭合。",
+      "evidence_refs": [
+        "HG1-single-parent-tree",
+        "HG2-exact-eleven-write-set"
+      ]
+    },
+    {
+      "id": "X",
+      "name": "权威事实同步",
+      "score": 25,
+      "max_score": 25,
+      "reason": "live control/formal/main、alpha Result 与项目外冻结 tgz 事实在多个真源文件中一致落盘，没有沿用旧 alpha 入口或旧 control。",
+      "evidence_refs": [
+        "HG3-live-authority-facts"
+      ]
+    },
+    {
+      "id": "P",
+      "name": "边界与下一入口",
+      "score": 25,
+      "max_score": 25,
+      "reason": "没有越权宣称 tag/publish/formal/Skill install/CR-006/V3+ 完成，且下一入口准确切换到 V3 Generation 1 计划冻结与独立入口评审。",
+      "evidence_refs": [
+        "HG4-no-overclaim",
+        "HG5-next-entry-correct"
+      ]
+    },
+    {
+      "id": "Profile",
+      "name": "路线稳定性",
+      "score": 25,
+      "max_score": 25,
+      "reason": "状态同步只更新摘要与留痕，没有改写既定 V3/V4 范围、P5 结构或阶段门禁。",
+      "evidence_refs": [
+        "HG6-v3-v4-scope-unchanged"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100,
+    "severity_counts": {
+      "P0": 0,
+      "P1": 0,
+      "P2": 0
+    }
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "PASS：单父、tree、exact-eleven、受保护路径排除、diff-check 与 live authority 事实全部机械匹配。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "PASS / 100：候选把 alpha 独立 package acceptance 的权威现状同步到了路线锁和摘要层，同时准确保留 CR-006、formal、发布与 V3+ 边界。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "PASS / 100；P0/P1/P2=0/0/0，required_fixes=[]。该候选只可作为 alpha 后状态同步提交交回主控，不额外授权 V3 packet、claim/fence、dispatch、编码或 formal 移动。"
+    }
+  ],
+  "reviewed_at": "2026-08-29T17:37:25Z"
+}
