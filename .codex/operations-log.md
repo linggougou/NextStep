@@ -3119,3 +3119,10 @@
 - S3.1 是首个实现入口，严格两阶段 `host-bootstrap→project-probe` 与 `full/manual-isolated/blocked` 三态。S3.1 PASS 不完成 PC-14/M3.1；至少一个正式主宿主 `full` 是 V3 版本出口，必须连同 S3.2 自动分派/恢复和累计验收证明。
 - P4-V16 能力主归属保持 V4/S4.3；V3 只回放归档副作用失败不移动/反转 formal、保持待归档并携带重试证据，不宣告 FA/PC-20。
 - 下一唯一动作是 fresh 独立 entry review；只有 `PASS / 100`、P0/P1/P2=`0/0/0` 才允许主控另行创建 S3.1 packet，entry PASS 本身不授权后续控制动作。
+
+## 2026-08-30 V3 Generation 1 入口计划 P1 窄修订
+
+- fresh 独立 entry review commit=`25b4c7e9ab5429710bd6aae5ba4ec46e5bb6b86d`、tree=`818c0bd7c25f30cd77b8eceb39b4a457e2ef5106`，结论=`REVISE / 80`，P0/P1/P2=`0/2/0`；其父候选=`c1cbf4b7b47da3a77c6f9ef11b66cd7c4829c144`。
+- P1-1 仅收紧 M3.1/PC-14 出口与 S3.2 末尾：除 S3.1+S3.2 独立 I/X/P 外，必须至少一个正式支持主宿主通过 `full` 自动分派与恢复验收；fixture GREEN、模拟 adapter 或单包 PASS 均不足。
+- P1-2 仅补齐 S3.5-B 状态投影运行闭包：新增 `schemas/v1/project-status-projection.schema.json` 与 `tests/fixtures/project-status/**`，allowlist 从 exact-18 修为 exact-20。
+- 当前修订写集仍为计划与两份追加留痕 exact-three；不改其他计划语义，不创建 packet、不提交 control CAS、不移动 main/formal/control，不运行产品 full tests。下一唯一动作是新的 fresh 独立 entry re-review。

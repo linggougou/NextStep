@@ -15,7 +15,7 @@
 
 | 大里程碑 | 顺序 | 小里程碑 | 唯一主归属 | 大里程碑出口 |
 |---|---:|---|---|---|
-| M3.1 宿主能力与职责隔离运行链 | 1 | S3.1 → S3.2 | PC-14 | 两包均通过独立 I/X/P，职责隔离、预检和幂等分派可回放；S3.1 单包 PASS 不等于 PC-14/M3.1 完成 |
+| M3.1 宿主能力与职责隔离运行链 | 1 | S3.1 → S3.2 | PC-14 | 两包均通过独立 I/X/P，且至少一个正式支持主宿主通过 `full` 自动分派与恢复验收；fixture GREEN 不足以完成 PC-14/M3.1，S3.1 单包 PASS 也不等于完成 |
 | M3.2 候选验证与正式提升运行链 | 2 | S3.3 → S3.4-A → S3.4-B → S3.4-C | PC-15、PC-16 | 不可变候选、五类结论、最终快照、项目外凭证、Anchor Proof 与 formal CAS 全链通过 |
 | M3.3 变更、失败退回与恢复运行链 | 3 | S3.5-A → S3.5-B | PC-17、PC-18 | Change Intake、代际墓碑、失败退回与删除聊天后的确定性恢复通过 |
 
@@ -121,7 +121,7 @@ V3 版本出口同时要求：
 - RED 恢复：宿主创建成功但 ACK 丢失、进程在副作用前/后崩溃、重复信封与重启均恢复同一任务，不盲目重建；工作镜像损坏必须从可验证 control 重建。
 - I/X/P/Profile：I 验证主对话只消费 dispatch-ready/ACK 摘要；X 验证主对话/集成/执行权限隔离；P 验证 P4-V01..V03 与 TG-09/TG-10；Profile 冲突在派发前拒绝。
 - 主责 S4 风险：任务创建幂等、control 单写与 fencing、宿主接收端原子幂等、控制台账损坏；主责 P4-V01/V02/V03。
-- 失败退回：packet 缺陷退 S2.4；preflight 失效退 S3.1；幂等/fence 缺陷停在 S3.2。只有 S3.1+S3.2 累计验收和用户门禁才可完成 M3.1/PC-14。
+- 失败退回：packet 缺陷退 S2.4；preflight 失效退 S3.1；幂等/fence 缺陷停在 S3.2。只有 S3.1+S3.2 均通过独立 I/X/P，并且至少一个正式支持主宿主通过 `full` 自动分派与恢复验收，才可完成 M3.1/PC-14；fixture GREEN、模拟 adapter 或单包 PASS 均不足。
 
 ## 6. S3.3 不可变候选与只读验证运行
 
@@ -235,25 +235,27 @@ S3.5 拆为 A/B 两个顺序 packet；A 冻结变更分流，B 冻结代际与�
 
 - 依赖/输入：有效 Change Intake/旧代际墓碑、route lock、活动计划、formal/control、registry/checkpoint 和最小宿主关联；不读取完整聊天。
 - 输出：generation snapshot、最高有效代际/attempt、未确认墓碑、stale/conflict 分类、阻塞与下一步、恢复回执和状态投影。
-- product allowlist exact-18：
+- product allowlist exact-20：
   1. `schemas/v1/generation-snapshot.schema.json`
-  2. `src/domain/generation-recovery.ts`
-  3. `src/domain/project-status-projection.ts`
-  4. `src/adapters/node/project-status-source.ts`
-  5. `src/cli/project-status.ts`
-  6. `tests/domain/generation-recovery.test.ts`
-  7. `tests/domain/project-status-projection.test.ts`
-  8. `tests/adapters/node/project-status-source.test.ts`
-  9. `tests/cli/project-status.test.ts`
-  10. `tests/fixtures/generation-recovery/**`
-  11. `schemas/v1/task-registry.schema.json`
-  12. `src/domain/task-registry.ts`
-  13. `src/adapters/node/control-ref-store.ts`
-  14. `tests/domain/task-registry.test.ts`
-  15. `tests/adapters/node/control-ref-store.test.ts`
-  16. `src/cli/nextstep.ts`
-  17. `tests/cli/nextstep.test.ts`
-  18. `skills/nextstep/SKILL.md`
+  2. `schemas/v1/project-status-projection.schema.json`
+  3. `src/domain/generation-recovery.ts`
+  4. `src/domain/project-status-projection.ts`
+  5. `src/adapters/node/project-status-source.ts`
+  6. `src/cli/project-status.ts`
+  7. `tests/domain/generation-recovery.test.ts`
+  8. `tests/domain/project-status-projection.test.ts`
+  9. `tests/adapters/node/project-status-source.test.ts`
+  10. `tests/cli/project-status.test.ts`
+  11. `tests/fixtures/generation-recovery/**`
+  12. `tests/fixtures/project-status/**`
+  13. `schemas/v1/task-registry.schema.json`
+  14. `src/domain/task-registry.ts`
+  15. `src/adapters/node/control-ref-store.ts`
+  16. `tests/domain/task-registry.test.ts`
+  17. `tests/adapters/node/control-ref-store.test.ts`
+  18. `src/cli/nextstep.ts`
+  19. `tests/cli/nextstep.test.ts`
+  20. `skills/nextstep/SKILL.md`
 - TDD：正例删除会话缓存后恢复同一阶段/任务/阻塞/下一步；负例覆盖低代际迟到、同代际身份冲突、未确认墓碑、控制镜像篡改/回退/断链；阻塞时不采纳损坏状态、不派发；恢复覆盖 ACK 丢失、过期 claim 更高 fence 接管和人工隔离证据。I/X/P/Profile 主责最小状态投影、恢复职责、PC-18 与路线适用性；主责 P4-V04/V05，并完成 P4-V17 的新代际/墓碑部分。
 - 主责 S4 风险：控制台账损坏、控制代际单调、恢复不依赖聊天、敏感信息不落盘。失败退回 S3.5-A、对应 packet 或人工控制恢复；历史 Result 和 formal 不变。
 

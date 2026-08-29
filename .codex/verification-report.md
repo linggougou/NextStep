@@ -3380,7 +3380,14 @@ package/skills/nextstep/agents/openai.yaml
 
 - 里程碑主归属精确：M3.1=`S3.1+S3.2→PC-14`，M3.2=`S3.3+S3.4→PC-15/16`，M3.3=`S3.5→PC-17/18`；无 PC 遗漏、重复或 V4 偷渡。
 - 首入口只允许 S3.1；两阶段 `host-bootstrap→project-probe`、三态 `full/manual-isolated/blocked`、S3.1 PASS 不完成 PC-14/M3.1、至少一个正式主宿主 full 属 V3 出口等边界已冻结。
-- S3.1 exact-11、S3.2 exact-14、S3.3 exact-11；S3.4 A exact-12/B exact-8/C exact-11；S3.5 A exact-9/B exact-18。实现 worker product allowlist 与主控 `.codex` 留痕职责分离。
+- S3.1 exact-11、S3.2 exact-14、S3.3 exact-11；S3.4 A exact-12/B exact-8/C exact-11；S3.5 A exact-9/B exact-20。实现 worker product allowlist 与主控 `.codex` 留痕职责分离。
 - P4-V01..18 均有唯一主责或明确回放归属；S4 §18 十九项风险均分配到 packet。P4-V16 明确保持 V4/S4.3 主归属，V3 不宣告 FA/PC-20。
 - 每个 S3.x 均具备输入/输出/依赖、RED 正/负/阻塞/恢复、GREEN/REFACTOR 边界、I/X/P/Profile、失败退回和禁止范围偷渡。
 - 已执行 exact-three、八组 future allowlist 路径计数、P4-V01..18 唯一 ID 计数、parent/main/formal/control 身份、`git diff --cached --check` 与禁止过度声明反扫，均通过；fresh 独立 entry review 仍是唯一下一动作。
+
+## 2026-08-30 V3 Generation 1 入口计划 P1 窄修订验证
+
+- review authority：commit=`25b4c7e9ab5429710bd6aae5ba4ec46e5bb6b86d`、tree=`818c0bd7c25f30cd77b8eceb39b4a457e2ef5106`、parent candidate=`c1cbf4b7b47da3a77c6f9ef11b66cd7c4829c144`、结论=`REVISE / 80`、P0/P1/P2=`0/2/0`。
+- P1-1 已关闭：M3.1/PC-14 出口和 S3.2 末尾均明确要求 S3.1+S3.2 独立 I/X/P 加至少一个正式支持主宿主 `full` 自动分派与恢复验收；fixture GREEN 不足。
+- P1-2 已关闭：S3.5-B 新增状态投影 Schema 与既有 fixture 路径，编号连续且 future allowlist=`20/20`；所有汇总数量同步为 exact-20。
+- 修订范围 exact-three；不改其他计划语义，不创建 packet、不提交 control CAS、不移动 main/formal/control，不运行产品 full tests。已执行 P1 旧语义反扫、八组 future allowlist 计数（S3.5-B=`20/20`）、review/formal/control 身份和 `git diff --check`，均通过；下一唯一动作是 fresh 独立 entry re-review。
