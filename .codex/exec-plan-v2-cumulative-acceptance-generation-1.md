@@ -67,7 +67,8 @@ V2 通过不表示 `v0.2.0-alpha` 已打包或发布，不移动 formal，不关
 
 - 在同一个 no-local、origin-removed、无 alternates clone 中运行 `corepack pnpm install --offline --frozen-lockfile`，记录 downloaded=`0`，随后 fresh 执行 `corepack pnpm check`。
 - full 至少 `555/555`，failed/skipped/cancelled/todo=`0/0/0/0`；若 subject 枚举高于 555，必须解释新增测试且全部通过，不得降低分母。
-- 同次 full run 的 Node native displayed 与同一 range raw coverage 均不得低于 Lines/Branches/Functions=`94.36/89.65/99.57`；记录 raw covered/total 与精确比例。LCOV 只能旁证，不得跨 run 拼接或替代。
+- M2.2 attempt 2 受控 Result 固定的实际 fresh Lines/Branches/Functions=`94.57/90.01/99.57`；该结果只证明历史 run，不替代 V2 current-attempt fresh evidence。
+- 同次 full run 的 Node native displayed 与同一 range raw coverage 均不得低于 Lines/Branches/Functions=`94.40/89.75/99.57`；记录 raw covered/total 与精确比例。LCOV 只能旁证，不得跨 run 拼接或替代。
 - `git diff --check` 必须通过；测试前后 HEAD/tree、tracked 状态、冻结 refs 与依赖清单必须不变。
 
 ## 5. 独立累计验收硬门

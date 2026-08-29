@@ -3072,7 +3072,7 @@
 ### 门禁与非授权边界
 
 - coverage union 精确包含 S2.1..S2.4、M2.1/M2.2、PC-09..PC-13、TG-02/03/04/06/07/13/16/19；P3 要求 V2 版本验收为 I/X/P + Profile fixture，且 M2.2 历史结论保持 I/X/P-only。
-- targeted 精确八文件、M2.1=`23/23`、M2.2=`29/29`、累计=`52/52`；fresh full>=`555/555`、全零 fail/skip/cancel/todo；same-run displayed/raw coverage floors=`94.36/89.65/99.57`。
+- targeted 精确八文件、M2.1=`23/23`、M2.2=`29/29`、累计=`52/52`；fresh full>=`555/555`、全零 fail/skip/cancel/todo；same-run displayed/raw coverage floors=`94.40/89.75/99.57`。M2.2 attempt 2 Result 固定的受控实际 fresh=`94.57/90.01/99.57`，不得冒充 V2 current-attempt fresh evidence。
 - 计划冻结 no-local/origin-removed/no-alternates、同一 reviewer readiness→ACK→create-once evidence ref→正式验收、exact-three、Result=`passed-awaiting-user-signoff`、用户 ACK 与 completion 分离。
 - 本轮没有运行产品测试；验证只检查计划事实、机械路径、格式和矛盾，不把历史测试结果包装为 current-turn fresh evidence。
 - 计划和 entry review 都不创建 V2 packet/control/ref，不移动 formal，不声明 V2、alpha、CR-006、qualified real runs 或 P5 完成，也不自行批准候选。
