@@ -119,13 +119,14 @@
 - `dist/src/cli/small-milestone.js`
 - `dist/src/cli/execution-packet.js`
 - `dist/schemas/v1/**/*.json`
+- `dist/schemas/v2/product-definition.schema.json`
 - `skills/nextstep/SKILL.md`
 - `skills/nextstep/agents/openai.yaml`
 - `README.md`
 - `examples/quickstart/version-chain.json`
 - `docs/releases/v0.2.0-alpha.md`
 
-加上 npm/pnpm 自动包含的 `package.json`。编译后的 `dist/src/domain/*.js` 使用相对路径读取 `dist/schemas/v1/**/*.json`，因此只携带根目录 `schemas/v1/**` 不构成可运行包；根目录 Schema 源文件不得替代编译产物。不得包含 `dist/**/*.d.ts`、`dist/**/*.map`、`src/**`、根目录 `schemas/**`、`tests/**`、`dist/tests/**`、`.codex/**`、`.git/**`、除精确 alpha release note 外的其他 `docs/**`、`node_modules/**`、未跟踪文件、开发日志或本地绝对路径。尤其不得包含 `dist/src/cli/contract-probe.js`、`dist/src/cli/project-value-validation.js` 或任何未来未列入上表的 `dist/src/cli/*.js`，避免安装者绕过 `nextstep` dispatcher 直接执行被拒绝入口。`UNLICENSED` 是 package metadata 状态，不得凭空生成或宣称开放许可证文件。
+加上 npm/pnpm 自动包含的 `package.json`。编译后的 public CLI 运行时不仅依赖 `dist/schemas/v1/**/*.json`，还依赖 `dist/schemas/v2/product-definition.schema.json`：`product-definition` 直接导入该 schema，`interaction-prototype` 与 `machine-receipt` 又会间接经过 `product-definition`。因此少打任何一层都会让公开命令的运行时闭包不完整；根目录 Schema 源文件不得替代编译产物。不得包含 `dist/**/*.d.ts`、`dist/**/*.map`、`src/**`、根目录 `schemas/**`、`tests/**`、`dist/tests/**`、`.codex/**`、`.git/**`、除精确 alpha release note 外的其他 `docs/**`、`node_modules/**`、未跟踪文件、开发日志或本地绝对路径。尤其不得包含 `dist/src/cli/contract-probe.js`、`dist/src/cli/project-value-validation.js` 或任何未来未列入上表的 `dist/src/cli/*.js`，避免安装者绕过 `nextstep` dispatcher 直接执行被拒绝入口。`UNLICENSED` 是 package metadata 状态，不得凭空生成或宣称开放许可证文件。
 
 ### 5.2 产物与安装边界
 
@@ -180,7 +181,7 @@ RED 必须因缺少 `nextstep.ts`/bin/files/version 等目标行为失败；不�
 在项目外 `mktemp -d` 目录中顺序完成：
 
 1. 从 immutable candidate subject fresh build/check。
-2. local pack，机械列出 tar entries 并执行第 5.1 节 allow/deny 断言，尤其证明 tarball 不含 `dist/src/cli/contract-probe.js`、`dist/src/cli/project-value-validation.js` 与任何未列入白名单的 `dist/src/cli/*.js`。
+2. local pack，机械列出 tar entries 并执行第 5.1 节 allow/deny 断言，尤其证明 tarball 含 `dist/schemas/v2/product-definition.schema.json`，且不含 `dist/src/cli/contract-probe.js`、`dist/src/cli/project-value-validation.js` 与任何未列入白名单的 `dist/src/cli/*.js`。
 3. 计算 tarball SHA-256 与字节数。
 4. 在第二个干净临时项目中以 offline + ignore-scripts 安装该 tarball。
 5. `nextstep --version` 精确输出 `0.2.0-alpha`。

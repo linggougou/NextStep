@@ -3205,3 +3205,22 @@
 - 修订工作树固定于 `d7966d369858c69127cb3fba32b4e4c8f94c89da` 的单父后继；仅改 `.codex/exec-plan-v020-alpha-generation-1.md`、`.codex/operations-log.md`、`.codex/verification-report.md` exact-three。
 - 反扫计划文本确认宽泛 `dist/src/**/*.js` 已被显式 public-CLI+runtime 列表替代；新增 package allowlist=`22/22`、内部 CLI denylist=`2/2`、tarball 缺席断言和 installed package 直达路径缺席断言。
 - 提交前必须通过 `git diff --check`、exact-three、自身 parent/formal/control/plan_generation 不变性检查；本轮仍不运行产品测试、不创建 packet、不移动 refs。
+
+## 2026-08-29 v0.2.0-alpha Generation 1 计划再修订验证
+
+### 触发原因
+
+- fresh 独立 re-review 在验证 public CLI 运行时闭包时命中第二个阻断点：计划只打包 `dist/schemas/v1/**/*.json`，但 `src/domain/product-definition.ts` 明确导入 `../../schemas/v2/product-definition.schema.json`。
+- 该依赖并非孤例：`src/domain/interaction-prototype.ts` 与 `src/domain/machine-receipt.ts` 都会经过 `product-definition`，所以缺失 `dist/schemas/v2/product-definition.schema.json` 会让多个公开 CLI 的安装后运行时闭包不完整。
+
+### 本轮修订内容
+
+- package allowlist 在原先 `22` 条基础上，新增 `dist/schemas/v2/product-definition.schema.json`，收紧后总数变为 `23` 条。
+- pack/install smoke 同步增强为既要证明内部 CLI `2/2` 缺席，也要证明 tarball 明确包含 `dist/schemas/v2/product-definition.schema.json`。
+- 其余边界保持不变：exact-twelve、13 个 public CLI、`contract-probe` / `project-value-validation` denylist、lock/domain/schema/既有 CLI 禁改、private/UNLICENSED、no main/exports/prepack、coverage floors=`94.45/89.76/99.57`、full>=`555/555`、tag/publish 非授权。
+
+### 机械验证
+
+- 反扫源码导入图命中：`src/domain/product-definition.ts -> ../../schemas/v2/product-definition.schema.json`；`src/domain/interaction-prototype.ts` 与 `src/domain/machine-receipt.ts` 均依赖 `product-definition`，证明确属 public CLI 运行时闭包需求，不是多余扩容。
+- 计划文本已同步改为 package allowlist=`23/23`，pack step 明确要求 tarball 含 `dist/schemas/v2/product-definition.schema.json`，同时继续保留内部 CLI denylist=`2/2` 与 installed package 直达路径缺席断言。
+- 本轮仍固定单父后继、exact-three、`git diff --check`、formal/control/plan_generation 不变；未运行产品测试，离线安装缓存缺口不会被误报为计划通过证据。

@@ -3072,3 +3072,9 @@
 - 为保持 alpha 的 local/internal fail-closed 边界，本轮只修计划候选，不碰产品代码：将 package allowlist 收紧为显式 public CLI、`dist/src/adapters/**/*.js`、`dist/src/domain/**/*.js`、`dist/schemas/v1/**/*.json`、Skill/manifest、README、quickstart 与 alpha release note，并新增内部 CLI `2/2` 缺席断言。
 - RED、pack/install smoke 与后续 entry review 反扫同步增强为机械证明 tarball 和 installed package 均不含 `contract-probe` / `project-value-validation` 的直达编译入口；exact-twelve、13 命令白名单、coverage floors、private/UNLICENSED 与 tag/publish 禁止边界保持不变。
 - 本修订仍只写 plan + operations-log + verification-report exact-three；不创建 packet、claim/fence、dispatch、tarball、安装、checksum、tag 或任何 ref 变更。下一动作是 fresh 独立 re-review，而不是 packet preparation。
+
+## 2026-08-29 v0.2.0-alpha Generation 1 计划再修订（补齐 schema 运行时闭包）
+
+- fresh 独立 re-review 在收紧 package 公开面后，又发现第二个阻断点：计划只打 `dist/schemas/v1/**/*.json`，但 public `product-definition` 运行时直接依赖 `dist/schemas/v2/product-definition.schema.json`，`interaction-prototype` 与 `machine-receipt` 还会间接经过它。
+- 本轮继续保持 exact-three 和零产品代码改动，只把 package allowlist 再补齐 `dist/schemas/v2/product-definition.schema.json`，并把 pack/install smoke 改成必须机械证明该 schema 在 tarball 中存在。
+- 入口边界、exact-twelve、13 public CLI、内部 CLI denylist、private/UNLICENSED、no main/exports/prepack、coverage floors 与 tag/publish 非授权边界保持不变。下一动作仍是 fresh 独立 re-review；packet preparation 继续冻结。
