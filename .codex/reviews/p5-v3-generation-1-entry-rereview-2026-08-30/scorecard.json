@@ -1,0 +1,128 @@
+{
+  "review_id": "p5-v3-generation-1-entry-rereview-2026-08-30",
+  "task_id": "V3-GENERATION-1-ENTRY",
+  "lane": "entry-rereview",
+  "review_level": "L3",
+  "rubric_id": "nextstep-v3-generation-1-entry-rereview-l3-v1",
+  "artifact_refs": [
+    {
+      "kind": "revised-candidate",
+      "commit": "07de5f12e45d9e07e3886415ea96a0e27e33d5b6",
+      "parent": "25b4c7e9ab5429710bd6aae5ba4ec46e5bb6b86d",
+      "tree": "556fc82162ecbe5e397e59c587c6d3a3cdb62336"
+    },
+    {
+      "kind": "prior-review",
+      "commit": "25b4c7e9ab5429710bd6aae5ba4ec46e5bb6b86d",
+      "verdict": "REVISE",
+      "final_score": 80,
+      "required_fix_count": 2
+    },
+    {
+      "kind": "authority",
+      "formal": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+      "control": "4375910fa2554af9a8126449e07e25d4725ee6da",
+      "route_generation": 1,
+      "global_plan_generation": 5,
+      "v3_plan_generation": 1
+    }
+  ],
+  "hard_gates": [
+    {
+      "id": "HG1-identity-and-exact-three",
+      "status": "pass",
+      "evidence": "candidate=07de5f12... 的唯一父提交为 25b4c7e9...，tree=556fc82162ecbe5e397e59c587c6d3a3cdb62336；相对 parent 的当前写集精确为 .codex/exec-plan-v3-generation-1.md、.codex/operations-log.md、.codex/verification-report.md 三项，git diff --check 无输出，受保护路径未入写集。"
+    },
+    {
+      "id": "HG2-m31-full-exit-restored",
+      "status": "pass",
+      "evidence": "计划在 .codex/exec-plan-v3-generation-1.md:18 与 :124 同时恢复了 M3.1/PC-14 的上游约束：只有 S3.1+S3.2 均通过独立 I/X/P，且至少一个正式支持主宿主通过 full 自动分派与恢复验收，才可完成 M3.1/PC-14；fixture GREEN、模拟 adapter 或单包 PASS 均不足。与 p3-version-and-milestone-breakdown.md:130、:258 一致。"
+    },
+    {
+      "id": "HG3-s35b-exact-20-self-consistent",
+      "status": "pass",
+      "evidence": "S3.5-B allowlist 已改为 exact-20，并在 .codex/exec-plan-v3-generation-1.md:238-258 明确纳入 schemas/v1/project-status-projection.schema.json 与 tests/fixtures/project-status/**。条目数机械复算为 20，且与当前 project-status contract surface 的直接依赖 tests/domain/project-status-projection.test.ts:8,16 与 tests/cli/project-status.test.ts:10-11 保持自洽。"
+    },
+    {
+      "id": "HG4-v3-ordering-and-boundaries-stable",
+      "status": "pass",
+      "evidence": "V3 顺序仍固定为 S3.1→S3.2→S3.3→S3.4-A→S3.4-B→S3.4-C→S3.5-A→S3.5-B；P4-V01..18 与 S4 十九项风险分配保持不变；P4-V16 仍只在 V3 回放不反转 formal，V4/Final Acceptance/PC-19/PC-20/CR-006/P5 边界未漂移。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "I",
+      "name": "身份与机械边界",
+      "score": 25,
+      "max_score": 25,
+      "reason": "单父、tree、exact-three、diff-check 与受保护路径排除全部准确。",
+      "evidence_refs": [
+        "HG1-identity-and-exact-three"
+      ]
+    },
+    {
+      "id": "X",
+      "name": "上游一致性",
+      "score": 25,
+      "max_score": 25,
+      "reason": "M3.1/PC-14 的 full 主宿主出口要求已在大里程碑出口和 S3.2 收口同时恢复，与已会签 P3 对齐。",
+      "evidence_refs": [
+        "HG2-m31-full-exit-restored"
+      ]
+    },
+    {
+      "id": "P",
+      "name": "future packet 可执行性",
+      "score": 25,
+      "max_score": 25,
+      "reason": "S3.5-B exact-20 现已覆盖 project-status 的 schema、fixture、domain、adapter、CLI 与测试依赖面，future packet 自洽。",
+      "evidence_refs": [
+        "HG3-s35b-exact-20-self-consistent"
+      ]
+    },
+    {
+      "id": "Profile",
+      "name": "范围与门禁纪律",
+      "score": 25,
+      "max_score": 25,
+      "reason": "V3 顺序、P4-V16 边界、V4/FA/P5 非目标和无偷渡约束保持稳定。",
+      "evidence_refs": [
+        "HG4-v3-ordering-and-boundaries-stable"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100,
+    "severity_counts": {
+      "P0": 0,
+      "P1": 0,
+      "P2": 0
+    }
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "PASS：当前写集 exact-three、单父/tree、diff-check、修订点闭合与边界稳定全部满足。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "PASS / 100：上轮两条 P1 已被精确修复，没有引入新的上游偏移或 future packet 自相矛盾。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "PASS：修订是针对性闭环，没有借机扩范围，也没有把 V4/FA/CR-006/P5 状态混入 V3。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "PASS / 100；P0/P1/P2=0/0/0，required_fixes=[]。该计划修订已可交回主控作为 fresh entry PASS 依据；本结论仍不授权 S3.1 claim/fence、dispatch 或编码。"
+    }
+  ],
+  "reviewed_at": "2026-08-30T01:58:14+08:00"
+}
