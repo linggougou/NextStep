@@ -1,0 +1,155 @@
+{
+  "review_id": "p5-v3-generation-1-entry-review-2026-08-30",
+  "task_id": "V3-GENERATION-1-ENTRY",
+  "lane": "entry-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-v3-generation-1-entry-l3-v1",
+  "artifact_refs": [
+    {
+      "kind": "candidate",
+      "commit": "c1cbf4b7b47da3a77c6f9ef11b66cd7c4829c144",
+      "parent": "691393988fa64a00c1398519b6c0fa9eacd1b1f8",
+      "tree": "87d5588ae4daed2cbf2911036734c9bbfc5a8ad7"
+    },
+    {
+      "kind": "authority",
+      "formal": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+      "control": "4375910fa2554af9a8126449e07e25d4725ee6da",
+      "route_generation": 1,
+      "global_plan_generation": 5,
+      "v3_plan_generation": 1
+    },
+    {
+      "kind": "current-write-set",
+      "paths": [
+        ".codex/exec-plan-v3-generation-1.md",
+        ".codex/operations-log.md",
+        ".codex/verification-report.md"
+      ]
+    }
+  ],
+  "hard_gates": [
+    {
+      "id": "HG1-identity-and-exact-three",
+      "status": "pass",
+      "evidence": "candidate= c1cbf4b7... 的唯一父提交为 691393988..., tree=87d5588ae4daed2cbf2911036734c9bbfc5a8ad7；相对 parent 的当前写集精确为 exact-three，git diff --check 无输出，受保护未跟踪路径未入写集。"
+    },
+    {
+      "id": "HG2-v3-structure-ordering",
+      "status": "pass",
+      "evidence": "计划正文保持 M3.1→M3.2→M3.3、S3.1→S3.2→S3.3→S3.4-A→S3.4-B→S3.4-C→S3.5-A→S3.5-B 的唯一顺序，并明确 S3.4 与 S3.5 不可合并或跳过。"
+    },
+    {
+      "id": "HG3-m31-full-exit-preserved",
+      "status": "fail",
+      "evidence": "上游 P3 把 PC-14 与 M3.1 明确绑定到“至少一个正式支持主宿主为 full”，见 p3-version-and-milestone-breakdown.md:130 与 :258；但候选在 .codex/exec-plan-v3-generation-1.md:18 和 :124 只要求 S3.1+S3.2 累计验收与用户门禁即可完成 M3.1/PC-14，把 full 要求仅保留在 V3 版本出口 :28。这会允许 M3.1 在没有任何正式 full 主宿主的情况下被误判完成。"
+    },
+    {
+      "id": "HG4-s35b-allowlist-self-consistency",
+      "status": "fail",
+      "evidence": "S3.5-B allowlist 在 .codex/exec-plan-v3-generation-1.md:238-256 允许修改 project-status domain/source/cli 与对应测试，却没有纳入现有依赖的 schemas/v1/project-status-projection.schema.json 和 tests/fixtures/project-status/**。当前 tests/domain/project-status-projection.test.ts:8/16 与 tests/cli/project-status.test.ts:10-11 都直接依赖该 schema/fixture，CR-006 SG-2 的冻结范围 docs/exec-plans/active/p5-scalability-guardrails.md:141-148 也证明这两者属于同一 contract surface。缺失会让 exact-18 packet 自相矛盾，后续实现不是卡死就是被迫越界改动。"
+    },
+    {
+      "id": "HG5-boundary-no-smuggling",
+      "status": "pass",
+      "evidence": "候选明确保留 no-CR006-close、no-V4/FA/PC19/PC20/P5、P4-V16 仅作 V3 回放且不反转 formal、不宣告 FA/PC-20，未发现旧 alpha 入口或发布越权偷渡。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "I",
+      "name": "身份与机械边界",
+      "score": 25,
+      "max_score": 25,
+      "reason": "单父、tree、exact-three、敏感路径排除和顺序冻结都准确。",
+      "evidence_refs": [
+        "HG1-identity-and-exact-three",
+        "HG2-v3-structure-ordering"
+      ]
+    },
+    {
+      "id": "X",
+      "name": "上游一致性",
+      "score": 20,
+      "max_score": 25,
+      "reason": "总体遵守 P3/P4/S4，但 M3.1/PC-14 的 full 宿主出口要求被弱化到了 V3 版本级，未在大里程碑出口保留。",
+      "evidence_refs": [
+        "HG3-m31-full-exit-preserved"
+      ]
+    },
+    {
+      "id": "P",
+      "name": "future packet 可执行性",
+      "score": 20,
+      "max_score": 25,
+      "reason": "S3.4 A/B/C 与 S3.5 A/B 的切分思路是对的，但 S3.5-B 的 exact allowlist 没覆盖现有 project-status contract surface，后续 exact packet 无法自洽落地。",
+      "evidence_refs": [
+        "HG4-s35b-allowlist-self-consistency"
+      ]
+    },
+    {
+      "id": "Profile",
+      "name": "范围与门禁纪律",
+      "score": 25,
+      "max_score": 25,
+      "reason": "没有把 CR-006、V4、Final Acceptance、PC-20 或 P5 偷渡进 V3，也明确约束了 P4-V16 的边界。",
+      "evidence_refs": [
+        "HG5-boundary-no-smuggling"
+      ]
+    }
+  ],
+  "penalties": [
+    {
+      "severity": "P1",
+      "deduction": 5,
+      "reason": "M3.1/PC-14 的 full 主宿主出口条件没有在大里程碑级保留，和已会签 P3 不一致。",
+      "evidence_refs": [
+        "HG3-m31-full-exit-preserved"
+      ]
+    },
+    {
+      "severity": "P1",
+      "deduction": 5,
+      "reason": "S3.5-B future exact allowlist 漏掉现有 project-status schema 与 fixture，破坏 packet 自洽性。",
+      "evidence_refs": [
+        "HG4-s35b-allowlist-self-consistency"
+      ]
+    }
+  ],
+  "totals": {
+    "raw_score": 90,
+    "penalty_total": 10,
+    "final_score": 80,
+    "max_score": 100,
+    "severity_counts": {
+      "P0": 0,
+      "P1": 2,
+      "P2": 0
+    }
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "在 M3.1 出口与 S3.2 收口规则中显式恢复上游 P3 的 full 宿主约束：M3.1/PC-14 只有在至少一个正式支持主宿主通过 full 自动分派与恢复验收、且 blocked 不列入支持时才可完成；该要求不能只留在 V3 版本出口。",
+    "修正 S3.5-B 的 future exact allowlist，使其与现有 project-status contract surface 自洽：至少纳入 schemas/v1/project-status-projection.schema.json 与 tests/fixtures/project-status/**，或把 project-status 相关修改完全移出该 packet，并同步更新 exact count。"
+  ],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "REVISE：当前 candidate 的单父、tree、exact-three 和边界反扫都通过，但 M3.1 出口要求与 S3.5-B future allowlist 这两条客观约束未闭合。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "REVISE / 80：计划骨架清晰，S3.4 A/B/C 和 S3.5 A/B 的拆分方向正确；不过上游约束弱化和 allowlist 自洽性缺口都会直接影响后续实施。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "PASS：没有模板化偷渡 V4/FA/P5，也没有把 alpha、CR-006 或发布状态混进 V3；问题是实质性边界缺口，不是空泛表述。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "REVISE / 80；P0/P1/P2=0/2/0，required_fixes=2。修完这两处后可重新做 fresh 独立 entry review；本轮不放行 S3.1 packet、claim/fence、dispatch 或编码。"
+    }
+  ],
+  "reviewed_at": "2026-08-29T17:52:56Z"
+}
