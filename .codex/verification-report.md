@@ -3352,3 +3352,18 @@ package/skills/nextstep/agents/openai.yaml
 
 - `git diff --check`、exact-three、单父、lockfile/formal/control 不变性必须在提交前最终复验。正式 coverage 与 package smoke 已通过；候选允许交给新的独立 package acceptance reviewer。
 - 该判断是实现者自检，不是独立验收；不授权 main 集成、formal/control 移动、tag、publish、用户级 Skill 安装，也不代表 alpha、CR-006、V3、V4、Final Acceptance 或 P5 完成。
+
+## 2026-08-30 alpha→V3 权威状态同步验证
+
+### 身份与事实
+
+- 固定父/基线 main=`67438b527a7a88c6cc99c661b6f3d260d24e6877`；formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`；control=`4375910fa2554af9a8126449e07e25d4725ee6da`；`plan_generation=5`。
+- alpha package acceptance attempt 3=`PASS / 100`、I/X/P/Profile=`25/25/25/25`、P0/P1/P2=`0/0/0`；Result digest=`sha256:b22a83615695375102a7a3841c27e6936ca6793feab3151a5a5a1e420bf2fbe4`、Result control=`25f5e5a18aae9f87ad6f0dce43513fbbe183fcc1`；implementation subject=`ca9da8d0fa00a4367a1ad6be411bc660a900098e`。
+- review/integration main=`67438b527a7a88c6cc99c661b6f3d260d24e6877`；冻结产物=`/Users/ling/Documents/Codex/NextStep-v0.2.0-alpha/nextstep-0.2.0-alpha.tgz`，sha256=`9871dcb4a03c8a14f1849f73c431df42b3be7a5315dc3d07bcd6e321f5a30a63`、`121670` bytes、`75` entries，offline smoke 通过。同步后的唯一准确候选状态=`local-candidate-usable`。
+
+### 写集与边界
+
+- 写集仅限 exact-eleven：`PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md`、`README.md`、`docs/PRODUCT_SENSE.md`、`docs/exec-plans/active/p5-product-implementation-milestones.md`、`docs/exec-plans/active/p5-scalability-guardrails.md`、`docs/qa/index.md`、`docs/change-requests/index.md`、`docs/change-requests/006-scalability-guardrails.md`、`.codex/operations-log.md`、`.codex/verification-report.md`。
+- 状态同步不创建 tag、不 publish、不移动 formal、不安装用户级 Skill，不关闭 CR-006；qualified real runs 仍为 `0/3`。V3/V4/Final Acceptance/P5 未完成。
+- 下一唯一入口为冻结 V3 Generation 1 计划并进行 fresh 独立 entry review；本轮未创建 V3 packet、claim/fence、dispatch 或编码，既定 V3/V4 范围未改变。
+- 已执行 `git diff --check`、exact-eleven 写集、stale-current 反扫和父/refs 身份检查，均通过；项目外 tarball fresh 复核得到 sha256=`9871dcb4a03c8a14f1849f73c431df42b3be7a5315dc3d07bcd6e321f5a30a63`、`121670` bytes、`75` entries，与冻结事实一致。本轮仅文档状态同步，不运行产品测试，也不把历史测试结果冒充 fresh 结果。

@@ -13,7 +13,7 @@
 
 ## 已接受未关闭变更
 
-- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，但 `change_request_closed=false`，风险及 qualified real runs `0/3` 保留。V2 已由独立版本累计验收、用户会签与分离 completion CAS formally-completed；这不自动关闭 CR-006。formal 仍为 F16，control=`4f466224a442dd9650905722398bfad743e327fa`；下一唯一入口为独立 alpha 计划与 fresh entry review，alpha packet/package/install/tag 未创建。
+- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，但 `change_request_closed=false`，风险及 qualified real runs `0/3` 保留。V2 已由独立版本累计验收、用户会签与分离 completion CAS formally-completed；这不自动关闭 CR-006。alpha 本地内部候选已通过独立 package acceptance attempt 3，状态=`local-candidate-usable`；tag/publish/formal 移动/用户级 Skill 安装未发生。formal 仍为 F16，control=`4375910fa2554af9a8126449e07e25d4725ee6da`；下一唯一入口为 V3 Generation 1 计划冻结与 fresh 独立 entry review，V3 packet、claim/fence、dispatch、编码均未创建。
 
 ## 分流规则
 

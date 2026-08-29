@@ -3103,3 +3103,10 @@
 - 唯一一次正式 post-fix fresh Node native `spec + lcov` dual-reporter full=`568/568`，fail/skip/cancel/todo=`0/0/0/0`；displayed Lines/Branches/Functions=`94.83/90.29/99.58`，same-run raw=`8470/8932=94.82758620689656%`、`3049/3377=90.28723719277465%`、`705/708=99.57627118644068%`。未重跑挑选结果。
 - package/offline smoke 保持通过；测试不入包，项目外复算 tgz 仍为 `sha256:9871dcb4a03c8a14f1849f73c431df42b3be7a5315dc3d07bcd6e321f5a30a63`、`121670` bytes。临时 pack 与 coverage 目录已清理。
 - 本轮只生成新的 test-only immutable subject；不自我验收、不合 main、不移动 formal/control、不创建 tag/publish/用户级 Skill 安装，也不声明 alpha、CR-006、V3/V4/Final Acceptance/P5 完成。
+
+## 2026-08-30 alpha→V3 权威状态同步
+
+- 以 main=`67438b527a7a88c6cc99c661b6f3d260d24e6877` 为固定父/基线，在独立 `codex/` worktree 仅同步路线锁、计划摘要、README、产品摘要、P5 两份活动计划、QA/CR 索引、CR-006 详情和两份 `.codex` 追加留痕 exact-eleven；未改产品代码、测试、包字节或 main/formal/control refs。
+- 重新核对 formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control=`4375910fa2554af9a8126449e07e25d4725ee6da`、`plan_generation=5`。alpha package acceptance attempt 3=`PASS / 100`、I/X/P/Profile=`25/25/25/25`、P0/P1/P2=`0/0/0`；Result digest=`sha256:b22a83615695375102a7a3841c27e6936ca6793feab3151a5a5a1e420bf2fbe4`、Result control=`25f5e5a18aae9f87ad6f0dce43513fbbe183fcc1`。
+- 固定 implementation subject=`ca9da8d0fa00a4367a1ad6be411bc660a900098e`、review/integration main=`67438b527a7a88c6cc99c661b6f3d260d24e6877`；冻结项目外 tarball sha256=`9871dcb4a03c8a14f1849f73c431df42b3be7a5315dc3d07bcd6e321f5a30a63`、`121670` bytes、`75` entries，offline smoke 通过。状态严格为 `local-candidate-usable`。
+- 边界保持：tag、publish、formal 移动、用户级 Skill 安装未发生；CR-006 仍 open，qualified real runs=`0/3`；V3/V4/Final Acceptance/P5 未完成。下一唯一入口为冻结 V3 Generation 1 计划并进行 fresh 独立 entry review；本轮未创建 V3 packet、claim/fence、dispatch 或编码，也未改变既定 V3/V4 范围。
