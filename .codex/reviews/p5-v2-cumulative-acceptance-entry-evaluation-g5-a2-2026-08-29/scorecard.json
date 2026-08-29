@@ -1,0 +1,198 @@
+{
+  "review_id": "p5-v2-cumulative-acceptance-entry-evaluation-g5-a2-2026-08-29",
+  "task_id": "V2-ENTRY-EVALUATION",
+  "lane": "P5/V2/cumulative-acceptance-entry",
+  "review_level": "L3",
+  "rubric_id": "nextstep-v2-cumulative-acceptance-entry-v1",
+  "artifact_refs": [
+    {
+      "kind": "review_subject",
+      "ref": "git:b8fdae247d6b3259e31817c8d9ceba5c4137506f",
+      "tree": "3d57644ab83c47af61be98bcc68317e145bc7c41",
+      "parent": "d271513adadb15316c113c9982060ad457159c76"
+    },
+    {
+      "kind": "plan",
+      "path": ".codex/exec-plan-v2-cumulative-acceptance-generation-1.md"
+    },
+    {
+      "kind": "provisioning_manifest",
+      "path": "/private/tmp/nextstep-v2-ca-entry-review-a2.9HCJee/provisioning-evidence.json",
+      "sha256": "5c3bbb3974d08f8f54ba4ba88531092dd2a46d8e6961064d022f08d78935baed"
+    },
+    {
+      "kind": "formal",
+      "ref": "git:ea04b57de83d6c548dcb1629b1f61832db8375ad"
+    },
+    {
+      "kind": "control_entry",
+      "ref": "git:ef0ba6525fd2be8ac13c6d07ed4e4a9f991795d2",
+      "parent": "d57abec8c8ad71f192142d07b65dc9bc8eef2b7f"
+    },
+    {
+      "kind": "route_lock",
+      "path": "PROJECT_ROUTE_LOCK.md"
+    },
+    {
+      "kind": "verification_report",
+      "path": ".codex/verification-report.md"
+    }
+  ],
+  "hard_gates": [
+    {
+      "id": "HG1-revise-fix-authority-provisioning",
+      "status": "pass",
+      "evidence": [
+        "attempt 1 REVISE 的唯一 required fix 是在派发本轮 reviewer 前，让四组 immutable authority 在 no-local/origin-removed/no-alternates clone 内真实可寻址并可复核；本轮对 3c0853b56b7a09b3299e49893f64a721ab3597ea、381224e6301c4a2d58841a99c233439c9b2e1e56、a823f63b35475aeb03d853559af187354cdc6883、5e95f22dae75253ff8f35e022676aa02ad697ad8 均完成 git cat-file / rev-list / diff-tree / ls-tree 复核。",
+        "两份 acceptance commit 的写集均为 exact-three：milestone-acceptance.json、scorecard.json、verdict.md；两份 signoff/identity review commit 的写集均为 exact-two：scorecard.json、verdict.md。",
+        "四个 commit 的 tree 与唯一父全部匹配计划第 5 节冻结值，未发现 merge commit、replace/graft 或不可寻址对象。"
+      ]
+    },
+    {
+      "id": "HG2-jcs-and-raw-digests",
+      "status": "pass",
+      "evidence": [
+        "3c0853... 的 milestone-acceptance/scorecard/verdict digest 复算精确匹配 sha256:035d229410361ae22604ae02a254937997ced487435a567ede11278eeddf7b25 / sha256:da31dc7dae7f599542503d1a70c323078248bc2a715e55e17041885eb5286dbf / sha256:88eba0eda63e37ec26d18033c149fb46b61192572c3ad46c9ca790db6d9a31a8。",
+        "381224... 的 milestone-acceptance/scorecard/verdict digest 复算精确匹配 sha256:818ab1ccab3fc01289e1484144cea2d2a009fa812bc8475742c8eeb01bae7985 / sha256:20c6887bd91c85e6cc219acd6c10acf19f5a38dada3c6ccaabda4a792abbecd7 / sha256:12cf5e8e8f13d647941467de71d4f1ee5c0a8d7d0986f20f242ec1e5b0fd2540。",
+        "a823f63... 的 scorecard/verdict digest 复算精确匹配 sha256:977f57c38df8b8b390550a6c2515bb988b1b4402ef8c53283826ae2b5b7cc601 / sha256:c669cb7cd7cc28d89cd2d01d8f8c7d195b158b23cf96c54bc4e55e72194fd513；5e95f22... 的 scorecard/verdict digest 复算精确匹配 sha256:c7ee32e976127619d63481d2a2298f0121f17d5398f30d093e8a309030767714 / sha256:af6c0b19769ae0d75fbe77c9c3afd36805f125536db8b137cd33c4d0e86413a4。"
+      ]
+    },
+    {
+      "id": "HG3-provisioning-invariance-and-isolation",
+      "status": "pass",
+      "evidence": [
+        "provisioning manifest 记录 refs_before_equal_refs_after=true、head_tree_worktree_unchanged=true、remote_absent=true、alternates_absent=true、shallow=false；当前 clone 复核结果与之保持一致。",
+        "当前 review clone 仍无 remote、无 alternates、非 shallow；`refs/nextstep/formal=ea04b57de83d6c548dcb1629b1f61832db8375ad`、`refs/nextstep/control=ef0ba6525fd2be8ac13c6d07ed4e4a9f991795d2`，HEAD 仍为 review subject `b8fdae247d6b3259e31817c8d9ceba5c4137506f`，HEAD tree 仍为 `3d57644ab83c47af61be98bcc68317e145bc7c41`。",
+        "工作树在写入本评审前 clean，未发现 provisioning 触发任何 frozen ref movement、subject 替换或 worktree 漂移。"
+      ]
+    },
+    {
+      "id": "HG4-plan_identity_control_and_union",
+      "status": "pass",
+      "evidence": [
+        "计划准确绑定 historical subject `43df63566b4edd8496f3ad1e62533b980767abd8` / tree `09057e7fce389b946bccef8b745875df46f1a984` / parent `a8ba3dae236f3978fd4e97c4ce0062cf81a25b9d` / digest `sha256:5f6e3b0bbcee3fa7cd1b291b754cffaeb17e22fc09d506758701151464b59d0b`，且拒绝 live main、formal 或 review commit 替换。",
+        "entry control `ef0ba6525fd2be8ac13c6d07ed4e4a9f991795d2` 的唯一父为 `d57abec8c8ad71f192142d07b65dc9bc8eef2b7f`；checkpoint 明确 `plan_generation=5`、`formal_oid=ea04b57de83d6c548dcb1629b1f61832db8375ad`、`pending_dispatch_messages=[]`，与计划和 verification report 一致。",
+        "计划完整冻结了 PC-09..PC-13、TG-02/TG-03/TG-04/TG-06/TG-07/TG-13/TG-16/TG-19、I/X/P/Profile、三 fixture、Q4=20/20、Q5=18/18、Q6=100%、targeted 52/52、full>=555/555、coverage floors 94.40/89.75/99.57，以及 readiness-only -> ACK -> create-once evidence ref -> 正式验收 -> Result -> signoff -> completion 的分离顺序。"
+      ]
+    },
+    {
+      "id": "HG5-boundaries_and_non_authorized_actions",
+      "status": "pass",
+      "evidence": [
+        "本计划与本 entry review 都只停在 packet 之前；不创建 packet/control/ref，不运行正式 V2 full tests，不移动 formal，不关闭 CR-006，不宣称 alpha、V3、V4、Final Acceptance 或 P5 完成。",
+        "角色隔离保持明确：本轮 reviewer 只输出 exact-two，正式 V2 reviewer 仍必须是未来唯一新独立 subagent；历史分段 PASS 继续只作为 entry_evidence_only。",
+        "attempt 1 REVISE commit `d271513adadb15316c113c9982060ad457159c76` 作为唯一父历史完整保留，未被改写或跳过。"
+      ]
+    },
+    {
+      "id": "HG6-judge-harness_contract",
+      "status": "pass",
+      "evidence": [
+        "本评审使用 Judge Harness L3 结构，按硬门、I/X/P/Profile 四维和 Chief Reviewer 结论给出单一 verdict。",
+        "全部硬门通过，P0/P1/P2=0/0/0，required_fixes=[]，因此唯一允许结论为 PASS / 100。"
+      ]
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "I",
+      "score": 25,
+      "max_score": 25,
+      "reason": "review subject、historical subject、entry control、checkpoint 与四组 immutable authority 的身份和单父关系都可独立复算。",
+      "evidence_refs": [
+        "HG1-revise-fix-authority-provisioning",
+        "HG2-jcs-and-raw-digests",
+        "HG4-plan_identity_control_and_union"
+      ]
+    },
+    {
+      "id": "X",
+      "score": 25,
+      "max_score": 25,
+      "reason": "attempt 1 的唯一缺口已经被 controller-only provisioning 闭合；clone 不变性、isolation 和 fail-closed 边界成立。",
+      "evidence_refs": [
+        "HG1-revise-fix-authority-provisioning",
+        "HG3-provisioning-invariance-and-isolation",
+        "HG5-boundaries_and_non_authorized_actions"
+      ]
+    },
+    {
+      "id": "P",
+      "score": 25,
+      "max_score": 25,
+      "reason": "V2 只冻结当前入口、累计并集、52/555 门槛与控制面顺序，没有越权扩展为完成声明。",
+      "evidence_refs": [
+        "HG4-plan_identity_control_and_union",
+        "HG5-boundaries_and_non_authorized_actions"
+      ]
+    },
+    {
+      "id": "Profile",
+      "score": 25,
+      "max_score": 25,
+      "reason": "计划正确把 V2 维度定义为 I/X/P + Profile fixture，并保持 M2.2 历史结论仍为 I/X/P-only。",
+      "evidence_refs": [
+        "HG4-plan_identity_control_and_union",
+        "HG6-judge-harness_contract"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100
+  },
+  "verdict": {
+    "decision": "PASS",
+    "score": 100,
+    "p0": 0,
+    "p1": 0,
+    "p2": 0
+  },
+  "required_fixes": [],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "decision": "PASS",
+      "summary": "四组 immutable authority 的对象、父链、路径集和 JCS/raw digest 全部可独立复核，attempt 1 唯一缺口已关闭。",
+      "evidence_refs": [
+        "HG1-revise-fix-authority-provisioning",
+        "HG2-jcs-and-raw-digests",
+        "HG3-provisioning-invariance-and-isolation"
+      ]
+    },
+    {
+      "role": "Strict Judge",
+      "decision": "PASS",
+      "summary": "计划在 identity、authority、52/555/coverage floors、时序与未授权边界上均达到放行 packet 前入口的要求。",
+      "evidence_refs": [
+        "HG4-plan_identity_control_and_union",
+        "HG5-boundaries_and_non_authorized_actions"
+      ]
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "decision": "PASS",
+      "summary": "结论依赖 Git 对象、checkpoint、manifest 和计划硬门，而不是复述历史文案或把历史 PASS 直接包装成 V2 PASS。",
+      "evidence_refs": [
+        "HG2-jcs-and-raw-digests",
+        "HG3-provisioning-invariance-and-isolation",
+        "HG5-boundaries_and_non_authorized_actions"
+      ]
+    },
+    {
+      "role": "Chief Reviewer",
+      "decision": "PASS",
+      "summary": "本结论只放行后续独立 packet 创建入口，不代替 V2 正式验收、Result、user-signoff 或 completion。",
+      "evidence_refs": [
+        "HG4-plan_identity_control_and_union",
+        "HG5-boundaries_and_non_authorized_actions",
+        "HG6-judge-harness_contract"
+      ]
+    }
+  ],
+  "reviewed_at": "2026-08-29T02:15:00Z"
+}
