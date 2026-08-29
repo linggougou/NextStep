@@ -3065,3 +3065,10 @@
 - package 白名单收紧为运行时 JS/JSON、Skill+manifest、README、quickstart 和 alpha release note；不新增 main/exports/prepack。现有编译模块按相对路径读取 `dist/schemas/v1/**/*.json`，根目录 `schemas/**` 不进入包且不修改；精确 checksum 只写不随包的 verification report，避免 release note 自引用。future TDD/验收固定 RED→GREEN→refactor、full>=555 且零 fail/skip/cancel/todo、same-run displayed/raw coverage>=`94.45/89.76/99.57`、tarball allow/deny、项目外 offline/ignore-scripts 临时安装、help/version/canonical smoke/fail-closed 与 SHA-256 复算。
 - 本计划作者不参与 fresh entry review；只有独立 `PASS / 100`、P0/P1/P2=`0/0/0` 才允许主控另行进入 packet preparation。本轮未运行产品测试，历史 V2 指标不冒充 current-turn fresh evidence。
 - 结束状态=`已结束/等待独立 entry review`；机械检查通过：current exact-three、future allowlist=12、CLI allowlist=13、package files 条目=7、`git diff --check`、formal/control/parent 不变。
+
+## 2026-08-29 v0.2.0-alpha Generation 1 计划窄修订（内部 CLI 打包绕过）
+
+- fresh 独立 reviewer 在线程评审中暴露一项实质 P1：若 `package.json.files` 继续用 `dist/src/**/*.js`，当前构建会把 `dist/src/cli/contract-probe.js` 与 `dist/src/cli/project-value-validation.js` 一并装入 tarball，安装者可绕过 `nextstep` dispatcher 直接执行被拒绝入口。
+- 为保持 alpha 的 local/internal fail-closed 边界，本轮只修计划候选，不碰产品代码：将 package allowlist 收紧为显式 public CLI、`dist/src/adapters/**/*.js`、`dist/src/domain/**/*.js`、`dist/schemas/v1/**/*.json`、Skill/manifest、README、quickstart 与 alpha release note，并新增内部 CLI `2/2` 缺席断言。
+- RED、pack/install smoke 与后续 entry review 反扫同步增强为机械证明 tarball 和 installed package 均不含 `contract-probe` / `project-value-validation` 的直达编译入口；exact-twelve、13 命令白名单、coverage floors、private/UNLICENSED 与 tag/publish 禁止边界保持不变。
+- 本修订仍只写 plan + operations-log + verification-report exact-three；不创建 packet、claim/fence、dispatch、tarball、安装、checksum、tag 或任何 ref 变更。下一动作是 fresh 独立 re-review，而不是 packet preparation。

@@ -3186,3 +3186,22 @@
 - 本轮只验证计划的事实、路径、结构与矛盾，不运行产品 full tests，不把 V2 历史 `555/555` 或 coverage 包装为 current-turn fresh 证据。
 - 计划质量自检=`100 / 100`，建议=`提交 fresh 独立 entry review`。该自检不替代独立评审；entry review 非 `PASS / 100` 时不得创建 alpha packet。
 - 实测机械结果：current write set=`3/3`、future allowlist=`12/12`、CLI allowlist=`13/13`、package files entries=`7/7`；`git diff --check`、禁止路径差异、parent/formal/control 精确断言均通过。门禁判断=`计划候选通过自检，允许送独立 entry review；不允许创建 packet`。
+
+## 2026-08-29 v0.2.0-alpha Generation 1 计划窄修订验证
+
+### 触发原因
+
+- fresh 独立 reviewer 的反证检查命中一项可恢复但阻断入口的 P1：计划第 5.1 节若使用 `dist/src/**/*.js`，则当前构建会把 `dist/src/cli/contract-probe.js` 与 `dist/src/cli/project-value-validation.js` 一并装入 tarball。
+- 两个编译入口在仓库现状中都真实存在：源文件分别为 `src/cli/contract-probe.ts` 与 `src/cli/project-value-validation.ts`，构建后可形成同名 `dist/src/cli/*.js`。这与“内部探针不得暴露”“两条命令不可绕过”的 alpha 边界冲突。
+
+### 本轮修订内容
+
+- package allowlist 从宽泛 `dist/src/**/*.js` 收紧为显式 `13` 个 public CLI、`dist/src/cli/nextstep.js`、`dist/src/adapters/**/*.js`、`dist/src/domain/**/*.js`、`dist/schemas/v1/**/*.json`、Skill/manifest、README、quickstart 与 alpha release note，共 `22` 个 allowlist 条目。
+- denylist 明确新增 `dist/src/cli/contract-probe.js`、`dist/src/cli/project-value-validation.js` 以及任何未来未列入白名单的 `dist/src/cli/*.js`；pack/install smoke 与 entry review 反扫同步要求证明这两条直接路径在 tarball 和 installed package 中都不存在。
+- exact-twelve、13 命令白名单、lock/domain/schema/既有 CLI 禁改、no main/exports/prepack、private/UNLICENSED、coverage floors=`94.45/89.76/99.57`、full>=`555/555`、tag/publish 非授权边界均未改变。
+
+### 机械验证
+
+- 修订工作树固定于 `d7966d369858c69127cb3fba32b4e4c8f94c89da` 的单父后继；仅改 `.codex/exec-plan-v020-alpha-generation-1.md`、`.codex/operations-log.md`、`.codex/verification-report.md` exact-three。
+- 反扫计划文本确认宽泛 `dist/src/**/*.js` 已被显式 public-CLI+runtime 列表替代；新增 package allowlist=`22/22`、内部 CLI denylist=`2/2`、tarball 缺席断言和 installed package 直达路径缺席断言。
+- 提交前必须通过 `git diff --check`、exact-three、自身 parent/formal/control/plan_generation 不变性检查；本轮仍不运行产品测试、不创建 packet、不移动 refs。

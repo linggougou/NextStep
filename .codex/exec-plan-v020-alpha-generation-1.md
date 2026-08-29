@@ -102,7 +102,22 @@
 
 `files` 只允许以下精确运行/说明内容：
 
-- `dist/src/**/*.js`
+- `dist/src/adapters/**/*.js`
+- `dist/src/domain/**/*.js`
+- `dist/src/cli/nextstep.js`
+- `dist/src/cli/project-status.js`
+- `dist/src/cli/requirement-intake.js`
+- `dist/src/cli/requirement-freeze.js`
+- `dist/src/cli/product-definition.js`
+- `dist/src/cli/interaction-prototype.js`
+- `dist/src/cli/carrier-decision.js`
+- `dist/src/cli/acceptance-profile.js`
+- `dist/src/cli/write-consistency.js`
+- `dist/src/cli/source-validate.js`
+- `dist/src/cli/version-chain.js`
+- `dist/src/cli/major-milestone.js`
+- `dist/src/cli/small-milestone.js`
+- `dist/src/cli/execution-packet.js`
 - `dist/schemas/v1/**/*.json`
 - `skills/nextstep/SKILL.md`
 - `skills/nextstep/agents/openai.yaml`
@@ -110,7 +125,7 @@
 - `examples/quickstart/version-chain.json`
 - `docs/releases/v0.2.0-alpha.md`
 
-加上 npm/pnpm 自动包含的 `package.json`。编译后的 `dist/src/domain/*.js` 使用相对路径读取 `dist/schemas/v1/**/*.json`，因此只携带根目录 `schemas/v1/**` 不构成可运行包；根目录 Schema 源文件不得替代编译产物。不得包含 `dist/**/*.d.ts`、`dist/**/*.map`、`src/**`、根目录 `schemas/**`、`tests/**`、`dist/tests/**`、`.codex/**`、`.git/**`、除精确 alpha release note 外的其他 `docs/**`、`node_modules/**`、未跟踪文件、开发日志或本地绝对路径。`UNLICENSED` 是 package metadata 状态，不得凭空生成或宣称开放许可证文件。
+加上 npm/pnpm 自动包含的 `package.json`。编译后的 `dist/src/domain/*.js` 使用相对路径读取 `dist/schemas/v1/**/*.json`，因此只携带根目录 `schemas/v1/**` 不构成可运行包；根目录 Schema 源文件不得替代编译产物。不得包含 `dist/**/*.d.ts`、`dist/**/*.map`、`src/**`、根目录 `schemas/**`、`tests/**`、`dist/tests/**`、`.codex/**`、`.git/**`、除精确 alpha release note 外的其他 `docs/**`、`node_modules/**`、未跟踪文件、开发日志或本地绝对路径。尤其不得包含 `dist/src/cli/contract-probe.js`、`dist/src/cli/project-value-validation.js` 或任何未来未列入上表的 `dist/src/cli/*.js`，避免安装者绕过 `nextstep` dispatcher 直接执行被拒绝入口。`UNLICENSED` 是 package metadata 状态，不得凭空生成或宣称开放许可证文件。
 
 ### 5.2 产物与安装边界
 
@@ -134,8 +149,8 @@
 4. unknown、`contract-probe`、`project-value-validation`、路径穿越/绝对路径命令均不 spawn、非零退出且不泄漏输入/路径。
 5. `write-consistency --commit` 等敏感动作不会因聚合器获得可信 capability，既有 fail-closed 边界不弱化。
 6. package metadata 精确为 version/bin/private/license/files，不新增 main/exports，且 lockfile、依赖集合和 lifecycle scripts 不变。
-7. tarball 内容只命中第 5.1 节白名单，明确排除源码、测试、`.codex`、Git、用户未跟踪对象和开发日志。
-8. tarball 可在项目外临时目录 offline/ignore-scripts 安装；installed bin 的 version/help/canonical smoke/unknown/sensitive/fail-closed 均符合契约。
+7. tarball 内容只命中第 5.1 节显式 public-CLI+runtime 白名单，明确排除源码、测试、`.codex`、Git、用户未跟踪对象、开发日志，以及 `dist/src/cli/contract-probe.js`、`dist/src/cli/project-value-validation.js`。
+8. tarball 可在项目外临时目录 offline/ignore-scripts 安装；installed bin 的 version/help/canonical smoke/unknown/sensitive/fail-closed 均符合契约，且已安装包内不存在可直接运行的 `contract-probe` / `project-value-validation` 编译入口。
 9. 测试结束后清理自身临时目录，不修改 worktree tracked 状态或 refs。
 
 RED 必须因缺少 `nextstep.ts`/bin/files/version 等目标行为失败；不得写永远通过、只查字符串、跳过真实进程或用 snapshot/padding 假装覆盖。
@@ -165,13 +180,13 @@ RED 必须因缺少 `nextstep.ts`/bin/files/version 等目标行为失败；不�
 在项目外 `mktemp -d` 目录中顺序完成：
 
 1. 从 immutable candidate subject fresh build/check。
-2. local pack，机械列出 tar entries 并执行第 5.1 节 allow/deny 断言。
+2. local pack，机械列出 tar entries 并执行第 5.1 节 allow/deny 断言，尤其证明 tarball 不含 `dist/src/cli/contract-probe.js`、`dist/src/cli/project-value-validation.js` 与任何未列入白名单的 `dist/src/cli/*.js`。
 3. 计算 tarball SHA-256 与字节数。
 4. 在第二个干净临时项目中以 offline + ignore-scripts 安装该 tarball。
 5. `nextstep --version` 精确输出 `0.2.0-alpha`。
 6. `nextstep --help` 只列 13 项白名单。
 7. 把已安装包内 `examples/quickstart/version-chain.json` 送入 `nextstep version-chain`，得到 exit 0、stderr empty、单一 canonical JCS，`code=VERSION_CHAIN_ACCEPTED`。
-8. unknown、`contract-probe`、`project-value-validation` 非零退出；敏感/可信 capability 命令保持既有 fail-closed，且临时项目无被写入目标业务文件。
+8. unknown、`contract-probe`、`project-value-validation` 非零退出；敏感/可信 capability 命令保持既有 fail-closed，且临时项目无被写入目标业务文件。若尝试直接执行已安装包路径下的 `dist/src/cli/contract-probe.js` 或 `dist/src/cli/project-value-validation.js`，必须因文件不存在而失败。
 9. 验证 tarball 与临时安装目录位于仓库外；结束后只移除本任务自己创建的临时目录。
 
 ### 7.3 不变性与反扫
