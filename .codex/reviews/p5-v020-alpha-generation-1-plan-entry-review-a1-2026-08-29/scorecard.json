@@ -1,0 +1,185 @@
+{
+  "review_id": "p5-v020-alpha-generation-1-plan-entry-review-a1-2026-08-29",
+  "task_id": "V020-ALPHA",
+  "lane": "entry-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-v020-alpha-generation-1-plan-entry-v1",
+  "verdict": "PASS",
+  "artifact_refs": [
+    {
+      "kind": "reviewed-plan-candidate",
+      "commit": "682291093cdc377a3278a5fbf857809953b68fa7",
+      "tree": "954d8ac7a5b77eb1646cd10d161b0728dc6b16d3",
+      "parent": "fb27777b2a6d10b334a9fa77de03744754936731"
+    },
+    {
+      "kind": "frozen-main-baseline",
+      "commit": "f17a7bf57aff4647d75672266dbccda15d172ccb",
+      "tree": "2d855ca14bee9cec6edcd807b183eb418bbc35af"
+    },
+    {
+      "kind": "formal",
+      "commit": "ea04b57de83d6c548dcb1629b1f61832db8375ad"
+    },
+    {
+      "kind": "control",
+      "commit": "4f466224a442dd9650905722398bfad743e327fa"
+    },
+    {
+      "kind": "plan",
+      "path": ".codex/exec-plan-v020-alpha-generation-1.md",
+      "plan_generation": 5,
+      "alpha_plan_generation": 1,
+      "stage_id": "P5/v0.2.0-alpha"
+    }
+  ],
+  "isolation": {
+    "clone": "/private/tmp/nextstep-alpha-plan-final-review.vrwrDR/repo",
+    "clone_mode": "git-clone-no-local",
+    "remote_count": 0,
+    "alternates": false,
+    "shallow": false,
+    "detached_head": true,
+    "original_worktree_accessed": false,
+    "protected_untracked_objects_accessed": false,
+    "network_used": false
+  },
+  "hard_gates": [
+    {
+      "id": "HG1-candidate-identity-and-linear-revisions",
+      "status": "pass",
+      "evidence": "送审候选 commit/tree/unique parent 精确为 682291093cdc377a3278a5fbf857809953b68fa7 / 954d8ac7a5b77eb1646cd10d161b0728dc6b16d3 / fb27777b2a6d10b334a9fa77de03744754936731；其父链 d7966d3 -> fb27777 -> 6822910 均为单父且每次只改计划、operations-log、verification-report exact-three。冻结 main/formal/control/plan_generation 精确为 f17a7bf57aff4647d75672266dbccda15d172ccb / ea04b57de83d6c548dcb1629b1f61832db8375ad / 4f466224a442dd9650905722398bfad743e327fa / 5。"
+    },
+    {
+      "id": "HG2-exact-twelve-implementation-write-set",
+      "status": "pass",
+      "evidence": "未来实现写集机械枚举为 12/12：package、唯一聚合 CLI、两份测试、quickstart、Skill+manifest、README、两份 release 文档和两份 .codex 留痕。第 13 路径必须 fail closed；lockfile、tsconfig、schemas、domain、adapters、既有 CLI/测试/fixture、路线锁及 refs 均明确禁止。"
+    },
+    {
+      "id": "HG3-public-cli-and-internal-entry-deny",
+      "status": "pass",
+      "evidence": "统一 help 的映射机械核对为 13/13，且与现有 public CLI 文件一一对应。contract-probe、project-value-validation、unknown、大小写/路径形态、../ 和绝对路径均要求在 spawn 前非零拒绝；两项内部 compiled CLI 还必须从 tarball 与 installed package 中物理缺席，不能绕过 dispatcher 直达。"
+    },
+    {
+      "id": "HG4-runtime-closure-and-package-files",
+      "status": "pass",
+      "evidence": "package files 精确为 23/23：adapters/domain runtime JS、nextstep+13 public CLI JS、v1 schemas、v2 product-definition schema、Skill+manifest、README、quickstart、单一 alpha release note。对 13 个 public CLI 做静态相对导入遍历得到 41 个可达 TS 模块和 19 个 JSON 引用；所有 JSON 均落在 schemas/v1/** 或 schemas/v2/product-definition.schema.json，无遗漏闭包。宽泛 dist/src/**/*.js 已移除，两项内部 CLI 直接入口明确排除。"
+    },
+    {
+      "id": "HG5-metadata-and-lifecycle-boundary",
+      "status": "pass",
+      "evidence": "计划精确要求 version=0.2.0-alpha、bin.nextstep=dist/src/cli/nextstep.js，并保持 private=true、license=UNLICENSED；不新增 main/exports、依赖或 prepack/prepare/postinstall 等 lifecycle script。当前 package metadata 与这些保留边界一致，未来测试必须机械断言 metadata、依赖集合、lockfile和 lifecycle scripts 不变。"
+    },
+    {
+      "id": "HG6-offline-pack-install-and-zero-pollution",
+      "status": "pass",
+      "evidence": "计划要求 pack 与第二阶段安装都位于项目外一次性临时目录，安装使用 offline+ignore-scripts，不访问 registry、不全局安装、不写用户级 Skill或当前仓库；tar entries、raw bytes SHA-256、字节数、installed bin smoke、内部入口缺席和业务文件零写入均有机械门禁。checksum 只写不随包的 verification report，避免包内容自引用。"
+    },
+    {
+      "id": "HG7-tdd-tests-and-coverage-baseline",
+      "status": "pass",
+      "evidence": "未来实现固定 RED->GREEN->refactor；RED 必须因目标行为缺失而失败，禁止字符串假测、snapshot/padding、skip 或虚增分母。targeted 枚举、fresh full>=555/555、fail/skip/cancel/todo=0/0/0/0、同一次 Node native displayed/raw Lines/Branches/Functions>=94.45/89.76/99.57、covered/total 记录与 LCOV 旁证边界完整。按审查任务约束本轮未运行产品 full tests。"
+    },
+    {
+      "id": "HG8-local-internal-alpha-and-release-boundary",
+      "status": "pass",
+      "evidence": "stage_id=P5/v0.2.0-alpha 仅定义本地内部开发者预览；不声明普通用户完整产品、stable API、full trusted host、CR-006 close、qualified runs 3/3、V3/V4/Final Acceptance/P5 complete。计划禁止 tag、push、upload、publish、registry 写入、用户级安装与自动 Skill 覆盖；package acceptance 也不隐含这些权限。"
+    },
+    {
+      "id": "HG9-control-order-and-role-separation",
+      "status": "pass",
+      "evidence": "后续顺序固定为 entry PASS -> 独立 expected-old 单父 packet CAS -> 分离 claim/fence -> ready/outbox -> ACK -> 唯一实现者 -> fresh 独立 package acceptance -> 条件式线性集成 -> final subject fresh rebuild/install/checksum。ACK 前 readiness-only；entry reviewer 不参与修订、packet、实现或 package acceptance。"
+    },
+    {
+      "id": "HG10-current-candidate-scope-and-isolation",
+      "status": "pass",
+      "evidence": "候选相对冻结 main 只新增/修改计划与两份留痕 exact-three，共 325 insertions/0 deletions；git diff --check 通过。评审在 fresh git clone --no-local、detached HEAD、remote=0、无 alternates、非 shallow 环境执行，未访问原工作树、两个受保护未跟踪对象或网络，未运行产品 full tests，未修改 main/formal/control。"
+    }
+  ],
+  "verification": {
+    "full_tests_run": false,
+    "candidate_changed_paths": [
+      ".codex/exec-plan-v020-alpha-generation-1.md",
+      ".codex/operations-log.md",
+      ".codex/verification-report.md"
+    ],
+    "candidate_numstat": {
+      "insertions": 325,
+      "deletions": 0
+    },
+    "mechanical_counts": {
+      "implementation_allowlist": 12,
+      "public_cli_allowlist": 13,
+      "package_files_allowlist": 23,
+      "reachable_typescript_modules": 41,
+      "reachable_schema_json": 19,
+      "uncovered_schema_json": 0,
+      "internal_cli_direct_entries_denied": 2
+    },
+    "git_diff_check": "pass"
+  },
+  "dimensions": [
+    {
+      "id": "D1",
+      "name": "身份、路线与写集",
+      "score": 25,
+      "max_score": 25,
+      "reason": "冻结 identity、单父修订链、stage_id、plan_generation 与 exact-twelve 均可机械复算。",
+      "evidence_refs": ["HG1-candidate-identity-and-linear-revisions", "HG2-exact-twelve-implementation-write-set"]
+    },
+    {
+      "id": "D2",
+      "name": "CLI 与运行时闭包",
+      "score": 25,
+      "max_score": 25,
+      "reason": "13 项 public CLI、两项内部入口 deny、23 条 files 与完整 JS/Schema 运行时闭包闭合。",
+      "evidence_refs": ["HG3-public-cli-and-internal-entry-deny", "HG4-runtime-closure-and-package-files"]
+    },
+    {
+      "id": "D3",
+      "name": "打包、安装与验证可执行性",
+      "score": 25,
+      "max_score": 25,
+      "reason": "metadata/lifecycle、项目外 offline 安装、零污染、TDD、full 与 coverage 双口径硬门完整且无递归脚本风险。",
+      "evidence_refs": ["HG5-metadata-and-lifecycle-boundary", "HG6-offline-pack-install-and-zero-pollution", "HG7-tdd-tests-and-coverage-baseline"]
+    },
+    {
+      "id": "D4",
+      "name": "发布边界、控制顺序与独立性",
+      "score": 25,
+      "max_score": 25,
+      "reason": "internal alpha 定位、no-tag/no-publish、分离 CAS/ACK/实现/验收时序和 fresh review 隔离均成立。",
+      "evidence_refs": ["HG8-local-internal-alpha-and-release-boundary", "HG9-control-order-and-role-separation", "HG10-current-candidate-scope-and-isolation"]
+    }
+  ],
+  "findings": [],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100,
+    "severity_counts": {
+      "P0": 0,
+      "P1": 0,
+      "P2": 0
+    }
+  },
+  "required_fixes": [],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "PASS：candidate identity、exact-twelve、13/23 白名单、Schema 闭包、metadata 和控制顺序全部通过机械检查。"
+    },
+    {
+      "role": "Strict Judge / Anti-Slop Judge",
+      "conclusion": "PASS：两次窄修订已关闭内部 CLI 泄漏与 v2 schema 缺包风险；没有范围膨胀、过度发布声明、测试 padding 或权限偷渡。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "PASS / 100；P0/P1/P2=0/0/0；required_fixes=[]。只允许进入独立 alpha Execution Packet preparation 门禁，不授权其后的 packet、实现、集成、tag 或发布动作。"
+    }
+  ],
+  "reviewed_at": "2026-08-29T06:12:18Z"
+}
