@@ -1,0 +1,174 @@
+{
+  "review_id": "p5-v2-cumulative-acceptance-a1-signoff-package-review-2026-08-29",
+  "task_id": "V2-ATTEMPT-1-USER-SIGNOFF-PACKAGE-FINAL",
+  "lane": "independent-signoff-package-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-version-acceptance-signoff-readiness-v1",
+  "subject_identity": {
+    "commit": "815fe5c3eb05d5ebcf033a2cbdc3e83aa23093cd",
+    "tree": "8b8455099eb59171f2a10b70888801d3834e3e86",
+    "parent": "fdd0c4b366f92b777df6818eb7ee8a14821d009f",
+    "formal": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "result_control": "82e20134381a8a21891babaca6484f54de236974"
+  },
+  "artifact_refs": [
+    "git:815fe5c3eb05d5ebcf033a2cbdc3e83aa23093cd",
+    "formal:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "control:82e20134381a8a21891babaca6484f54de236974",
+    "control:results/result-version-acceptance-v2-g5-a1-f157-20260829.json",
+    "control:checkpoint.json",
+    "control:registry.json",
+    "docs/qa/p5-v2-cumulative-acceptance-attempt-1-2026-08-29.md",
+    "PROJECT_ROUTE_LOCK.md",
+    "review-commit:68888402063b36c75c73e8fe937984781b307d71:.codex/reviews/p5-v2-cumulative-acceptance-g5-a1-f157-2026-08-29/version-acceptance.json",
+    "review-commit:68888402063b36c75c73e8fe937984781b307d71:.codex/reviews/p5-v2-cumulative-acceptance-g5-a1-f157-2026-08-29/scorecard.json",
+    "review-commit:68888402063b36c75c73e8fe937984781b307d71:.codex/reviews/p5-v2-cumulative-acceptance-g5-a1-f157-2026-08-29/verdict.md"
+  ],
+  "artifact_digests": {
+    "report_raw_sha256": "sha256:592a982e84c1ed1e24e25da04a59fe8f6ca44e0cc36b6115b029d7ed145b39fe",
+    "result_jcs_without_result_digest": "sha256:f82ce4edd94b587f7f076eb6b52cfffbb2acb0b9b6dd2690a3d1aa4940543ad2",
+    "review_version_acceptance_raw_sha256": "sha256:c8fe7c4a6c1f5543d965d2d7bd35433fa55a273a8644404452a2c671495b9d6c",
+    "review_version_acceptance_jcs_sha256": "sha256:902d77d163bfb3b1e5602296b7b580520ab144340cc9d858b77c488f33f6d036",
+    "review_scorecard_raw_sha256": "sha256:0a9ca7e579a84d08cfad2c6995eb0773fbdd62ea5d93b1fab42583ffb015b717",
+    "review_scorecard_jcs_sha256": "sha256:e2f01de47ed0e79b3e9fbebdd037b3fe135114804a93312bfacfba59fa75aa92",
+    "review_verdict_raw_sha256": "sha256:013f7d4400f3e4768653c3f42e26339b89ca7a56f4223673a817d27f4df77fe0"
+  },
+  "evidence_summary": [
+    "subject 815fe5c 的直接写集精确为 docs/qa 报告加两份 .codex 留痕，exact-three 成立。",
+    "Result control 82e2013 的唯一父为 9e3c63f，live refs/nextstep/control 仍停在 82e2013，尚未创建任何 V2 signoff request、ACK 或 completion。",
+    "V2 Result 按 RFC8785 排除顶层 result_digest 后独立复算，得到 sha256:f82ce4edd94b587f7f076eb6b52cfffbb2acb0b9b6dd2690a3d1aa4940543ad2，与文件内声明一致。",
+    "historical subject 43df635 和 acceptance review 6888840 的 commit/tree/parent 与 exact-three review 路径集合全部匹配；review artifact 摘要与 Result 绑定值一致。",
+    "报告中的 52/52、555/555、94.45/89.76/99.57、8366/8858、3008/3351、697/700、Q4 20/20、Q5 18/18、Q6 3/3、I/X/P/Profile 25/25/25/25 与 Result 一致。",
+    "报告明确保留 CR-006 open、qualified real runs 0/3、formal 不移动、V2 尚未会签、alpha/V3/V4/Final Acceptance/P5 未完成，并将 broad autonomy 排除在本 Result 精确会签之外。"
+  ],
+  "hard_gates": [
+    {
+      "id": "HG1-subject-and-result-control-identity",
+      "status": "pass",
+      "evidence": "HEAD 精确为 815fe5c3eb05d5ebcf033a2cbdc3e83aa23093cd，tree=8b8455099eb59171f2a10b70888801d3834e3e86，唯一父=fdd0c4b366f92b777df6818eb7ee8a14821d009f；formal 仍为 ea04b57de83d6c548dcb1629b1f61832db8375ad，live refs/nextstep/control=82e20134381a8a21891babaca6484f54de236974，唯一父=9e3c63f04d5ea6a3f8a67086b2fd2e7e312194cc。"
+    },
+    {
+      "id": "HG2-report-exact-three",
+      "status": "pass",
+      "evidence": "subject 相对父提交只新增 .codex/operations-log.md、.codex/verification-report.md、docs/qa/p5-v2-cumulative-acceptance-attempt-1-2026-08-29.md 三个路径；numstat=8/0、21/0、69/0；无 src/tests/schemas/skills/refs 变化。"
+    },
+    {
+      "id": "HG3-result-jcs-and-state",
+      "status": "pass",
+      "evidence": "control:results/result-version-acceptance-v2-g5-a1-f157-20260829.json 按 RFC8785 排除顶层 result_digest 后复算命中 sha256:f82ce4edd94b587f7f076eb6b52cfffbb2acb0b9b6dd2690a3d1aa4940543ad2；Result state=passed-awaiting-user-signoff，severity=P0/P1/P2=0/0/0，required_fixes=[]。"
+    },
+    {
+      "id": "HG4-historical-subject-review-and-exact-three-review-artifacts",
+      "status": "pass",
+      "evidence": "historical subject 43df63566b4edd8496f3ad1e62533b980767abd8 的 tree=09057e7fce389b946bccef8b745875df46f1a984、唯一父=a8ba3dae236f3978fd4e97c4ce0062cf81a25b9d；acceptance review 68888402063b36c75c73e8fe937984781b307d71 的 tree=4ac57b0e5b134701d18ab3d5ece2fbd21fd0470e、唯一父=43df63566b4edd8496f3ad1e62533b980767abd8，且相对 historical subject 只新增 version-acceptance.json、scorecard.json、verdict.md 三文件。三者 raw/JCS 摘要复算匹配 Result 绑定值。"
+    },
+    {
+      "id": "HG5-metrics-scope-and-carry-forward-fidelity",
+      "status": "pass",
+      "evidence": "报告与 Result 一致记录 build exit 0、targeted 52/52、full 555/555、same-run displayed 94.45/89.76/99.57、raw 8366/8858、3008/3351、697/700、Q4 20/20、Q5 18/18、Q6 3/3、covered milestones/tasks/PC/TG 与 I/X/P/Profile 25/25/25/25；同时精确保留 fixture/headless/manual-isolated 边界、CR-006 open、qualified real runs 0/3、formal 不移动、alpha/V3/V4/Final Acceptance/P5 未完成。"
+    },
+    {
+      "id": "HG6-pre-signoff-control-state",
+      "status": "pass",
+      "evidence": "live control tree 中存在 V2 Result 文件，但不存在任何 V2 user-signoff-request、user-signoff-ack 或 version-completion 消息；checkpoint.next_stage 明确为“create an exact signoff report and obtain independent package review before signoff-request CAS”。当前状态与报告第 7 节“先 report review，再 signoff-request CAS”一致。"
+    },
+    {
+      "id": "HG7-state-machine-safety",
+      "status": "pass",
+      "evidence": "报告把后续顺序限定为 report review -> signoff-request CAS -> exact user ACK CAS -> separate V2 completion CAS -> independent alpha 计划/packet/实施/验收；明确 CAS 冲突保持 pending，不得用 broad autonomy 代替本 Result 精确会签，不得重建 Result、改写历史 evidence、移动 formal 或把 alpha/CR-006/V3/V4/Final Acceptance/P5 包装为完成。"
+    },
+    {
+      "id": "HG8-mechanical-integrity",
+      "status": "pass",
+      "evidence": "开始评审时工作树 clean；本次只允许新增本目录 exact-two；最终需以 815fe5c 为唯一父提交中文 review commit，并保持 git diff --check 通过与工作树 clean。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "identity_and_traceability",
+      "score": 25,
+      "max_score": 25,
+      "reason": "subject、historical subject/review、formal、result control、exact-three 路径集合和摘要绑定都能在当前隔离 clone 独立复核。",
+      "evidence_refs": [
+        "HG1-subject-and-result-control-identity",
+        "HG2-report-exact-three",
+        "HG4-historical-subject-review-and-exact-three-review-artifacts"
+      ]
+    },
+    {
+      "id": "result_and_metric_integrity",
+      "score": 25,
+      "max_score": 25,
+      "reason": "Result JCS 复算、review artifact 摘要、52/555 验证数、coverage、Q4/Q5/Q6 与四维满分都与报告一致，没有算术或绑定错误。",
+      "evidence_refs": [
+        "HG3-result-jcs-and-state",
+        "HG4-historical-subject-review-and-exact-three-review-artifacts",
+        "HG5-metrics-scope-and-carry-forward-fidelity"
+      ]
+    },
+    {
+      "id": "signoff_state_machine_safety",
+      "score": 25,
+      "max_score": 25,
+      "reason": "当前控制面仍处于 signoff-request 前，报告对 request、精确用户 ACK、completion CAS、alpha 后续入口和 CAS 冲突语义的拆分是安全的。",
+      "evidence_refs": [
+        "HG6-pre-signoff-control-state",
+        "HG7-state-machine-safety"
+      ]
+    },
+    {
+      "id": "scope_honesty_and_boundary_control",
+      "score": 25,
+      "max_score": 25,
+      "reason": "报告没有把 broad autonomy 或历史分段 PASS 冒充本次会签，没有移动 formal，也没有宣称 alpha、CR-006、V3、V4、Final Acceptance 或 P5 完成。",
+      "evidence_refs": [
+        "HG5-metrics-scope-and-carry-forward-fidelity",
+        "HG7-state-machine-safety",
+        "HG8-mechanical-integrity"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100
+  },
+  "severity_summary": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "signal": "PASS",
+      "conclusion": "报告 exact-three、Result JCS、control 单父、historical subject/review、review artifact 摘要、指标与状态机边界均可机械复核。"
+    },
+    {
+      "role": "Strict Judge",
+      "signal": "PASS",
+      "score": 100,
+      "conclusion": "当前会签包对 V2 Result、验收范围、carry-forward 边界和后续控制链的表述准确，没有需要修订的正确性缺陷。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "signal": "PASS",
+      "conclusion": "未发现 broad autonomy 冒充精确会签、formal 位移、阶段偷跑、历史结论混写或完成态夸大。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "signal": "PASS",
+      "score": 100,
+      "conclusion": "V2 attempt 1 用户会签候选包通过最终独立 L3 终审，可进入单独的 signoff-request CAS；approval_effect=none，当前不完成 V2。"
+    }
+  ],
+  "reviewed_at": "2026-08-29T04:46:04Z",
+  "approval_effect": "none",
+  "next_authorized_step": "only signoff-request CAS",
+  "verdict_scope": "PASS 仅针对 commit 815fe5c3eb05d5ebcf033a2cbdc3e83aa23093cd 上的 V2 attempt 1 用户会签候选包与 formal ea04b57de83d6c548dcb1629b1f61832db8375ad、Result control 82e20134381a8a21891babaca6484f54de236974、Result sha256:f82ce4edd94b587f7f076eb6b52cfffbb2acb0b9b6dd2690a3d1aa4940543ad2、historical subject 43df63566b4edd8496f3ad1e62533b980767abd8 及 acceptance review 68888402063b36c75c73e8fe937984781b307d71 的一致性。它只允许后续创建独立 signoff-request CAS；本裁决不等于用户批准，不执行 ACK/completion，不移动 formal，不创建 alpha packet。"
+}
