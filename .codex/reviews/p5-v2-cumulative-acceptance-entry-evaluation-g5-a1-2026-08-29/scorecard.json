@@ -1,0 +1,188 @@
+{
+  "review_id": "p5-v2-cumulative-acceptance-entry-evaluation-g5-a1-2026-08-29",
+  "task_id": "V2-ENTRY-EVALUATION",
+  "lane": "P5/V2/cumulative-acceptance-entry",
+  "review_level": "L3",
+  "rubric_id": "nextstep-v2-cumulative-acceptance-entry-v1",
+  "artifact_refs": [
+    {
+      "kind": "review_subject",
+      "ref": "git:e741bbba4d0881954b2404d5eb5918c1fc8d9dcc",
+      "tree": "91e98b61e36006e017eb9e033662f2f782bab1a4",
+      "parent": "e623f9a8eca2adaccb903c6c0e4857450d116291"
+    },
+    {
+      "kind": "plan",
+      "path": ".codex/exec-plan-v2-cumulative-acceptance-generation-1.md"
+    },
+    {
+      "kind": "formal",
+      "ref": "git:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+      "tree": "5b97a4432fbedb3dda189e05052c2e7665a1bea8",
+      "parent": "5d3ee76a514bda3da38adc8cccbe5ef4550bf30f"
+    },
+    {
+      "kind": "control_entry",
+      "ref": "git:ef0ba6525fd2be8ac13c6d07ed4e4a9f991795d2",
+      "tree": "a4146d45409c6380cd246c4cf5c48bedef010a78",
+      "parent": "d57abec8c8ad71f192142d07b65dc9bc8eef2b7f"
+    },
+    {
+      "kind": "supporting_report",
+      "path": ".codex/verification-report.md"
+    },
+    {
+      "kind": "route_lock",
+      "path": "PROJECT_ROUTE_LOCK.md"
+    }
+  ],
+  "hard_gates": [
+    {
+      "id": "HG1-subject-and-entry-control-identity",
+      "status": "pass",
+      "evidence": [
+        "送审 subject 精确为 commit e741bbba4d0881954b2404d5eb5918c1fc8d9dcc / tree 91e98b61e36006e017eb9e033662f2f782bab1a4 / parent e623f9a8eca2adaccb903c6c0e4857450d116291，单父成立。",
+        "计划第 5-11 行与 imported control 一致固定 formal=F16 ea04b57de83d6c548dcb1629b1f61832db8375ad、entry control=ef0ba6525fd2be8ac13c6d07ed4e4a9f991795d2、plan_generation=5、pending dispatch=0。"
+      ]
+    },
+    {
+      "id": "HG2-exact-authority-must-be-addressable",
+      "status": "fail",
+      "evidence": [
+        "计划第 21-24、32-34、36 行把 M2.1/M2.2 acceptance review、M2.1 signoff package review 与 identity review 列为 exact authority，且要求“必须全部可寻址、摘要匹配、角色分离且保持单父因果链”。",
+        "verification-report 第 3068-3069 行重复把 review OID 当作冻结 authority。",
+        "独立 clone 内 `git cat-file -t 3c0853b56b7a09b3299e49893f64a721ab3597ea`、`381224e6301c4a2d58841a99c233439c9b2e1e56`、`a823f63b35475aeb03d853559af187354cdc6883`、`5e95f22dae75253ff8f35e022676aa02ad697ad8` 全部不可解析。",
+        "imported control `ef0ba652...` 的 tree 里也不存在 `.codex/reviews/p5-v2-m2.1-acceptance-g5-a1-f147-2026-08-27/*` 与 `.codex/reviews/p5-v2-m2.2-acceptance-g5-a2-f156-2026-08-28/*`，因此 reviewer 只能看到文本引用，无法独立复核这些 authority 的 exact-three 内容与单父关系。"
+      ]
+    },
+    {
+      "id": "HG3-union-thresholds-and-boundaries",
+      "status": "pass",
+      "evidence": [
+        "计划第 44-51、59-71、76-87、91-106 行完整冻结了 M2.1/M2.2、S2.1..S2.4、PC-09..PC-13、TG-02/03/04/06/07/13/16/19、I/X/P/Profile、三 fixture、targeted 52/52、full >=555/555、displayed/raw floors 94.40/89.75/99.57、readiness/ACK/create-once evidence ref 时序与分离 signoff/completion CAS。",
+        "本次计划收紧后的 live 候选没有旧 94.36/89.65/99.57 floor 残留到 V2 fresh full 门槛里；旧值只作为历史 M2.2 package acceptance 事实存在。"
+      ]
+    },
+    {
+      "id": "HG4-entry-review-boundary",
+      "status": "pass",
+      "evidence": [
+        "计划第 99-115 行保持 entry_evidence_only、零副作用和未授权边界：本评审不创建 packet、claim/fence、dispatch ACK、Result、signoff request、completion 或任何 ref 变更。",
+        "当前 clone 非 shallow、无 remote、`git diff --check` 通过；本评审只新增本目录 exact-two。"
+      ]
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "identity_and_control_entry",
+      "score": 20,
+      "max_score": 20,
+      "reason": "subject、formal、entry control、plan_generation=5 与 pending=0 均清晰且一致。",
+      "evidence_refs": [
+        "HG1-subject-and-entry-control-identity"
+      ]
+    },
+    {
+      "id": "historical_authority_executability",
+      "score": 2,
+      "max_score": 25,
+      "reason": "计划声明了精确 authority，但关键 review/signoff immutable objects 在独立 clone 与 imported control tree 中都不可寻址，导致 exact authority 不能被独立重演验证。",
+      "evidence_refs": [
+        "HG2-exact-authority-must-be-addressable"
+      ]
+    },
+    {
+      "id": "union_thresholds_and_fresh_gate_contract",
+      "score": 25,
+      "max_score": 25,
+      "reason": "PC/TG/fixture 并集、52/52、555/555、coverage floors、same-run raw/displayed 以及 fail-closed 边界写得完整。",
+      "evidence_refs": [
+        "HG3-union-thresholds-and-boundaries"
+      ]
+    },
+    {
+      "id": "sequencing_and_scope_honesty",
+      "score": 18,
+      "max_score": 20,
+      "reason": "readiness/ACK/create-once/ref 时序、分离 signoff/completion CAS 和 entry review 的非授权边界保持清晰。",
+      "evidence_refs": [
+        "HG3-union-thresholds-and-boundaries",
+        "HG4-entry-review-boundary"
+      ]
+    },
+    {
+      "id": "review_hygiene",
+      "score": 10,
+      "max_score": 10,
+      "reason": "评审范围控制住了，没有越权扩展到正式 V2 验收或控制面写入。",
+      "evidence_refs": [
+        "HG4-entry-review-boundary"
+      ]
+    }
+  ],
+  "penalties": [
+    {
+      "severity": "P0",
+      "deduction": 22,
+      "reason": "关键历史 authority 只有文本 OID，没有可独立寻址的 immutable review/signoff 对象或 exact-three 内容，HG2 失败。",
+      "evidence_refs": [
+        "HG2-exact-authority-must-be-addressable"
+      ]
+    }
+  ],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 22,
+    "final_score": 78,
+    "max_score": 100
+  },
+  "verdict": {
+    "decision": "REVISE",
+    "score": 78,
+    "p0": 1,
+    "p1": 0,
+    "p2": 0
+  },
+  "required_fixes": [
+    "把计划第 21-24、32-34 行引用的 M2.1/M2.2 acceptance review、M2.1 signoff package review 与 identity review 变成独立 clone 内可寻址的 immutable authority：要么把对应 git objects 与 exact-three 内容纳入可审查仓库状态，要么改计划为只绑定 imported control tree 中已存在且可独立复核的 immutable artifacts；修复后重新做唯一独立 entry review。"
+  ],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "decision": "REVISE",
+      "summary": "subject/control/thresholds 通过，但 exact authority addressability 失败。",
+      "evidence_refs": [
+        "HG1-subject-and-entry-control-identity",
+        "HG2-exact-authority-must-be-addressable",
+        "HG3-union-thresholds-and-boundaries"
+      ]
+    },
+    {
+      "role": "Strict Judge",
+      "decision": "REVISE",
+      "summary": "计划结构严谨，但关键历史 authority 不能在独立 clone 中被真正复核，不能放行 packet 前入口。",
+      "evidence_refs": [
+        "HG2-exact-authority-must-be-addressable"
+      ]
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "decision": "PASS",
+      "summary": "没有偷换阶段、偷放宽门槛或把历史 PASS 直接包装成 V2 PASS。",
+      "evidence_refs": [
+        "HG3-union-thresholds-and-boundaries",
+        "HG4-entry-review-boundary"
+      ]
+    },
+    {
+      "role": "Chief Reviewer",
+      "decision": "REVISE",
+      "summary": "修复 immutable authority 的可寻址性之前，不得进入 V2 packet 创建。",
+      "evidence_refs": [
+        "HG2-exact-authority-must-be-addressable"
+      ]
+    }
+  ],
+  "reviewed_at": "2026-08-29T01:38:56Z"
+}
