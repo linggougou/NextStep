@@ -1,0 +1,260 @@
+{
+  "review_id": "p5-v020-alpha-package-acceptance-g5-ap1-a3-f162-2026-08-29",
+  "task_id": "V020-ALPHA-I-X-P",
+  "lane": "package-acceptance",
+  "review_level": "L3",
+  "rubric_id": "nextstep-v020-alpha-package-acceptance-environment-corrected-rereview-v1",
+  "verdict": "PASS",
+  "artifact_refs": [
+    {
+      "kind": "implementation-subject",
+      "commit": "ca9da8d0fa00a4367a1ad6be411bc660a900098e",
+      "tree": "b95b56ef57ee69d0b04ec80d182ff7e321d76ba4",
+      "parent": "dd07c3c6cc1ebcf86ec083e72d419605ce4a234f",
+      "subject_digest": "sha256:9525a64d7a33c6a315df34dabf9cc1da4f8eecde80b485a6693c0137cb112779"
+    },
+    {
+      "kind": "package-acceptance-gate",
+      "path": "gate-requests/gate-package-acceptance-v020-alpha-g5-ap1-a3-20260829.json",
+      "packet_digest": "sha256:d55351fa8aeb32e0f418eb76112f67d331edd593ab5cf1a1c5f07fe2a2f128b1",
+      "dedup_key": "sha256:0ec76947204a421ba3a53cb7364efc22404842bb002676ced6e89e12c35c8f46"
+    },
+    {
+      "kind": "dispatch-ack-control",
+      "commit": "dd0b9d75c72b726b4c2debc4a2689c27f79c4bcb",
+      "parent": "8576bc173748616ae293ed3a6e71c5d422d8e05a",
+      "claim": "claim-v020-alpha-ixp-g5-ap1-a3-f162-20260829",
+      "fence": 162,
+      "host_task_id": "codex-subagent:/root/alpha_v020_package_accept_g5_ap1_a3_f162"
+    },
+    {
+      "kind": "formal-baseline",
+      "commit": "ea04b57de83d6c548dcb1629b1f61832db8375ad"
+    },
+    {
+      "kind": "attempt-1-result",
+      "path": "results/result-package-acceptance-v020-alpha-g5-ap1-a1-f159-20260829.json",
+      "result_digest": "sha256:6cddaa045e1cd2053efedf215d0bfb10ba43018faaf48468ca029495079d96fb",
+      "review_commit": "701bb06716687028c9db436e4ec10a2d5628d1e7"
+    },
+    {
+      "kind": "attempt-2-result",
+      "path": "results/result-package-acceptance-v020-alpha-g5-ap1-a2-f161-20260829.json",
+      "result_digest": "sha256:7b0d37ae71df9f5842fc943516f4a0c1307a2aa7ac78a332a28e524bcbb2a084",
+      "review_commit": "d3125c11a83b1f50b44d0dbab9f6f57beca7d58f"
+    },
+    {
+      "kind": "coverage-remediation-packet",
+      "packet_digest": "sha256:85c1352c73019fde2296552db9d7e40eea855087122fa8996f37ddf70743b8af",
+      "claim": "claim-v020-alpha-cov-g5-ap1-a1-f160-20260829",
+      "fence": 160
+    }
+  ],
+  "isolation": {
+    "clone": "/tmp/nextstep-v020-alpha-g5-pg1-a3-f162-G3dzHa/NextStep",
+    "clone_mode": "git-clone-no-local-no-checkout",
+    "remote_count": 0,
+    "alternates": false,
+    "shallow": false,
+    "detached_head": true,
+    "control_bundle": "/private/tmp/nextstep-alpha-control-f162-dd0b9d7.bundle",
+    "control_bundle_sha256": "sha256:c96b2f1adb64fc33fb297b4c6de1f4fcbdd7d60a51f2eedced1c326fcd3914b6",
+    "original_repository_accessed_after_provisioning": false,
+    "worker_worktrees_accessed": false,
+    "protected_untracked_objects_accessed": false,
+    "network_used": false
+  },
+  "hard_gates": [
+    {
+      "id": "HG1-identity-control",
+      "status": "pass",
+      "evidence": "Bundle raw SHA-256 与 git bundle verify 通过。packet RFC8785、七字段 dedup、subject {commit,parent,tree} digest 均独立复算命中；formal=ea04b57...、ACK control=dd0b9d7...、plan_generation=5、alpha_plan_generation=1、pending=[]、claim/fence 162 与本 reviewer host/clone 精确绑定。"
+    },
+    {
+      "id": "HG2-isolation",
+      "status": "pass",
+      "evidence": "no-local/no-checkout clone 在测试前即移除 remote，alternates absent、non-shallow、detached exact subject、worktree clean。formal/control clone-local refs 在任何 install/build/test 前由不可变证据绑定并记录；之后未访问原仓库、worker worktree 或受保护未跟踪对象。"
+    },
+    {
+      "id": "HG3-write-set-lockfile",
+      "status": "pass",
+      "evidence": "ca9da8d 唯一父为 dd07c3c；remediation diff 精确为 tests/cli/nextstep.test.ts 与两份追加留痕 exact-three。累计 a1e37bb..ca9da8d 精确保持冻结 exact-twelve；pnpm-lock.yaml base/subject blob 均为 8e8f41edc44fa9fa87395c06bdbce6296b7cca2a，git diff --check 通过。"
+    },
+    {
+      "id": "HG4-prior-finding-closure",
+      "status": "pass",
+      "evidence": "Attempt 1 的唯一 P1 是 Lines 8435/8932=94.43573667711598% 低于 94.45%；test-only remediation 是真实逐命令黑盒契约，不含 padding、skip、降阈值或 coverage ignore。本 attempt 正式 Lines displayed/raw=94.78% / 8466/8932=94.78280340349306%，稳定越过下限。Attempt 2 的 2 个失败只来自 reviewer clone 缺少 frozen refs；本 attempt 已在任何 build/test 前正确准备同名 formal/control refs，正式 full 全绿，故环境归因闭合且候选未修改。"
+    },
+    {
+      "id": "HG5-build-targeted-full",
+      "status": "pass",
+      "evidence": "offline frozen install 命中本机 store，build 仅运行一次并通过；targeted 仅运行一次，9/9、fail/skip/cancel/todo=0/0/0/0。正式 Node native spec+lcov dual-reporter full 恰好运行一次且未 rerun selection：568/568、fail/skip/cancel/todo=0/0/0/0；displayed Lines/Branches/Functions=94.78/90.21/99.58，same-run raw=8466/8932=94.78280340349306%、3049/3380=90.20710059171597%、705/708=99.57627118644068%，全部达到 94.45/89.76/99.57。"
+    },
+    {
+      "id": "HG6-package-content",
+      "status": "pass",
+      "evidence": "两个项目外 fresh pack 均为 75 entries；严格 allowlist failures=0、required missing=0。public CLI、v1 schemas、v2 product-definition schema、Skill、README、quickstart 与 alpha note 存在；内部 contract-probe/project-value-validation CLI、其他 CLI、src、tests、.codex、.git、d.ts、map 均未进入包。metadata 为 private=true、UNLICENSED、无 main/exports 和 lifecycle pack/install scripts。"
+    },
+    {
+      "id": "HG7-offline-consumer-smoke",
+      "status": "pass",
+      "evidence": "第二个项目外 consumer 使用 offline + ignore-scripts 安装第二份 tgz 成功。已安装 bin version=0.2.0-alpha、help 精确 13 项、canonical quickstart exit 0 且 code=VERSION_CHAIN_ACCEPTED；7 类 unknown/internal/case/path/absolute 尝试统一非零 fail closed 且不泄漏 secret，trusted write 仍 blocked/rejected。两个内部 CLI 文件 2/2 缺席且直接执行 2/2 失败，smoke 前后 consumer 文件集不变。Reviewer 额外写入的尾换行期待并非冻结契约；实际 stdout 是无尾换行 canonical JCS，该过严 harness 断言不计为产品失败，且已完成的正向命令未重跑，只继续执行此前尚未运行的负向检查。"
+    },
+    {
+      "id": "HG8-double-pack-reproducibility",
+      "status": "pass",
+      "evidence": "两个独立项目外 fresh tgz 字节级一致，均为 sha256:9871dcb4a03c8a14f1849f73c431df42b3be7a5315dc3d07bcd6e321f5a30a63、121670 bytes，精确匹配冻结期望；未执行第三次 pack。"
+    },
+    {
+      "id": "HG9-boundary",
+      "status": "pass",
+      "evidence": "README、Skill、manifest 与 alpha note 反扫只声明 private/UNLICENSED local internal developer preview，并显式保留 no-public-release/no-full-host、CR-006 open、qualified real runs 0/3、V3/V4/Final Acceptance/P5 未完成。用户级 /Users/ling/.codex/skills/nextstep 在安装前后均 absent；未 repair candidate、tag、publish、push、移动共享 formal/control 或安装用户 Skill。"
+    }
+  ],
+  "verification": {
+    "runtime": {
+      "node": "v24.14.0",
+      "pnpm_repository": "10.33.2",
+      "pnpm_second_consumer": "10.34.5",
+      "offline_frozen_install": "pass"
+    },
+    "build": {
+      "runs": 1,
+      "status": "pass"
+    },
+    "targeted": {
+      "runs": 1,
+      "tests": 9,
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    },
+    "formal_full_dual_reporter": {
+      "runs": 1,
+      "rerun": false,
+      "rerun_selection": false,
+      "exit_code": 0,
+      "tests": 568,
+      "passed": 568,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0,
+      "displayed_coverage": {
+        "lines": 94.78,
+        "branches": 90.21,
+        "functions": 99.58
+      },
+      "raw_coverage": {
+        "lines": "8466/8932=94.78280340349306%",
+        "branches": "3049/3380=90.20710059171597%",
+        "functions": "705/708=99.57627118644068%"
+      },
+      "evidence_dir": "/private/tmp/nextstep-alpha-f162-evidence.L0gKE2",
+      "spec_sha256": "sha256:ea51b12d820521d6e2b79296685963e062fcb6d9d254d8c4d2686ce1e4884104",
+      "lcov_sha256": "sha256:f633c537c12bccb4a1d7fd47af5d0742283b5847a5e66b245f0c58180983e234"
+    },
+    "package": {
+      "entry_count": 75,
+      "strict_allowlist_failures": 0,
+      "required_missing": 0,
+      "first": {
+        "path": "/private/tmp/nextstep-alpha-f162-pack1.LvYolM/nextstep-0.2.0-alpha.tgz",
+        "digest": "sha256:9871dcb4a03c8a14f1849f73c431df42b3be7a5315dc3d07bcd6e321f5a30a63",
+        "bytes": 121670
+      },
+      "second": {
+        "path": "/private/tmp/nextstep-alpha-f162-pack2.WlmPsG/nextstep-0.2.0-alpha.tgz",
+        "digest": "sha256:9871dcb4a03c8a14f1849f73c431df42b3be7a5315dc3d07bcd6e321f5a30a63",
+        "bytes": 121670
+      },
+      "byte_identical": true
+    },
+    "consumer": {
+      "path": "/private/tmp/nextstep-alpha-f162-consumer.KdIOHR",
+      "offline_ignore_scripts_install": "pass",
+      "version": "0.2.0-alpha",
+      "public_commands": 13,
+      "quickstart_code": "VERSION_CHAIN_ACCEPTED",
+      "negative_cases": 7,
+      "trusted_fail_closed": "pass",
+      "internal_direct_files_absent": 2,
+      "internal_direct_exec_failures": 2,
+      "fileset_unchanged": true,
+      "user_level_skill_before": "absent",
+      "user_level_skill_after": "absent"
+    },
+    "git_diff_check": "pass",
+    "worktree_before_review_outputs": "clean"
+  },
+  "dimensions": [
+    {
+      "id": "I",
+      "name": "集成与身份完整性",
+      "score": 25,
+      "max_score": 25,
+      "reason": "bundle、control、packet、ACK、subject、历史 Result、两段写集与 lockfile 身份全部闭合。",
+      "evidence_refs": ["HG1-identity-control", "HG2-isolation", "HG3-write-set-lockfile"]
+    },
+    {
+      "id": "X",
+      "name": "执行与可重复验证",
+      "score": 25,
+      "max_score": 25,
+      "reason": "build、targeted 与恰好一次正式 full 全绿，测试分母、零失败和 displayed/raw coverage 全部达标；attempt 1/2 finding 均有 fresh closure。",
+      "evidence_refs": ["HG4-prior-finding-closure", "HG5-build-targeted-full"]
+    },
+    {
+      "id": "P",
+      "name": "打包与安装产品行为",
+      "score": 25,
+      "max_score": 25,
+      "reason": "严格 package 内容、双 pack 精确复现、第二 consumer 离线安装及全部正负/trusted smoke 均闭合。",
+      "evidence_refs": ["HG6-package-content", "HG7-offline-consumer-smoke", "HG8-double-pack-reproducibility"]
+    },
+    {
+      "id": "Profile",
+      "name": "本地内部 alpha 边界",
+      "score": 25,
+      "max_score": 25,
+      "reason": "private/UNLICENSED、no-tag/no-publish/no-user-Skill-write 与未完成阶段边界保持明确。",
+      "evidence_refs": ["HG9-boundary"]
+    }
+  ],
+  "findings": [],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100,
+    "severity_counts": {
+      "P0": 0,
+      "P1": 0,
+      "P2": 0
+    }
+  },
+  "required_fixes": [],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "PASS：身份、隔离、refs 前置、exact-three/exact-twelve、lockfile、唯一 build/targeted/full、双 pack 与第二 consumer smoke 全部满足硬门。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "PASS / 100：attempt 1 的 coverage P1 与 attempt 2 的 reviewer-environment P1 均被 unchanged ca9da8d 的 fresh attempt 3 证据闭合。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "PASS：remediation 是有业务意义的逐命令黑盒验证，未发现 padding、skip、降阈值、coverage ignore、内部 CLI 偷渡、敏感泄漏或发布边界过度声明。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "PASS / 100；I/X/P/Profile=25/25/25/25；P0/P1/P2=0/0/0，required_fixes=[]。只允许将该 immutable local/internal alpha candidate 交回主控继续独立集成裁决，不授权 tag、publish、formal movement 或 P5 completion。"
+    }
+  ],
+  "reviewed_at": "2026-08-29T07:42:46Z"
+}
