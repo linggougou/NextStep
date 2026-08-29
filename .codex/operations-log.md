@@ -3093,3 +3093,13 @@
 - fresh `corepack pnpm check`=`563/563`、fail/skip/cancel/todo=`0/0/0/0`。同一次 dual-reporter displayed Lines/Branches/Functions=`94.67/90.13/99.58`，same-range raw=`8456/8932=94.67084639498432%`、`3049/3383=90.12710611882945%`、`705/708=99.57627118644068%`，全部超过冻结门槛。
 - 项目外真实 pack/install smoke 通过：manifest=`75` entries、allow/deny=`PASS`、offline+ignore-scripts install=`PASS`、version/help 13 命令/version-chain accepted/unknown/internal/trusted fail-closed 均通过；tgz=`sha256:9871dcb4a03c8a14f1849f73c431df42b3be7a5315dc3d07bcd6e321f5a30a63`、`121670` bytes，第二次独立 pack 复算完全一致，两个临时目录均已清理。
 - 结束状态=`实现候选已完成，等待独立 package acceptance`。本实现不自我验收，不合入 main，不移动 formal/control，不创建 tag/publish/用户级安装，也不宣称 alpha、V3/V4/Final Acceptance/P5 完成。
+
+## 2026-08-29 v0.2.0-alpha coverage remediation attempt 1（fence 160）
+
+- 当前路线/阶段=`S5 / P5 产品落地 / v0.2.0-alpha test-only remediation`；独立 REVISE 基线固定为 Lines=`8435/8932=94.43573667711598%`。packet digest=`sha256:85c1352c73019fde2296552db9d7e40eea855087122fa8996f37ddf70743b8af`，claim=`claim-v020-alpha-cov-g5-ap1-a1-f160-20260829`，dispatch ACK control=`cbdd6c3f95e527d29936a580dd1dd89ca373d8e1`。
+- 在隔离 worktree 精确基于 parent=`dd07c3c6cc1ebcf86ec083e72d419605ce4a234f` 工作；写集严格限于 `tests/cli/nextstep.test.ts` 与两份 `.codex` 追加留痕 exact-three。formal F16、生产代码、package metadata、lockfile、门槛与发布边界均不改。
+- 使用 `tdd-workflow` skill；本轮 RED 是独立验收已经冻结的 coverage deficit，不伪造一个功能失败。新增一项真实黑盒契约：串行启动除 `status` 外全部 12 个 stdin 型公开命令，逐项证明 sibling CLI 存在且可启动、非零退出、stdout 是 canonical fail-closed 机器回执、stderr 不含 module-not-found，并且敏感输入不回显。
+- 隔离 worktree 初始无 `node_modules`，首次 build 因 `tsc: command not found` 未启动测试；随后仅用本机 store 执行 `corepack pnpm install --frozen-lockfile --offline`，未访问 registry，lockfile blob 保持不变。targeted CLI=`7/7`；CLI+package/offline smoke=`9/9`，全部 fail/skip/cancel/todo=`0/0/0/0`。
+- 唯一一次正式 post-fix fresh Node native `spec + lcov` dual-reporter full=`568/568`，fail/skip/cancel/todo=`0/0/0/0`；displayed Lines/Branches/Functions=`94.83/90.29/99.58`，same-run raw=`8470/8932=94.82758620689656%`、`3049/3377=90.28723719277465%`、`705/708=99.57627118644068%`。未重跑挑选结果。
+- package/offline smoke 保持通过；测试不入包，项目外复算 tgz 仍为 `sha256:9871dcb4a03c8a14f1849f73c431df42b3be7a5315dc3d07bcd6e321f5a30a63`、`121670` bytes。临时 pack 与 coverage 目录已清理。
+- 本轮只生成新的 test-only immutable subject；不自我验收、不合 main、不移动 formal/control、不创建 tag/publish/用户级 Skill 安装，也不声明 alpha、CR-006、V3/V4/Final Acceptance/P5 完成。

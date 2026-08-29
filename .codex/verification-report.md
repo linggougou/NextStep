@@ -3332,3 +3332,23 @@ package/skills/nextstep/agents/openai.yaml
 - `pnpm-lock.yaml` parent/worktree blob 均为 `8e8f41edc44fa9fa87395c06bdbce6296b7cca2a`；依赖集合、既有 CLI/domain/schema、formal/control 未修改。
 - `git diff --check`、canonical quickstart 末字节、package/files 精确值、13 命令、内部 CLI deny、overclaim 反扫均通过。
 - 技术维度=`100/100`，战略/边界维度=`100/100`，综合自检=`100/100`，建议=`提交独立 package acceptance`。该自检不是独立验收，不授权 main 合入、tag/publish、formal/control 移动、用户级 Skill 安装，也不声明 alpha、CR-006、V3、V4、Final Acceptance 或 P5 完成。
+
+## 2026-08-29 v0.2.0-alpha coverage remediation attempt 1 候选验证
+
+### 身份、边界与行为增量
+
+- packet parent=`dd07c3c6cc1ebcf86ec083e72d419605ce4a234f`、tree=`8f48fd46e7f61acede2be7e9966e6f4d2b9d39da`；formal F16=`ea04b57de83d6c548dcb1629b1f61832db8375ad`；packet digest RFC8785 复算命中 `sha256:85c1352c73019fde2296552db9d7e40eea855087122fa8996f37ddf70743b8af`；claim/fence=`claim-v020-alpha-cov-g5-ap1-a1-f160-20260829 / 160`；dispatch ACK control=`cbdd6c3f95e527d29936a580dd1dd89ca373d8e1`。
+- 写集 exact-three：`tests/cli/nextstep.test.ts`、`.codex/operations-log.md`、`.codex/verification-report.md`。未修改生产源码、`package.json`、`pnpm-lock.yaml`、schema、既有测试门槛或文档发布声明。
+- 新增测试不是字符串/snapshot/padding：它通过真实 `nextstep` 进程串行启动 12 个 stdin 型公开命令，验证每个 package runtime sibling 的可启动性、退出码/signal 传播、canonical 失败回执、module-not-found 缺席与敏感输入不泄漏。`status` 已由相邻现有测试覆盖成功/失败参数透传。
+
+### 测试、覆盖率与包不变性
+
+- dependency bootstrap=`corepack pnpm install --frozen-lockfile --offline`，本机 store 命中；parent/worktree `pnpm-lock.yaml` blob 均为 `8e8f41edc44fa9fa87395c06bdbce6296b7cca2a`。
+- targeted CLI=`7/7`；targeted CLI+release package=`9/9`；均 fail/skip/cancel/todo=`0/0/0/0`。release test 真实执行项目外 tgz、offline+ignore-scripts consumer install、version/help/canonical quickstart、内部命令缺席与 trusted fail-closed smoke。
+- 正式 post-fix full 只运行一次：`568/568`，fail/skip/cancel/todo=`0/0/0/0`。同次 Node native displayed Lines/Branches/Functions=`94.83/90.29/99.58`；同次 LCOV range raw Lines=`8470/8932=94.82758620689656%`、Branches=`3049/3377=90.28723719277465%`、Functions=`705/708=99.57627118644068%`，全部不低于 `94.45/89.76/99.57`。
+- 项目外 fresh pack digest=`sha256:9871dcb4a03c8a14f1849f73c431df42b3be7a5315dc3d07bcd6e321f5a30a63`、bytes=`121670`，与独立 REVISE attempt 1 的包字节完全一致，证明 test-only 变更未污染发布内容。
+
+### 门禁判断
+
+- `git diff --check`、exact-three、单父、lockfile/formal/control 不变性必须在提交前最终复验。正式 coverage 与 package smoke 已通过；候选允许交给新的独立 package acceptance reviewer。
+- 该判断是实现者自检，不是独立验收；不授权 main 集成、formal/control 移动、tag、publish、用户级 Skill 安装，也不代表 alpha、CR-006、V3、V4、Final Acceptance 或 P5 完成。

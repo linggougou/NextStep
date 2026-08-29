@@ -157,6 +157,25 @@ test("统一入口只展示冻结的 13 个公开命令，并固定 alpha 版本
   });
 });
 
+test("统一入口可启动每个 stdin 型公开命令，并保留机器可读的 fail-closed 回执", async () => {
+  const secret = "alpha-remediation-secret-that-must-not-appear";
+  const stdinCommands = publicCommands.filter((command) => command !== "status");
+
+  for (const command of stdinCommands) {
+    const result = await run([command], secret);
+    assert.equal(result.code, 1, command);
+    assert.equal(result.signal, null, command);
+    assert.notEqual(result.stdout, "", command);
+    const receipt = parseCanonicalJsonBytes(Buffer.from(result.stdout, "utf8")) as Record<string, unknown>;
+    assert.equal(canonicalizeJson(receipt), result.stdout, command);
+    assert.equal(receipt.ok, false, command);
+    assert.equal(typeof receipt.code, "string", command);
+    assert.notEqual(result.stderr, "", command);
+    assert.doesNotMatch(result.stderr, /Cannot find module|ERR_MODULE_NOT_FOUND/, command);
+    assert.doesNotMatch(`${result.stdout}${result.stderr}`, new RegExp(secret), command);
+  }
+});
+
 test("version-chain 通过统一入口保持 canonical JCS、stderr 与退出码", async () => {
   const input = await readFile(quickstart, "utf8");
   const result = await run(["version-chain"], input);
