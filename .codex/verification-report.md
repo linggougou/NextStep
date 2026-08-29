@@ -3367,3 +3367,20 @@ package/skills/nextstep/agents/openai.yaml
 - 状态同步不创建 tag、不 publish、不移动 formal、不安装用户级 Skill，不关闭 CR-006；qualified real runs 仍为 `0/3`。V3/V4/Final Acceptance/P5 未完成。
 - 下一唯一入口为冻结 V3 Generation 1 计划并进行 fresh 独立 entry review；本轮未创建 V3 packet、claim/fence、dispatch 或编码，既定 V3/V4 范围未改变。
 - 已执行 `git diff --check`、exact-eleven 写集、stale-current 反扫和父/refs 身份检查，均通过；项目外 tarball fresh 复核得到 sha256=`9871dcb4a03c8a14f1849f73c431df42b3be7a5315dc3d07bcd6e321f5a30a63`、`121670` bytes、`75` entries，与冻结事实一致。本轮仅文档状态同步，不运行产品测试，也不把历史测试结果冒充 fresh 结果。
+
+## 2026-08-30 V3 Generation 1 实施计划候选验证
+
+### 固定身份与写集
+
+- parent/main=`691393988fa64a00c1398519b6c0fa9eacd1b1f8`；formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`；control=`4375910fa2554af9a8126449e07e25d4725ee6da`；`route_generation=1`；全局 `plan_generation=5`；V3 `plan_generation=1`。
+- 当前写集 exact-three：`.codex/exec-plan-v3-generation-1.md`、`.codex/operations-log.md`、`.codex/verification-report.md`。未修改产品、测试、Schema、依赖或受保护未跟踪路径。
+- 本轮是计划候选，不运行产品 full tests；不会把既有 alpha/V2 测试结果作为 V3 fresh 证据。
+
+### 计划结构反扫
+
+- 里程碑主归属精确：M3.1=`S3.1+S3.2→PC-14`，M3.2=`S3.3+S3.4→PC-15/16`，M3.3=`S3.5→PC-17/18`；无 PC 遗漏、重复或 V4 偷渡。
+- 首入口只允许 S3.1；两阶段 `host-bootstrap→project-probe`、三态 `full/manual-isolated/blocked`、S3.1 PASS 不完成 PC-14/M3.1、至少一个正式主宿主 full 属 V3 出口等边界已冻结。
+- S3.1 exact-11、S3.2 exact-14、S3.3 exact-11；S3.4 A exact-12/B exact-8/C exact-11；S3.5 A exact-9/B exact-18。实现 worker product allowlist 与主控 `.codex` 留痕职责分离。
+- P4-V01..18 均有唯一主责或明确回放归属；S4 §18 十九项风险均分配到 packet。P4-V16 明确保持 V4/S4.3 主归属，V3 不宣告 FA/PC-20。
+- 每个 S3.x 均具备输入/输出/依赖、RED 正/负/阻塞/恢复、GREEN/REFACTOR 边界、I/X/P/Profile、失败退回和禁止范围偷渡。
+- 已执行 exact-three、八组 future allowlist 路径计数、P4-V01..18 唯一 ID 计数、parent/main/formal/control 身份、`git diff --cached --check` 与禁止过度声明反扫，均通过；fresh 独立 entry review 仍是唯一下一动作。

@@ -3110,3 +3110,12 @@
 - 重新核对 formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control=`4375910fa2554af9a8126449e07e25d4725ee6da`、`plan_generation=5`。alpha package acceptance attempt 3=`PASS / 100`、I/X/P/Profile=`25/25/25/25`、P0/P1/P2=`0/0/0`；Result digest=`sha256:b22a83615695375102a7a3841c27e6936ca6793feab3151a5a5a1e420bf2fbe4`、Result control=`25f5e5a18aae9f87ad6f0dce43513fbbe183fcc1`。
 - 固定 implementation subject=`ca9da8d0fa00a4367a1ad6be411bc660a900098e`、review/integration main=`67438b527a7a88c6cc99c661b6f3d260d24e6877`；冻结项目外 tarball sha256=`9871dcb4a03c8a14f1849f73c431df42b3be7a5315dc3d07bcd6e321f5a30a63`、`121670` bytes、`75` entries，offline smoke 通过。状态严格为 `local-candidate-usable`。
 - 边界保持：tag、publish、formal 移动、用户级 Skill 安装未发生；CR-006 仍 open，qualified real runs=`0/3`；V3/V4/Final Acceptance/P5 未完成。下一唯一入口为冻结 V3 Generation 1 计划并进行 fresh 独立 entry review；本轮未创建 V3 packet、claim/fence、dispatch 或编码，也未改变既定 V3/V4 范围。
+
+## 2026-08-30 V3 Generation 1 实施计划候选
+
+- 以 parent/main=`691393988fa64a00c1398519b6c0fa9eacd1b1f8`、formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control=`4375910fa2554af9a8126449e07e25d4725ee6da`、`route_generation=1`、全局 `plan_generation=5`、V3 `plan_generation=1` 为固定入口，在独立 `codex/` worktree 创建计划候选。
+- 本轮写集只允许 V3 计划与两份追加留痕 exact-three；不创建 packet/claim/fence/dispatch/代码/Result，不移动 main/formal/control，不运行产品 full tests。
+- 冻结 `M3.1=S3.1+S3.2→PC-14`、`M3.2=S3.3+S3.4→PC-15/16`、`M3.3=S3.5→PC-17/18`；S3.4 拆 A/B/C，S3.5 拆 A/B。每包固定输入/输出/依赖/product allowlist、TDD 四类行为、I/X/P/Profile、失败退回与 P4/S4 主责。
+- S3.1 是首个实现入口，严格两阶段 `host-bootstrap→project-probe` 与 `full/manual-isolated/blocked` 三态。S3.1 PASS 不完成 PC-14/M3.1；至少一个正式主宿主 `full` 是 V3 版本出口，必须连同 S3.2 自动分派/恢复和累计验收证明。
+- P4-V16 能力主归属保持 V4/S4.3；V3 只回放归档副作用失败不移动/反转 formal、保持待归档并携带重试证据，不宣告 FA/PC-20。
+- 下一唯一动作是 fresh 独立 entry review；只有 `PASS / 100`、P0/P1/P2=`0/0/0` 才允许主控另行创建 S3.1 packet，entry PASS 本身不授权后续控制动作。
