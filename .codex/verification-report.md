@@ -3163,3 +3163,26 @@
 - alpha packet/package/install/tag 均不得声明存在；CR-006 仍 open、qualified real runs=`0/3`，V3/V4/Final Acceptance/P5 均未完成。
 - 本同步不重复运行产品 full tests；V2 `52/52`、`555/555` 与 coverage=`94.45/89.76/99.57` 引用冻结 Result/独立验收 authority，不冒充本轮 fresh 测试。
 - 提交前必须通过 `git diff --check`、exact-eleven 路径检查、JSON/Markdown current-state 反扫；受保护未跟踪目标不得读取、修改、暂存或清理。
+
+## 2026-08-29 v0.2.0-alpha Generation 1 计划候选验证
+
+### 冻结身份与路线
+
+- candidate parent=`f17a7bf57aff4647d75672266dbccda15d172ccb`、tree=`2d855ca14bee9cec6edcd807b183eb418bbc35af`；formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`；control=`4f466224a442dd9650905722398bfad743e327fa`；`plan_generation=5`。
+- 生命周期保持 `S5 / P5`。V2 formally-completed 只打开 alpha 独立计划入口；本候选没有创建 packet/package/install/tag，也不改变 CR-006 open、qualified real runs=`0/3`、formal、V3/V4/Final Acceptance/P5 状态。
+- alpha 明确限定为本地内部开发者预览；未来 metadata 必须保留 `private: true` 与 `UNLICENSED`，禁止 npm/public publish、push/upload、自动用户级 Skill 安装。
+
+### 范围与契约覆盖
+
+- future implementation allowlist 精确为 12 路径：`package.json`、新聚合 CLI、两份测试、canonical quickstart、Skill 及用户可见 manifest、README、两份 release 文档与两份 `.codex` 留痕；明确禁止 lockfile、domain/schema/既有 CLI、依赖和 lifecycle script 变化。
+- dispatcher 冻结为无 shell 的 sibling compiled CLI 进程；stdin/stdout/stderr/exit code 透明。help 只列 13 项白名单，显式拒绝 `contract-probe`、`project-value-validation`、unknown 与路径绕过；trusted in-process capability 不得因聚合入口扩权。
+- package 内容只允许运行时 `dist/src/**/*.js`、相对导入所需的 `dist/schemas/v1/**/*.json`、Skill+manifest、README、quickstart 与 alpha release note；不得增加 main/exports/prepack。声明/映射、源码、根目录 schemas、tests、`dist/tests`、`.codex`、Git、其他 docs、未跟踪对象和开发日志必须排除；精确 checksum 只进入不随包的 verification report，候选 subject 由后续 review/control 外部绑定，避免自引用。
+- future TDD 硬门完整覆盖 RED→GREEN→refactor、targeted、fresh full>=`555/555`、零 fail/skip/cancel/todo、same-run displayed/raw coverage>=`94.45/89.76/99.57`、项目外 offline/ignore-scripts 临时安装、CLI version/help/canonical `VERSION_CHAIN_ACCEPTED`、unknown/sensitive/fail-closed、tar SHA-256 与零副作用。
+
+### 当前候选门禁
+
+- 当前写集必须严格等于 `.codex/exec-plan-v020-alpha-generation-1.md`、`.codex/operations-log.md`、`.codex/verification-report.md`；`git diff --check` 必须通过。
+- 必须反扫 4 项基线 identity、local/internal/private/UNLICENSED、exact-twelve、Skill manifest 同步、13 项命令、两项 deny、lock/domain/schema/既有 CLI 禁改、无 main/exports/prepack、555 与 coverage floors、tar/install/checksum 非自引用留痕、Skill 不自动覆盖、tag/publish 非授权和全部 carry-forward 边界。
+- 本轮只验证计划的事实、路径、结构与矛盾，不运行产品 full tests，不把 V2 历史 `555/555` 或 coverage 包装为 current-turn fresh 证据。
+- 计划质量自检=`100 / 100`，建议=`提交 fresh 独立 entry review`。该自检不替代独立评审；entry review 非 `PASS / 100` 时不得创建 alpha packet。
+- 实测机械结果：current write set=`3/3`、future allowlist=`12/12`、CLI allowlist=`13/13`、package files entries=`7/7`；`git diff --check`、禁止路径差异、parent/formal/control 精确断言均通过。门禁判断=`计划候选通过自检，允许送独立 entry review；不允许创建 packet`。

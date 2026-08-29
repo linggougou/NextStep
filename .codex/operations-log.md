@@ -3054,3 +3054,14 @@
 - user-signoff ACK CAS=`44993d1789177cbc1e177c422a0adff4fb8f74b1`，唯一父/expected-old=`ff8a8f544d2cf7e463474ccf63e4ae73b84ed560`；随后分离的 V2 completion CAS=`4f466224a442dd9650905722398bfad743e327fa`，唯一父/expected-old=`44993d1789177cbc1e177c422a0adff4fb8f74b1`。
 - formal 保持 `ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动；V2 精确状态=`formally-completed`。CR-006 仍 open、qualified real runs=`0/3`，alpha/V3/V4/Final Acceptance/P5 均未完成。
 - 状态同步限定 exact-eleven：路线锁、README、PLANS、PRODUCT_SENSE、两份 P5 活动计划、QA index、CR index/CR-006 详情及两份 `.codex` 追加留痕。下一唯一入口是独立 alpha 计划与 fresh entry review；本轮不创建 alpha packet/package/install/tag。
+
+## 2026-08-29 v0.2.0-alpha Generation 1 最小执行计划候选
+
+- 当前路线/阶段=`S5 / P5 产品落地 / post-V2 alpha plan freeze`；依据 `PROJECT_ROUTE_LOCK.md` 当前唯一入口，在独立 worktree 固定 main parent=`f17a7bf57aff4647d75672266dbccda15d172ccb`、tree=`2d855ca14bee9cec6edcd807b183eb418bbc35af`、formal F16=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control=`4f466224a442dd9650905722398bfad743e327fa`、`plan_generation=5`。
+- 本轮最小可验收闭环只生成 alpha Generation 1 计划候选及两份追加留痕 exact-three；不创建 packet、claim/fence、dispatch、实现、tarball、安装、checksum、tag 或 release，不移动 refs。
+- 变更分流保持既有 P5 内部预发布检查点：`v0.2.0-alpha` 仅为 local/internal developer preview；`private: true` 与 `UNLICENSED` 保持，不替代 V3/V4/Final Acceptance/P5，也不关闭 CR-006 或改变 qualified real runs 0/3。
+- future 产品写集冻结为 package、聚合 CLI、两份测试、一个 canonical quickstart、Skill+用户可见 `agents/openai.yaml`、README/release 文档和两份 `.codex` 留痕 exact-twelve；明确禁止 `pnpm-lock.yaml`、domain/schema/既有 CLI、依赖和生命周期脚本变化。
+- 聚合入口只允许 `status`、`requirement-intake`、`requirement-freeze`、`product-definition`、`interaction-prototype`、`carrier-decision`、`acceptance-profile`、`write-consistency`、`source-validate`、`version-chain`、`major-milestone`、`small-milestone`、`execution-packet`；`contract-probe` 与 `project-value-validation` 必须拒绝。
+- package 白名单收紧为运行时 JS/JSON、Skill+manifest、README、quickstart 和 alpha release note；不新增 main/exports/prepack。现有编译模块按相对路径读取 `dist/schemas/v1/**/*.json`，根目录 `schemas/**` 不进入包且不修改；精确 checksum 只写不随包的 verification report，避免 release note 自引用。future TDD/验收固定 RED→GREEN→refactor、full>=555 且零 fail/skip/cancel/todo、same-run displayed/raw coverage>=`94.45/89.76/99.57`、tarball allow/deny、项目外 offline/ignore-scripts 临时安装、help/version/canonical smoke/fail-closed 与 SHA-256 复算。
+- 本计划作者不参与 fresh entry review；只有独立 `PASS / 100`、P0/P1/P2=`0/0/0` 才允许主控另行进入 packet preparation。本轮未运行产品测试，历史 V2 指标不冒充 current-turn fresh evidence。
+- 结束状态=`已结束/等待独立 entry review`；机械检查通过：current exact-three、future allowlist=12、CLI allowlist=13、package files 条目=7、`git diff --check`、formal/control/parent 不变。
