@@ -2,7 +2,34 @@
 
 NextStep 是以 Skill 为主交互入口、以项目文档和 Git 为正式真源的 AI 项目闭环落地系统。
 
-当前处于 `S5 / P5`。V1、M2.1、M2.2 与 V2 已 formally-completed；V2 attempt 1 累计验收=`PASS / 100`，I/X/P/Profile=`25/25/25/25`，targeted=`52/52`、full=`555/555`、coverage=`94.45/89.76/99.57`，Result digest=`sha256:f82ce4edd94b587f7f076eb6b52cfffbb2acb0b9b6dd2690a3d1aa4940543ad2`。当前 formal 仍为 F16；下一唯一入口是独立冻结 `v0.2.0-alpha` 计划并完成 fresh entry review，不得直接创建 alpha packet、package、installation 或 tag。CR-006 仍 open、qualified real runs=`0/3`；alpha、V3、V4、Final Acceptance 与 P5 均未完成。
+当前包版本为 `v0.2.0-alpha`，定位是 `internal developer preview`：继续保持 `private: true` 与 `UNLICENSED`，只用于本地打包、项目外临时安装和开发者验证，不是 npm/公开发行、稳定 API 或普通用户完整产品。V1、M2.1、M2.2 与 V2 已 formally-completed；formal 仍为 F16。CR-006 仍 open、qualified real runs=`0/3`，V3、V4、Final Acceptance 与 P5 均未完成。候选是否通过独立 package acceptance、是否允许集成，以 `PROJECT_ROUTE_LOCK.md` 和控制面实时状态为准；版本号本身不代表 tag 或正式发布。
+
+## Alpha 本地试用
+
+先在源码仓库构建和验证，再把 tarball 放到项目外临时目录：
+
+```bash
+corepack pnpm install --frozen-lockfile
+corepack pnpm check
+alpha_pack_dir="$(mktemp -d)"
+corepack pnpm pack --pack-destination "$alpha_pack_dir"
+```
+
+在另一个临时目录以离线、禁用 lifecycle scripts 的方式安装；不要全局安装：
+
+```bash
+alpha_consumer_dir="$(mktemp -d)"
+cd "$alpha_consumer_dir"
+printf '{"name":"nextstep-alpha-consumer","private":true,"version":"0.0.0"}\n' > package.json
+corepack pnpm add --offline --ignore-scripts "$alpha_pack_dir/nextstep-0.2.0-alpha.tgz"
+./node_modules/.bin/nextstep --version
+./node_modules/.bin/nextstep --help
+./node_modules/.bin/nextstep version-chain < node_modules/nextstep/examples/quickstart/version-chain.json
+```
+
+`nextstep` 只暴露 13 个已冻结公开子命令。`contract-probe` 与 `project-value-validation` 不进入包；需要进程内可信 verifier/session/clock/filesystem capability 的动作从 shell 调用仍会 fail closed。CLI 安装和 Codex Skill 注册是两件独立的事，本包不会复制或覆盖用户级 Skill。
+
+自然语言到 canonical JSON 候选的整理仍由宿主 AI 完成；TypeScript 内核只接收并校验 RFC 8785/JCS 结构化输入。
 
 ## 环境
 

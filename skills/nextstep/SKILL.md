@@ -1,11 +1,23 @@
 ---
 name: nextstep
-description: Validate NextStep requirement and freeze flows, Product Definition 2.0 in `V1 / M1.1 / S1.3`, prototype/profile in `V1 / M1.2 / S1.4`, candidate-write contracts in `V1 / M1.2 / S1.5`, and the read-only PC-08 architecture-risk candidate in `V1 / M1.2 / S1.6` after explicit project/stage inspection. S1.6 proves only a manual-isolated consumer contract; the main conversation never reads or writes project files.
+description: Validate NextStep requirement and freeze flows, Product Definition 2.0 in `V1 / M1.1 / S1.3`, prototype/profile in `V1 / M1.2 / S1.4`, candidate-write contracts in `V1 / M1.2 / S1.5`, and the read-only PC-08 architecture-risk candidate in `V1 / M1.2 / S1.6` after explicit project/stage inspection. The private v0.2.0-alpha developer preview adds one packaged CLI entry; trusted capabilities remain in-process and fail closed from shell, and this Skill does not imply a full host, public release, or completed P5.
 ---
 
 # NextStep
 
 Operate only within the current `V1 / M1.1 / S1.1`, `V1 / M1.1 / S1.2`, `V1 / M1.1 / S1.3`, `V1 / M1.2 / S1.4`, `V1 / M1.2 / S1.5`, or `V1 / M1.2 / S1.6` boundary shown by project truth.
+
+## Internal Alpha Unified CLI
+
+The packaged `v0.2.0-alpha` is a private, UNLICENSED developer preview. After a local temporary install, use `nextstep --help` and invoke only these public commands: `status`, `requirement-intake`, `requirement-freeze`, `product-definition`, `interaction-prototype`, `carrier-decision`, `acceptance-profile`, `write-consistency`, `source-validate`, `version-chain`, `major-milestone`, `small-milestone`, and `execution-packet`.
+
+For example, send the packaged canonical quickstart to the unified entry:
+
+```bash
+nextstep version-chain < node_modules/nextstep/examples/quickstart/version-chain.json
+```
+
+Expect `VERSION_CHAIN_ACCEPTED` only for an accepted canonical candidate. `contract-probe` and `project-value-validation` are internal and absent from the package. The dispatcher only forwards arguments and standard streams to an existing CLI; it never supplies verifier, session, clock, filesystem, signoff, or host capabilities. CLI installation does not register this Skill and must not copy or overwrite a user-level Skill.
 
 ## Inspect The Stage
 

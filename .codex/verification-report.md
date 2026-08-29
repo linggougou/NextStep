@@ -3224,3 +3224,111 @@
 - 反扫源码导入图命中：`src/domain/product-definition.ts -> ../../schemas/v2/product-definition.schema.json`；`src/domain/interaction-prototype.ts` 与 `src/domain/machine-receipt.ts` 均依赖 `product-definition`，证明确属 public CLI 运行时闭包需求，不是多余扩容。
 - 计划文本已同步改为 package allowlist=`23/23`，pack step 明确要求 tarball 含 `dist/schemas/v2/product-definition.schema.json`，同时继续保留内部 CLI denylist=`2/2` 与 installed package 直达路径缺席断言。
 - 本轮仍固定单父后继、exact-three、`git diff --check`、formal/control/plan_generation 不变；未运行产品测试，离线安装缓存缺口不会被误报为计划通过证据。
+
+## 2026-08-29 v0.2.0-alpha attempt 1 实现候选验证
+
+### 身份、范围与 TDD
+
+- packet parent=`a1e37bbeb44a2b528fb02a86acb54cab9bc23c42`、tree=`866f926c3ae14b437336dff68a9011d0c6116bcd`；dispatch ACK control=`a5afea9f2df065a451ad79e729eabef6d9187015`；formal F16=`ea04b57de83d6c548dcb1629b1f61832db8375ad`。
+- 实现写集精确为 packet exact-twelve：`package.json`、`src/cli/nextstep.ts`、`tests/cli/nextstep.test.ts`、`tests/release/v020-alpha-package.test.ts`、`examples/quickstart/version-chain.json`、`skills/nextstep/SKILL.md`、`skills/nextstep/agents/openai.yaml`、`README.md`、`docs/releases/index.md`、`docs/releases/v0.2.0-alpha.md`、`.codex/operations-log.md`、`.codex/verification-report.md`。
+- RED：首次 build exit 0 后 targeted=`0/7 passed, 7 failed`，失败精确命中缺少 `nextstep.js`、metadata=`0.0.0` 和 alpha tgz 缺失；增加调度核心测试后 build 因源模块仍不存在而 exit 1。GREEN 只补最小 dispatcher、metadata/files、quickstart 与文档；refactor 未扩写集。
+
+### 测试与覆盖率
+
+- targeted=`8/8`，fail/skip/cancel/todo=`0/0/0/0`。
+- fresh `corepack pnpm check`=`563/563`，fail/skip/cancel/todo=`0/0/0/0`，高于 full>=555 门槛。
+- 同一次 Node native dual-reporter displayed Lines/Branches/Functions=`94.67/90.13/99.58`。
+- same-range raw Lines=`8456/8932=94.67084639498432%`、Branches=`3049/3383=90.12710611882945%`、Functions=`705/708=99.57627118644068%`；三维均不低于 `94.45/89.76/99.57`。
+- 首次 full 的 1 项旧 Skill 契约失败与 Functions=`99.44` 被如实保留并修正：恢复 frontmatter 精确阶段文本，使用原生 signal bind 代替未覆盖包装函数；没有删除、skip、padding 或降低门槛。
+
+### package manifest、安装与 checksum
+
+- 项目外真实 tarball manifest=`75` entries，allow/deny audit=`PASS`；明确含 v2 product-definition schema，明确不含两个内部 CLI、任一其他 CLI、源码、tests、`.codex`、`.git`、`.d.ts` 或 source map。
+- 精确 manifest：
+
+```text
+package/README.md
+package/dist/schemas/v1/acceptance-profile.schema.json
+package/dist/schemas/v1/architecture-risk-assessment.schema.json
+package/dist/schemas/v1/candidate-change.schema.json
+package/dist/schemas/v1/carrier-decision.schema.json
+package/dist/schemas/v1/confirmation-node.schema.json
+package/dist/schemas/v1/execution-packet.schema.json
+package/dist/schemas/v1/frozen-requirement.schema.json
+package/dist/schemas/v1/interaction-prototype.schema.json
+package/dist/schemas/v1/machine-receipt.schema.json
+package/dist/schemas/v1/major-milestone.schema.json
+package/dist/schemas/v1/product-definition.schema.json
+package/dist/schemas/v1/project-context.schema.json
+package/dist/schemas/v1/project-status-projection.schema.json
+package/dist/schemas/v1/project-value-run.schema.json
+package/dist/schemas/v1/requirement-confirmation.schema.json
+package/dist/schemas/v1/requirement-freeze-command.schema.json
+package/dist/schemas/v1/requirement-intake.schema.json
+package/dist/schemas/v1/requirement-set.schema.json
+package/dist/schemas/v1/scalability-budget.schema.json
+package/dist/schemas/v1/small-milestone.schema.json
+package/dist/schemas/v1/version-chain.schema.json
+package/dist/schemas/v1/write-transaction.schema.json
+package/dist/schemas/v2/product-definition.schema.json
+package/dist/src/adapters/node/file-write.js
+package/dist/src/adapters/node/fs-probe.js
+package/dist/src/adapters/node/process-io.js
+package/dist/src/adapters/node/project-status-source.js
+package/dist/src/cli/acceptance-profile.js
+package/dist/src/cli/carrier-decision.js
+package/dist/src/cli/execution-packet.js
+package/dist/src/cli/interaction-prototype.js
+package/dist/src/cli/major-milestone.js
+package/dist/src/cli/nextstep.js
+package/dist/src/cli/product-definition.js
+package/dist/src/cli/project-status.js
+package/dist/src/cli/requirement-freeze.js
+package/dist/src/cli/requirement-intake.js
+package/dist/src/cli/small-milestone.js
+package/dist/src/cli/source-validate.js
+package/dist/src/cli/version-chain.js
+package/dist/src/cli/write-consistency.js
+package/dist/src/domain/acceptance-profile.js
+package/dist/src/domain/architecture-risk.js
+package/dist/src/domain/candidate-change.js
+package/dist/src/domain/canonical-json.js
+package/dist/src/domain/carrier-decision.js
+package/dist/src/domain/command-policy.js
+package/dist/src/domain/confirmation-node.js
+package/dist/src/domain/content-digest.js
+package/dist/src/domain/contract-version.js
+package/dist/src/domain/execution-packet.js
+package/dist/src/domain/gate-conclusion.js
+package/dist/src/domain/interaction-prototype.js
+package/dist/src/domain/machine-receipt.js
+package/dist/src/domain/major-milestone.js
+package/dist/src/domain/product-definition.js
+package/dist/src/domain/project-context.js
+package/dist/src/domain/project-status-projection.js
+package/dist/src/domain/project-value-validation.js
+package/dist/src/domain/requirement-confirmation.js
+package/dist/src/domain/requirement-freeze.js
+package/dist/src/domain/requirement-intake.js
+package/dist/src/domain/requirement-set.js
+package/dist/src/domain/scalability-budget.js
+package/dist/src/domain/sensitive-fields.js
+package/dist/src/domain/small-milestone.js
+package/dist/src/domain/value-guards.js
+package/dist/src/domain/version-chain.js
+package/dist/src/domain/write-transaction.js
+package/docs/releases/v0.2.0-alpha.md
+package/examples/quickstart/version-chain.json
+package/package.json
+package/skills/nextstep/SKILL.md
+package/skills/nextstep/agents/openai.yaml
+```
+
+- 项目外 consumer 使用 offline + ignore-scripts 安装成功；installed bin 精确输出 version=`0.2.0-alpha`、help=`13` commands、canonical version-chain=`VERSION_CHAIN_ACCEPTED`。unknown、内部命令、路径形态和 trusted write 均非零 fail closed 且不泄漏输入；安装目录内两个内部 CLI 路径不存在。
+- tarball raw digest=`sha256:9871dcb4a03c8a14f1849f73c431df42b3be7a5315dc3d07bcd6e321f5a30a63`，bytes=`121670`；第二个独立临时 pack 的 digest/bytes 完全一致。tarball、consumer 与复算目录均位于 `/private/tmp` 并已清理，仓库内未留下 tgz 或安装产物。
+
+### 不变性、评分与门禁
+
+- `pnpm-lock.yaml` parent/worktree blob 均为 `8e8f41edc44fa9fa87395c06bdbce6296b7cca2a`；依赖集合、既有 CLI/domain/schema、formal/control 未修改。
+- `git diff --check`、canonical quickstart 末字节、package/files 精确值、13 命令、内部 CLI deny、overclaim 反扫均通过。
+- 技术维度=`100/100`，战略/边界维度=`100/100`，综合自检=`100/100`，建议=`提交独立 package acceptance`。该自检不是独立验收，不授权 main 合入、tag/publish、formal/control 移动、用户级 Skill 安装，也不声明 alpha、CR-006、V3、V4、Final Acceptance 或 P5 完成。

@@ -1,4 +1,4 @@
 interface:
   display_name: "NextStep"
-  short_description: "验证 NextStep P5-M0 契约内核、阶段边界与只读探针"
-  default_prompt: "Use $nextstep to inspect the current project stage and return the permitted next action."
+  short_description: "使用私有 v0.2.0-alpha 验证 V1/V2 契约与阶段边界"
+  default_prompt: "Use $nextstep to inspect the current project stage, select only a packaged public command, and preserve trusted-capability fail-closed boundaries."

@@ -3078,3 +3078,18 @@
 - fresh 独立 re-review 在收紧 package 公开面后，又发现第二个阻断点：计划只打 `dist/schemas/v1/**/*.json`，但 public `product-definition` 运行时直接依赖 `dist/schemas/v2/product-definition.schema.json`，`interaction-prototype` 与 `machine-receipt` 还会间接经过它。
 - 本轮继续保持 exact-three 和零产品代码改动，只把 package allowlist 再补齐 `dist/schemas/v2/product-definition.schema.json`，并把 pack/install smoke 改成必须机械证明该 schema 在 tarball 中存在。
 - 入口边界、exact-twelve、13 public CLI、内部 CLI denylist、private/UNLICENSED、no main/exports/prepack、coverage floors 与 tag/publish 非授权边界保持不变。下一动作仍是 fresh 独立 re-review；packet preparation 继续冻结。
+
+## 2026-08-29 v0.2.0-alpha attempt 1 实现启动与 RED
+
+- 当前路线/阶段=`S5 / P5 产品落地 / v0.2.0-alpha attempt 1`；最低真源为 `PROJECT_ROUTE_LOCK.md`、`.codex/exec-plan-v020-alpha-generation-1.md` 与 control packet=`sha256:268db6ec07c5fbc8200efc8e860a4e0a96cc3e1f30b292d7525cbf0e8b75d8aa`。dispatch ACK control=`a5afea9f2df065a451ad79e729eabef6d9187015` 已 accepted。
+- 本轮最小闭环是 exact-twelve 内完成统一 13 命令 dispatcher、严格 package runtime 闭包、canonical quickstart、internal-preview 文档和 RED→GREEN→refactor 证据；不做独立验收、main 合入、formal/control 移动、tag/publish、用户级 Skill 安装、CR-006/V3/V4/Final Acceptance/P5 完成。
+- 写集严格限于 packet exact-twelve。复杂任务要求的额外 context-summary 与 CodeGraph 索引不进入 packet 写集；替代流程为复用已评审 alpha 执行计划，并用 `rg`/本地源码检查 3 个既有 CLI、现有 Node test 模式与 schema import 闭包，不扩路径、不初始化索引。
+- 使用 `tdd-workflow` skill；先新增 `tests/cli/nextstep.test.ts`、`tests/release/v020-alpha-package.test.ts` 与 canonical `examples/quickstart/version-chain.json`，仅验证用户可见行为、真实进程、真实 tgz 与临时安装，尚未新增 dispatcher 或修改 metadata。
+- 依赖以 `corepack pnpm install --frozen-lockfile --offline` 从本机 store 安装成功；未访问 registry，`pnpm-lock.yaml` 未修改。
+- RED 命令=`corepack pnpm build && node --test dist/tests/cli/nextstep.test.js dist/tests/release/v020-alpha-package.test.js`：build exit 0，targeted=`0/7 passed`、`7 failed`、skip/cancel/todo=`0/0/0`；失败精确来自缺少 `dist/src/cli/nextstep.js`、metadata 仍为 `0.0.0`、alpha tgz 不存在。
+- 为覆盖调度核心的 spawn exception、null exit 与 signal 路径，在实现前追加一个 runtime 注入测试；再次 build 因 `src/cli/nextstep.ts` 尚不存在而 exit 1，维持真实 RED。随后才进入最小 GREEN。
+- GREEN 最小实现只增加无 shell sibling dispatcher、alpha metadata/files、canonical quickstart、Skill/manifest 与 README/release 边界。首轮 targeted 发现并修正三项测试/字节精度问题：quickstart 尾换行不符合 JCS、trusted write 既有诊断为 `blocked`、tar deny 正则误伤允许的 `dist/src`；未放宽公开命令或 package allowlist。
+- GREEN targeted 最终=`8/8`，fail/skip/cancel/todo=`0/0/0/0`。首次 full 暴露旧 Skill frontmatter 阶段文本丢失与 signal 包装函数 coverage 缺口；保留原阶段描述，并以同义原生 `process.kill.bind` 消除不可安全触发的包装函数，未删除或 skip 测试。
+- fresh `corepack pnpm check`=`563/563`、fail/skip/cancel/todo=`0/0/0/0`。同一次 dual-reporter displayed Lines/Branches/Functions=`94.67/90.13/99.58`，same-range raw=`8456/8932=94.67084639498432%`、`3049/3383=90.12710611882945%`、`705/708=99.57627118644068%`，全部超过冻结门槛。
+- 项目外真实 pack/install smoke 通过：manifest=`75` entries、allow/deny=`PASS`、offline+ignore-scripts install=`PASS`、version/help 13 命令/version-chain accepted/unknown/internal/trusted fail-closed 均通过；tgz=`sha256:9871dcb4a03c8a14f1849f73c431df42b3be7a5315dc3d07bcd6e321f5a30a63`、`121670` bytes，第二次独立 pack 复算完全一致，两个临时目录均已清理。
+- 结束状态=`实现候选已完成，等待独立 package acceptance`。本实现不自我验收，不合入 main，不移动 formal/control，不创建 tag/publish/用户级安装，也不宣称 alpha、V3/V4/Final Acceptance/P5 完成。
