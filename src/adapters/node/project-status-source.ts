@@ -6,6 +6,9 @@ import type { ProjectStatusSource } from "../../domain/project-status-projection
 
 export type ProjectStatusSourceErrorCode =
   | "INVALID_PROJECT_ROOT"
+  | "PROJECT_NOT_ADOPTED"
+  | "REF_PAIR_INCOMPLETE"
+  | "ADOPTION_SOURCE_CONFLICT"
   | "SOURCE_UNAVAILABLE"
   | "INVALID_CONTROL_COMMIT"
   | "SOURCE_CHANGED";
@@ -40,12 +43,24 @@ async function git(root: string, args: readonly string[]): Promise<string> {
   }
 }
 
+async function gitOptional(root: string, args: readonly string[]): Promise<string | null> {
+  try {
+    const result = await runFile("git", ["-C", root, ...args], {
+      encoding: "utf8",
+      env: gitEnvironment,
+      maxBuffer: 8 * 1024 * 1024,
+    });
+    return result.stdout;
+  } catch {
+    return null;
+  }
+}
+
 interface RefPair { readonly formal: string; readonly control: string }
 
 async function readRefPair(root: string): Promise<RefPair> {
   const output = await git(root, [
-    "for-each-ref", "--format=%(refname) %(objectname)",
-    "refs/nextstep/formal", "refs/nextstep/control",
+    "for-each-ref", "--format=%(refname) %(objectname)", "refs/nextstep/",
   ]);
   const refs = new Map(output.trim().split("\n").filter(Boolean).map((line) => {
     const separator = line.indexOf(" ");
@@ -53,9 +68,10 @@ async function readRefPair(root: string): Promise<RefPair> {
   }));
   const formal = refs.get("refs/nextstep/formal");
   const control = refs.get("refs/nextstep/control");
-  if ([formal !== undefined, control !== undefined, refs.size === 2, OID.test(formal ?? ""), OID.test(control ?? "")].includes(false)) {
-    throw new ProjectStatusSourceError("SOURCE_UNAVAILABLE");
-  }
+  if (refs.size === 0) throw new ProjectStatusSourceError("PROJECT_NOT_ADOPTED");
+  if (refs.size === 1 && ((formal === undefined) !== (control === undefined))) throw new ProjectStatusSourceError("REF_PAIR_INCOMPLETE");
+  if ([formal !== undefined, control !== undefined, refs.size === 2].includes(false)) throw new ProjectStatusSourceError("ADOPTION_SOURCE_CONFLICT");
+  if (!OID.test(formal ?? "") || !OID.test(control ?? "")) throw new ProjectStatusSourceError("SOURCE_UNAVAILABLE");
   return { formal: formal as string, control: control as string };
 }
 
@@ -82,9 +98,18 @@ export async function readProjectStatusSource(
   }
   let checkpoint: unknown;
   let registry: unknown;
+  let adoptedBaseline: unknown;
+  let adoptedBaselineBlob: string | undefined;
   try {
     checkpoint = JSON.parse(await git(projectRoot, ["cat-file", "blob", checkpointBlob])) as unknown;
     registry = JSON.parse(await git(projectRoot, ["cat-file", "blob", registryBlob])) as unknown;
+    const baselineBlob = (await gitOptional(projectRoot, ["rev-parse", `${first.control}:adopted-baseline.json`]))?.trim();
+    if (baselineBlob !== undefined && OID.test(baselineBlob)) {
+      adoptedBaselineBlob = baselineBlob;
+      adoptedBaseline = JSON.parse(await git(projectRoot, ["cat-file", "blob", baselineBlob])) as unknown;
+      const genesis = (await git(projectRoot, ["rev-list", "--parents", "-n", "1", controlParent])).trim().split(/\s+/);
+      if (genesis.length !== 1 || genesis[0] !== controlParent) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
+    }
   } catch (error) {
     if (error instanceof ProjectStatusSourceError) throw error;
     throw new ProjectStatusSourceError("SOURCE_UNAVAILABLE");
@@ -103,5 +128,10 @@ export async function readProjectStatusSource(
     registry_blob_oid: registryBlob,
     checkpoint,
     registry,
+    source_kind: adoptedBaselineBlob === undefined ? "native" : "adopted-baseline",
+    ...(adoptedBaselineBlob === undefined ? {} : {
+      adopted_baseline_blob_oid: adoptedBaselineBlob,
+      adopted_baseline: adoptedBaseline,
+    }),
   });
 }

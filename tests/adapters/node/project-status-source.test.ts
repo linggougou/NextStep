@@ -90,6 +90,41 @@ test("adapter 拒绝相对项目根、缺 ref 与 control 多父", async (contex
   });
 });
 
+test("namespace 为空、单 ref、extra-only 与 pair+extra 返回精确分类", async (context) => {
+  const empty = await mkdtemp(resolve(tmpdir(), "nextstep-status-namespace-"));
+  context.after(() => rm(empty, { recursive: true, force: true }));
+  git(empty, "init", "-q");
+  git(empty, "config", "user.name", "NextStep Test");
+  git(empty, "config", "user.email", "nextstep@example.invalid");
+  git(empty, "commit", "--allow-empty", "-qm", "seed");
+  await assert.rejects(() => readProjectStatusSource(empty), (error: unknown) => {
+    assert.ok(error instanceof ProjectStatusSourceError);
+    assert.equal(error.code, "PROJECT_NOT_ADOPTED");
+    return true;
+  });
+  const head = git(empty, "rev-parse", "HEAD");
+  git(empty, "update-ref", "refs/nextstep/formal", head);
+  await assert.rejects(() => readProjectStatusSource(empty), (error: unknown) => {
+    assert.ok(error instanceof ProjectStatusSourceError);
+    assert.equal(error.code, "REF_PAIR_INCOMPLETE");
+    return true;
+  });
+  git(empty, "update-ref", "-d", "refs/nextstep/formal");
+  git(empty, "update-ref", "refs/nextstep/extra", head);
+  await assert.rejects(() => readProjectStatusSource(empty), (error: unknown) => {
+    assert.ok(error instanceof ProjectStatusSourceError);
+    assert.equal(error.code, "ADOPTION_SOURCE_CONFLICT");
+    return true;
+  });
+  git(empty, "update-ref", "refs/nextstep/formal", head);
+  git(empty, "update-ref", "refs/nextstep/control", head);
+  await assert.rejects(() => readProjectStatusSource(empty), (error: unknown) => {
+    assert.ok(error instanceof ProjectStatusSourceError);
+    assert.equal(error.code, "ADOPTION_SOURCE_CONFLICT");
+    return true;
+  });
+});
+
 test("adapter 源码不含 checkout/fetch/commit/update-ref/缓存或 Markdown 扫描", async () => {
   const source = await readFile(resolve(process.cwd(), "src/adapters/node/project-status-source.ts"), "utf8");
   assert.doesNotMatch(source, /\b(?:checkout|fetch|update-ref)\b|cache|Markdown|\.md\b/);
@@ -126,4 +161,18 @@ test("adapter 拒绝非法 clock、非提交 formal、缺 blob 与畸形 JSON", 
   git(malformed, "commit", "-qm", "malformed checkpoint");
   git(malformed, "update-ref", "refs/nextstep/control", git(malformed, "rev-parse", "HEAD"));
   await assert.rejects(() => readProjectStatusSource(malformed), ProjectStatusSourceError);
+});
+
+test("带 adopted-baseline blob 的 control 必须以零父 genesis 为唯一父", async (context) => {
+  const root = await repository();
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await writeFile(resolve(root, "adopted-baseline.json"), "{}");
+  git(root, "add", "adopted-baseline.json");
+  git(root, "commit", "-qm", "invalid adopted control");
+  git(root, "update-ref", "refs/nextstep/control", git(root, "rev-parse", "HEAD"));
+  await assert.rejects(() => readProjectStatusSource(root), (error: unknown) => {
+    assert.ok(error instanceof ProjectStatusSourceError);
+    assert.equal(error.code, "INVALID_CONTROL_COMMIT");
+    return true;
+  });
 });

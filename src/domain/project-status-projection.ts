@@ -1,4 +1,5 @@
 import { digestJson, type Sha256Digest } from "./content-digest.ts";
+import { parseAdoptedBaseline, type AdoptedBaselineRecord } from "./adopted-baseline.ts";
 import { isPlainRecord } from "./value-guards.ts";
 
 export interface ProjectStatusSource {
@@ -11,6 +12,9 @@ export interface ProjectStatusSource {
   readonly registry_blob_oid: string;
   readonly checkpoint: unknown;
   readonly registry: unknown;
+  readonly source_kind?: "native" | "adopted-baseline";
+  readonly adopted_baseline_blob_oid?: string;
+  readonly adopted_baseline?: unknown;
 }
 
 export interface ProjectStatusProjection {
@@ -30,6 +34,12 @@ export interface ProjectStatusProjection {
   readonly source_digest: Sha256Digest;
   readonly freshness: "current" | "stale" | "unknown";
   readonly unavailable_reasons: readonly string[];
+  readonly source: {
+    readonly kind: "native" | "adopted-baseline" | "unavailable";
+    readonly evidence_assessments: readonly { readonly subject: string; readonly classification: string }[];
+    readonly unknown_gates: readonly string[];
+    readonly disclaimer: string | null;
+  };
 }
 
 const OID = /^(?:[a-f0-9]{40}|[a-f0-9]{64})$/;
@@ -61,6 +71,7 @@ function sourceDigest(source: Partial<ProjectStatusSource>): Sha256Digest {
     control_oid: typeof source.control_oid === "string" ? source.control_oid : "",
     formal_oid: typeof source.formal_oid === "string" ? source.formal_oid : "",
     registry_blob_oid: typeof source.registry_blob_oid === "string" ? source.registry_blob_oid : "",
+    adopted_baseline_blob_oid: typeof source.adopted_baseline_blob_oid === "string" ? source.adopted_baseline_blob_oid : "",
   });
 }
 
@@ -84,7 +95,23 @@ export function createUnavailableProjectStatus(
     source_digest: sourceDigest(source),
     freshness,
     unavailable_reasons: Object.freeze([safeReason]),
+    source: Object.freeze({
+      kind: "unavailable" as const,
+      evidence_assessments: Object.freeze([]),
+      unknown_gates: Object.freeze([]),
+      disclaimer: null,
+    }),
   });
+}
+
+function adoptedBaseline(source: ProjectStatusSource): AdoptedBaselineRecord | null | "invalid" {
+  if (source.source_kind !== "adopted-baseline" && source.adopted_baseline === undefined) return null;
+  if (!OID.test(source.adopted_baseline_blob_oid ?? "")) return "invalid";
+  try { return parseAdoptedBaseline(source.adopted_baseline); } catch { return "invalid"; }
+}
+
+function safeNextAction(value: string | null): value is string {
+  return value !== null && !/\b(?:claim|fence|secret|chat|source code|absolute path)\b|(?:^|\s)\/(?:Users|Volumes|home|tmp|var|etc)\//i.test(value);
 }
 
 function matchingIdentity(
@@ -176,20 +203,54 @@ export function projectProjectStatus(source: ProjectStatusSource): ProjectStatus
       checkpoint.control_parent_oid !== source.control_parent_oid || !matchingIdentity(checkpoint, registry)
     ) return createUnavailableProjectStatus("identity-conflict", source);
 
+    const adopted = adoptedBaseline(source);
+    if (adopted === "invalid") return createUnavailableProjectStatus("invalid-adopted-baseline", source);
+    if (adopted !== null && (
+      adopted.repository_identity !== checkpoint.repository_id || adopted.baseline_oid !== source.formal_oid
+    )) return createUnavailableProjectStatus("adopted-baseline-conflict", source);
+
     const task = selectCurrentTask(checkpoint, registry);
     if (task === "highest-identity-conflict" || task === "unknown-status") {
       return createUnavailableProjectStatus(task, source);
     }
+    const nextStage = text(checkpoint, "next_stage");
+    if (task === null && adopted === null) return createUnavailableProjectStatus("missing-current-identity", source);
+    if (task === null && adopted !== null) {
+      if (latestFormalConclusion(checkpoint, source.formal_oid) !== null) {
+        return createUnavailableProjectStatus("adopted-signoff-conflict", source);
+      }
+      if (!safeNextAction(nextStage)) return createUnavailableProjectStatus(nextStage === null ? "unproven-next-action" : "next-action-sensitive", source);
+      return Object.freeze({
+        schema_version: "1.0",
+        status: "available",
+        current_stage: adopted.projected_stage,
+        current_scope: `${adopted.projected_milestone} / ${adopted.projected_scope}`,
+        latest_formal_conclusion: null,
+        blockers: Object.freeze([]),
+        next_action: nextStage,
+        risk_summary: Object.freeze([adopted.disclaimer]),
+        formal_oid: source.formal_oid,
+        control_oid: source.control_oid,
+        source_digest: sourceDigest(source),
+        freshness: "current",
+        unavailable_reasons: Object.freeze([]),
+        source: Object.freeze({
+          kind: "adopted-baseline" as const,
+          evidence_assessments: adopted.evidence_assessments,
+          unknown_gates: adopted.unknown_gates,
+          disclaimer: adopted.disclaimer,
+        }),
+      });
+    }
     if (task === null) return createUnavailableProjectStatus("missing-current-identity", source);
     const formalConclusion = latestFormalConclusion(checkpoint, source.formal_oid);
-    if (formalConclusion === null) return createUnavailableProjectStatus("incomplete-formal-conclusion", source);
+    if (formalConclusion === null && adopted === null) return createUnavailableProjectStatus("incomplete-formal-conclusion", source);
 
     let freshness: ProjectStatusProjection["freshness"] = "unknown";
     if (task.expiry !== null) {
       freshness = task.expiry > Date.parse(source.observed_at) ? "current" : "stale";
       if (freshness === "stale") return createUnavailableProjectStatus("stale-active-identity", source, freshness);
     }
-    const nextStage = text(checkpoint, "next_stage");
     const identity = `${task.task} generation ${task.generation} attempt ${task.attempt}`;
     if (!nextStage || !nextStage.includes(identity)) {
       return createUnavailableProjectStatus("unproven-next-action", source, freshness);
@@ -214,6 +275,9 @@ export function projectProjectStatus(source: ProjectStatusSource): ProjectStatus
       source_digest: sourceDigest(source),
       freshness,
       unavailable_reasons: Object.freeze([]),
+      source: adopted === null
+        ? Object.freeze({ kind: "native" as const, evidence_assessments: Object.freeze([]), unknown_gates: Object.freeze([]), disclaimer: null })
+        : Object.freeze({ kind: "adopted-baseline" as const, evidence_assessments: adopted.evidence_assessments, unknown_gates: adopted.unknown_gates, disclaimer: adopted.disclaimer }),
     });
   } catch {
     return createUnavailableProjectStatus("invalid-source", source);

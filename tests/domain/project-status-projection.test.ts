@@ -39,16 +39,83 @@ test("一致来源生成字段完备、简洁、可追溯的 available 投影", 
       control_oid: input.control_oid,
       formal_oid: input.formal_oid,
       registry_blob_oid: input.registry_blob_oid,
+      adopted_baseline_blob_oid: "",
     }),
     freshness: "current",
     unavailable_reasons: [],
+    source: {
+      kind: "native",
+      evidence_assessments: [],
+      unknown_gates: [],
+      disclaimer: null,
+    },
   });
   assert.equal(canonicalizeJson(projection), canonicalizeJson(projectProjectStatus(await source())));
 
   const validate = new Ajv({ strict: true }).compile(projectionSchema);
   assert.equal(validate(projection), true, JSON.stringify(validate.errors));
   const output = canonicalizeJson(projection);
-  assert.doesNotMatch(output, /secret-that-must-not-appear|old-signoff|private-chat|claim|fence|absolute/);
+  assert.doesNotMatch(output, /secret-that-must-not-appear|old-signoff|private-chat|\bclaim\b|\bfence\b|absolute/);
+});
+
+test("adopted baseline 在无 task/signoff 时仍 available，且不伪造正式结论", async () => {
+  const input: any = await source();
+  input.source_kind = "adopted-baseline";
+  input.adopted_baseline_blob_oid = "f".repeat(40);
+  input.checkpoint.repository_id = "sha256:" + "1".repeat(64);
+  input.registry.repository_id = input.checkpoint.repository_id;
+  input.checkpoint.highest_task_attempts = {};
+  input.registry.tasks = [];
+  input.checkpoint.version_signoffs = {};
+  input.checkpoint.next_stage = "review unknown gates before creating any execution task";
+  const unsigned = {
+    schema_version: "1.0",
+    record_type: "adopted-baseline",
+    repository_identity: input.checkpoint.repository_id,
+    baseline_oid: input.formal_oid,
+    source_blobs: [
+      { path: "PROJECT_ROUTE_LOCK.md", blob_oid: "1".repeat(40), digest: "sha256:" + "2".repeat(64), classification: "user-declared" },
+      { path: "docs/exec-plans/active/current.md", blob_oid: "3".repeat(40), digest: "sha256:" + "4".repeat(64), classification: "user-declared" },
+      { path: ".codex/verification-report.md", blob_oid: "5".repeat(40), digest: "sha256:" + "6".repeat(64), classification: "unknown" },
+    ],
+    candidate_digest: "sha256:" + "7".repeat(64),
+    confirmation_envelope_digest: "sha256:" + "8".repeat(64),
+    projected_stage: "S5",
+    projected_milestone: "M1",
+    projected_scope: "existing-project-baseline",
+    evidence_assessments: [{ subject: "historical-gates", classification: "unknown" }],
+    unknown_gates: ["historical-gates-not-verified"],
+    disclaimer: "adopted baseline; historical gates not verified by NextStep",
+    lifecycle_state: "rollback-eligible",
+  };
+  input.adopted_baseline = { ...unsigned, record_digest: digestJson(unsigned) };
+  const projection = projectProjectStatus(input);
+  assert.equal(projection.status, "available");
+  assert.equal(projection.current_stage, "S5");
+  assert.equal(projection.latest_formal_conclusion, null);
+  assert.equal(projection.source.kind, "adopted-baseline");
+  assert.deepEqual(projection.source.unknown_gates, ["historical-gates-not-verified"]);
+  assert.doesNotMatch(canonicalizeJson(projection), /formally completed|version_signoffs/);
+
+  for (const [reason, mutate] of [
+    ["invalid-adopted-baseline", (value: any) => { value.adopted_baseline_blob_oid = "bad"; }],
+    ["adopted-baseline-conflict", (value: any) => { value.adopted_baseline.baseline_oid = "9".repeat(40); }],
+    ["adopted-signoff-conflict", (value: any) => {
+      value.checkpoint.version_signoffs = {
+        V1: { status: "approved", result_ref: "r", result_digest: "sha256:" + "9".repeat(64), formal_oid: value.formal_oid, approval_message_id: "a", completion_message_id: "c", completed_at: "2026-08-30T09:00:00Z" },
+      };
+    }],
+    ["next-action-sensitive", (value: any) => { value.checkpoint.next_stage = "use claim secret"; }],
+    ["unproven-next-action", (value: any) => { value.checkpoint.next_stage = null; }],
+  ] as const) {
+    const changed = structuredClone(input);
+    mutate(changed);
+    if (reason === "adopted-baseline-conflict") {
+      const { record_digest: _old, ...body } = changed.adopted_baseline;
+      changed.adopted_baseline.record_digest = digestJson(body);
+    }
+    assert.deepEqual(projectProjectStatus(changed).unavailable_reasons, [reason]);
+  }
 });
 
 test("旧 revision-required 与旧会签不会冒充当前 blocker 或授权", async () => {
@@ -130,7 +197,7 @@ test("较旧 sibling 的未知状态不抢先污染更新的当前任务", async
   assert.equal(projection.status, "unavailable");
   assert.equal(projection.next_action, null);
   assert.deepEqual(projection.unavailable_reasons, ["next-action-sensitive"]);
-  assert.doesNotMatch(canonicalizeJson(projection), /claim|fence|Volumes|private\/project/);
+  assert.doesNotMatch(canonicalizeJson(projection), /\bclaim\b|\bfence\b|Volumes|private\/project/);
 });
 
 test("未知 freshness 不凭文件年龄猜过期", async () => {

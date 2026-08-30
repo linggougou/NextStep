@@ -17,7 +17,8 @@
     "control_oid",
     "source_digest",
     "freshness",
-    "unavailable_reasons"
+    "unavailable_reasons",
+    "source"
   ],
   "properties": {
     "schema_version": { "const": "1.0" },
@@ -51,6 +52,28 @@
       "type": "array",
       "items": { "type": "string", "minLength": 1 },
       "uniqueItems": true
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "evidence_assessments", "unknown_gates", "disclaimer"],
+      "properties": {
+        "kind": { "enum": ["native", "adopted-baseline", "unavailable"] },
+        "evidence_assessments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["subject", "classification"],
+            "properties": {
+              "subject": { "type": "string", "minLength": 1 },
+              "classification": { "enum": ["verified", "user-declared", "unknown"] }
+            }
+          }
+        },
+        "unknown_gates": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+        "disclaimer": { "type": ["string", "null"], "minLength": 1 }
+      }
     }
   },
   "allOf": [
@@ -60,7 +83,7 @@
         "properties": {
           "current_stage": { "type": "string" },
           "current_scope": { "type": "string" },
-          "latest_formal_conclusion": { "type": "string" },
+          "latest_formal_conclusion": { "type": ["string", "null"] },
           "next_action": { "type": "string" },
           "formal_oid": { "type": "string", "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$" },
           "control_oid": { "type": "string", "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$" },

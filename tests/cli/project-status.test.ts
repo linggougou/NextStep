@@ -1,11 +1,15 @@
 import assert from "node:assert/strict";
 import { execFileSync, spawn } from "node:child_process";
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import test from "node:test";
 
 import { canonicalizeJson, parseCanonicalJsonBytes } from "../../src/domain/canonical-json.ts";
+import { readAdoptionInspectSource } from "../../src/adapters/node/adoption-inspect-source.ts";
+import { activateAdoption } from "../../src/adapters/node/adoption-ref-store.ts";
+import { createAdoptionCandidate } from "../../src/domain/adoption-candidate.ts";
+import { verifyAdoptionConfirmation } from "../../src/domain/adopted-baseline.ts";
 
 const cli = resolve(process.cwd(), "dist/src/cli/project-status.js");
 const fixturePath = resolve(process.cwd(), "tests/fixtures/project-status/available-source.json");
@@ -65,7 +69,7 @@ test("CLI 仅接受绝对 --project-root，成功 stdout 恰一份 JCS JSON", as
   assert.equal((projection as any).status, "available");
   assert.equal((projection as any).freshness, "current");
   assert.equal(git(root, "status", "--porcelain"), before);
-  assert.doesNotMatch(`${result.stdout}${result.stderr}`, /secret-that-must-not-appear|private-chat|claim|fence/);
+  assert.doesNotMatch(`${result.stdout}${result.stderr}`, /secret-that-must-not-appear|private-chat|\bclaim\b|\bfence\b/);
 });
 
 test("CLI 对缺参、相对路径、额外参数、ref override、write 与 fetch 均失败", async () => {
@@ -84,5 +88,54 @@ test("CLI 对缺参、相对路径、额外参数、ref override、write 与 fet
     assert.equal((projection as any).status, "unavailable");
     assert.equal((projection as any).next_action, null);
     assert.doesNotMatch(`${result.stdout}${result.stderr}`, /secret-that-must-not-appear|private-chat/);
+  }
+});
+
+test("CLI 对 adopted baseline 返回 available/null 正式结论，且无公开写参数", async (context) => {
+  const root = await mkdtemp(resolve(tmpdir(), "nextstep-status-adopted-cli-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  git(root, "init", "-q");
+  git(root, "config", "user.name", "NextStep Test");
+  git(root, "config", "user.email", "nextstep@example.invalid");
+  await mkdir(resolve(root, "docs/exec-plans/active"), { recursive: true });
+  await mkdir(resolve(root, ".codex"), { recursive: true });
+  await writeFile(resolve(root, "PROJECT_ROUTE_LOCK.md"), "route\n");
+  await writeFile(resolve(root, "docs/exec-plans/active/current.md"), "plan\n");
+  await writeFile(resolve(root, ".codex/verification-report.md"), "evidence\n");
+  git(root, "add", ".");
+  git(root, "commit", "-qm", "baseline");
+  const candidate = createAdoptionCandidate(await readAdoptionInspectSource({
+    projectRoot: root,
+    routeLockPath: "PROJECT_ROUTE_LOCK.md",
+    activePlanPath: "docs/exec-plans/active/current.md",
+    evidencePaths: [".codex/verification-report.md"],
+  }, { now: () => new Date("2026-08-30T09:00:00.000Z") }));
+  const verifier = { verifier_kind: "trusted-host" as const, verify: () => true };
+  const confirmation = verifyAdoptionConfirmation(candidate, {
+    candidate_digest: candidate.candidate_digest,
+    displayed_view_digest: `sha256:${"a".repeat(64)}`,
+    user_action_ref: "cli-host-action",
+    session_identity: `sha256:${"b".repeat(64)}`,
+    verifier_identity: "trusted-host-v1",
+    verified_at_trusted: "2026-08-30T09:01:00.000Z",
+    expires_at_trusted: "2026-08-30T09:10:00.000Z",
+    nonce_or_replay_key: "cli-nonce",
+    decision: "confirm",
+  }, verifier, () => new Date("2026-08-30T09:02:00.000Z"));
+  await activateAdoption({
+    projectRoot: root, candidate, confirmation,
+    roles: { candidate_actor_id: "inspect", activation_actor_id: "host", independent_acceptance_actor_id: "review" },
+    projection: { stage: "S5", milestone: "M1", scope: "existing-project-baseline" },
+    now: () => new Date("2026-08-30T09:03:00.000Z"),
+  });
+  const accepted = await run(["--project-root", root]);
+  assert.equal(accepted.code, 0, accepted.stderr);
+  const projection = parseCanonicalJsonBytes(Buffer.from(accepted.stdout)) as any;
+  assert.equal(projection.status, "available");
+  assert.equal(projection.latest_formal_conclusion, null);
+  assert.equal(projection.source.kind, "adopted-baseline");
+  for (const flag of ["--commit", "--rollback", "--force"]) {
+    const rejected = await run(["--project-root", root, flag]);
+    assert.notEqual(rejected.code, 0);
   }
 });
