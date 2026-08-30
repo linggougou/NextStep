@@ -1,0 +1,164 @@
+{
+  "review_id": "p5-v3-existing-project-adoption-change-intake-g2-a8-2026-08-30",
+  "task_id": "CR-007-existing-project-adoption-change-intake",
+  "lane": "P5/V3/change-intake",
+  "review_level": "L3",
+  "rubric_id": "cr-007-existing-project-adoption-entry-review-v1",
+  "artifact_refs": {
+    "base_commit": "6ce2fa0e2b957fc0fab49d5ee2d62c503b9cc478",
+    "parent_commit": "ba30dfdbebe0615cb3b847b757a261598eecb3c4",
+    "candidate_commit": "36242fbb2e938225c438871ada0731e06b9c37a4",
+    "candidate_tree": "26863c0bd058535bb2a0e6656066d04cbaaa84a9",
+    "cumulative_range": "6ce2fa0e2b957fc0fab49d5ee2d62c503b9cc478..36242fbb2e938225c438871ada0731e06b9c37a4",
+    "review_scope": [
+      ".codex/context-summary-existing-project-adoption-change-intake-2026-08-30.md",
+      ".codex/operations-log.md",
+      ".codex/verification-report.md",
+      "docs/change-requests/007-existing-project-adoption.md",
+      "docs/change-requests/index.md",
+      "docs/design-docs/p5-existing-project-adoption-design.md",
+      "docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md"
+    ]
+  },
+  "hard_gates": [
+    {
+      "gate": "live-stage-and-current-gap-consistency",
+      "status": "pass",
+      "reason": "候选把 live 入口稳定收敛为 V3 Generation 1 计划冻结且仍处于 fresh 独立 entry review，未偷渡 S3.1 实施或 V3 推进授权。",
+      "evidence": [
+        "PROJECT_ROUTE_LOCK.md:34-46",
+        "PROJECT_ROUTE_LOCK.md:108-113",
+        ".codex/context-summary-existing-project-adoption-change-intake-2026-08-30.md:16-17",
+        ".codex/context-summary-existing-project-adoption-change-intake-2026-08-30.md:63-68",
+        "docs/change-requests/007-existing-project-adoption.md:20-21",
+        "docs/change-requests/index.md:18-20",
+        ".codex/verification-report.md:3-8"
+      ]
+    },
+    {
+      "gate": "adoption-contract-correctness",
+      "status": "pass",
+      "reason": "CR、设计合同与计划一致要求零父 genesis、单父 activation、业务 HEAD 不进入 control ancestry、adopted-baseline 与 version_signoffs 分离、公开 inspect 只读、trusted activation 独占、双 ref expected-missing 原子激活、无后继时才允许精确回滚。",
+      "evidence": [
+        "docs/change-requests/007-existing-project-adoption.md:55-69",
+        "docs/change-requests/007-existing-project-adoption.md:73-89",
+        "docs/change-requests/007-existing-project-adoption.md:112-139",
+        "docs/change-requests/007-existing-project-adoption.md:167-182",
+        "docs/design-docs/p5-existing-project-adoption-design.md:80-97",
+        "docs/design-docs/p5-existing-project-adoption-design.md:100-137",
+        "docs/design-docs/p5-existing-project-adoption-design.md:218-272",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md:98-152"
+      ]
+    },
+    {
+      "gate": "namespace-status-surface-and-future-coordination",
+      "status": "pass",
+      "reason": "extra-only 与 pair+extra namespace 已统一使用 exact ADOPTION_SOURCE_CONFLICT；A3.0-B 的 project-status contract surface 与 future S3.5-B 所有权协调已闭合且未扩张为 S3.2。",
+      "evidence": [
+        ".codex/context-summary-existing-project-adoption-change-intake-2026-08-30.md:45-68",
+        "docs/change-requests/007-existing-project-adoption.md:83-89",
+        "docs/change-requests/007-existing-project-adoption.md:145-169",
+        "docs/design-docs/p5-existing-project-adoption-design.md:239-248",
+        "docs/design-docs/p5-existing-project-adoption-design.md:278-311",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md:64-66",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md:106-152",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md:166-180"
+      ]
+    },
+    {
+      "gate": "scope-traceability-and-non-authorization",
+      "status": "pass",
+      "reason": "base..candidate 只覆盖 exact-seven，A7 相对父提交只修 5 个文档；禁止路径与 refs 未变，operations 两段标题已唯一化，且文本持续声明 PASS 不授权最终批准、CAS、packet 或编码。",
+      "evidence": [
+        ".codex/context-summary-existing-project-adoption-change-intake-2026-08-30.md:37-41",
+        ".codex/operations-log.md:3-8",
+        ".codex/operations-log.md:30-39",
+        ".codex/operations-log.md:3168-3176",
+        ".codex/verification-report.md:33-42",
+        "docs/change-requests/007-existing-project-adoption.md:160-171",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md:182-204"
+      ]
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "correctness",
+      "score": 25,
+      "max_score": 25,
+      "reason": "状态、代际、namespace、激活、恢复与回滚合同在 CR/设计/计划之间保持一致，A7 的阶段措辞缺口已闭合。",
+      "evidence": [
+        "PROJECT_ROUTE_LOCK.md:34-46",
+        "docs/change-requests/007-existing-project-adoption.md:15-21",
+        "docs/design-docs/p5-existing-project-adoption-design.md:14-25",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md:14-25"
+      ]
+    },
+    {
+      "name": "security",
+      "score": 25,
+      "max_score": 25,
+      "reason": "可信确认边界、只读 inspect、in-process host 限制、expected-missing 双 ref 事务与 fail-closed 错误合同都保留了安全边界。",
+      "evidence": [
+        "docs/change-requests/007-existing-project-adoption.md:91-118",
+        "docs/change-requests/007-existing-project-adoption.md:141-153",
+        "docs/design-docs/p5-existing-project-adoption-design.md:162-233",
+        "docs/design-docs/p5-existing-project-adoption-design.md:289-296"
+      ]
+    },
+    {
+      "name": "behavioral_regression_control",
+      "score": 25,
+      "max_score": 25,
+      "reason": "文档明确把 adoption 限定为 V3 缺口修复，不吸收 S3.2 exact-14，不伪造历史 signoff，也不改变 Generation 1 未开始 future packet 的处理边界。",
+      "evidence": [
+        "docs/change-requests/007-existing-project-adoption.md:157-171",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md:40-58",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md:166-171"
+      ]
+    },
+    {
+      "name": "verification_and_traceability",
+      "score": 25,
+      "max_score": 25,
+      "reason": "候选留痕、A4-A7 修订链、标题唯一性、exact-seven 边界和不授权口径都可在项目内直接复核。",
+      "evidence": [
+        ".codex/context-summary-existing-project-adoption-change-intake-2026-08-30.md:43-68",
+        ".codex/operations-log.md:3-39",
+        ".codex/operations-log.md:3168-3176",
+        ".codex/verification-report.md:3-42",
+        "docs/change-requests/index.md:18-20"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100,
+    "severity_counts": {
+      "P0": 0,
+      "P1": 0,
+      "P2": 0
+    }
+  },
+  "verdict": "PASS",
+  "findings": [],
+  "required_fixes": [],
+  "nice_to_have": [],
+  "reviewers": {
+    "verifier": {
+      "conclusion": "PASS",
+      "summary": "全部指定硬门通过，未发现阻断级缺口。"
+    },
+    "strict_judge": {
+      "conclusion": "100/100",
+      "summary": "四维均满分，无扣分项。"
+    },
+    "chief_reviewer": {
+      "conclusion": "PASS",
+      "summary": "候选达到 fresh entry review 的精确放行门槛，但该 PASS 不授权最终批准、CAS、packet 或编码。"
+    }
+  },
+  "reviewed_at": "2026-08-30"
+}
