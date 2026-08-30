@@ -1,5 +1,16 @@
 # Operations Log
 
+## 2026-08-30 CR-007 Existing Project Adoption Change Intake 候选
+
+- 生命周期与路线：当前 live 项目仍处于 `S5 / P5`；V1/V2 已 formally-completed，当前唯一正式入口仍是 `V3 Generation 1 plan freeze and independent entry assessment`。本轮只承接用户对 Existing Project Adoption 的 Change Intake 授权，不扩大到 `S3.2`、产品编码、plan-generation CAS、packet、claim/fence、dispatch、formal/control 移动或任何真实项目 refs。
+- 候选定位：把 Existing Project Adoption 记录为 `V3 当前阶段缺口候选 + 高风险基础变更`；不新增大里程碑，不改变 `P5-M0 -> V1 -> V2 -> V3 -> V4 -> Final Acceptance` 主路线，不改变 PC 主版本归属或 `S3.2 exact-14`。
+- 文档候选：形成 `CR-007`、既有项目接入设计合同、`V3 Generation 2` 增量计划候选与 CR 索引更新；同时补写本地 `.codex` 上下文摘要、operations log 和 verification report。未修改 `src/**`、`schemas/**`、`tests/**`、`skills/**`、`PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md`、`.codex/exec-plan-v3-generation-1.md` 或任何 Git refs。
+- 核心裁决：control 采用零父 genesis 与以 genesis 为唯一父的 activation；业务 HEAD 不进入 control ancestry。状态模型新增 `adopted-baseline`，明确与 `version_signoffs` 分离；公开入口保持只读 inspect，可信激活仅允许 trusted in-process host port；回滚仅在无后继、exact pair 与 trusted rollback action 全部成立时开放 expected-OID 双 ref 原子删除。
+- 计划裁决：若未来获批，V3 子计划候选从 `generation 1 -> 2`，只在 `S3.1` 与 `S3.2` 之间增加 `A3.0-A/B` remediation package。`S3.2` 原职责、输入输出、验收与 `exact-14` 写集保持不变；Generation 1 未创建 packet 的未来入口仅能以 superseded 规则拒绝，不能伪造 tombstone。
+- 本地校验意图：文档候选形成后执行 `git diff --check`、变更路径清单、禁止路径反扫、Markdown 本地链接存在性检查与“exact-seven only”核对；由于本轮不修改产品代码、Schema、测试或 fixture，不重跑 `pnpm check`，也不生成任何 review verdict 充当最终批准。
+- 工作区隔离：全部候选与后续校验仅在隔离 worktree `/private/tmp/nextstep-existing-adoption-change-intake.1WBSTx/worktree` 内完成；主工作树已有未提交诊断与受保护未跟踪文件保持只读，不覆盖、不整理、不回滚。
+- 当前状态：Change Intake 候选待 fresh 独立评审。即使评审 PASS，也只允许进入“报告候选与 verdict、等待用户最终批准 CR-007”的状态，不授权 generation advance/ack CAS、编码、真实项目接入或 refs 创建。
+
 ## 2026-08-25 CR-006 SG-1 claim/fence 118 control CAS
 
 - 生命周期与路线：当前仍为 `S5 / P5`；V1 已 formally-completed，V2 入口独立评估保持 `PASS / 100`。本轮只承接用户对 `SG-1 generation 5 attempt 1 claim/fence` 的精确授权，不扩大到 dispatch-ready/outbox、宿主派发、dispatch ACK、编码、独立验收、V2 packet、formal 移动或 P5 完成。
@@ -3126,3 +3137,13 @@
 - P1-1 仅收紧 M3.1/PC-14 出口与 S3.2 末尾：除 S3.1+S3.2 独立 I/X/P 外，必须至少一个正式支持主宿主通过 `full` 自动分派与恢复验收；fixture GREEN、模拟 adapter 或单包 PASS 均不足。
 - P1-2 仅补齐 S3.5-B 状态投影运行闭包：新增 `schemas/v1/project-status-projection.schema.json` 与 `tests/fixtures/project-status/**`，allowlist 从 exact-18 修为 exact-20。
 - 当前修订写集仍为计划与两份追加留痕 exact-three；不改其他计划语义，不创建 packet、不提交 control CAS、不移动 main/formal/control，不运行产品 full tests。下一唯一动作是新的 fresh 独立 entry re-review。
+
+## 2026-08-30 CR-007 Existing Project Adoption Change Intake 候选
+
+- 用户明确确认将 Existing Project Adoption 作为 V3 当前阶段缺口候选进入 Change Intake，并授权补齐独立 control genesis、adoption 状态模型、可信确认与回滚契约、计划修订和独立评审。
+- 明确禁止直接修改 S3.2、产品编码或创建 genealogy-hub refs；本轮同样不执行 V3 generation CAS、packet、claim/fence、dispatch、main/formal/control 移动或阶段完成声明。
+- 在隔离 worktree 基于 parent/main=`6ce2fa0e2b957fc0fab49d5ee2d62c503b9cc478` 工作；formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，启动时 live control=`007467180e32a866cbb15eba98a6c79b93b34529`。这些身份仅用于候选审计，不构成 CAS 授权。
+- Change Intake 分流结论为 V3 当前阶段高风险缺口候选：保持全局 `plan_generation=5`，拟将 V3 子计划 Generation 1 修订为 Generation 2，在 S3.1 与 S3.2 之间增加无 PC 独占归属的 `A3.0-A -> A3.0-B`；S3.2 exact-14、PC 主归属和版本路线不变。
+- 冻结设计候选：公开只读 inspect 只从 candidate HEAD Git blobs 构造候选；可信进程内 user-action/verifier/clock 才可激活；control 使用零父 genesis 与单父 activation；formal/control 在一次 expected-missing transaction 中原子创建；`adopted-baseline` 与 `version_signoffs` 分离，证据固定为 `verified|user-declared|unknown`；只有无后继状态时允许 expected-OID 双 ref 回滚。
+- CodeGraph CLI 可见但项目尚无 `.codegraph/`，路线锁要求初始化前取得用户确认；本轮未初始化，改用 `rg`、明确源码入口、S3/S4/P4/V3 真源和 Git plumbing 规则完成只读影响分析。
+- 当前候选写集限定为 CR、设计、V3 Generation 2 增量计划、CR 索引、上下文摘要和两份 `.codex` 追加留痕 exact-seven；不修改 Generation 1 计划正文、`src/**`、`schemas/**`、`tests/**`、`skills/**` 或 refs。exact-seven、引用存在性、parent/formal/control 不变性与 `git diff --check` 均通过；下一动作仅为 fresh 独立评审。

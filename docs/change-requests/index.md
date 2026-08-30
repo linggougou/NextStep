@@ -15,6 +15,10 @@
 
 - [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，但 `change_request_closed=false`，风险及 qualified real runs `0/3` 保留。V2 已由独立版本累计验收、用户会签与分离 completion CAS formally-completed；这不自动关闭 CR-006。alpha 本地内部候选已通过独立 package acceptance attempt 3，状态=`local-candidate-usable`；tag/publish/formal 移动/用户级 Skill 安装未发生。formal 仍为 F16，control=`4375910fa2554af9a8126449e07e25d4725ee6da`；下一唯一入口为 V3 Generation 1 计划冻结与 fresh 独立 entry review，V3 packet、claim/fence、dispatch、编码均未创建。
 
+## 待独立评审的变更候选
+
+- [既有项目安全接入（Existing Project Adoption）](./007-existing-project-adoption.md)：作为 V3 当前阶段缺口候选进入 Change Intake，拟以 V3 子计划 Generation 2 在 S3.1 与 S3.2 之间增加独立 `A3.0` remediation package；零父 control genesis、adopted-baseline、可信确认、原子双 ref 激活与精确回滚合同已形成候选。当前未获最终批准，不授权 generation CAS、packet、编码、S3.2 修改或任何真实项目 refs 创建。
+
 ## 分流规则
 
 新增需求、漏项、二期需求不得直接进入当前版本或当前小里程碑，必须先判断：

@@ -1,5 +1,16 @@
 # Verification Report
 
+## 2026-08-30 CR-007 Existing Project Adoption Change Intake 候选验证
+
+- 验证对象：`CR-007`、既有项目接入设计合同、`V3 Generation 2` 增量计划候选、CR 索引与 `.codex` 候选留痕；固定候选工作树为 `/private/tmp/nextstep-existing-adoption-change-intake.1WBSTx/worktree`，基线 parent=`6ce2fa0e2b957fc0fab49d5ee2d62c503b9cc478`。
+- 授权边界复核：本轮仅允许 Change Intake、设计合同、计划修订候选和独立评审准备；未授权 `S3.2` 直接修改、产品代码、Schema、测试、Skill、plan-generation CAS、packet、claim/fence、dispatch、formal/control/main 移动或 genealogy-hub refs 创建。
+- 文档与范围复核：候选写集限定为 7 个文件：`.codex/context-summary-existing-project-adoption-change-intake-2026-08-30.md`、`.codex/operations-log.md`、`.codex/verification-report.md`、`docs/change-requests/007-existing-project-adoption.md`、`docs/change-requests/index.md`、`docs/design-docs/p5-existing-project-adoption-design.md`、`docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md`。未发现 `src/**`、`schemas/**`、`tests/**`、`skills/**`、`PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md`、`.codex/exec-plan-v3-generation-1.md` 或 refs 改动。
+- 语义核对：候选文本明确要求零父 control genesis、单父 activation、业务 HEAD 不为 control parent；`adopted-baseline` 与 `version_signoffs` 分离，不伪造历史 signoff；公开 inspect 只读，trusted activation 只允许 in-process host；dirty/index/untracked/ignored 遮蔽、多 worktree、全 `refs/nextstep/*` namespace、事务前后漂移、悬空对象、receipt create-or-return 与仅无后继 exact pair 的双 ref 回滚均有显式约束。
+- 计划核对：候选文本明确 adoption 不能静默塞入 `S3.2`；若获批，只能通过 `V3 generation 1 -> 2` 的独立计划修订，在 `S3.1` 与 `S3.2` 之间增加 `A3.0-A/B`，并要求 `S3.2 exact-14` 原样保持。Generation 1 的 `S3.1` 仅在 fresh acceptance + compatibility audit 成立后才可 carry forward。
+- 机械检查：`git diff --check` 应通过；Markdown 本地链接必须存在；禁止路径关键字反扫应无越权对象；exact-seven 以 `git diff --name-only` 复核。若任一失败，本候选不能进入独立评审。
+- 测试边界：本轮不改产品代码、Schema、测试或 fixture，因此不重跑 `pnpm check`；也不把旧的 alpha/V2/SG 运行结果当作本轮候选通过证据。
+- 当前结论：在 fresh 独立评审之前，本候选只具备“可送审”资格，不具备批准、实施、CAS 或真实项目接入资格。
+
 ## 2026-08-26 SG-1 越界评审产物程序裁决
 
 - 事实：`main_dirty_audit` subagent 的唯一职责是只读审计主工作区既有改动，并被明确禁止修改、暂存或提交任何内容。该 subagent 越界新增自治计划、独立验收 scorecard/verdict，并追加 operations/verification 留痕。
@@ -3391,3 +3402,29 @@ package/skills/nextstep/agents/openai.yaml
 - P1-1 已关闭：M3.1/PC-14 出口和 S3.2 末尾均明确要求 S3.1+S3.2 独立 I/X/P 加至少一个正式支持主宿主 `full` 自动分派与恢复验收；fixture GREEN 不足。
 - P1-2 已关闭：S3.5-B 新增状态投影 Schema 与既有 fixture 路径，编号连续且 future allowlist=`20/20`；所有汇总数量同步为 exact-20。
 - 修订范围 exact-three；不改其他计划语义，不创建 packet、不提交 control CAS、不移动 main/formal/control，不运行产品 full tests。已执行 P1 旧语义反扫、八组 future allowlist 计数（S3.5-B=`20/20`）、review/formal/control 身份和 `git diff --check`，均通过；下一唯一动作是 fresh 独立 entry re-review。
+
+## 2026-08-30 CR-007 Existing Project Adoption Change Intake 候选验证
+
+### 授权、身份与写集
+
+- 授权仅覆盖 Change Intake、独立 control genesis、adoption 状态模型、可信确认、回滚合同、V3 计划修订候选及独立评审；禁止 S3.2 修改、产品编码和 genealogy-hub refs 创建。
+- 固定候选基线 main/parent=`6ce2fa0e2b957fc0fab49d5ee2d62c503b9cc478`；formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`；启动时 live control=`007467180e32a866cbb15eba98a6c79b93b34529`。本轮不使用这些 OID 执行 CAS。
+- 候选写集 exact-seven：`.codex/context-summary-existing-project-adoption-change-intake-2026-08-30.md`、`.codex/operations-log.md`、`.codex/verification-report.md`、`docs/change-requests/007-existing-project-adoption.md`、`docs/change-requests/index.md`、`docs/design-docs/p5-existing-project-adoption-design.md`、`docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md`。
+- 明确反写集：`PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md`、`.codex/exec-plan-v3-generation-1.md`、`src/**`、`schemas/**`、`tests/**`、`skills/**`、Git refs 和 genealogy-hub 全部不修改。
+
+### 合同闭合性
+
+- control ancestry：genesis parent count=`0`；activation parent count=`1` 且唯一父为 genesis；业务 HEAD 不进入 control ancestry。
+- 状态语义：`adopted-baseline` 与 `version_signoffs` 独立；历史证据只允许 `verified|user-declared|unknown`，接入不生成历史 formally-completed。
+- 可信边界：公开 CLI 只读，无 `adopt --commit`；激活只接受可信进程内 user action、verifier、clock、display digest 与 exact candidate digest。
+- Git 边界：候选真源只来自 candidate HEAD blobs；dirty/index/untracked、ignored 遮蔽、多 worktree、整个 `refs/nextstep/*` namespace、事务前后漂移全部 fail closed。
+- 原子性与恢复：formal/control 使用同一 expected-missing ref transaction；对象创建不等于成功；回执丢失按 exact effect identity create-or-return。
+- 回滚：仅在 exact pair、无后继 control/外部副作用、namespace 无额外 ref且可信 action 绑定 receipt 时，以一次 expected-OID transaction 删除双 ref；否则 `ADOPTION_ROLLBACK_BLOCKED` 并保留历史。
+- 计划治理：全局 `plan_generation=5` 不变；V3 子计划候选 Generation 2；S3.1 只可在自身正式验收和兼容审计后 carry forward；旧未来包标记 `superseded-before-packet`；S3.2 exact-14 不变。
+
+### 验证方法与待完成项
+
+- 本轮为 docs-only Change Intake 候选，不运行产品测试，不把历史测试结果冒充 fresh evidence。
+- 使用 `rg` 与源码/架构/计划真源完成影响分析；CodeGraph 未初始化，按路线锁不擅自创建索引。
+- 已执行 exact-seven、`git diff --check`、引用存在性、禁止产品/refs/S3.2 变更、过度声明和 generation 边界反扫；结果通过。复核时 parent/formal/control 分别仍为 `6ce2fa0e2b957fc0fab49d5ee2d62c503b9cc478`、`ea04b57de83d6c548dcb1629b1f61832db8375ad`、`007467180e32a866cbb15eba98a6c79b93b34529`，`.codegraph/` 仍不存在。
+- fresh 独立 reviewer 必须输出 Judge Harness `scorecard.json` 与 `verdict.md`；只有 `PASS / 100`、P0/P1/P2=`0/0/0` 才能把候选交给用户最终批准。评审 PASS 不自动授权 generation CAS 或编码。
