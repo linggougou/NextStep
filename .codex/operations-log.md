@@ -3286,3 +3286,9 @@
 - control 明确记录 `passed-awaiting-user-final-approval`、`change_request_approved=false`、`generation_3_plan_authorized=false`、`formal_transition_authorized=false`；formal 仍为 `ea04b57de83d6c548dcb1629b1f61832db8375ad`。
 - 下一唯一入口是取得绑定 candidate/review/formal/current-control 的精确用户最终批准；当前不得创建或评审 V3 Generation 3 plan，不得执行 generation CAS、packet、claim/fence、dispatch、编码、Keychain/Secure Enclave 动作、真实项目 refs、formal 移动或稳定发布。
 - 四个受保护未跟踪路径仅通过 `git status --short` 确认存在，未读取、修改、暂存或清理。
+
+## 2026-08-30 CR-008 awaiting 状态 P1 窄修订
+
+- 独立只读状态验收对 main exact-four、control exact-three/单父、Result RFC8785、formal/control 不变性和所有授权 false 字段均机械验证通过。
+- 唯一 P1 为 CR 第 2 节残留“尚未通过独立评审”，与同文头部、第 13 节、索引及 control 的 PASS 状态矛盾。
+- 本轮只把该句收敛为“已通过独立评审，但尚未获用户最终批准、尚未实施、尚未解除 blocker”，并向两份 `.codex` 追加留痕 exact-three；不修改 control、评审产物、计划、代码或 refs。

@@ -27,7 +27,7 @@ A3.0 cumulative acceptance attempt 2 已固化 blocker Result：
 - 必要性：P5 DoD 要求至少一个正式支持主宿主达到 `full`；没有 production trusted host，fresh activation/rollback action、可信时钟、principal/session binding 和可恢复 replay 都无法获得生产证据。
 - 路线影响：不改变 `P5-M0 -> V1 -> V2 -> V3 -> V4 -> Final Acceptance`，不改变 TypeScript kernel 和 CLI 的 read-only/fail-closed 主边界；新增的是一个可选 macOS adapter。
 - 支持边界：支持该 adapter 且能力预检通过的 macOS 用户会话可以成为首个 `full` host；其他环境、无 Secure Enclave、无交互用户会话或 CI 必须保持 `blocked / safe-readonly`，不得自动降级为伪 full。
-- 当前结论：本文件只形成候选，不代表已批准、已实施、已通过独立评审或已解除 blocker。
+- 当前结论：本候选已通过独立评审，但不代表已获用户最终批准、已实施或已解除 blocker。
 
 ## 2.1 受影响真源、PC/里程碑、正式基线与验证成本
 

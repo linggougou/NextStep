@@ -3620,3 +3620,10 @@ package/skills/nextstep/agents/openai.yaml
 - Result RFC8785 重算命中 `sha256:efdaff76880a649a0076fd03966d4571fa80c3dde7a41e2b3ec06baa86fc446a`；checkpoint/registry/result 均通过 `jq`，`git diff --check` 通过，ref 后读与 expected-old CAS 一致。
 - 不变性：formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，global `plan_generation=5`、`v3_plan_generation=2`；未创建 Generation 3 plan、packet、Keychain/Secure Enclave 动作、真实项目 refs 或 formal transition。
 - 门禁结论：`阻塞 / 需用户输入`。只有 exact user final approval 后，才允许进入 V3 Generation 3 计划准备与 fresh 独立评审；批准本身仍不授权 generation CAS 或编码。
+
+## 2026-08-30 CR-008 awaiting 状态 P1 修订验证
+
+- 前轮只读验收结论=`REVISE`，唯一 P1 为 `docs/change-requests/008-production-trusted-host.md` 第 2 节残留旧评审状态；控制链、摘要、写集、不变性和授权边界均通过。
+- 修订写集限定 exact-three：CR 正文与两份追加留痕；索引已经正确，无需重复修改。
+- 正向反扫要求：全文不得再把 CR-008 写成“尚未通过独立评审”；必须同时保留 `awaiting-user-final-approval`、`尚未批准` 与所有后续动作未授权边界。
+- 本轮是单句人读状态修订，不运行产品测试；以 `git diff --check`、exact-three 写集和 fresh 独立窄复验作为门禁。
