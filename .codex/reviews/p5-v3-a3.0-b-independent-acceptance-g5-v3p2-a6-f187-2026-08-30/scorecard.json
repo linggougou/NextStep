@@ -1,0 +1,316 @@
+{
+  "review_id": "p5-v3-a3.0-b-independent-acceptance-g5-v3p2-a6-f187-2026-08-30",
+  "task_id": "A3.0-B-I-X-P",
+  "lane": "independent-acceptance",
+  "review_level": "L3",
+  "rubric_id": "a3.0-b-trusted-host-adoption-cumulative-semantic-raw-git-proof-budget-and-frozen-ref-stability",
+  "artifact_refs": [
+    "git:60d373aef79141a03418aca5c75447742c6a87b5",
+    "git:8de049251439ac7f09a23b29acc2f1bc86d49888",
+    "git:refs/nextstep/formal",
+    "git:refs/nextstep/control",
+    "gate-requests/gate-package-acceptance-a3.0-b-g5-v3p2-a6-f187-20260830.json",
+    "messages/msg-dispatch-ready-a3.0-b-ixp-g5-v3p2-a6-f187-20260830.json",
+    "messages/msg-dispatch-ack-a3.0-b-ixp-g5-v3p2-a6-f187-20260830.json",
+    "results/result-execution-a3.0-b-g5-v3p2-a5-f186-20260830.json",
+    "results/result-package-acceptance-a3.0-b-g5-v3p2-a5-f184-20260830.json",
+    "src/adapters/node/adoption-ref-store.ts",
+    "src/adapters/node/project-status-source.ts",
+    "tests/adapters/node/adoption-ref-store.test.ts",
+    "tests/adapters/node/project-status-source.test.ts",
+    "tests/cli/project-status.test.ts",
+    "tests/domain/adopted-baseline.test.ts",
+    "tests/domain/adoption-activation.test.ts",
+    "tests/domain/project-status-projection.test.ts"
+  ],
+  "hard_gates": [
+    {
+      "gate_id": "HG0",
+      "status": "pass",
+      "summary": "独立复算 packet_digest、dedup_key、subject_digest，且 ACK、执行结果与 A3.0-B 既有验收结果摘要全部匹配；ACK 对象为单父链顶点。",
+      "evidence_refs": [
+        "gate-requests/gate-package-acceptance-a3.0-b-g5-v3p2-a6-f187-20260830.json",
+        "messages/msg-dispatch-ack-a3.0-b-ixp-g5-v3p2-a6-f187-20260830.json",
+        "results/result-execution-a3.0-b-g5-v3p2-a5-f186-20260830.json",
+        "results/result-package-acceptance-a3.0-b-g5-v3p2-a2-f179-20260830.json",
+        "results/result-package-acceptance-a3.0-b-g5-v3p2-a3-f181-20260830.json",
+        "results/result-package-acceptance-a3.0-b-g5-v3p2-a4-f183-20260830.json",
+        "results/result-package-acceptance-a3.0-b-g5-v3p2-a5-f184-20260830.json",
+        "git:97e1830a9972981460bef0e9560c955da5848edc"
+      ]
+    },
+    {
+      "gate_id": "HG1",
+      "status": "pass",
+      "summary": "隔离 no-local clone 起始条件满足：formal/control 冻结、NextStep refs 恰好 2 个、无 remote、无 alternates、本地 node_modules、工作区 clean、评审产物初始不存在。",
+      "evidence_refs": [
+        "git:refs/nextstep/formal",
+        "git:refs/nextstep/control",
+        ".codex/reviews/p5-v3-a3.0-b-independent-acceptance-g5-v3p2-a6-f187-2026-08-30/scorecard.json",
+        ".codex/reviews/p5-v3-a3.0-b-independent-acceptance-g5-v3p2-a6-f187-2026-08-30/verdict.md"
+      ]
+    },
+    {
+      "gate_id": "HG2",
+      "status": "pass",
+      "summary": "累计候选严格为 c5ea44ce -> 5bc681d4 -> a2d3b014 -> ab844fef -> 8de04925 -> 60d373ae 单父链，聚合改动精确 16 路径；依赖变更 0，公开写 CLI 0，ref transaction 实现 1 处。",
+      "evidence_refs": [
+        "git:c5ea44cefdc2b28c2160c99a825827fff6ec166a",
+        "git:5bc681d4eb34aa7fd4f3d64585116723e87eaf16",
+        "git:a2d3b014f9fcf4050e3fc6f31b930ea89d8b9ad9",
+        "git:ab844fef05fb7b05c01fd486fb16ce2fe813c77c",
+        "git:8de049251439ac7f09a23b29acc2f1bc86d49888",
+        "git:60d373aef79141a03418aca5c75447742c6a87b5",
+        "src/adapters/node/adoption-ref-store.ts",
+        "src/adapters/node/project-status-source.ts"
+      ]
+    },
+    {
+      "gate_id": "HG3",
+      "status": "pass",
+      "summary": "fresh 定向 suite 24/24 与 fresh `corepack pnpm check` 600/600 全部通过；changed-scope coverage=98.34/87.23/100，formal/control 在测试前后保持不变。",
+      "evidence_refs": [
+        "command:corepack pnpm build",
+        "command:node --test --experimental-test-coverage --test-coverage-include=dist/src/adapters/node/adoption-ref-store.js --test-coverage-include=dist/src/adapters/node/project-status-source.js --test-coverage-lines=90 --test-coverage-branches=85 --test-coverage-functions=95 dist/tests/adapters/node/adoption-ref-store.test.js dist/tests/adapters/node/project-status-source.test.js",
+        "command:corepack pnpm check"
+      ]
+    },
+    {
+      "gate_id": "HG4",
+      "status": "pass",
+      "summary": "confirmation-view、derived identity、forged confirmation binding 与 forged rollback receipt 均在 verifier / Git object / ref 副作用前 fail closed。",
+      "evidence_refs": [
+        "tests/adapters/node/adoption-ref-store.test.ts",
+        "tests/domain/adopted-baseline.test.ts",
+        "tests/domain/adoption-activation.test.ts",
+        "command:manual-spot-check-projection-drift"
+      ]
+    },
+    {
+      "gate_id": "HG5",
+      "status": "pass",
+      "summary": "symlink、executable、tree/submodule type forgery、malformed raw tree、shallow/grafts hidden parent 与 malformed raw commit headers 均被 raw Git 证明链拒绝，且保持零副作用。",
+      "evidence_refs": [
+        "tests/adapters/node/adoption-ref-store.test.ts",
+        "tests/adapters/node/project-status-source.test.ts",
+        "command:manual-spot-check-shallow-hidden-parent"
+      ]
+    },
+    {
+      "gate_id": "HG6",
+      "status": "pass",
+      "summary": "adopted successor/current task、namespace digest、result-loss receipt recovery，以及 nonce/action/blob/successor/task/outbox/claim/ACK/Result/promotion 回滚边界均被覆盖并通过。",
+      "evidence_refs": [
+        "tests/adapters/node/adoption-ref-store.test.ts",
+        "tests/adapters/node/project-status-source.test.ts",
+        "tests/cli/project-status.test.ts",
+        "tests/domain/project-status-projection.test.ts"
+      ]
+    },
+    {
+      "gate_id": "HG7",
+      "status": "pass",
+      "summary": "原始 atomic pair、零父 genesis、精确 activation tree、pre/post drift、dirty/index/untracked、多 worktree、无 fabricated signoff、无公开写 CLI、无敏感诊断和 disposable-only proof 边界全部满足。",
+      "evidence_refs": [
+        "src/adapters/node/adoption-ref-store.ts",
+        "src/adapters/node/project-status-source.ts",
+        "tests/adapters/node/adoption-ref-store.test.ts",
+        "tests/cli/project-status.test.ts"
+      ]
+    },
+    {
+      "gate_id": "HG8",
+      "status": "pass",
+      "summary": "仅保留三项显式 P2 残余风险：双 raw parser 漂移、不可达 rollback receipt blob aggressive GC、超长 raw ancestry 性能；未发现 P0/P1 或 unsafe success。",
+      "evidence_refs": [
+        "src/adapters/node/adoption-ref-store.ts",
+        "src/adapters/node/project-status-source.ts",
+        "tests/adapters/node/adoption-ref-store.test.ts",
+        "tests/adapters/node/project-status-source.test.ts"
+      ]
+    },
+    {
+      "gate_id": "HG9",
+      "status": "pass",
+      "summary": "本次评审未修改候选代码、Result、control 或任何真实项目 refs；评审提交仅含两份 review 文件，并以 60d373ae 为唯一父提交。",
+      "evidence_refs": [
+        ".codex/reviews/p5-v3-a3.0-b-independent-acceptance-g5-v3p2-a6-f187-2026-08-30/scorecard.json",
+        ".codex/reviews/p5-v3-a3.0-b-independent-acceptance-g5-v3p2-a6-f187-2026-08-30/verdict.md"
+      ]
+    }
+  ],
+  "dimensions": [
+    {
+      "dimension": "I",
+      "score": 20,
+      "max_score": 20,
+      "reason": "身份链、subject digest、confirmation binding、rollback receipt 与 ACK 链复算一致，未见身份漂移。",
+      "evidence_refs": [
+        "gate-requests/gate-package-acceptance-a3.0-b-g5-v3p2-a6-f187-20260830.json",
+        "messages/msg-dispatch-ack-a3.0-b-ixp-g5-v3p2-a6-f187-20260830.json",
+        "tests/domain/adopted-baseline.test.ts",
+        "tests/domain/adoption-activation.test.ts"
+      ]
+    },
+    {
+      "dimension": "X",
+      "score": 20,
+      "max_score": 20,
+      "reason": "累计提交链、16 路径 scope、24/24 定向 suite、600/600 全量 check 与手工 spot-check 相互印证。",
+      "evidence_refs": [
+        "git:60d373aef79141a03418aca5c75447742c6a87b5",
+        "tests/adapters/node/adoption-ref-store.test.ts",
+        "tests/adapters/node/project-status-source.test.ts",
+        "command:corepack pnpm check"
+      ]
+    },
+    {
+      "dimension": "P",
+      "score": 20,
+      "max_score": 20,
+      "reason": "raw Git proof、rollback 边界、status projection 与 fail-closed 语义完整满足 packet 所列历史 P1 探针。",
+      "evidence_refs": [
+        "src/adapters/node/adoption-ref-store.ts",
+        "src/adapters/node/project-status-source.ts",
+        "tests/cli/project-status.test.ts",
+        "tests/domain/project-status-projection.test.ts"
+      ]
+    },
+    {
+      "dimension": "Profile",
+      "score": 20,
+      "max_score": 20,
+      "reason": "trusted-host adoption cumulative semantic/raw-git-proof/frozen-ref-stability profile 满足；无 remote、无 alternates、无真实项目 refs 写入。",
+      "evidence_refs": [
+        "git:refs/nextstep/formal",
+        "git:refs/nextstep/control",
+        "messages/msg-dispatch-ready-a3.0-b-ixp-g5-v3p2-a6-f187-20260830.json"
+      ]
+    },
+    {
+      "dimension": "Budget",
+      "score": 20,
+      "max_score": 20,
+      "reason": "变更预算与实现约束满足：聚合路径 16/16、依赖 0、公开写 CLI 0、ref transaction 1、生产代码新增仅限候选本身，无评审期额外产品修改。",
+      "evidence_refs": [
+        "src/adapters/node/adoption-ref-store.ts",
+        "src/adapters/node/project-status-source.ts",
+        "tests/adapters/node/adoption-ref-store.test.ts",
+        "tests/adapters/node/project-status-source.test.ts"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100
+  },
+  "verdict": "PASS",
+  "score": 100,
+  "required_fixes": [],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "PASS",
+      "summary": "HG0-HG9 逐项核验通过。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "PASS",
+      "summary": "I/X/P/Profile/Budget 五维均达标，得分 100。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "PASS",
+      "summary": "测试与探针对应真实风险点，无模板化堆砌证据。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "PASS",
+      "summary": "当前累计候选满足本轮独立验收放行条件。"
+    }
+  ],
+  "reviewed_at": "2026-08-30T20:30:00+08:00",
+  "severity_counts": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 3
+  },
+  "verification": {
+    "commands": [
+      "corepack pnpm build",
+      "node --test --experimental-test-coverage --test-coverage-include='dist/src/adapters/node/adoption-ref-store.js' --test-coverage-include='dist/src/adapters/node/project-status-source.js' --test-coverage-lines=90 --test-coverage-branches=85 --test-coverage-functions=95 dist/tests/adapters/node/adoption-ref-store.test.js dist/tests/adapters/node/project-status-source.test.js",
+      "corepack pnpm check",
+      "node --input-type=module manual spot-check: projection drift pre-write reject + shallow hidden parent reject"
+    ],
+    "targeted": {
+      "tests": "24/24",
+      "lines": 98.34,
+      "branches": 87.23,
+      "functions": 100
+    },
+    "full": {
+      "tests": "600/600",
+      "lines": 93.04,
+      "branches": 87.77,
+      "functions": 98.71
+    },
+    "frozen_refs_before": {
+      "formal": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+      "control": "04b4374423c29b6910376640b0b94a3dbeb433f7"
+    },
+    "frozen_refs_after": {
+      "formal": "ea04b57de83d6c548dcb1629b1f61832db8375ad",
+      "control": "04b4374423c29b6910376640b0b94a3dbeb433f7"
+    },
+    "namespace_refs_after": [
+      "refs/nextstep/control 04b4374423c29b6910376640b0b94a3dbeb433f7",
+      "refs/nextstep/formal ea04b57de83d6c548dcb1629b1f61832db8375ad"
+    ],
+    "ack_single_parent_chain": [
+      "97e1830a9972981460bef0e9560c955da5848edc",
+      "04b4374423c29b6910376640b0b94a3dbeb433f7",
+      "4742fe6d1b13bc0acfe3f66967e13f9fe5fa83a2",
+      "ae737ab679de68e3ad85970122fe8a63b347e484",
+      "b6235f9a6be555b47c38dcf1bdbc478e9c0e5ce1",
+      "a1e4f9919f8fe9543cdc8064ba1a9e90e3282e60"
+    ],
+    "packet_and_result_digests": {
+      "packet_digest": "sha256:1c2c0d04613b1d3c0effc47205b88c95d0a81b56a5dcf3caa205b5d83540054e",
+      "dedup_key": "sha256:4e0a8a04005100a338780e9014bc6d835f85618afa0c4c30a5d4f7b29692de99",
+      "subject_digest": "sha256:ec871cb5aa85ee9a3846be5457a5180e43cdb0482c2d57051d8ae9c5e3246abc",
+      "execution_a5": "sha256:05d2c3d0be9f241a4c6796ce64d6861051442b46b605054b0ac1f9339f419050",
+      "acceptance_a5": "sha256:7777a4931ae7fb2b2873908207964e66b48013216980315d73f7653f72ff1cbc",
+      "acceptance_a4": "sha256:10ffb91817afd69988740797859dee757733ec724f4e86d4d5f7bfcad2f586dd",
+      "acceptance_a3": "sha256:b5d1b4b39b891c79bc7afff59389153a62eff92ee83b67b01109fa34fba63415",
+      "acceptance_a2": "sha256:e54a32e551811e8a4996d75d73095653e8787f77b026c2bb30411021f344c248"
+    },
+    "remote_count": 0,
+    "alternates_present": false,
+    "node_modules_is_symlink": false,
+    "dependency_diff": 0,
+    "git_ref_transaction_implementations": 1,
+    "public_write_cli_commands": 0,
+    "real_project_ref_writes": 0,
+    "worktree_status_after_commands": "clean"
+  },
+  "residual_risks": [
+    {
+      "severity": "P2",
+      "title": "双 raw parser 漂移",
+      "detail": "adoption-ref-store 与 project-status-source 各自维护 raw commit/tree 解析逻辑，当前有交叉测试保护，但未来若单边修改仍可能发生实现漂移。"
+    },
+    {
+      "severity": "P2",
+      "title": "不可达 rollback receipt blob aggressive GC",
+      "detail": "result-loss 后依赖内容寻址 blob 恢复回执；若对象已被激进 GC 清理，会安全阻塞恢复。"
+    },
+    {
+      "severity": "P2",
+      "title": "超长 raw ancestry 性能",
+      "detail": "当前线性 ancestry 扫描语义正确，但极长 control 历史的性能上界尚未量化。"
+    }
+  ]
+}
