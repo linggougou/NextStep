@@ -3458,3 +3458,25 @@ package/skills/nextstep/agents/openai.yaml
 - 使用 `rg` 与源码/架构/计划真源完成影响分析；CodeGraph 未初始化，按路线锁不擅自创建索引。
 - 已执行 exact-seven、`git diff --check`、引用存在性、禁止产品/refs/S3.2 变更、过度声明和 generation 边界反扫；结果通过。复核时 parent/formal/control 分别仍为 `6ce2fa0e2b957fc0fab49d5ee2d62c503b9cc478`、`ea04b57de83d6c548dcb1629b1f61832db8375ad`、`007467180e32a866cbb15eba98a6c79b93b34529`，`.codegraph/` 仍不存在。
 - fresh 独立 reviewer 必须输出 Judge Harness `scorecard.json` 与 `verdict.md`；只有 `PASS / 100`、P0/P1/P2=`0/0/0` 才能把候选交给用户最终批准。评审 PASS 不自动授权 generation CAS 或编码。
+## 2026-08-30 CR-007 V3 Generation 2 readiness 候选验证
+
+### 批准与实时身份
+
+- 批准绑定 candidate=`36242fbb2e938225c438871ada0731e06b9c37a4`、review=`288c1ca0d92c7c1834a0c65bc2c4cb8efe86e504`；不包含 CAS、packet、编码或真实项目 refs。
+- live formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`；control=`007467180e32a866cbb15eba98a6c79b93b34529`，parent=`6890040ce346038d368eb2b0d6097c1163dc96e2`。control 链为 1 个零父根加 790 个单父提交，无 merge。
+- registry 证明 S3.1-I-X-P attempt 5/fence 171=`revision-required`；S3.1 repair attempt 5/fence 172=`running`、Result 为空。worker candidate=`5ed6bcfd72af3ce517543dc25aa38f7f7c50f83a` 的自测不等于 Result/acceptance/integration。
+
+### 边界判断
+
+- A8 架构、可信确认、原子 refs、恢复回滚和 A3.0/S3.2 隔离结论继续适用；只有其 live-stage 快照被后续 control 历史超越。
+- generation-advance expected-old 不能冻结为当前 control，必须先完成 S3.1 收口或另行授权的失效/rerun 路径，再 fresh 读取。
+- 推荐路径 A：Generation 1 execution Result -> unique acceptance attempt 6 -> integration/control gate -> compatibility audit -> generation proposal。备选路径 B 需要另行用户选择并使 running fence 留 tombstone后重跑。
+- 本候选不执行上述路径，不创建任何 control message、packet、Result 或 refs，仅形成 readiness 证据与 future 字段约束。
+
+### 本地验证与待完成门禁
+
+- `git diff --check` 通过；相对 A8 review commit 的写集 exact-six，仅为 CR、CR 索引、计划修订、readiness 文档和两份 `.codex` 追加留痕。
+- 禁止路径反扫通过：未修改 `src/**`、`schemas/**`、`tests/**`、`skills/**`、`PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md` 或 `.codex/exec-plan-v3-generation-1.md`。
+- formal/control 仍精确为 `ea04b57de83d6c548dcb1629b1f61832db8375ad` / `007467180e32a866cbb15eba98a6c79b93b34529`；候选 worktree HEAD 仍为 A8 review commit，证明本轮未执行 refs 或提交副作用。
+- 过度授权反扫通过：所有入口都明确排除 CAS、packet、编码、formal 移动与真实项目 refs；expected-old 明确留待先决链完成后 fresh 绑定。
+- fresh 独立 Judge Harness reviewer 仍只允许新增 exact-two `scorecard.json`/`verdict.md`；门槛为 `PASS / 100`、P0/P1/P2=`0/0/0`。

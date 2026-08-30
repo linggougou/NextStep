@@ -1,6 +1,6 @@
 # CR-007：既有项目安全接入（Existing Project Adoption）
 
-- 状态：Change Intake 候选，等待独立评审与用户最终批准
+- 状态：已由用户最终批准；Generation 2 尚未生效，等待 live-state reconciliation、独立 readiness 评审及后续分离授权
 - 记录日期：2026-08-30
 - 来源：genealogy-hub 在已有 `S5/M1` 路线锁与计划的情况下，`nextstep status` 因无 formal/control 返回 `source-unavailable`
 - 所属阶段：P5 / V3 当前阶段缺口候选
@@ -17,8 +17,16 @@ NextStep 当前可以校验或生成部分候选，并读取已经初始化的 f
 - 类型：**V3 当前阶段缺口候选，高风险基础变更**。
 - 当前阶段必要性：V3/PC-14 要求至少一个正式支持主宿主完成 full 自动分派与恢复；已有项目如果不能先建立可信控制身份，就无法进入该运行链。CR-006 的真实项目验证也不能由 NextStep 自测仓库或复制 fixture 替代。
 - 路线影响：不改变 `P5-M0 -> V1 -> V2 -> V3 -> V4 -> Final Acceptance`，不新增大里程碑，不改变 PC 主版本归属、技术栈、主载体或最终提升门禁。
-- 计划影响：不能原地修改已冻结且正处于 fresh entry review 门禁的 V3 Generation 1，也不能静默扩大 S3.2 exact-14；S3.1 实施尚未开始。若本 CR 通过，使用 V3 plan-generation 2 增量计划，在 S3.1 与 S3.2 之间新增无 PC 独占归属的 `A3.0` remediation package；S3.2 原职责与 exact-14 保持不变。
-- 当前许可：只允许形成 CR、设计合同、计划修订候选和独立评审。评审 PASS 不自动批准 CR，不授权 generation CAS、packet、编码或目标项目接入。
+- 计划影响：不能原地扩大 S3.2 exact-14。CR 候选形成后的 Generation 1 已推进到 S3.1 attempt 5；因此 Generation 2 只能在 S3.1 正式收口并通过 compatibility audit 后 carry forward，或在另行授权下使当前运行态失效并于 Generation 2 重跑。A3.0 仍位于 S3.1 与 S3.2 之间，S3.2 原职责与 exact-14 保持不变。
+- 当前许可：用户已接受候选 `36242fbb2e938225c438871ada0731e06b9c37a4` 与独立评审 `288c1ca0d92c7c1834a0c65bc2c4cb8efe86e504`，仅允许进入 V3 Generation 2 generation-advance/ack 的独立准备与授权流程；不授权 CAS、packet、编码、目标项目接入或真实项目 refs 创建。
+
+## 2.1 最终批准后的时间漂移说明
+
+- A8 的架构、信任、恢复、回滚和范围结论继续作为已批准依据。
+- A8 关于“V3 仍处于 entry review、S3.1 尚未实施”的判断是当时的时间快照，已被后续 control 历史超越，不能作为 generation CAS 的实时依据。
+- 2026-08-30 复核时，live control=`007467180e32a866cbb15eba98a6c79b93b34529`；S3.1 attempt 5/fence 172 在 control 中仍为 `running` 且没有 execution Result。宿主候选 `5ed6bcfd72af3ce517543dc25aa38f7f7c50f83a` 的自测完成不能替代 Result、独立验收、集成或 control gate。
+- 当前 control 只能作为 reconciliation 的观察值，不能预填为 generation-advance 的 expected-old。expected-old 必须在 S3.1 收口或失效处理完成后重新读取。
+- 详见 `docs/exec-plans/active/p5-v3-existing-project-adoption-generation-readiness.md`；该准备文档及其独立评审不执行任何控制副作用。
 
 ## 3. 产品语义
 

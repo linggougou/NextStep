@@ -3174,3 +3174,9 @@
 - 冻结设计候选：公开只读 inspect 只从 candidate HEAD Git blobs 构造候选；可信进程内 user-action/verifier/clock 才可激活；control 使用零父 genesis 与单父 activation；formal/control 在一次 expected-missing transaction 中原子创建；`adopted-baseline` 与 `version_signoffs` 分离，证据固定为 `verified|user-declared|unknown`；只有无后继状态时允许 expected-OID 双 ref 回滚。
 - CodeGraph CLI 可见但项目尚无 `.codegraph/`，路线锁要求初始化前取得用户确认；本轮未初始化，改用 `rg`、明确源码入口、S3/S4/P4/V3 真源和 Git plumbing 规则完成只读影响分析。
 - 当前候选写集限定为 CR、设计、V3 Generation 2 增量计划、CR 索引、上下文摘要和两份 `.codex` 追加留痕 exact-seven；不修改 Generation 1 计划正文、`src/**`、`schemas/**`、`tests/**`、`skills/**` 或 refs。exact-seven、引用存在性、parent/formal/control 不变性与 `git diff --check` 均通过；下一动作仅为 fresh 独立评审。
+## 2026-08-30 CR-007 最终批准后的 V3 Generation 2 readiness 对齐
+
+- 用户最终接受 CR-007 候选 `36242fbb2e938225c438871ada0731e06b9c37a4` 与独立评审 `288c1ca0d92c7c1834a0c65bc2c4cb8efe86e504`；授权仅限 generation-advance/ack 的独立准备与授权流程，不包含 CAS、packet、编码或真实项目 refs。
+- 在隔离 worktree 基于 review commit=`288c1ca0d92c7c1834a0c65bc2c4cb8efe86e504` 编制 readiness，不触碰 dirty main。fresh 只读复核 formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control=`007467180e32a866cbb15eba98a6c79b93b34529`，确认 S3.1 attempt 5/fence 172 在 control 中仍为 `running` 且无 execution Result；worker candidate=`5ed6bcfd72af3ce517543dc25aa38f7f7c50f83a` 不能自我接受。
+- 将 A8 继续适用的架构 PASS 与已经失效的 live-stage 快照分离；推荐先收口 Generation 1 S3.1，再做 compatibility audit 与 Generation 2 carry-forward。当前 control 仅为观察值，不预填 generation-advance expected-old。
+- CodeGraph 项目索引仍不存在，按路线锁未擅自初始化；继续使用 `rg`、Git refs/tree 与 JSON 机械查询作为替代。当前写集仅限 CR、CR 索引、计划修订、readiness 文档与两份 `.codex` 追加留痕；下一步为本地文档验证和 fresh 独立 readiness review。
