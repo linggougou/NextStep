@@ -166,11 +166,11 @@ Adoption 不表示：
 - V3 子计划从 generation 1 修订为候选 generation 2；generation 1 文档和评审永久保留。
 - S3.1 generation 1 的实现/验收只有在完成自身 fresh acceptance 且兼容性审计证明本 CR 未改变其输入、输出、Schema、PC-14 子结论和风险门禁后，才可被 generation 2 显式 carry forward；不能自动复用运行态或 REVISE 结论。
 - generation 1 尚未创建的 S3.2..S3.5 packet 不产生伪 tombstone；generation-advance 消息必须声明旧未来入口 superseded，任何迟到 generation 1 future packet 一律拒绝。
-- 推进需要：CR/设计/计划独立评审 PASS -> 用户最终批准 CR -> 独立 V3 plan generation-advance CAS -> generation-ack CAS。每步分离；本授权不包含这些 CAS。
+- 已完成：CR/设计/计划独立评审 PASS -> 用户最终批准 CR。待完成：fresh readiness/compatibility 独立 PASS -> V3 子计划 generation-advance CAS -> generation-ack CAS。每步分离，任一漂移均 fail closed。
 
 ## 12. 最小实施包候选
 
-若后续获批，V3 Generation 2 在 S3.1 与 S3.2 之间增加 `A3.0`，不改变 S3.2 exact-14：
+V3 Generation 2 完成 advance/ack 后，在 S3.1 与 S3.2 之间增加 `A3.0`，不改变 S3.2 exact-14：
 
 - `A3.0-A`：adoption candidate Schema/domain、只读 Git source、公开 inspect CLI、正负/漂移 fixture。
 - `A3.0-B`：adopted-baseline Schema/projector、trusted confirmation port、零父 genesis/单父 activation、双 ref transaction、回执丢失恢复和精确回滚测试。

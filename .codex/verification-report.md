@@ -3520,3 +3520,10 @@ package/skills/nextstep/agents/openai.yaml
 - S3.1 当前文档候选没有修改 accepted exact-eleven；S3.2 exact-14 与 `.codex/exec-plan-v3-generation-1.md` 均未修改。
 - 旧未来入口精确列为 `S3.2`、`S3.3`、`S3.4-A/B/C`、`S3.5-A/B`，状态=`superseded-before-packet`；A3.0-A/B 不冒充旧代际墓碑。
 - `git diff --check` 通过。当前未执行 control CAS、packet、产品代码修改、formal movement 或真实项目 ref 创建；必须取得 fresh 独立 review `PASS / 100`、P0/P1/P2=`0/0/0` 后才能继续。
+
+## 2026-08-30 CR-007 Generation 2 readiness A1b 修订验证
+
+- 独立 review=`736ef772bb9098a677ba00219b5ec61ab17235ba`，结论=`REVISE / 90`，P0/P1/P2=`0/1/0`；其余 Git/Result/tree/scoped-generation/exact-three/forbidden-surface 门禁均通过。
+- P1 精确位置为 design 状态行与 CR 第 11 节推进顺序；修订后统一为“CR/设计/计划评审与用户最终批准已完成，fresh readiness/compatibility PASS 与两个分离 CAS 待完成”。
+- 同一 CR 文件中的“A3.0 若后续获批”同步收敛为“Generation 2 advance/ack 后”，避免把已完成的 CR 批准与未完成的代际生效混为一谈。
+- 修订未触碰 `src/**`、`schemas/**`、`tests/**`、`skills/**`、`.codex/exec-plan-v3-generation-1.md`、S3.1 exact-eleven、S3.2 exact-14 或任何 refs；`git diff --check` 必须在提交前再次通过。

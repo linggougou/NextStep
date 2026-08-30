@@ -3197,3 +3197,10 @@
 - 在新隔离 worktree 基于 main `e3df650...` 重放已批准 CR candidate/review，并吸收旧 readiness 历史；旧 readiness 的 S3.1 running 快照只保留为历史，不作为当前 CAS authority。
 - 新候选把 V3 子计划 generation `1 -> 2` 建模为 scoped state，不改变全局 `plan_generation=5`；advance/ack 分别 exact-three，未来任务为 `superseded-before-packet`，S3.1 在 ack 后才 `carry-forward-confirmed`。
 - 当前仅形成文档/留痕候选；未执行 Generation 2 CAS、未创建 A3.0 packet、未修改产品代码、未移动 formal、未创建真实项目 refs。下一步为 fresh 独立 readiness/compatibility review。
+
+## 2026-08-30 CR-007 Generation 2 readiness A1b P1 修订
+
+- fresh no-local 独立 review commit=`736ef772bb9098a677ba00219b5ec61ab17235ba`，parent=`a7e907c022da1479dcc22e71542f8c9ba75d81cc`，结论=`REVISE / 90`，P0/P1/P2=`0/1/0`。
+- 唯一 P1 是批准状态漂移：设计合同仍写“等待独立评审与用户批准”，CR 第 11 节仍把用户批准列为未来步骤。
+- 最小修订只纠正 `docs/design-docs/p5-existing-project-adoption-design.md` 与 `docs/change-requests/007-existing-project-adoption.md` 的批准/代际顺序，并同步两份追加留痕；不修改 plan/readiness scoped contract、产品代码、Generation 1 正文或 refs。
+- REVISE review 永久保留；下一动作是对修订 candidate 执行新的 fresh 独立复审。未取得 `PASS / 100`、P0/P1/P2=`0/0/0` 前，不执行 generation CAS。

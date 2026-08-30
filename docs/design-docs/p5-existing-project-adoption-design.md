@@ -2,7 +2,7 @@
 
 ## 1. 文档身份与边界
 
-- 状态：Change Intake 设计候选，等待独立评审与用户最终批准。
+- 状态：Change Intake 设计合同已通过独立评审并由用户最终批准；V3 Generation 2 尚未生效。
 - 关联变更：`CR-007`（既有项目安全接入）。
 - 所属路线：`S5 / P5 / V3` 当前阶段缺口候选。
 - 计划影响候选：全局 `plan_generation=5` 不变；V3 子计划 `v3_plan_generation 1 -> 2`。
