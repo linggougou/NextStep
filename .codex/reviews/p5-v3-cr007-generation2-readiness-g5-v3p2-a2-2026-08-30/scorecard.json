@@ -1,0 +1,161 @@
+{
+  "review_id": "p5-v3-cr007-generation2-readiness-g5-v3p2-a2-2026-08-30",
+  "task_id": "CR-007-V3-GENERATION2-READINESS",
+  "lane": "independent-readiness-rereview",
+  "review_level": "L3",
+  "rubric_id": "nextstep-p5-v3-generation2-readiness-gate",
+  "artifact_refs": [
+    "git:0189583900d5bdec438dd17468c8d172e7a199b2",
+    "git:e3df650a6861274ff076c72276281cbf528e9188",
+    "git:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "git:c8cbba15a3b08f49b8e0d1bfaa7549b15a24dbe9",
+    "git:5ed6bcfd72af3ce517543dc25aa38f7f7c50f83a",
+    "git:a625089bf2828c7ccee7a286ef0c66a1c28c3457",
+    "git:36242fbb2e938225c438871ada0731e06b9c37a4",
+    "git:288c1ca0d92c7c1834a0c65bc2c4cb8efe86e504",
+    "docs/change-requests/007-existing-project-adoption.md",
+    "docs/design-docs/p5-existing-project-adoption-design.md",
+    "docs/exec-plans/active/p5-v3-existing-project-adoption-generation-readiness.md",
+    "docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md"
+  ],
+  "hard_gates": [
+    {
+      "id": "clone-isolation",
+      "status": "pass",
+      "reason": "评审在 detached no-local clone 中完成，未使用 alternates，且候选 HEAD 与主控给定 authority 一致。",
+      "evidence": [
+        "clone:/private/tmp/nextstep-cr007-gen2-rereview.RrZDkf/repo",
+        "git:0189583900d5bdec438dd17468c8d172e7a199b2",
+        "ALTERNATES=absent"
+      ]
+    },
+    {
+      "id": "scope-and-write-boundary",
+      "status": "pass",
+      "reason": "候选相对 main 仍只修改文档与 .codex 留痕，未修改 src/schemas/tests/skills、Generation 1 正文计划或任何 refs。",
+      "evidence": [
+        "git diff e3df650a6861274ff076c72276281cbf528e9188..0189583900d5bdec438dd17468c8d172e7a199b2 --name-only",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-generation-readiness.md:75",
+        "DIFF_CHECK=ok"
+      ]
+    },
+    {
+      "id": "previous-p1-closed",
+      "status": "pass",
+      "reason": "上轮唯一 P1 已闭合：设计合同首页已改成“已通过独立评审并由用户最终批准”，CR 第 11 节也已把用户最终批准归入已完成步骤，只保留 fresh readiness PASS 与分离 generation-advance/ack 作为后续动作。",
+      "evidence": [
+        "docs/design-docs/p5-existing-project-adoption-design.md:5",
+        "docs/change-requests/007-existing-project-adoption.md:3",
+        "docs/change-requests/007-existing-project-adoption.md:169",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md:5-13"
+      ]
+    },
+    {
+      "id": "generation-contract",
+      "status": "pass",
+      "reason": "全局 plan_generation 保持 5，仅新增 scoped v3_plan_generation=2；S3.1 为 carry-forward pending/confirmed；S3.2..S3.5 为 superseded-before-packet；A3.0-A/B 不伪造旧代际墓碑；两个 CAS 都限定 exact-three。",
+      "evidence": [
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-generation-readiness.md:44-66",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md:64-66",
+        "docs/change-requests/007-existing-project-adoption.md:165-169"
+      ]
+    },
+    {
+      "id": "s31-authority-match",
+      "status": "pass",
+      "reason": "S3.1 authority 与 live main/control 仍一致：control checkpoint 为 plan_generation=5 且 pending dispatch=0；review tree 与 main tree 仍同为 f16068e11a5ff24728055854338b473e8f909630；Result 文件内声明 digest 与 readiness 文档冻结值一致。",
+      "evidence": [
+        "git:c8cbba15a3b08f49b8e0d1bfaa7549b15a24dbe9",
+        "git:a625089bf2828c7ccee7a286ef0c66a1c28c3457",
+        "git:e3df650a6861274ff076c72276281cbf528e9188",
+        "results/result-execution-s3.1-g5-v3p1-a5-f172-20260830.json@control",
+        "results/result-package-acceptance-s3.1-g5-v3p1-a6-f173-20260830.json@control"
+      ]
+    },
+    {
+      "id": "no-regression-on-readiness-boundaries",
+      "status": "pass",
+      "reason": "未回退上轮已通过的 readiness 边界：未偷渡真实项目 refs、formal movement、V3/P5 completion、S3.2 职责扩张或 A3.0 提前生效。",
+      "evidence": [
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-generation-readiness.md:7,58,65-77",
+        "docs/change-requests/007-existing-project-adoption.md:173-177,208,216-217",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md:24-26,189"
+      ]
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "Correctness",
+      "score": 25,
+      "max_score": 25,
+      "reason": "上轮唯一批准状态漂移已收敛，当前候选的 readiness 顺序、A3.0 生效条件和 generation gate 语义彼此一致。",
+      "evidence_refs": [
+        "docs/design-docs/p5-existing-project-adoption-design.md:5",
+        "docs/change-requests/007-existing-project-adoption.md:169",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-generation-readiness.md:44-66"
+      ]
+    },
+    {
+      "name": "Safety",
+      "score": 25,
+      "max_score": 25,
+      "reason": "仍保持真实项目 refs、formal movement、packet/CAS 副作用与 readiness 评审完全分离，原子 ref pair、genesis/activation 与 rollback guard 合同没有回退。",
+      "evidence_refs": [
+        "docs/change-requests/007-existing-project-adoption.md:67-75,140-147",
+        "docs/design-docs/p5-existing-project-adoption-design.md:223-231,256-267",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-generation-readiness.md:7,58,66-77"
+      ]
+    },
+    {
+      "name": "Behavioral Regression Control",
+      "score": 25,
+      "max_score": 25,
+      "reason": "未修改 S3.1 exact-eleven、S3.2 exact-14 与 Generation 1 正文计划；只在上轮指出的状态口径处做最小修订，没有引入新的行为面回归。",
+      "evidence_refs": [
+        "git diff a7e907c022da1479dcc22e71542f8c9ba75d81cc..0189583900d5bdec438dd17468c8d172e7a199b2 --name-only",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-generation-readiness.md:31-39,75-77",
+        "docs/change-requests/007-existing-project-adoption.md:173-177"
+      ]
+    },
+    {
+      "name": "Evidence and Traceability",
+      "score": 25,
+      "max_score": 25,
+      "reason": "main/formal/control/S3.1 identity、批准状态和后续 gate 顺序现在都能在当前真源中收敛复核。",
+      "evidence_refs": [
+        "git:c8cbba15a3b08f49b8e0d1bfaa7549b15a24dbe9",
+        "docs/design-docs/p5-existing-project-adoption-design.md:5",
+        "docs/change-requests/007-existing-project-adoption.md:3,169",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md:5-13"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "上轮唯一 P1 已闭合，且其余 Git/JSON/docs contract 硬门无回归。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "当前 submission 达到 PASS/100；批准状态、代际与副作用边界一致。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "修订聚焦且最小，没有用空泛措辞掩盖状态机变化。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "PASS；只放行两个分离 generation CAS，不放行 A3.0 packet 或真实项目 refs。"
+    }
+  ],
+  "reviewed_at": "2026-08-30T17:05:00+08:00"
+}
