@@ -54,6 +54,12 @@
 - 必修 2：extra-only 与 pair+extra namespace 的设计、计划、失败矩阵和测试合同统一使用 exact `ADOPTION_SOURCE_CONFLICT`，不得保留其他机器码解释。
 - 本轮只修正上述表述和追加留痕，不改变 A3.0 范围、S3.2、产品代码、CAS 或 refs 边界。
 
+## A6 独立评审后的索引同步
+
+- fresh review A6=`REVISE / 94`，`P0/P1/P2=0/1/0`；除治理索引状态外，架构、信任、恢复、计划和范围硬门均通过。
+- 唯一必修：CR 索引仍停在 A4，未反映 A5 的最新修订链；现已直接同步为最新 A6 verdict，并明确当前等待新的 fresh re-review。
+- 此同步只修正治理入口，不改变 CR、设计语义、A3.0 allowlist、S3.2 或任何实现/refs 边界。
+
 ## 工具与替代流程
 
 - CodeGraph CLI 存在但项目无 `.codegraph/`，且路线锁要求初始化前询问；本轮未初始化。

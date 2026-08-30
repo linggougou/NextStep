@@ -17,7 +17,7 @@
 
 ## 待独立评审的变更候选
 
-- [既有项目安全接入（Existing Project Adoption）](./007-existing-project-adoption.md)：作为 V3 当前阶段缺口候选进入 Change Intake，拟以 V3 子计划 Generation 2 在 S3.1 与 S3.2 之间增加独立 `A3.0` remediation package；零父 control genesis、adopted-baseline、可信确认、原子双 ref 激活与精确回滚合同已形成候选。fresh 独立评审 A4=`REVISE / 80`，当前按其两条 P1 精修后等待新的 fresh re-review；未获最终批准前，不授权 generation CAS、packet、编码、S3.2 修改或任何真实项目 refs 创建。
+- [既有项目安全接入（Existing Project Adoption）](./007-existing-project-adoption.md)：作为 V3 当前阶段缺口候选进入 Change Intake，拟以 V3 子计划 Generation 2 在 S3.1 与 S3.2 之间增加独立 `A3.0` remediation package；零父 control genesis、adopted-baseline、可信确认、原子双 ref 激活与精确回滚合同已形成候选。最新 fresh 独立评审 A6=`REVISE / 94`，其唯一 P1 为索引仍停在旧 A4 状态；当前已同步 A6 身份，A5 指出的 live-stage 与 exact machine-code 修订保持，等待新的 fresh re-review。未获最终批准前，不授权 generation CAS、packet、编码、S3.2 修改或任何真实项目 refs 创建。
 
 ## 分流规则
 

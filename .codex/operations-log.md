@@ -1,5 +1,11 @@
 # Operations Log
 
+## 2026-08-30 CR-007 A6 独立评审退回后的索引同步
+
+- fresh A6 review=`REVISE / 94`，`P0/P1/P2=0/1/0`，review commit=`33e043ae8a721241e37e361ba8479eaf1ea985f7`，sole parent=`d079145fc602f1cd6496868c4d210d76db5de809`。
+- 唯一 P1 是 `docs/change-requests/index.md` 仍显示 A4，落后于候选内已记录的 A5 修订链；A6 复核确认其余 architecture/state/plan/scope 硬门通过。
+- 已把 CR 索引直接同步为最新 A6=`REVISE / 94`，并说明当前只等待新的 fresh re-review；不预写下一轮 PASS，不修改产品、S3.2、Generation 1 原计划或 refs。
+
 ## 2026-08-30 CR-007 A5 独立评审退回后的精确表述修订
 
 - fresh A5 review=`REVISE / 89`，`P0/P1/P2=0/2/0`，review commit=`bff3b6045b6276e129987905fa972192ff2abfaf`，sole parent=`d8f0deba9342e7a27a711a4711825f8461ba577b`；该结论不批准 CR-007 或任何后续控制/实现动作。

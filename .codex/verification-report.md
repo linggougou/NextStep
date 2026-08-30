@@ -1,5 +1,11 @@
 # Verification Report
 
+## 2026-08-30 CR-007 A6 退回修订验证
+
+- A6 review identity：candidate=`d079145fc602f1cd6496868c4d210d76db5de809`，review=`33e043ae8a721241e37e361ba8479eaf1ea985f7`，verdict=`REVISE / 94`，P0/P1/P2=`0/1/0`；review exact-two 与 `git diff --check` 通过。
+- 唯一修订是把 `docs/change-requests/index.md` 从过期 A4 状态同步到最新 A6 verdict，并保留“等待 fresh re-review、未获最终批准”的边界。
+- cumulative subject 仍限定原 exact-seven；本轮 docs-only，不运行产品测试，不修改 CR/设计核心语义、产品路径、S3.2 或 formal/control refs。
+
 ## 2026-08-30 CR-007 A5 退回修订验证
 
 - A5 review identity：candidate=`d8f0deba9342e7a27a711a4711825f8461ba577b`，review=`bff3b6045b6276e129987905fa972192ff2abfaf`，verdict=`REVISE / 89`，P0/P1/P2=`0/2/0`；review exact-two、JSON parse、severity/score 断言与 `git diff --check` 已由 reviewer 和主控复核。
