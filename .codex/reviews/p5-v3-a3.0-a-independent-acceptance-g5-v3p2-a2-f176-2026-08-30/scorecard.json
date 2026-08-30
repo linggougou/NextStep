@@ -1,0 +1,179 @@
+{
+  "review_id": "p5-v3-a3.0-a-independent-acceptance-g5-v3p2-a2-f176-2026-08-30",
+  "task_id": "A3.0-A-I-X-P",
+  "lane": "package-acceptance",
+  "review_level": "L3",
+  "rubric_id": "nextstep-a3.0-a-unchanged-subject-environment-recovery-v1",
+  "artifact_refs": [
+    {
+      "kind": "package-acceptance-gate",
+      "path": "gate-requests/gate-package-acceptance-a3.0-a-g5-v3p2-a2-f176-20260830.json",
+      "packet_digest": "sha256:dcf77065dffc0954db16b509bbea65a57d4934885f08f267c8c85aa2f097af57",
+      "dedup_key": "sha256:89a88752b371b412fdf3718570b98fc0d915604fbcb98eeec9dc32e173012e6d"
+    },
+    {
+      "kind": "execution-result",
+      "path": "results/result-execution-a3.0-a-g5-v3p2-a1-f174-20260830.json",
+      "result_digest": "sha256:27a16eebd860df60108448409ab9732d06e07d28304b9a3432725fad1a12df79"
+    },
+    {
+      "kind": "prior-acceptance-result",
+      "path": "results/result-package-acceptance-a3.0-a-g5-v3p2-a1-f175-20260830.json",
+      "result_digest": "sha256:208937fabe9e8b6f2f89521558cdefe03066972a9f17537e361515a248401212",
+      "result_control": "12506991272cdcc235d2249d386742fbbb33fa16"
+    },
+    {
+      "kind": "implementation-subject",
+      "commit": "696b03ec25e97c30e52576d971d14f1f565ea729",
+      "tree": "ec27d6e4a13ba8e03678e1d816cc0d0c41fd7aa6",
+      "parent": "4d07fde2790a6e3a357268922168ee5efa013c0b",
+      "subject_digest": "sha256:3c8c594d2de4f6479fcbcd56a99be48058fb0d38409e314b9470dcfd072504d9"
+    },
+    {
+      "kind": "formal-baseline",
+      "commit": "ea04b57de83d6c548dcb1629b1f61832db8375ad"
+    },
+    {
+      "kind": "dispatch-ack-control",
+      "commit": "5deb038c3e3b3a2b01a1d053b136a900cb18d05c",
+      "parent": "30aad489b29713fa1b5c14625f646c9c92143e6d",
+      "claim": "claim-a3.0-a-ixp-g5-v3p2-a2-f176-20260830",
+      "fence": 176,
+      "host_task_id": "codex-subagent:/root/a30a_accept_g5_v3p2_a2_f176"
+    }
+  ],
+  "hard_gates": [
+    {
+      "id": "HG0-identity-digests-chain",
+      "status": "pass",
+      "evidence": "独立重算 gate packet、dedup、execution Result、attempt1 acceptance Result 与 subject {commit,parent,tree} RFC8785/JCS 摘要，全部命中冻结值；当前 ACK control=5deb038c3e3b3a2b01a1d053b136a900cb18d05c 的唯一父为 30aad489b29713fa1b5c14625f646c9c92143e6d，attempt1 result control=12506991272cdcc235d2249d386742fbbb33fa16 仍在其单父 ancestry-path 内。"
+    },
+    {
+      "id": "HG1-isolation-and-frozen-refs",
+      "status": "pass",
+      "evidence": "评审仅在 /private/tmp/nextstep-a30a-accept2.ij33rH/repo 完成；remote=0、alternates absent、node_modules 为本地目录非 symlink、起始状态 clean。任何 install/build/test 前后 refs/nextstep/formal 均为 ea04b57de83d6c548dcb1629b1f61832db8375ad，refs/nextstep/control 均为 5deb038c3e3b3a2b01a1d053b136a900cb18d05c。"
+    },
+    {
+      "id": "HG2-unchanged-subject-write-set",
+      "status": "pass",
+      "evidence": "subject 696b03e 相对其唯一父 4d07fde 的 changed_paths 精确为 gate packet 冻结的 exact-eleven：schemas/v1/adoption-candidate.schema.json、skills/nextstep/SKILL.md、src/domain/adoption-candidate.ts、src/adapters/node/adoption-inspect-source.ts、src/cli/adoption-inspect.ts、src/cli/nextstep.ts、4 个 adoption 相关测试文件与 1 个 fixture。package.json 与 pnpm-lock.yaml 均未变化，dependency_diff=zero。"
+    },
+    {
+      "id": "HG3-fresh-full-check",
+      "status": "pass",
+      "evidence": "执行 corepack pnpm install --offline --frozen-lockfile 后 fresh corepack pnpm check 通过：tests=589，pass=589，fail/skipped/cancelled/todo=0/0/0/0，duration_ms=5598.195084；all-files coverage 为 Lines/Branches/Functions=94.06/89.05/99.35。未用 worker Result 替代。"
+    },
+    {
+      "id": "HG4-targeted-and-scoped-adoption",
+      "status": "pass",
+      "evidence": "定向 adoption 复跑通过 22/22，fail/skipped/cancelled/todo=0/0/0/0；scoped coverage all-files=92.40/84.38/98.04，新 domain adoption-candidate=92.55/82.05/100，新 adapter adoption-inspect-source=88.19/88.46/95.83。tests/adapters/node/adoption-inspect-source.test.ts 与 tests/cli/adoption-inspect.test.ts 重压 zero-write、single-ref、extra-only、pair+extra、ignored-shadow、symlink、multi-worktree、sensitive、HEAD/blob/namespace/worktree-list stale、previous-candidate replacement 与聚合入口不注入写能力。"
+    },
+    {
+      "id": "HG5-attempt1-environment-only-adjudication",
+      "status": "pass",
+      "evidence": "attempt1 的 2 个失败与当前 candidate 无关：tests/domain/scalability-budget.test.ts:162-179 的既有测试会直接 git rev-parse refs/nextstep/formal 与 refs/nextstep/control，比对前后不变；candidate 的 exact-eleven 写集不包含该测试。当前 clone 在 frozen refs 预置后 fresh full 589/589 全绿，故 attempt1 的 587/589 可独立裁定为 acceptance 环境 provisioning 缺口，而非产品或测试需要修订。"
+    },
+    {
+      "id": "HG6-package-and-completion-boundary",
+      "status": "pass",
+      "evidence": "package.json:8-34 仍只冻结旧 alpha 包装边界，未把 dist/src/cli/adoption-inspect.js 加入 files；skills/nextstep/SKILL.md:12 明确 packaged v0.2.0-alpha 仍只有 13 个 public commands，而 repository-built V3 Generation 2 source 才额外暴露 adoption-inspect，禁止把它宣称为旧 tarball 已含命令。候选也未宣称 A3.0-B、release inclusion、formal movement、V3/P5 completion。"
+    },
+    {
+      "id": "HG7-review-output-boundary",
+      "status": "pass",
+      "evidence": "本 review 仅写 .codex/reviews/p5-v3-a3.0-a-independent-acceptance-g5-v3p2-a2-f176-2026-08-30/{scorecard.json,verdict.md} 两个文件；评审前工作区 clean，review 期间未修改 candidate、refs、control、result 或其他路径。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "I",
+      "name": "集成与身份完整性",
+      "score": 20,
+      "max_score": 20,
+      "reason": "gate packet、subject、execution/prior Result、control 单父链与 frozen formal/control 身份全部独立闭合。",
+      "evidence_refs": [
+        "HG0-identity-digests-chain",
+        "HG1-isolation-and-frozen-refs",
+        "HG2-unchanged-subject-write-set"
+      ]
+    },
+    {
+      "id": "X",
+      "name": "执行与可重复验证",
+      "score": 20,
+      "max_score": 20,
+      "reason": "fresh full check 与 adoption targeted/scoped rerun 均独立通过，且 full suite 从 587/589 恢复到 589/589 只依赖正确 refs provisioning。",
+      "evidence_refs": [
+        "HG3-fresh-full-check",
+        "HG4-targeted-and-scoped-adoption",
+        "HG5-attempt1-environment-only-adjudication"
+      ]
+    },
+    {
+      "id": "P",
+      "name": "产品行为与零写入边界",
+      "score": 20,
+      "max_score": 20,
+      "reason": "PROJECT_NOT_ADOPTED、replacement、namespace、drift、sensitive 与零写入行为重新复跑通过，没有发现需要修候选或放宽测试的回归。",
+      "evidence_refs": [
+        "HG4-targeted-and-scoped-adoption",
+        "HG5-attempt1-environment-only-adjudication"
+      ]
+    },
+    {
+      "id": "Profile",
+      "name": "Profile 与发布边界",
+      "score": 20,
+      "max_score": 20,
+      "reason": "候选保持 skill-only/headless/read-only adoption boundary，不把 repository-built V3 source 误报为旧 alpha tarball 已发布命令，也不越权宣称 A3.0-B 或更高阶段完成。",
+      "evidence_refs": [
+        "HG6-package-and-completion-boundary"
+      ]
+    },
+    {
+      "id": "Budget",
+      "name": "范围与评审预算纪律",
+      "score": 20,
+      "max_score": 20,
+      "reason": "candidate 仍是 exact-eleven、依赖零变化；review 输出仍是 exact-two，且本轮没有引入任何额外实现或 control/result 写入。",
+      "evidence_refs": [
+        "HG2-unchanged-subject-write-set",
+        "HG7-review-output-boundary"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100,
+    "severity_counts": {
+      "P0": 0,
+      "P1": 0,
+      "P2": 0
+    }
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "PASS：identity/digest、single-parent chain、frozen refs、exact-eleven、589/589 full 与 22/22 targeted/scoped 全部满足硬门。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "PASS / 100：attempt1 的唯一阻断已被独立证明为 reviewer acceptance 环境 provisioning 缺口，unchanged subject 无需产品或测试修订。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "PASS：没有通过放宽契约、跳过负例、重写历史结果或模糊完成边界来换取通过；证据都来自 fresh rerun 和机械断言。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "PASS / 100；I/X/P/Profile/Budget=20/20/20/20/20，P0/P1/P2=0/0/0，required_fixes=[]。该 PASS 仅说明 A3.0-A unchanged subject 通过 attempt2 独立 package acceptance，不授权 candidate 修补、control/result 写入、A3.0-B、V3、formal movement 或 P5 completion。"
+    }
+  ],
+  "reviewed_at": "2026-08-30T17:53:00+08:00"
+}
