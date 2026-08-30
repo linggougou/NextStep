@@ -3610,3 +3610,13 @@ package/skills/nextstep/agents/openai.yaml
 - CodeGraph 项目索引缺失；原用途为结构与影响分析。因未获初始化授权，替代流程为 `rg` 精确反扫、explorer 结果复核和 fresh 独立验收；替代结果固定 exact-11 写集与 `600/600` 主线通过证据。
 - 本轮只同步当前摘要并向 `.codex` 两份记录追加新段，不改写历史段落；未修改产品代码、其他计划/评审、refs/control 或真实项目。
 - 提交前验证要求：`git diff --check`；changed paths exact-eleven；反扫 A3.0-B packet/未开始、V3 Generation 1 entry 等过期 current-state 模式；正向核对 main/formal/control、subject/tree、两个 Result digest、计划 REVISE 边界和下一唯一入口。
+
+## 2026-08-30 CR-008 entry review 与待批准 control CAS 验证
+
+- 候选机械身份：commit=`cb85025e4978ad07a9d5021b572952c08164ab3e`、唯一父=`bd5c902f3410a244b9c6a949f659552d7a4c4812`、tree=`2b3ca74aa91e1d030d5029f60948ddf4bcf19f52`，写集 exact-two；候选文档 raw digest=`sha256:d8de56c5e15ae6534e383a3ca99b07c2ba1016b54a61609fcd2a95be263140cf`。
+- 独立评审机械身份：commit=`df765a6bdbfd6542685a90dce3aae4a435dcf784`、唯一父=`cb85025e4978ad07a9d5021b572952c08164ab3e`、tree=`e88ebc1f24543866f56132dc75af6d9a4b0f4e8d`，写集 exact-two；scorecard JCS digest=`sha256:8fa87f0c73835e835a8f4bd84bd79aa36dadb56804053a57a32e98e278dc2f4e`。
+- entry review 结论为 `PASS / 100`、P0/P1/P2=`0/0/0`、`required_fixes=[]`；它只证明 CR 候选可离开独立评审，不等同于用户最终批准、计划或实现授权。
+- 控制 CAS：expected-old=`1b244c822ee5aa2a246fce0341a788f2c90f1897`，new=`e1a41fbc04a006d8812d51e2a00bdcf3c95c87c0`，唯一父数=`1`，写集 exact-three：`checkpoint.json`、`registry.json`、`results/result-change-intake-cr008-entry-review-a8-awaiting-user-approval-20260830.json`。
+- Result RFC8785 重算命中 `sha256:efdaff76880a649a0076fd03966d4571fa80c3dde7a41e2b3ec06baa86fc446a`；checkpoint/registry/result 均通过 `jq`，`git diff --check` 通过，ref 后读与 expected-old CAS 一致。
+- 不变性：formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`，global `plan_generation=5`、`v3_plan_generation=2`；未创建 Generation 3 plan、packet、Keychain/Secure Enclave 动作、真实项目 refs 或 formal transition。
+- 门禁结论：`阻塞 / 需用户输入`。只有 exact user final approval 后，才允许进入 V3 Generation 3 计划准备与 fresh 独立评审；批准本身仍不授权 generation CAS 或编码。

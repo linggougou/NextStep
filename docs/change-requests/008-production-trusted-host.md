@@ -1,6 +1,6 @@
 # CR-008：生产级可信宿主（Production Trusted Host）
 
-- 状态：Change Intake 候选；尚未批准、尚未进入计划、尚未实施
+- 状态：独立 Change Intake/架构/安全评审已通过，等待用户最终批准；尚未进入计划、尚未实施
 - 记录日期：2026-08-30
 - 来源：A3.0 cumulative acceptance attempt 2 的 live blocker
 - 所属阶段：P5 / V3
@@ -37,7 +37,7 @@ A3.0 cumulative acceptance attempt 2 已固化 blocker Result：
 - runtime/source authority：`71085626b518ce5f8ebf5bfa546f96ea2f834730`。它以 `7cd3dd1fe3aae23a1759d604783b182558fb4c15` 为唯一父，是 exact-eleven 文档/状态同步提交，未修改产品代码、Schema、测试、依赖或构建配置；它用于累计验收 source/state 执行与当时状态投影，不替代 accepted product baseline；
 - accepted product baseline：`7cd3dd1fe3aae23a1759d604783b182558fb4c15`，用于产品代码与测试身份；
 - formal：`ea04b57de83d6c548dcb1629b1f61832db8375ad`；
-- current live control ref：`1b244c822ee5aa2a246fce0341a788f2c90f1897`，其中持久化 blocker Result digest 为 `sha256:49eef940a268e6b791a349ac053aa8d1d51340a434f4de8060dd57fd85c0f0bf`；
+- blocker 固化时的 control ref：`1b244c822ee5aa2a246fce0341a788f2c90f1897`，其中持久化 blocker Result digest 为 `sha256:49eef940a268e6b791a349ac053aa8d1d51340a434f4de8060dd57fd85c0f0bf`；当前 live control=`e1a41fbc04a006d8812d51e2a00bdcf3c95c87c0`，只新增 entry-review PASS 后的 `awaiting-user-final-approval` 状态，不代表 CR 已批准；
 - 代际：全局 `plan_generation=5`，当前 `v3_plan_generation=2`。
 
 Git refs/branch tip 的当前位置与每个 baseline 的语义角色是两件事：即使检出分支 tip 指向 `bd5c902f3410a244b9c6a949f659552d7a4c4812`，也不得用该治理/评审 tip 替代 runtime/source authority 或 accepted product baseline。
@@ -250,4 +250,4 @@ Node bridge 不能只按路径启动 helper。它必须验证静态 code signatu
 - genealogy-hub/任何真实项目 refs；
 - A3.0 attempt 2 继续、S3.2、formal 移动、V3/P5 完成或稳定发布。
 
-下一合法入口仅为：对本候选做 fresh 独立 Change Intake/架构/安全评审；评审通过后由用户决定是否最终批准，再另行准备 V3 generation 3 修订计划。
+fresh 独立 Change Intake/架构/安全评审已以 review=`df765a6bdbfd6542685a90dce3aae4a435dcf784` 得出 `PASS / 100`、P0/P1/P2=`0/0/0`、`required_fixes=[]`。下一合法入口仅为：由用户决定是否最终批准 candidate=`cb85025e4978ad07a9d5021b572952c08164ab3e` 与该独立评审。用户最终批准后也只允许另行准备并独立评审 V3 generation 3 修订计划，不直接授权 generation CAS、packet、编码、Keychain/Secure Enclave 动作、真实用户动作或真实项目 refs。

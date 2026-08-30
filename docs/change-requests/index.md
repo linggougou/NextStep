@@ -21,7 +21,7 @@
 
 ## Change Intake 候选
 
-- [生产级可信宿主（Production Trusted Host）](./008-production-trusted-host.md)：尚未批准、尚未实施。A3.0 cumulative acceptance attempt 2 blocker Result=`sha256:49eef940a268e6b791a349ac053aa8d1d51340a434f4de8060dd57fd85c0f0bf`，current live control=`1b244c822ee5aa2a246fce0341a788f2c90f1897`；当前合法入口仅为 fresh 独立评审，随后由用户决定是否最终批准。本候选不授权 V3 generation 3 plan/CAS、packet、编码、真实用户动作或真实项目 refs。
+- [生产级可信宿主（Production Trusted Host）](./008-production-trusted-host.md)：candidate=`cb85025e4978ad07a9d5021b572952c08164ab3e`、independent review=`df765a6bdbfd6542685a90dce3aae4a435dcf784` 已获 `PASS / 100`、P0/P1/P2=`0/0/0`，当前状态=`awaiting-user-final-approval`，尚未批准、尚未实施。blocker Result=`sha256:49eef940a268e6b791a349ac053aa8d1d51340a434f4de8060dd57fd85c0f0bf`，live control=`e1a41fbc04a006d8812d51e2a00bdcf3c95c87c0`；下一唯一入口为用户决定是否最终批准。本候选和评审均不授权 V3 generation 3 plan/CAS、packet、编码、Keychain/Secure Enclave 动作、真实用户动作或真实项目 refs。
 
 ## 分流规则
 

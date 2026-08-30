@@ -3277,3 +3277,12 @@
 - 第一版累计计划 candidate=`453b0693b1d45faa903127cce55a2538ad47fdf3`、review=`493f15b6e7286f11314fdd7f49de4fb9b814b81a`，entry verdict=`REVISE / 90`、P0/P1/P2=`0/1/0`；唯一 required fix 是本 exact-eleven live authority 状态同步。该候选不进入有效计划 main 链。
 - 下一唯一入口：基于本状态同步提交生成 A3.0 cumulative acceptance Generation 1 修订计划并 fresh 独立 entry review；不得直接创建 cumulative packet/claim/dispatch，也不得把 donor 副本当真实项目接入。
 - 工具缺失替代留痕：CodeGraph 项目索引缺失，原用途为结构与影响分析；未获初始化授权，采用 `rg`、explorer 结果与 fresh 独立验收替代；结果固定了 exact-11 状态同步范围，并以 `600/600` 主线验证证明替代流程可用。
+
+## 2026-08-30 CR-008 独立评审通过与待用户最终批准状态
+
+- A3.0 cumulative attempt 2 已完成 ACK/source/donor preflight，但因缺少 production trusted host，保持 `blocked-awaiting-trusted-host-capability`；blocker Result=`sha256:49eef940a268e6b791a349ac053aa8d1d51340a434f4de8060dd57fd85c0f0bf`。
+- CR-008 candidate=`cb85025e4978ad07a9d5021b572952c08164ab3e`、review=`df765a6bdbfd6542685a90dce3aae4a435dcf784`，fresh 独立 entry verdict=`PASS / 100`、P0/P1/P2=`0/0/0`；candidate 与 review 已前向进入 main。
+- 以 expected-old control=`1b244c822ee5aa2a246fce0341a788f2c90f1897` 执行单父 exact-three 状态 CAS，new control=`e1a41fbc04a006d8812d51e2a00bdcf3c95c87c0`；Result=`sha256:efdaff76880a649a0076fd03966d4571fa80c3dde7a41e2b3ec06baa86fc446a`。
+- control 明确记录 `passed-awaiting-user-final-approval`、`change_request_approved=false`、`generation_3_plan_authorized=false`、`formal_transition_authorized=false`；formal 仍为 `ea04b57de83d6c548dcb1629b1f61832db8375ad`。
+- 下一唯一入口是取得绑定 candidate/review/formal/current-control 的精确用户最终批准；当前不得创建或评审 V3 Generation 3 plan，不得执行 generation CAS、packet、claim/fence、dispatch、编码、Keychain/Secure Enclave 动作、真实项目 refs、formal 移动或稳定发布。
+- 四个受保护未跟踪路径仅通过 `git status --short` 确认存在，未读取、修改、暂存或清理。
