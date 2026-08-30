@@ -40,6 +40,16 @@
 - 机械检查：`git diff --check` 应通过；Markdown 本地链接必须存在；禁止路径关键字反扫应无越权对象；exact-seven 以 `git diff --name-only` 复核。若任一失败，本候选不能进入独立评审。
 - 测试边界：本轮不改产品代码、Schema、测试或 fixture，因此不重跑 `pnpm check`；也不把旧的 alpha/V2/SG 运行结果当作本轮候选通过证据。
 - 当前结论：在 fresh 独立评审之前，本候选只具备“可送审”资格，不具备批准、实施、CAS 或真实项目接入资格。
+## 2026-08-30 V3 / 稳定版落地 live-state 审计
+
+- 审计范围：`PROJECT_ROUTE_LOCK.md`、`docs/PLANS.md`、`docs/exec-plans/active/p5-product-implementation-milestones.md`、live `HEAD/formal/control`、control `checkpoint.json/registry.json`、`src/adapters/node/project-status-source.ts`、`src/domain/project-status-projection.ts`，以及 S3.1/CR-007 的现有 control 证据。
+- live refs：`HEAD=6ce2fa0e2b957fc0fab49d5ee2d62c503b9cc478`，`formal=ea04b57de83d6c548dcb1629b1f61832db8375ad`，`control=f8aaed500cc13ba0a3b12906e7b51faaf16b41a1`。人读真源仍写旧 control=`4375910...`，存在状态漂移。
+- control 证据：`checkpoint.next_stage` 已持久化为 `S3.1 attempt 6 independent acceptance PASS is durable; candidate is ready only for a separately authorized main integration and compatibility gate; Generation 2 remains frozen`。`registry` 中 `S3.1` attempt 5=`candidate-ready`、Result=`results/result-execution-s3.1-g5-v3p1-a5-f172-20260830.json`；`S3.1-I-X-P` attempt 6=`gate-passed`、Result=`results/result-package-acceptance-s3.1-g5-v3p1-a6-f173-20260830.json`。
+- 路径判断：main 尚未包含 S3.1 capability-preflight 实现；`6ce2fa0..5ed6bcf` 实际新增 11 条路径，覆盖 schema、domain、host-bootstrap、project-probe、CLI、tests、fixtures 和 Skill 文案。说明 S3.1 accepted candidate 仍停留在 subject/review/control 证据层，尚未主线集成。
+- `project-status` 执行路径：`readProjectStatusSource()` 要求 formal/control 双 ref、control 单父 ancestry、`checkpoint.json` 与 `registry.json` 均存在且二次读取不漂移；`projectProjectStatus()` 还要求 current identity、最新 formal conclusion 和可证明的 `next_stage`。因此 adoption 缺口和人读状态漂移都能直接影响项目状态可用性。
+- 命令验证：在仓库工作区直接执行 `corepack pnpm exec nextstep status --project-root /Volumes/2T/CODE/A_Mine/NextStep` 返回 `ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL: Command "nextstep" not found`。该现象说明当前仓库工作区没有现成可执行 bin，并不推翻已冻结的 `v0.2.0-alpha` 离线包 smoke 结论。
+- CR-007 边界：用户最终批准 CR-007 的事实成立，但 main 还未承接其 Change Intake 文档；现有 readiness 候选也明确 Generation 2 仍冻结，必须先完成 S3.1 主线集成与 compatibility gate，之后才能讨论 advance/ack。
+- 门禁判断：当前不是正式稳定版，也不是可直接对外落地的完整产品。下一唯一安全入口是先同步人读真源到 live control，再以 live S3.1 accepted evidence 为基线规划主线集成与 compatibility gate；Generation 2、A3.0、V4、Final Acceptance 与 P5 均不得提前宣告开始或完成。
 
 ## 2026-08-26 SG-1 越界评审产物程序裁决
 
@@ -3527,3 +3537,42 @@ package/skills/nextstep/agents/openai.yaml
 - P1 精确位置为 design 状态行与 CR 第 11 节推进顺序；修订后统一为“CR/设计/计划评审与用户最终批准已完成，fresh readiness/compatibility PASS 与两个分离 CAS 待完成”。
 - 同一 CR 文件中的“A3.0 若后续获批”同步收敛为“Generation 2 advance/ack 后”，避免把已完成的 CR 批准与未完成的代际生效混为一谈。
 - 修订未触碰 `src/**`、`schemas/**`、`tests/**`、`skills/**`、`.codex/exec-plan-v3-generation-1.md`、S3.1 exact-eleven、S3.2 exact-14 或任何 refs；`git diff --check` 必须在提交前再次通过。
+## 2026-08-30 既有项目接入缺口验证
+
+- 目标项目 `/Volumes/2T/CODE/A_Mine/genealogy-hub`：HEAD=`36918063d3ff6b6e5572104039440f44ebf9d74c`；路线锁明确为 `S5/M1`，WP0..WP6 本地闭环已完成或进入外部门禁；`refs/nextstep/*` 为空。
+- NextStep live refs：main=`6ce2fa0e2b957fc0fab49d5ee2d62c503b9cc478`、formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control=`007467180e32a866cbb15eba98a6c79b93b34529`。两个受保护未跟踪路径保持未读、未改、未清理。
+- `src/adapters/node/project-status-source.ts` 的读取前置条件是 exact formal/control ref pair、formal commit、单父 control commit、control tree 中 checkpoint/registry blobs 和二次 ref 一致性；任一缺失映射为 `SOURCE_UNAVAILABLE`。`src/cli/project-status.ts` 将其稳定投影为 `PROJECT_STATUS_UNAVAILABLE:source-unavailable`。
+- `src/domain/project-status-projection.ts` 只投影既有 control 状态，不产生控制源；V3 当前 S3.1 负责宿主能力预检，S3.2 负责职责隔离与幂等分派，现有计划没有“既有项目 adoption/genesis”所有者。
+- 结论：当前 alpha 对既有半成品项目不存在安全接入入口；这是产品能力缺口。安全修复必须保持 candidate-only、显式用户确认、历史/路线锁不改写、双 ref expected-missing CAS、失败零副作用和可删除/回滚未启用 genesis 的边界；未完成变更分流前不得编码。
+
+## 2026-08-30 Existing Project Adoption 架构评估
+
+- 评分：技术维度 `84/100`，战略/产品维度 `92/100`，综合 `86/100`；建议=`需讨论/修订后进入 Change Request`。这是咨询性架构结论，不是 Judge Harness 正式 verdict。
+- 需求完整性：诊断、只读 inspect、用户确认、stale 拒绝、双 ref 原子初始化和非目标基本完整；但缺 adoption-specific 状态语义、控制链 genesis 边界、确认能力不可伪造性和回滚的精确 CAS 条件。
+- 原始意图覆盖：“不重跑 S1.1、不改历史、不自动认定阶段、不自动授权”与 S4/P4 边界一致。S4 已有“首次启用时由用户确认的现有基线初始化 formal ref”，所以采纳方向有上游依据。
+- P1-1：control genesis 不应以业务 HEAD 为父；这会把业务历史并入专用控制链。应使用零父控制 genesis，必要时再以其为父创建 activation commit，双 refs 在一次 expected-missing ref transaction 中生效。
+- P1-2：现有 projector 要求 current task identity 与合法 `version_signoffs`；adoption 不能伪造 NextStep V1 已会签。必须增加独立 `adopted-baseline`/阶段确认结论和对应 Schema/projector 分支，明确“接纳当前基线”不等于“过去所有门禁由 NextStep 验证通过”。
+- P1-3：现有 alpha dispatcher 不能向子进程注入可信能力；`adopt inspect`可以是 public read-only CLI，但 commit 必须仅通过 trusted in-process host API，用经验证的用户动作能力绑定 exact envelope digest，不能信任 stdin/env/自述确认。
+- P1-4：方案不得直接插入已冻结且已进入 S3.1 运行的 V3 Generation 1。先用 Change Intake 证明它是 V3/PC-14..18 出口必需缺口，再推进 plan generation/墓碑和独立计划评审；否则归后续增强。
+- 其他必需合同：仅从 HEAD Git blobs 计算路线锁/活动计划/验证摘要；明确 dirty/index/untracked 策略、多 worktree 的全仓库影响、整个 `refs/nextstep/*` namespace 冲突、事务前后漂移检查、对象库孤儿与“零副作用”的口径、仅在没有后继控制/正式提升时的 expected-OID 双 ref 回滚。
+- 错误分类：两 refs 都无可用 `PROJECT_NOT_ADOPTED`；单 ref 建议用中性 `REF_PAIR_INCOMPLETE` 并带安全 `missing_refs`，因为 `CONTROL_SOURCE_INCOMPLETE` 无法准确表达 formal 缺失；损坏源保留 fail-closed，同时为运维证据给出不泄密的结构化原因；`ADOPTION_CANDIDATE_STALE` 合理。
+- 门禁判断：本轮只证明诊断和修订必要性，未运行产品测试，未验证任何 adoption 实现。许可的下一步仅是 Change Intake/契约设计，不允许直接编码、创建 genealogy-hub refs 或推进 S3.2。
+
+## 2026-08-30 当前项目产品视角评估
+
+- 需求完整性：已覆盖用户要求的四类输出——做得好、需要改善、不合理设计、需要重构；审查绑定产品真源、live control、实际 CLI 和 fresh 本地门禁，不把历史 README 状态冒充当前状态。
+- 原始意图覆盖：产品定位与问题判断清楚，Skill + 文档/Git 真源方向成立；但当前用户可达价值被开发者安装、JCS、可信 capability、状态不可用和缺 full host 阻断。
+- 技术维度：`88/100`。优点是 domain/adapters/CLI 依赖边界、fail-closed、原子写入、CAS、敏感信息保护和测试成熟；扣分来自 application/workflow 层缺席、CLI 胶水重复、超大文件与状态投影脆弱。
+- 战略/产品维度：`62/100`。优点是目标问题真实、边界明确、用户旅程完整；扣分来自 qualified real runs=`0/3`、目标用户过宽、既有项目 adoption 缺失、首用链过重、状态真源漂移和用户层术语负担。
+- 综合评分：`74/100`；建议=`退回产品收口优先级讨论`。不是否定当前工程，也不是正式 Judge Harness verdict；含义是暂不把“继续增加验证内核/门禁细节”作为最高优先级，应先完成一个真实用户端到端闭环并验证价值。
+- fresh 验证：`rtk pnpm check` exit 0；tests=`564/564`、fail/skip/cancel/todo=`0/0/0/0`；coverage Lines/Branches/Functions=`94.65/89.99/99.58`。`nextstep --help` 列出冻结 13 命令；canonical quickstart 返回 `VERSION_CHAIN_ACCEPTED`；宿主候选经 JCS 且无尾随换行时 requirement-intake 返回 candidate-only 用户输出。
+- 状态可用性验证：live control=`007467180e32a866cbb15eba98a6c79b93b34529` 的 registry 已进入 `P5/V3/M3.1/S3.1` attempt 5 running，但 route lock/README/PLANS 等仍写旧 control 与 V3 plan-entry；对当前项目运行 `nextstep status --project-root /Volumes/2T/CODE/A_Mine/NextStep` 返回 `PROJECT_STATUS_UNAVAILABLE:unproven-next-action`，证明用户状态面尚未闭环。
+- 阶段门禁：本轮审查结束；不允许据此直接重构、改路线锁或插入 V3 packet。建议先讨论并通过 Change Intake 决定 adoption、状态单源和 host workflow 是否属于当前 V3 必需缺口。
+
+## 2026-08-30 V3 Generation 2 control 验证
+
+- preflight：main=`e190b9b10d6acc36349bd2abe9c6a54affbee1b7`、formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control expected-old=`c8cbba15a3b08f49b8e0d1bfaa7549b15a24dbe9`；review parent=`0189583900d5bdec438dd17468c8d172e7a199b2`。`e3df650..e190b9b` 对 `src/schemas/tests/skills` 与 Generation 1 正文的 diff 为空。
+- advance=`ecbbdf66f36c84b90580fbf212f42b13c79e862d` 为单父 exact-three；ack=`5ce71c116183786d15e92b3c9bf8a9bcd8fc7fad` 为另一单父 exact-three。两步 JSON parse、`git diff --check`、expected-old 与 ref 后读均通过。
+- advance message RFC8785 digest=`sha256:edf1b3d1bb0b28c57bfbfcbb5ae91e807c8eb8177cd2ac97a7590131e49d72d0`，与 ack 记录精确匹配。
+- ack 后 checkpoint/registry 均为 `v3_plan_generation=2`，全局 `plan_generation=5`；unconfirmed tombstones 为空，pending dispatch 为空，S3.1 carry-forward confirmed，future entries superseded-before-packet。
+- formal 仍为 F16；没有 A3.0 packet/outbox/claim/ACK/Result，没有产品代码写入，也没有真实项目 refs。当前放行范围只到 A3.0-A packet preparation。

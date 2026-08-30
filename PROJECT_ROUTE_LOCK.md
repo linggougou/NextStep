@@ -31,7 +31,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - Change Intake、恢复、Final Acceptance、交付和宿主归档边界通过故障注入和反扫验证。
   - V1..V4 与 Final Acceptance 分别完成本地验证、适用验收和用户会签。
 - 阶段出口：V1..V4 和 Final Acceptance 全部通过；正式 OID、交付清单、风险、回滚和 PC-20.AR 状态可追溯，并由用户明确确认 P5 产品落地完成。
-- 最小可验收闭环：`P5-M0`、V1 与 V2 已正式完成；`v0.2.0-alpha` Generation 1 本地内部候选已通过独立 package acceptance attempt 3，结论=`PASS / 100`、I/X/P/Profile=`25/25/25/25`、P0/P1/P2=`0/0/0`。验收 Result digest=`sha256:b22a83615695375102a7a3841c27e6936ca6793feab3151a5a5a1e420bf2fbe4`、Result control=`25f5e5a18aae9f87ad6f0dce43513fbbe183fcc1`，implementation subject=`ca9da8d0fa00a4367a1ad6be411bc660a900098e`，review/integration main=`67438b527a7a88c6cc99c661b6f3d260d24e6877`。项目外冻结产物=`/Users/ling/Documents/Codex/NextStep-v0.2.0-alpha/nextstep-0.2.0-alpha.tgz`，sha256=`9871dcb4a03c8a14f1849f73c431df42b3be7a5315dc3d07bcd6e321f5a30a63`、`121670` bytes、`75` entries，offline smoke 通过，精确状态只能是 `local-candidate-usable`。本状态同步固定父/基线=`67438b527a7a88c6cc99c661b6f3d260d24e6877`；live main 必须运行时解析。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动，control=`4375910fa2554af9a8126449e07e25d4725ee6da`，`plan_generation=5`。tag、publish、formal 移动和用户级 Skill 安装均未发生；CR-006 仍 open、qualified real runs=`0/3`。下一唯一入口是冻结 V3 Generation 1 计划并进行 fresh 独立 entry review；尚未创建 V3 packet、claim/fence、dispatch 或编码。V3、V4、Final Acceptance 与 P5 均未完成。
+- 最小可验收闭环：`P5-M0`、V1 与 V2 已正式完成；`v0.2.0-alpha` 仍为 `local-candidate-usable`。S3.1 已完成 execution Result、fresh independent acceptance `PASS / 100`、main 集成与 control gate；accepted subject=`5ed6bcfd72af3ce517543dc25aa38f7f7c50f83a`、Result=`sha256:5bff9b08619f4f1d71367e7df0cab697ebc08d7d2eb430171d170b4be1539678`、review=`a625089bf2828c7ccee7a286ef0c66a1c28c3457`。CR-007 readiness attempt 2=`PASS / 100`，V3 子计划 Generation 2 已经 advance=`ecbbdf66f36c84b90580fbf212f42b13c79e862d` 与 ack=`5ce71c116183786d15e92b3c9bf8a9bcd8fc7fad` 两个分离 CAS 确认；全局 `plan_generation=5` 不变。main=`e190b9b10d6acc36349bd2abe9c6a54affbee1b7`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动。当前唯一入口为准备 A3.0-A execution packet；packet、claim/fence、dispatch、编码和真实项目 refs 均尚未创建。CR-006 仍 open、qualified real runs=`0/3`；V3、V4、Final Acceptance 与 P5 均未完成。
 - 明确非目标：
   - 不恢复 NextStep Web/UI 候选分支。
   - 不引入常驻服务、数据库、远程控制面或通用多 Agent 编排平台。
@@ -43,7 +43,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
   - 不改变已会签产品、交互、S4/P3/P4 或验收边界；需要改变时先进入 Change Request。
 - 禁止提前进入的阶段：S7 最终发布判断和 S8 交付归档；V1..V4 也不得跳过前序门禁并行宣告完成。
 - 允许进入下一阶段的条件：P5 Final Acceptance 通过本地可重复验证、独立验收和用户会签；若实现要求改变已会签产品、交互、技术、版本范围、正式提升或验收边界，必须先完成 Change Request。
-- 当前状态：进行中；本状态同步固定父/基线=`67438b527a7a88c6cc99c661b6f3d260d24e6877`，live main 运行时解析；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`4375910fa2554af9a8126449e07e25d4725ee6da`，`plan_generation=5`。V1/V2 formally-completed；alpha package acceptance attempt 3=`PASS / 100`，冻结本地候选状态=`local-candidate-usable`，但 tag/publish/formal 移动/用户级 Skill 安装未发生。CR-006 cumulative gate 已通过但 `change_request_closed=false`，qualified real runs 仍为 0/3。下一唯一入口为冻结 V3 Generation 1 计划并进行 fresh 独立 entry review；未创建 V3 packet、claim/fence、dispatch 或编码。V3、V4、Final Acceptance 与 P5 未完成。
+- 当前状态：进行中；V1/V2 formally-completed，alpha=`local-candidate-usable`。S3.1 已完成并显式 carry forward；V3 `v3_plan_generation=2` 已由分离 advance/ack CAS 确认。main=`e190b9b10d6acc36349bd2abe9c6a54affbee1b7`，formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，control=`5ce71c116183786d15e92b3c9bf8a9bcd8fc7fad`，全局 `plan_generation=5`。下一入口仅为 A3.0-A packet；A3.0、V3、V4、Final Acceptance 与 P5 尚未完成，tag/publish/formal 移动/用户级 Skill 安装均未发生。
 
 ## 2.1 里程碑路线图
 
@@ -59,7 +59,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
 | S4 技术架构 | 基于已会签的 Skill 交互真源和 S4 技术输入补充契约明确怎么实现 | 架构、技术栈、Interaction Source 模型、数据模型、风险与回滚 | 技术路线、高风险点和真源写入一致性可验证 | 独立技术审查与用户确认 | 门禁通过 |
 | P3 版本与里程碑拆解 | 把完整项目拆成版本路线、大里程碑和小里程碑 | 版本路线图、大里程碑计划、小里程碑清单、验收矩阵 | 每个小里程碑有输入、输出、DoD、测试方式、非目标和验收方式 | 用户确认 | 门禁通过 |
 | P4 执行机制设计 | 定义执行任务包、测试验收、合入、交互验收、产品验收和变更管理机制 | 设计文档、流程图、状态机、数据模型 | 执行、测试、交互验收、合入、变更可闭环 | 独立规划审查与用户确认 | 门禁通过 |
-| P5 产品落地 | 按已确认小里程碑逐步实现并合入大里程碑 | 可运行产品、测试报告、交互验收报告、产品验收报告、交付清单 | 本地验证、交互验收和产品验收通过；含 UI 分支额外通过 UI 还原验收 | 版本与阶段会签 | 进行中（V1/V2 已正式完成；alpha 本地内部候选 `local-candidate-usable`；下一入口为 V3 Generation 1 计划冻结与独立入口评审；V3/V4/Final Acceptance/P5 未完成） |
+| P5 产品落地 | 按已确认小里程碑逐步实现并合入大里程碑 | 可运行产品、测试报告、交互验收报告、产品验收报告、交付清单 | 本地验证、交互验收和产品验收通过；含 UI 分支额外通过 UI 还原验收 | 版本与阶段会签 | 进行中（V1/V2 已正式完成；alpha=`local-candidate-usable`；S3.1 已 carry forward，V3 Generation 2 已确认；当前入口为 A3.0-A packet；V3/V4/Final Acceptance/P5 未完成） |
 
 ## 3. 产品真源
 
@@ -109,7 +109,7 @@ NextStep 是一个 AI 项目闭环落地系统：它先把用户的模糊想法�
 
 - Backlog：待建立。
 - Change Request：`docs/change-requests/index.md`
-- 当前阶段缺口：CR-006 SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，但 `change_request_closed=false`，CR-006 不自动关闭；“真实项目价值验证框架可用，qualified real runs 0/3”保持不变。V2 已 formally-completed；`v0.2.0-alpha` 本地内部候选已通过 attempt 3 独立 package acceptance 并固定为 `local-candidate-usable`，但这不等于 tag、publish、formal 移动或用户级 Skill 安装。下一唯一入口是冻结 V3 Generation 1 计划并进行 fresh 独立 entry review；V3 packet、claim/fence、dispatch、编码均未创建，V3、V4、Final Acceptance 与 P5 仍未完成。
+- 当前阶段缺口：CR-006 仍为 `change_request_closed=false` 且 qualified real runs=`0/3`。V3 Generation 2 已确认，S3.1 carry-forward 已完成；当前唯一入口是 A3.0-A packet，之后仍需 A3.0-A/B 实现与独立验收、S3.2..S3.5、V3/V4/Final Acceptance。真实项目 refs 继续禁止作为首轮开发证据。
 - 后续阶段需求：V1..V4 和 Final Acceptance 按活动计划顺序推进；P4 第 12 节“运行集成验收”只允许落实为集成诊断预检，正式 I/X/P 四态结论仍由独立门禁和最终复验链产生。若未来恢复 `Web / UI` 分支，需重新确认其与当前 Skill 主路线的关系。
 - 已拒绝需求：无。
 

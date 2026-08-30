@@ -13,11 +13,11 @@
 
 ## 已接受未关闭变更
 
-- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，但 `change_request_closed=false`，风险及 qualified real runs `0/3` 保留。V2 已由独立版本累计验收、用户会签与分离 completion CAS formally-completed；这不自动关闭 CR-006。alpha 本地内部候选已通过独立 package acceptance attempt 3，状态=`local-candidate-usable`；tag/publish/formal 移动/用户级 Skill 安装未发生。formal 仍为 F16，control=`4375910fa2554af9a8126449e07e25d4725ee6da`；下一唯一入口为 V3 Generation 1 计划冻结与 fresh 独立 entry review，V3 packet、claim/fence、dispatch、编码均未创建。
+- [可承受性护栏：复杂度预算、状态投影与真实项目价值验证](./006-scalability-guardrails.md)：SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，但 `change_request_closed=false`，风险及 qualified real runs `0/3` 保留。V2 已 formally-completed；CR-007/V3 Generation 2 的推进不自动关闭 CR-006。
 
-## 已批准、等待代际准备的变更
+## 已批准、代际已确认的变更
 
-- [既有项目安全接入（Existing Project Adoption）](./007-existing-project-adoption.md)：用户已最终接受候选 `36242fbb2e938225c438871ada0731e06b9c37a4` 与 fresh 独立评审 A8 `288c1ca0d92c7c1834a0c65bc2c4cb8efe86e504`（`PASS / 100`，P0/P1/P2=`0/0/0`）。S3.1 已以 attempt 6 PASS、main exact-tree 集成和 control gate 收口；当前进入 Generation 2 fresh readiness/compatibility 独立评审。Generation 2、A3.0 和任何真实项目 refs 尚未生效或创建。
+- [既有项目安全接入（Existing Project Adoption）](./007-existing-project-adoption.md)：CR candidate/review 与 Generation 2 readiness A2 均为 `PASS / 100`。S3.1 已 carry forward，V3 Generation 2 已由 advance=`ecbbdf66...`、ack=`5ce71c1...` 两个分离 CAS 确认；当前唯一入口为 A3.0-A packet。A3.0 实现、真实项目 refs、V3/P5 完成均未发生。
 
 ## 分流规则
 
