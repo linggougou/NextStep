@@ -1,5 +1,12 @@
 # Operations Log
 
+## 2026-08-30 CR-007 A7 独立评审退回后的治理文字精修
+
+- fresh A7 review=`REVISE / 92`，`P0/P1/P2=0/1/1`，review commit=`12bc5a8d0c768f9c493f1b090549cd7b422f3660`，sole parent=`ba30dfdbebe0615cb3b847b757a261598eecb3c4`。
+- P1：CR 把 V3 Generation 1 写成“正在执行”；已改为计划已冻结且处于 fresh entry review，S3.1 实施尚未开始。
+- P2：同一 operations log 存在两个完全同名 CR-007 标题；保留全部历史内容，只把较新的固定记录与较早的初始草案记录改成唯一标题。
+- A7 复核确认其余架构、状态、恢复、计划和范围硬门通过；本轮不修改产品、S3.2、Generation 1 原计划或 refs，下一动作仍仅为 fresh re-review。
+
 ## 2026-08-30 CR-007 A6 独立评审退回后的索引同步
 
 - fresh A6 review=`REVISE / 94`，`P0/P1/P2=0/1/0`，review commit=`33e043ae8a721241e37e361ba8479eaf1ea985f7`，sole parent=`d079145fc602f1cd6496868c4d210d76db5de809`。
@@ -20,7 +27,7 @@
 - 本轮处理：只在原 `exact-seven` 文档候选内精修 CR、设计合同、Generation 2 增量计划与 `.codex` 摘要/留痕，不修改产品代码、Schema、测试、Skill、路线锁、`docs/PLANS.md`、`.codex/exec-plan-v3-generation-1.md` 或任何 Git refs。
 - 当前状态：精修后的文档候选待重新固定并发起新的 fresh 独立评审；在新的 `PASS / 100` 之前，不得请求用户最终批准、generation advance/ack CAS、A3.0 packet、真实项目接入或任何实现动作。
 
-## 2026-08-30 CR-007 Existing Project Adoption Change Intake 候选
+## 2026-08-30 CR-007 Existing Project Adoption Change Intake 候选固定记录
 
 - 生命周期与路线：当前 live 项目仍处于 `S5 / P5`；V1/V2 已 formally-completed，当前唯一正式入口仍是 `V3 Generation 1 plan freeze and independent entry assessment`。本轮只承接用户对 Existing Project Adoption 的 Change Intake 授权，不扩大到 `S3.2`、产品编码、plan-generation CAS、packet、claim/fence、dispatch、formal/control 移动或任何真实项目 refs。
 - 候选定位：把 Existing Project Adoption 记录为 `V3 当前阶段缺口候选 + 高风险基础变更`；不新增大里程碑，不改变 `P5-M0 -> V1 -> V2 -> V3 -> V4 -> Final Acceptance` 主路线，不改变 PC 主版本归属或 `S3.2 exact-14`。
@@ -3158,7 +3165,7 @@
 - P1-2 仅补齐 S3.5-B 状态投影运行闭包：新增 `schemas/v1/project-status-projection.schema.json` 与 `tests/fixtures/project-status/**`，allowlist 从 exact-18 修为 exact-20。
 - 当前修订写集仍为计划与两份追加留痕 exact-three；不改其他计划语义，不创建 packet、不提交 control CAS、不移动 main/formal/control，不运行产品 full tests。下一唯一动作是新的 fresh 独立 entry re-review。
 
-## 2026-08-30 CR-007 Existing Project Adoption Change Intake 候选
+## 2026-08-30 CR-007 Existing Project Adoption Change Intake 初始候选草案记录
 
 - 用户明确确认将 Existing Project Adoption 作为 V3 当前阶段缺口候选进入 Change Intake，并授权补齐独立 control genesis、adoption 状态模型、可信确认与回滚契约、计划修订和独立评审。
 - 明确禁止直接修改 S3.2、产品编码或创建 genealogy-hub refs；本轮同样不执行 V3 generation CAS、packet、claim/fence、dispatch、main/formal/control 移动或阶段完成声明。

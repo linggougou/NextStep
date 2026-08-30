@@ -17,7 +17,7 @@ NextStep 当前可以校验或生成部分候选，并读取已经初始化的 f
 - 类型：**V3 当前阶段缺口候选，高风险基础变更**。
 - 当前阶段必要性：V3/PC-14 要求至少一个正式支持主宿主完成 full 自动分派与恢复；已有项目如果不能先建立可信控制身份，就无法进入该运行链。CR-006 的真实项目验证也不能由 NextStep 自测仓库或复制 fixture 替代。
 - 路线影响：不改变 `P5-M0 -> V1 -> V2 -> V3 -> V4 -> Final Acceptance`，不新增大里程碑，不改变 PC 主版本归属、技术栈、主载体或最终提升门禁。
-- 计划影响：不能修改正在执行的 V3 Generation 1，也不能静默扩大 S3.2 exact-14。若本 CR 通过，使用 V3 plan-generation 2 增量计划，在 S3.1 与 S3.2 之间新增无 PC 独占归属的 `A3.0` remediation package；S3.2 原职责与 exact-14 保持不变。
+- 计划影响：不能原地修改已冻结且正处于 fresh entry review 门禁的 V3 Generation 1，也不能静默扩大 S3.2 exact-14；S3.1 实施尚未开始。若本 CR 通过，使用 V3 plan-generation 2 增量计划，在 S3.1 与 S3.2 之间新增无 PC 独占归属的 `A3.0` remediation package；S3.2 原职责与 exact-14 保持不变。
 - 当前许可：只允许形成 CR、设计合同、计划修订候选和独立评审。评审 PASS 不自动批准 CR，不授权 generation CAS、packet、编码或目标项目接入。
 
 ## 3. 产品语义

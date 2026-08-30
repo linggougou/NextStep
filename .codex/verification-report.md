@@ -1,5 +1,12 @@
 # Verification Report
 
+## 2026-08-30 CR-007 A7 退回修订验证
+
+- A7 review identity：candidate=`ba30dfdbebe0615cb3b847b757a261598eecb3c4`，review=`12bc5a8d0c768f9c493f1b090549cd7b422f3660`，verdict=`REVISE / 92`，P0/P1/P2=`0/1/1`；review exact-two、JSON 字段断言与 diff check 通过。
+- 阶段修订：CR 统一为“V3 Generation 1 计划已冻结、处于 fresh entry review、S3.1 实施未开始”，与 live route/PLANS 一致。
+- 留痕修订：两个同名 CR-007 operations 标题分别改为“候选固定记录”和“初始候选草案记录”，正文和时间顺序均保留，不删除或重写历史证据。
+- cumulative subject 仍为 exact-seven docs-only；需通过标题唯一性、旧“正在执行”反扫、`git diff --check` 和禁止路径检查后再送 fresh review。
+
 ## 2026-08-30 CR-007 A6 退回修订验证
 
 - A6 review identity：candidate=`d079145fc602f1cd6496868c4d210d76db5de809`，review=`33e043ae8a721241e37e361ba8479eaf1ea985f7`，verdict=`REVISE / 94`，P0/P1/P2=`0/1/0`；review exact-two 与 `git diff --check` 通过。

@@ -60,6 +60,13 @@
 - 唯一必修：CR 索引仍停在 A4，未反映 A5 的最新修订链；现已直接同步为最新 A6 verdict，并明确当前等待新的 fresh re-review。
 - 此同步只修正治理入口，不改变 CR、设计语义、A3.0 allowlist、S3.2 或任何实现/refs 边界。
 
+## A7 独立评审后的治理文字精修
+
+- fresh review A7=`REVISE / 92`，`P0/P1/P2=0/1/1`；核心架构、状态、恢复、计划和范围硬门继续通过。
+- 已把 CR 的 V3 Generation 1 状态收敛为“计划已冻结、处于 fresh entry review、S3.1 尚未实施”。
+- 已将 operations log 中两个同名 CR-007 标题区分为候选固定记录与初始候选草案记录，保留全部历史内容。
+- 当前等待新的 fresh re-review；未授权 generation CAS、packet、编码或任何真实项目 refs。
+
 ## 工具与替代流程
 
 - CodeGraph CLI 存在但项目无 `.codegraph/`，且路线锁要求初始化前询问；本轮未初始化。
