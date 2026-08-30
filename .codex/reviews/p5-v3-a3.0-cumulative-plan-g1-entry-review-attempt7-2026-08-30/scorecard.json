@@ -1,0 +1,177 @@
+{
+  "review_id": "p5-v3-a3.0-cumulative-plan-g1-entry-review-attempt7-2026-08-30",
+  "task_id": "A3.0-I-X-P",
+  "lane": "plan-entry-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-a3.0-cumulative-acceptance-generation-1-entry-v1",
+  "artifact_refs": [
+    {
+      "kind": "plan-candidate",
+      "commit": "482f6d672e330c5b80237e2235c5c5d28644185f",
+      "tree": "b2c1d49e2e41f25128857b16fa38940cab99ec01",
+      "parent": "71085626b518ce5f8ebf5bfa546f96ea2f834730",
+      "path": ".codex/exec-plan-a3.0-cumulative-acceptance-generation-1.md"
+    },
+    {
+      "kind": "runtime-formal-ref",
+      "ref": "refs/nextstep/formal",
+      "commit": "ea04b57de83d6c548dcb1629b1f61832db8375ad"
+    },
+    {
+      "kind": "runtime-control-ref",
+      "ref": "refs/nextstep/control",
+      "commit": "87221536ffdd17492cd552958df6a9b1d76353be"
+    },
+    {
+      "kind": "a3.0-a-acceptance-result",
+      "path": "results/result-package-acceptance-a3.0-a-g5-v3p2-a2-f176-20260830.json",
+      "result_control": "6677d0fcce3e6820f79aa0a8b7e619c9efa5152a",
+      "result_digest": "sha256:3c8203c1baea88227621eb1c1fe02f20e329e8bbd1e940610a8d147b140298f6"
+    },
+    {
+      "kind": "a3.0-b-acceptance-result",
+      "path": "results/result-package-acceptance-a3.0-b-g5-v3p2-a6-f187-20260830.json",
+      "result_control": "37e51936d7b23132fd8b5216800ba469bea80756",
+      "result_digest": "sha256:b49fc780024d0fd50ab5190b7827db2089ff5552753a2f413dc375e98c29343e"
+    }
+  ],
+  "hard_gates": [
+    {
+      "id": "HG0-readiness-frozen-entry-environment",
+      "status": "pass",
+      "evidence": "评审环境 detached HEAD=482f6d672e330c5b80237e2235c5c5d28644185f；业务 refs 精确为 refs/nextstep/control=87221536ffdd17492cd552958df6a9b1d76353be 与 refs/nextstep/formal=ea04b57de83d6c548dcb1629b1f61832db8375ad；remote=0、alternates absent。"
+    },
+    {
+      "id": "HG1-exact-one-candidate-shape",
+      "status": "pass",
+      "evidence": "候选 482f6d672e330c5b80237e2235c5c5d28644185f 的唯一父为 71085626b518ce5f8ebf5bfa546f96ea2f834730，relative-parent changed path 仅 .codex/exec-plan-a3.0-cumulative-acceptance-generation-1.md，git diff --check 通过。"
+    },
+    {
+      "id": "HG2-live-order-and-authority-baseline",
+      "status": "pass",
+      "evidence": "计划正确区分 7cd3dd1fe3aae23a1759d604783b182558fb4c15 的产品 integration/review 基线与 71085626b518ce5f8ebf5bfa546f96ea2f834730 的 exact-eleven state sync；7cd3dd1..7108562 的 11 个变更均为状态/文档路径，无产品、schema、tests、Skill 或依赖改写。"
+    },
+    {
+      "id": "HG3-result-control-ancestry-path-jcs-digest",
+      "status": "pass",
+      "evidence": "A Result control 6677d0fcce3e6820f79aa0a8b7e619c9efa5152a 与 B Result control 37e51936d7b23132fd8b5216800ba469bea80756 都是 frozen current control 87221536ffdd17492cd552958df6a9b1d76353be 的可达单父祖先；从各自 commit tree 与 current control tree 读取 A/B acceptance+execution Result 后，四个 result_digest 复算均与计划值一致。"
+    },
+    {
+      "id": "HG4-post-review-result-and-runtime-control",
+      "status": "pass",
+      "evidence": "计划明确 A3.0-A attempt2 与 A3.0-B attempt6 acceptance Result 均为 post-review controller artifact，不要求 scorecard 自引用未来 Result；同时把 control 定义为 runtime expected-old，并要求仅在 main/formal/generation/A-B authority 漂移时重做 entry，CAS 竞争则 fail closed 后 fresh reread。"
+    },
+    {
+      "id": "HG5-provisioning-ack-and-separate-cas",
+      "status": "pass",
+      "evidence": "第 2.4、3.3、3.4、9 节已经闭合 controller-only provisioning、ref-free ACK discoverability 与 same-reviewer continuation envelope；packet、claim/fence、dispatch-ready/outbox、ACK、immutable Result、S3.2 packet 仍保持分离单父 CAS，未再混并。"
+    },
+    {
+      "id": "HG6-donor-and-trusted-actions-blocked-boundary",
+      "status": "pass",
+      "evidence": "第 3 节把 donor 限定为唯一真实非 NextStep-native 项目的可销毁副本，显式排除 genealogy-hub、live checkout、live refs 与网络仓库；第 4 节要求两次 fresh trusted user action，缺 production-grade verifier/clock/session/user-action capability 时只能 blocked-awaiting-trusted-user-action。"
+    },
+    {
+      "id": "HG7-hg-alpha-budget-p2-exact-three",
+      "status": "pass",
+      "evidence": "HG1-HG12、旧 alpha 仅 13 个公开命令且不含 adoption-inspect/activation、Budget 上限、3 项且仅 3 项 carry-forward P2、以及 review-output exact-three 与独立 reviewer 隔离都已显式冻结，未发现遗漏或自我批准漏洞。"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "I",
+      "name": "身份与 authority 完整性",
+      "score": 20,
+      "max_score": 20,
+      "reason": "计划把 plan candidate、product baseline、state sync、A/B result-control、post-review Result 和未来 ready/ACK handoff 绑定成可机械复算的单一 authority 链。",
+      "evidence_refs": [
+        "HG0-readiness-frozen-entry-environment",
+        "HG2-live-order-and-authority-baseline",
+        "HG3-result-control-ancestry-path-jcs-digest",
+        "HG4-post-review-result-and-runtime-control"
+      ]
+    },
+    {
+      "id": "X",
+      "name": "执行顺序与可验证性",
+      "score": 20,
+      "max_score": 20,
+      "reason": "entry review、packet、claim、ready、ACK、continuation、cumulative execution、Result、S3.2 packet 的顺序清晰且保持分离 CAS，source-execution clone 的 fresh 命令与成功阈值也已冻结。",
+      "evidence_refs": [
+        "HG1-exact-one-candidate-shape",
+        "HG5-provisioning-ack-and-separate-cas"
+      ]
+    },
+    {
+      "id": "P",
+      "name": "产品行为与 fail-closed 语义",
+      "score": 20,
+      "max_score": 20,
+      "reason": "donor provenance、trusted actions、activation/rollback/recovery、status non-fabrication 与 blocked 语义均按 fail-closed 写明，没有把文档或旧 alpha 能力误报为已可用产品能力。",
+      "evidence_refs": [
+        "HG4-post-review-result-and-runtime-control",
+        "HG6-donor-and-trusted-actions-blocked-boundary",
+        "HG7-hg-alpha-budget-p2-exact-three"
+      ]
+    },
+    {
+      "id": "Profile",
+      "name": "Profile 与发布边界",
+      "score": 20,
+      "max_score": 20,
+      "reason": "计划保持 skill-only/headless、trusted-host 必需、旧 alpha 不构成 adoption 发布能力，也不把累计 PASS 抬升为 V3、P5 或稳定发行结论。",
+      "evidence_refs": [
+        "HG2-live-order-and-authority-baseline",
+        "HG6-donor-and-trusted-actions-blocked-boundary",
+        "HG7-hg-alpha-budget-p2-exact-three"
+      ]
+    },
+    {
+      "id": "Budget",
+      "name": "预算与评审纪律",
+      "score": 20,
+      "max_score": 20,
+      "reason": "候选保持 exact-one；未来 review-output 固定 exact-three；预算上限、3 项 carry-forward P2 和新增风险即 fail 的规则明确，没有借 cumulative gate 顺手扩容或修实现。",
+      "evidence_refs": [
+        "HG1-exact-one-candidate-shape",
+        "HG5-provisioning-ack-and-separate-cas",
+        "HG7-hg-alpha-budget-p2-exact-three"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100,
+    "max_score": 100,
+    "severity_counts": {
+      "P0": 0,
+      "P1": 0,
+      "P2": 0
+    }
+  },
+  "verdict": "PASS",
+  "score": 100,
+  "required_fixes": [],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "PASS：readiness、sole-parent、result-control ancestry/path/digest、runtime control 与 separate CAS 全部机械核对通过。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "PASS / 100：计划把 attempt6 的 result-control reachability、attempt5 的 ACK discoverability、attempt4 的 provisioning 和 prior invalid addressability 边界都收口到了可执行硬门。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "PASS：没有用 README 摘要、旧 alpha 包、历史泛授权或 donor 假对象冒充 authority，也没有把 blocked/trusted-action 门软化。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "PASS / 100；I/X/P/Profile/Budget=20/20/20/20/20，P0/P1/P2=0/0/0，required_fixes=[]。该 PASS 只放行 future cumulative gate packet preparation，不授权 packet CAS、claim/fence、ready/outbox、ACK、执行、Result、S3.2 packet 或任何真实项目 refs。"
+    }
+  ],
+  "reviewed_at": "2026-08-30T21:30:04+08:00"
+}
