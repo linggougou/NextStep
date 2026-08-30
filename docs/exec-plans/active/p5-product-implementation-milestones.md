@@ -1,6 +1,6 @@
 # P5 产品落地实施里程碑
 
-状态：进行中；V1/V2 已 formally-completed，alpha=`local-candidate-usable`。S3.1 已 carry forward，V3 Generation 2 已确认；A3.0-A 只读 inspect 已通过独立 package acceptance 并集成，candidate=`696b03ec25e97c30e52576d971d14f1f565ea729`、review/integration main=`1825bcfd01feb796a795d20005577b5e7f26eae4`、Result=`sha256:3c8203c1baea88227621eb1c1fe02f20e329e8bbd1e940610a8d147b140298f6`、control=`c9935db2d39d7990f7e28c8f70aecc7eb953b25e`。全局 `plan_generation=5` 与 formal F16 不变。当前唯一入口为 A3.0-B Execution Packet preparation；A3.0、V3、V4、Final Acceptance 与 P5 均未完成。
+状态：进行中；V1/V2 已 formally-completed，alpha=`local-candidate-usable`。S3.1 已 carry forward，V3 Generation 2 已确认；A3.0-A/B 已分别通过独立 package acceptance 并集成。A3.0-B accepted subject=`60d373aef79141a03418aca5c75447742c6a87b5`、tree=`35cec7e7f509c3e3cef01a338def9d9b9c2935f2`，attempt 6/fence 187=`PASS / 100`、P0/P1/P2=`0/0/3`，acceptance Result=`sha256:b49fc780024d0fd50ab5190b7827db2089ff5552753a2f413dc375e98c29343e`，main/integration/review=`7cd3dd1fe3aae23a1759d604783b182558fb4c15`、post-integration control=`55e942b0bdc1318372f6c6226f8a469f7fa894e8`。全局 `plan_generation=5`、`v3_plan_generation=2` 与 formal F16 不变。A3.0 cumulative acceptance 尚未开始；当前唯一入口为修订累计验收 Generation 1 计划并 fresh 独立 entry review。A3.0/M3.1/V3/V4/Final Acceptance/P5 均未完成。
 启动日期：2026-08-08
 
 ## 1. 阶段目标
@@ -13,7 +13,7 @@
 - 项目里程碑：`P5 产品落地`。
 - 当前活动里程碑：`V3 Generation 2 / A3.0 Existing Project Adoption`。
 - 本轮启动授权：用户于 2026-08-08 在 P4 会签归档后明确要求继续，授权单独启动 P5 并建立实施里程碑。
-- 路线性质：沿用已会签路线。S3.1 已 carry forward，V3 Generation 2 已确认；A3.0-A/B 是 S3.1 与 S3.2 之间的独立 remediation，S3.2 exact-14 与 PC 归属不变。A3.0-A 已验收集成；当前只开放 A3.0-B packet preparation，后续 claim/fence、dispatch、编码与独立验收仍分别受门禁约束。
+- 路线性质：沿用已会签路线。S3.1 已 carry forward，V3 Generation 2 已确认；A3.0-A/B 是 S3.1 与 S3.2 之间的独立 remediation，S3.2 exact-14 与 PC 归属不变。A3.0-A/B 已分别验收集成；当前只开放 A3.0 cumulative acceptance 修订计划与 fresh 独立 entry review，后续 cumulative packet/claim/dispatch 仍未获放行。
 
 ## 3. 正式上游
 
@@ -158,4 +158,4 @@ P5-M0 不是新增产品版本，不改变 P3 的 PC 主版本归属，也不能
 
 P5 的最终阶段出口是：V1..V4 和 Final Acceptance 全部通过本地可重复验证、独立 I/X/P、适用 Profile 验收和用户会签；交付清单、正式 OID、已知风险、回滚与 PC-20.AR 状态可追溯。此前 P5 保持进行中，不得归档本计划或宣告完整产品完成。
 
-V1/V2 已 formally-completed，alpha=`local-candidate-usable`。S3.1 已 carry forward，V3 Generation 2 已确认；A3.0-A 已验收集成。formal=F16 未移动，control=`c9935db2d39d7990f7e28c8f70aecc7eb953b25e`，全局 `plan_generation=5`。CR-006 仍 open、qualified real runs=`0/3`；下一唯一入口为 A3.0-B Execution Packet preparation，真实项目 refs 未创建，V3/V4/Final Acceptance/P5 均未完成。
+V1/V2 已 formally-completed，alpha=`local-candidate-usable`。S3.1 已 carry forward，V3 Generation 2 已确认；A3.0-A/B 已独立验收并集成。formal=F16 未移动，control=`55e942b0bdc1318372f6c6226f8a469f7fa894e8`，main=`7cd3dd1fe3aae23a1759d604783b182558fb4c15`，全局 `plan_generation=5`、`v3_plan_generation=2`。root 在 main 集成后 fresh `pnpm check`=`600/600`，overall coverage Lines/Branches/Functions=`93.06/87.82/98.71`。CR-006 仍 open、qualified real runs=`0/3`；A3.0 cumulative acceptance 尚未开始，首版累计计划 entry=`REVISE / 90` 且不进入有效计划 main 链。下一唯一入口为基于本状态同步提交生成修订计划并 fresh 独立 entry review；不得直接创建 cumulative packet/claim/dispatch，也不得把 donor 副本当真实项目接入。真实项目 refs 未创建，A3.0/M3.1/V3/V4/Final Acceptance/P5 均未完成。

@@ -1,6 +1,6 @@
 # CR-007：既有项目安全接入（Existing Project Adoption）
 
-- 状态：已由用户最终批准；V3 Generation 2 已生效，A3.0-A 只读 inspect 已通过独立验收并集成；当前等待 A3.0-B Execution Packet preparation
+- 状态：已由用户最终批准；V3 Generation 2 已生效，A3.0-A/B 已通过独立验收并集成；A3.0 cumulative acceptance 尚未开始，当前等待修订计划与 fresh 独立 entry review
 - 记录日期：2026-08-30
 - 来源：genealogy-hub 在已有 `S5/M1` 路线锁与计划的情况下，`nextstep status` 因无 formal/control 返回 `source-unavailable`
 - 所属阶段：P5 / V3 当前阶段缺口候选
@@ -18,7 +18,7 @@ NextStep 当前可以校验或生成部分候选，并读取已经初始化的 f
 - 当前阶段必要性：V3/PC-14 要求至少一个正式支持主宿主完成 full 自动分派与恢复；已有项目如果不能先建立可信控制身份，就无法进入该运行链。CR-006 的真实项目验证也不能由 NextStep 自测仓库或复制 fixture 替代。
 - 路线影响：不改变 `P5-M0 -> V1 -> V2 -> V3 -> V4 -> Final Acceptance`，不新增大里程碑，不改变 PC 主版本归属、技术栈、主载体或最终提升门禁。
 - 计划影响：不能原地扩大 S3.2 exact-14。Generation 1 的 S3.1 已完成 fresh acceptance、main 集成与 control gate；Generation 2 只能在 compatibility audit PASS 后显式 carry forward。A3.0 仍位于 S3.1 与 S3.2 之间，S3.2 原职责与 exact-14 保持不变。
-- 当前许可：用户已接受候选 `36242fbb2e938225c438871ada0731e06b9c37a4` 与独立评审 `288c1ca0d92c7c1834a0c65bc2c4cb8efe86e504`，并指示持续开发直到稳定版。Generation 2 的两个分离 expected-old CAS 与 A3.0-A 的独立 packet/acceptance/integration 已完成；持续授权仍不允许跳过 A3.0-B 的独立 packet、claim/fence、dispatch、实现与验收，也不允许把真实项目 refs 用作首轮开发证据。
+- 当前许可：用户已接受候选 `36242fbb2e938225c438871ada0731e06b9c37a4` 与独立评审 `288c1ca0d92c7c1834a0c65bc2c4cb8efe86e504`，并指示持续开发直到稳定版。Generation 2 的两个分离 expected-old CAS 与 A3.0-A/B 的独立 packet/acceptance/integration 均已完成；持续授权仍不允许跳过 A3.0 cumulative acceptance 的修订计划和 fresh 独立 entry review，不允许直接创建 cumulative packet/claim/dispatch，也不允许把 donor 副本或真实项目 refs 用作首轮开发证据。
 
 ## 2.1 最终批准后的时间漂移说明
 
@@ -27,6 +27,7 @@ NextStep 当前可以校验或生成部分候选，并读取已经初始化的 f
 - 2026-08-30 路径 A 已收口：subject=`5ed6bcfd72af3ce517543dc25aa38f7f7c50f83a`，fresh acceptance attempt 6 Result=`sha256:5bff9b08619f4f1d71367e7df0cab697ebc08d7d2eb430171d170b4be1539678`，review=`a625089bf2828c7ccee7a286ef0c66a1c28c3457`，main integration=`e3df650a6861274ff076c72276281cbf528e9188`。
 - historical readiness control=`c8cbba15a3b08f49b8e0d1bfaa7549b15a24dbe9` 已登记 S3.1 valid acceptance/integration；后续 Generation 2 advance/ack 均已按 expected-old 分离完成。
 - A3.0-A candidate=`696b03ec25e97c30e52576d971d14f1f565ea729`，independent review/integration main=`1825bcfd01feb796a795d20005577b5e7f26eae4`，review tree=`5b9d932d96786183a213b358c2cc1de379b9b242`；package acceptance attempt 2=`PASS / 100`、Result=`sha256:3c8203c1baea88227621eb1c1fe02f20e329e8bbd1e940610a8d147b140298f6`，integration control=`c9935db2d39d7990f7e28c8f70aecc7eb953b25e`。formal 仍为 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，真实项目 refs 未创建。
+- A3.0-B accepted subject=`60d373aef79141a03418aca5c75447742c6a87b5`、tree=`35cec7e7f509c3e3cef01a338def9d9b9c2935f2`，execution Result=`sha256:05d2c3d0be9f241a4c6796ce64d6861051442b46b605054b0ac1f9339f419050`；independent acceptance attempt 6/fence 187=`PASS / 100`、P0/P1/P2=`0/0/3`，acceptance Result=`sha256:b49fc780024d0fd50ab5190b7827db2089ff5552753a2f413dc375e98c29343e`，Result CAS control=`37e51936d7b23132fd8b5216800ba469bea80756`。main/integration/review=`7cd3dd1fe3aae23a1759d604783b182558fb4c15`、tree=`462fb1877b42410acb0ffe2106be20dac7dc31c9`，post-integration control=`55e942b0bdc1318372f6c6226f8a469f7fa894e8`；formal 仍未移动，真实项目 refs 仍为 0。
 - 详见 `docs/exec-plans/active/p5-v3-existing-project-adoption-generation-readiness.md`；该准备文档及其独立评审不执行任何控制副作用。
 
 ## 3. 产品语义
@@ -167,7 +168,7 @@ Adoption 不表示：
 - V3 子计划已从 generation 1 修订并确认到 generation 2；generation 1 文档和评审永久保留。
 - S3.1 generation 1 的实现/验收只有在完成自身 fresh acceptance 且兼容性审计证明本 CR 未改变其输入、输出、Schema、PC-14 子结论和风险门禁后，才可被 generation 2 显式 carry forward；不能自动复用运行态或 REVISE 结论。
 - generation 1 尚未创建的 S3.2..S3.5 packet 不产生伪 tombstone；generation-advance 消息必须声明旧未来入口 superseded，任何迟到 generation 1 future packet 一律拒绝。
-- 已完成：CR/设计/计划独立评审 PASS -> 用户最终批准 CR -> fresh readiness/compatibility 独立 PASS -> V3 子计划 generation-advance CAS -> generation-ack CAS -> A3.0-A 独立 package acceptance 与 main/control 集成。当前唯一入口为 A3.0-B Execution Packet preparation；后续每步继续分离，任一漂移均 fail closed。
+- 已完成：CR/设计/计划独立评审 PASS -> 用户最终批准 CR -> fresh readiness/compatibility 独立 PASS -> V3 子计划 generation-advance CAS -> generation-ack CAS -> A3.0-A/B 独立 package acceptance 与 main/control 集成。A3.0 cumulative acceptance 尚未开始；首版计划 candidate=`453b0693b1d45faa903127cce55a2538ad47fdf3`、review=`493f15b6e7286f11314fdd7f49de4fb9b814b81a` 的 entry verdict=`REVISE / 90`、P0/P1/P2=`0/1/0`，不进入有效计划 main 链。当前唯一入口为基于 live authority 状态同步提交重做修订计划并 fresh 独立 entry review；后续每步继续分离，任一漂移均 fail closed。
 
 ## 12. 最小实施包
 
@@ -179,7 +180,7 @@ V3 Generation 2 完成 advance/ack 后，在 S3.1 与 S3.2 之间增加 `A3.0`�
 
 两个包分别接受 I/X/P/Profile 与独立 package acceptance；A3.0 累计 PASS 只允许进入 S3.2，不单独完成 PC-14/M3.1。
 
-当前进度：A3.0-A 已完成；A3.0-B 尚未创建 packet、claim/fence、dispatch 或实现。A3.0-A 的只读候选生成不等于 activation、adopted baseline、历史 signoff 或项目接入成功。
+当前进度：A3.0-A/B 已分别完成 package acceptance 与 main/control 集成；A3.0 cumulative acceptance 尚未开始。A3.0-A/B 的源码主线能力与单包 PASS 不等于累计验收、真实项目 activation、历史 signoff、A3.0/M3.1/V3 完成或稳定发行。
 
 ## 13. 验收门禁
 

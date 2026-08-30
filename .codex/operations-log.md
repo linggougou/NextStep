@@ -3265,3 +3265,15 @@
 - 全局 `plan_generation=5` 保持；仅 scoped `v3_plan_generation=2`。S3.1=`carry-forward-confirmed`；S3.2、S3.3、S3.4-A/B/C、S3.5-A/B=`superseded-before-packet`；A3.0-A/B 为新入口而非伪 tombstone。
 - 为保护并发代理写入和用户既有未跟踪文件，主控先把越界代理的重叠 CR 草稿和人读状态修改分别保存为两个可恢复 stash；CR 草稿 stash 不回放，状态 stash 已合并并保留双方历史，冲突通过仅移除 marker、保留两侧内容解决。
 - 当前唯一入口为准备 A3.0-A execution packet；本轮 CAS 未创建 packet、claim/fence、dispatch、代码、formal movement 或真实项目 refs。
+
+## 2026-08-30 A3.0-B 验收集成后 live authority 状态同步
+
+- 基线 parent/main/integration/review=`7cd3dd1fe3aae23a1759d604783b182558fb4c15`、tree=`462fb1877b42410acb0ffe2106be20dac7dc31c9`；formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动，global `plan_generation=5`、`v3_plan_generation=2`。
+- A3.0-B accepted subject=`60d373aef79141a03418aca5c75447742c6a87b5`、tree=`35cec7e7f509c3e3cef01a338def9d9b9c2935f2`；execution Result=`sha256:05d2c3d0be9f241a4c6796ce64d6861051442b46b605054b0ac1f9339f419050`。
+- independent acceptance attempt 6/fence 187=`PASS / 100`、P0/P1/P2=`0/0/3`；acceptance Result=`sha256:b49fc780024d0fd50ab5190b7827db2089ff5552753a2f413dc375e98c29343e`，Result CAS control=`37e51936d7b23132fd8b5216800ba469bea80756`，post-integration control=`55e942b0bdc1318372f6c6226f8a469f7fa894e8`。
+- 验收测量：targeted=`24/24`、full=`600/600`、changed-scope Lines/Branches/Functions=`98.34/87.23/100`、full coverage=`93.04/87.77/98.71`；root 在 main 集成后 fresh `pnpm check`=`600/600`、overall coverage=`93.06/87.82/98.71`。
+- 接受的 P2：双 raw parser 漂移、不可达 rollback receipt blob aggressive GC、超长 raw ancestry 性能；均继续 carry forward，不冒充无风险。
+- A3.0-A/B 均已独立验收并集成，但 A3.0 cumulative acceptance 尚未开始；A3.0/M3.1/V3/V4/Final Acceptance/P5 均未完成。formal/tag/publish/用户级 Skill 安装未变化，真实项目 refs=`0`；CR-006 仍 open、qualified real runs=`0/3`。
+- 第一版累计计划 candidate=`453b0693b1d45faa903127cce55a2538ad47fdf3`、review=`493f15b6e7286f11314fdd7f49de4fb9b814b81a`，entry verdict=`REVISE / 90`、P0/P1/P2=`0/1/0`；唯一 required fix 是本 exact-eleven live authority 状态同步。该候选不进入有效计划 main 链。
+- 下一唯一入口：基于本状态同步提交生成 A3.0 cumulative acceptance Generation 1 修订计划并 fresh 独立 entry review；不得直接创建 cumulative packet/claim/dispatch，也不得把 donor 副本当真实项目接入。
+- 工具缺失替代留痕：CodeGraph 项目索引缺失，原用途为结构与影响分析；未获初始化授权，采用 `rg`、explorer 结果与 fresh 独立验收替代；结果固定了 exact-11 状态同步范围，并以 `600/600` 主线验证证明替代流程可用。

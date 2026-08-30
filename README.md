@@ -63,7 +63,7 @@ pnpm check
 - M1.1 与 S1.4-S1.6 已正式完成；M1.2 attempt 1 在精确 F16 隔离副本中完成 `pnpm check` 474/474，I/X/P/Profile=`25/25/25/25`，累计验收本体 `PASS / 100`，用户会签与 expected-old control CAS 已固化，M1.2 正式完成。
 - alpha package acceptance attempt 3=`PASS / 100`，I/X/P/Profile=`25/25/25/25`、P0/P1/P2=`0/0/0`；Result digest=`sha256:b22a83615695375102a7a3841c27e6936ca6793feab3151a5a5a1e420bf2fbe4`、Result control=`25f5e5a18aae9f87ad6f0dce43513fbbe183fcc1`，implementation subject=`ca9da8d0fa00a4367a1ad6be411bc660a900098e`，review/integration main=`67438b527a7a88c6cc99c661b6f3d260d24e6877`。
 - 冻结本地候选=`/Users/ling/Documents/Codex/NextStep-v0.2.0-alpha/nextstep-0.2.0-alpha.tgz`，sha256=`9871dcb4a03c8a14f1849f73c431df42b3be7a5315dc3d07bcd6e321f5a30a63`、`121670` bytes、`75` entries，offline smoke 通过；精确状态只能写 `local-candidate-usable`。
-- 当前开发主线的 A3.0-A 只读 inspect 已完成并集成：candidate=`696b03ec25e97c30e52576d971d14f1f565ea729`、independent review/integration main=`1825bcfd01feb796a795d20005577b5e7f26eae4`、Result=`sha256:3c8203c1baea88227621eb1c1fe02f20e329e8bbd1e940610a8d147b140298f6`，control=`c9935db2d39d7990f7e28c8f70aecc7eb953b25e`。该能力仅生成候选并证明零写入，不表示项目已经接入；冻结 alpha tarball 仍是上文的 13 命令包，不包含本次开发主线增量。
+- 当前开发主线的 A3.0-A/B 已分别通过独立验收并集成；A3.0-B subject=`60d373aef79141a03418aca5c75447742c6a87b5`，attempt 6/fence 187=`PASS / 100`、P0/P1/P2=`0/0/3`，acceptance Result=`sha256:b49fc780024d0fd50ab5190b7827db2089ff5552753a2f413dc375e98c29343e`，main=`7cd3dd1fe3aae23a1759d604783b182558fb4c15`，post-integration control=`55e942b0bdc1318372f6c6226f8a469f7fa894e8`。这表示源码主线已具备只读 adoption inspect 与可信 activation/adopted-baseline 增量，不表示 A3.0 累计验收、真实项目接入或稳定发行完成；冻结的 `v0.2.0-alpha` tarball 仍是上文的 13 命令包，不包含新的 adoption-inspect/activation 增量。
 - formal 仍为 F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，`plan_generation=5`；真实项目 refs 未创建。
 - 累计验收历史测量为 `503/503`、coverage Lines/Branches/Functions=`93.50/88.62/99.22`；首次 V2 入口复评 snapshot 为 `503/503`、`93.48/88.59/99.22`，随后主线复跑 snapshot 为 `503/503`、`93.53/88.69/99.22`。末两位存在运行波动，current gate 只固定 tests=`503/503`、fail/skip/cancel/todo=`0/0/0/0`、各 coverage 维度 `>=80%`；live 百分比必须 fresh 运行生成，不作为提交身份字段。累计 Result digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`，三个固定负例均通过。
 - SG-1 两项 P2、SG-2 一项 P2 与 SG-3 两条边界继续保留；精确状态仍是“真实项目价值验证框架可用，真实运行 0/3”。
@@ -71,7 +71,8 @@ pnpm check
 - S2.1..S2.4、M2.1/M2.2 与 PC-09..PC-13 已由 V2 累计验收统一闭合；historical subject=`43df63566b4edd8496f3ad1e62533b980767abd8`，独立 review=`68888402063b36c75c73e8fe937984781b307d71`，用户会签 ACK control=`44993d1789177cbc1e177c422a0adff4fb8f74b1`，分离 completion control=`4f466224a442dd9650905722398bfad743e327fa`。这只证明 fixture/headless/manual-isolated V2 契约，不证明 trusted full host、普通用户端到端使用或真实项目 3/3。
 - 不接入 Codex SDK/App Server，不声明宿主 `full` 支持。
 - 不恢复 Web/UI 分支，不引入常驻服务或数据库。
-- 下一唯一入口是准备 A3.0-B Execution Packet；它将冻结可信进程内确认、零父 control genesis 与单父 activation、formal/control expected-missing 原子激活、adopted-baseline/status projection、恢复和仅无后继状态精确回滚的写集。A3.0-B 尚未 packet、claim/fence、dispatch 或编码。
+- A3.0-B fresh 验收的 targeted=`24/24`、full=`600/600`、changed-scope Lines/Branches/Functions=`98.34/87.23/100`；main 集成后 fresh `pnpm check`=`600/600`，overall coverage=`93.06/87.82/98.71`。三项 P2（双 raw parser 漂移、不可达 rollback receipt blob aggressive GC、超长 raw ancestry 性能）继续 carry forward。
+- A3.0 cumulative acceptance 尚未开始。首版累计计划 candidate=`453b0693b1d45faa903127cce55a2538ad47fdf3`、review=`493f15b6e7286f11314fdd7f49de4fb9b814b81a` 为 `REVISE / 90`、P0/P1/P2=`0/1/0`，不进入有效计划 main 链。下一唯一入口是基于当前 live authority 状态同步提交重做修订计划并 fresh 独立 entry review；不得直接创建 cumulative packet/claim/dispatch，也不得把 donor 副本当真实项目接入。
 - 本地候选未创建 tag、未 publish、未移动 formal，也未安装为用户级 Skill。
 
 当前正式状态与下一入口以 `PROJECT_ROUTE_LOCK.md` 和 `docs/PLANS.md` 为准。

@@ -3587,3 +3587,26 @@ package/skills/nextstep/agents/openai.yaml
 - advance message RFC8785 digest=`sha256:edf1b3d1bb0b28c57bfbfcbb5ae91e807c8eb8177cd2ac97a7590131e49d72d0`，与 ack 记录精确匹配。
 - ack 后 checkpoint/registry 均为 `v3_plan_generation=2`，全局 `plan_generation=5`；unconfirmed tombstones 为空，pending dispatch 为空，S3.1 carry-forward confirmed，future entries superseded-before-packet。
 - formal 仍为 F16；没有 A3.0 packet/outbox/claim/ACK/Result，没有产品代码写入，也没有真实项目 refs。当前放行范围只到 A3.0-A packet preparation。
+
+## 2026-08-30 A3.0-B 验收集成后 live authority 状态同步验证
+
+### 不可变身份与有效验收
+
+- 状态同步 parent/main/integration/review=`7cd3dd1fe3aae23a1759d604783b182558fb4c15`、tree=`462fb1877b42410acb0ffe2106be20dac7dc31c9`；formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动，global `plan_generation=5`、`v3_plan_generation=2`。
+- A3.0-B accepted subject=`60d373aef79141a03418aca5c75447742c6a87b5`、tree=`35cec7e7f509c3e3cef01a338def9d9b9c2935f2`；execution Result=`sha256:05d2c3d0be9f241a4c6796ce64d6861051442b46b605054b0ac1f9339f419050`。
+- independent acceptance attempt 6/fence 187=`PASS / 100`、P0/P1/P2=`0/0/3`；acceptance Result=`sha256:b49fc780024d0fd50ab5190b7827db2089ff5552753a2f413dc375e98c29343e`，Result CAS control=`37e51936d7b23132fd8b5216800ba469bea80756`，post-integration control=`55e942b0bdc1318372f6c6226f8a469f7fa894e8`。
+- 验收测量：targeted=`24/24`、full=`600/600`、changed-scope Lines/Branches/Functions=`98.34/87.23/100`、full coverage=`93.04/87.77/98.71`；main 集成后 root fresh `pnpm check`=`600/600`、overall coverage=`93.06/87.82/98.71`。
+- 三项已接受 P2 精确为：双 raw parser 漂移、不可达 rollback receipt blob aggressive GC、超长 raw ancestry 性能。
+
+### 当前边界与下一门禁
+
+- A3.0-A/B 均已独立验收并集成；A3.0 cumulative acceptance 尚未开始，A3.0/M3.1/V3/V4/Final Acceptance/P5 均未完成。
+- formal/tag/publish/用户级 Skill 安装未变化，真实项目 refs=`0`；CR-006 仍 open、qualified real runs=`0/3`。冻结 `v0.2.0-alpha` tarball 不包含新的 adoption-inspect/activation 增量，源码主线能力不等于稳定发行。
+- 第一版累计计划 candidate=`453b0693b1d45faa903127cce55a2538ad47fdf3`、review=`493f15b6e7286f11314fdd7f49de4fb9b814b81a`，entry verdict=`REVISE / 90`、P0/P1/P2=`0/1/0`；唯一 required fix 是本 exact-eleven 状态同步。该候选不进入有效计划 main 链，不能声称累计计划已 PASS。
+- 下一唯一入口为基于本同步提交生成修订计划并 fresh 独立 entry review；不得直接创建 cumulative packet/claim/dispatch，不得把 donor 副本当真实项目接入。
+
+### 工具替代与本轮验证
+
+- CodeGraph 项目索引缺失；原用途为结构与影响分析。因未获初始化授权，替代流程为 `rg` 精确反扫、explorer 结果复核和 fresh 独立验收；替代结果固定 exact-11 写集与 `600/600` 主线通过证据。
+- 本轮只同步当前摘要并向 `.codex` 两份记录追加新段，不改写历史段落；未修改产品代码、其他计划/评审、refs/control 或真实项目。
+- 提交前验证要求：`git diff --check`；changed paths exact-eleven；反扫 A3.0-B packet/未开始、V3 Generation 1 entry 等过期 current-state 模式；正向核对 main/formal/control、subject/tree、两个 Result digest、计划 REVISE 边界和下一唯一入口。

@@ -4,7 +4,7 @@
 - 变更入口：[CR-006](../../change-requests/006-scalability-guardrails.md)
 - 生命周期阶段：S5 开发落地
 - 路线位置：P5 跨版本基础护栏；不新增版本，不改变 V2 首个产品 packet 前门禁
-- 当前状态：SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，CR-006 仍为 `change_request_closed=false`，qualified real runs 仍为 0/3。V2 已由独立版本累计验收、用户会签与分离 completion CAS 标记为 formally-completed；这不是本护栏计划自身完成 V2，也不关闭 CR-006。`v0.2.0-alpha` 本地内部候选已通过独立 package acceptance attempt 3，严格状态=`local-candidate-usable`。本状态同步固定父/基线=`67438b527a7a88c6cc99c661b6f3d260d24e6877`，live main 运行时解析；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动，control=`4375910fa2554af9a8126449e07e25d4725ee6da`，`plan_generation=5`。tag/publish/formal 移动/用户级 Skill 安装未发生；下一唯一入口为 V3 Generation 1 计划冻结与 fresh 独立 entry review，尚未创建 V3 packet、claim/fence、dispatch 或编码
+- 当前状态：SG-1、SG-2、SG-3 package gate 与 cumulative gate 均已通过，CR-006 仍为 `change_request_closed=false`，qualified real runs 仍为 0/3。V2 已由独立版本累计验收、用户会签与分离 completion CAS 标记为 formally-completed；这不是本护栏计划自身完成 V2，也不关闭 CR-006。`v0.2.0-alpha` 本地内部候选已通过独立 package acceptance attempt 3，严格状态=`local-candidate-usable`。live main=`7cd3dd1fe3aae23a1759d604783b182558fb4c15`；formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动，control=`55e942b0bdc1318372f6c6226f8a469f7fa894e8`，`plan_generation=5`、`v3_plan_generation=2`。A3.0-A/B 已独立验收并集成，A3.0 cumulative acceptance 尚未开始；tag/publish/formal 移动/用户级 Skill 安装未发生。下一唯一入口为 A3.0 cumulative acceptance 修订计划与 fresh 独立 entry review；本护栏的 SG 历史与关闭条件不变
 
 ## 1. 阶段目标
 
@@ -253,8 +253,8 @@ GREEN 只实现 Schema、单次记录验证、去重、聚合与离线 CLI，并
 
 累积结论=`PASS / 97`，P0/P1/P2=`0/0/3`；cumulative packet=`6c49825`、claim/fence 132=`4a3e6ab`、ready=`5414c63`、ACK=`8231caf`，`accepted_subject_main=37c13f34f50a634eb3b1b5c89c1ef5ddcce786aa`、`cumulative_review_commit=813e9fd5240b1af6413a274daa7e307757bbb246`、Result control=`1ac071b`、digest=`sha256:5512bf9db2b51cef94f87ad90d193b723415007d6501ac4272f24a40affe32a8`。累计验收历史 snapshot=`503/503`、coverage=`93.50/88.62/99.22`，三个固定负例均通过。
 
-SG-1 两项 P2、SG-2 一项 P2 与 SG-3 两条边界继续 carry forward；精确状态仍为“真实项目价值验证框架可用，qualified real runs 0/3”。`change_request_closed=false`。V2 已由其独立版本验收链 formally-completed；本护栏累计 PASS 不替代该 authority。alpha 本地内部候选已由其独立 package acceptance 链固定为 `local-candidate-usable`；本护栏不替代该 authority，也不把 alpha 本地可用误报为 CR-006 关闭。下一唯一入口为 V3 Generation 1 计划冻结与 fresh 独立 entry review。
+SG-1 两项 P2、SG-2 一项 P2 与 SG-3 两条边界继续 carry forward；精确状态仍为“真实项目价值验证框架可用，qualified real runs 0/3”。`change_request_closed=false`。V2 已由其独立版本验收链 formally-completed；本护栏累计 PASS 不替代该 authority。alpha 本地内部候选已由其独立 package acceptance 链固定为 `local-candidate-usable`；本护栏不替代该 authority，也不把 alpha 本地可用误报为 CR-006 关闭。live 下一唯一入口为 A3.0 cumulative acceptance 修订计划与 fresh 独立 entry review。
 
 ## 8. 阶段出口
 
-本计划的实现与 cumulative gate 出口已经通过，同时明确留下“qualified real runs 0/3，PC-12/PC-19/V2/V4 均未由本计划完成”的历史 authority 边界。V2 后续由独立版本验收链 formally-completed，不改变本护栏计划的结论来源，也不自动归档本计划或关闭 CR-006。alpha 后续由独立 package acceptance 链固定为 `local-candidate-usable`，但 tag/publish/formal 移动/用户级 Skill 安装未发生。下一入口为 V3 Generation 1 计划冻结与 fresh 独立 entry review；这不表示 V3、V4、Final Acceptance 或 P5 完成。
+本计划的实现与 cumulative gate 出口已经通过，同时明确留下“qualified real runs 0/3，PC-12/PC-19/V2/V4 均未由本计划完成”的历史 authority 边界。V2 后续由独立版本验收链 formally-completed，不改变本护栏计划的结论来源，也不自动归档本计划或关闭 CR-006。alpha 后续由独立 package acceptance 链固定为 `local-candidate-usable`，但 tag/publish/formal 移动/用户级 Skill 安装未发生。live 下一入口为 A3.0 cumulative acceptance 修订计划与 fresh 独立 entry review；这不表示 A3.0、V3、V4、Final Acceptance 或 P5 完成。

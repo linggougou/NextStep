@@ -17,7 +17,7 @@
 
 ## 已批准、代际已确认的变更
 
-- [既有项目安全接入（Existing Project Adoption）](./007-existing-project-adoption.md)：CR candidate/review 与 Generation 2 readiness A2 均为 `PASS / 100`。S3.1 已 carry forward，V3 Generation 2 已由 advance=`ecbbdf66...`、ack=`5ce71c1...` 两个分离 CAS 确认；当前唯一入口为 A3.0-A packet。A3.0 实现、真实项目 refs、V3/P5 完成均未发生。
+- [既有项目安全接入（Existing Project Adoption）](./007-existing-project-adoption.md)：CR candidate/review 与 Generation 2 readiness A2 均为 `PASS / 100`。S3.1 已 carry forward，V3 Generation 2 已由 advance=`ecbbdf66...`、ack=`5ce71c1...` 两个分离 CAS 确认；A3.0-A/B 已独立验收并集成，main=`7cd3dd1fe3aae23a1759d604783b182558fb4c15`。A3.0 cumulative acceptance 尚未开始；首版计划 entry=`REVISE / 90`，当前唯一入口为基于 live authority 状态同步重做修订计划与 fresh 独立 entry review。真实项目 refs、A3.0/V3/P5 完成均未发生。
 
 ## 分流规则
 

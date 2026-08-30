@@ -4,8 +4,8 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：V3 Generation 2 / CR-007 Existing Project Adoption；S3.1 已 carry forward、A3.0-A 已验收集成，当前唯一入口为 A3.0-B Execution Packet preparation
-- 当前状态：V1/V2 formally-completed；alpha=`local-candidate-usable`。A3.0-A candidate=`696b03ec25e97c30e52576d971d14f1f565ea729`，独立 review/integration main=`1825bcfd01feb796a795d20005577b5e7f26eae4`，review tree=`5b9d932d96786183a213b358c2cc1de379b9b242`；package acceptance attempt 2=`PASS / 100`、tests=`589/589`、coverage Lines/Branches/Functions=`94.06/89.05/99.35`、Result=`sha256:3c8203c1baea88227621eb1c1fe02f20e329e8bbd1e940610a8d147b140298f6`，integration control=`c9935db2d39d7990f7e28c8f70aecc7eb953b25e`。formal=F16 未移动，全局 `plan_generation=5`；真实项目 refs 未创建。A3.0-B 尚未 packet/claim/fence/dispatch/编码；CR-006 仍 open、qualified real runs=`0/3`，V3/V4/Final Acceptance/P5 未完成。
+- 当前活动里程碑：V3 Generation 2 / CR-007 Existing Project Adoption；S3.1 已 carry forward、A3.0-A/B 已独立验收并集成，当前唯一入口为 A3.0 cumulative acceptance Generation 1 修订计划与 fresh 独立 entry review
+- 当前状态：V1/V2 formally-completed；alpha=`local-candidate-usable`。A3.0-B accepted subject=`60d373aef79141a03418aca5c75447742c6a87b5`、tree=`35cec7e7f509c3e3cef01a338def9d9b9c2935f2`，independent acceptance attempt 6/fence 187=`PASS / 100`、P0/P1/P2=`0/0/3`，acceptance Result=`sha256:b49fc780024d0fd50ab5190b7827db2089ff5552753a2f413dc375e98c29343e`；main/integration/review=`7cd3dd1fe3aae23a1759d604783b182558fb4c15`、tree=`462fb1877b42410acb0ffe2106be20dac7dc31c9`，post-integration control=`55e942b0bdc1318372f6c6226f8a469f7fa894e8`。formal=F16 未移动，全局 `plan_generation=5`、`v3_plan_generation=2`；真实项目 refs 未创建。A3.0 cumulative acceptance 尚未开始；首版计划 entry=`REVISE / 90`，必须基于本同步提交修订并重新独立评审。CR-006 仍 open、qualified real runs=`0/3`，A3.0/M3.1/V3/V4/Final Acceptance/P5 未完成。
 
 ## 当前活动计划
 
@@ -28,7 +28,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。V1/V2 已 formally-completed；alpha=`local-candidate-usable`。S3.1 已完成并 carry forward；CR-007 的 V3 Generation 2 已由两个分离 CAS 确认；A3.0-A 只读 inspect 已通过独立验收并集成。当前只允许准备 A3.0-B Execution Packet；不得把 A3.0-A 的候选生成能力解释为接入成功、历史会签、A3.0/V3/V4/Final Acceptance/P5 完成，也不得创建真实项目 refs。
+P5 已于 2026-08-08 单独启动。V1/V2 已 formally-completed；alpha=`local-candidate-usable`。S3.1 已完成并 carry forward；CR-007 的 V3 Generation 2 已由两个分离 CAS 确认；A3.0-A/B 已分别通过独立验收并集成。A3.0 cumulative acceptance 尚未开始，当前只允许基于本状态同步提交冻结修订计划并进行 fresh 独立 entry review；不得直接创建 cumulative packet/claim/dispatch，不得把源码主线能力、donor 副本或个别 package PASS 解释为真实项目接入、历史会签、A3.0/V3/V4/Final Acceptance/P5 完成，也不得创建真实项目 refs。
 
 实施顺序保持 P3 已会签结构：
 

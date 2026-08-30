@@ -71,9 +71,9 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 
 ## 当前阶段
 
-- 当前里程碑：P5；`v0.2.0-alpha` 本地内部候选仍为 `local-candidate-usable`，V3 Generation 2 的 A3.0-A 只读 inspect 已验收集成，下一唯一入口为 A3.0-B Execution Packet preparation
+- 当前里程碑：P5；`v0.2.0-alpha` 本地内部候选仍为 `local-candidate-usable`，V3 Generation 2 的 A3.0-A/B 已分别验收集成，下一唯一入口为 A3.0 cumulative acceptance Generation 1 修订计划与 fresh 独立 entry review
 - 当前生命周期阶段：S5 开发落地
-- 当前状态：V1 与 V2 均已 formally-completed；冻结 alpha package acceptance attempt 3=`PASS / 100`，tarball 仍为 `local-candidate-usable`，不等同于稳定版。开发主线 A3.0-A candidate=`696b03ec25e97c30e52576d971d14f1f565ea729`，独立 review/integration main=`1825bcfd01feb796a795d20005577b5e7f26eae4`，package acceptance attempt 2=`PASS / 100`、Result=`sha256:3c8203c1baea88227621eb1c1fe02f20e329e8bbd1e940610a8d147b140298f6`，control=`c9935db2d39d7990f7e28c8f70aecc7eb953b25e`。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动，`plan_generation=5`；tag/publish/用户级 Skill 安装与真实项目 refs 均未发生。下一唯一入口是 A3.0-B Execution Packet preparation；A3.0-B 尚未 packet/claim/fence/dispatch/编码。CR-006 仍 open、qualified real runs 0/3；V3、V4、Final Acceptance 与 P5 均未完成。
+- 当前状态：V1 与 V2 均已 formally-completed；冻结 alpha package acceptance attempt 3=`PASS / 100`，tarball 仍为 `local-candidate-usable`，不等同于稳定版，也不包含新的 adoption-inspect/activation 增量。开发主线 A3.0-B accepted subject=`60d373aef79141a03418aca5c75447742c6a87b5`，independent acceptance attempt 6/fence 187=`PASS / 100`、P0/P1/P2=`0/0/3`，acceptance Result=`sha256:b49fc780024d0fd50ab5190b7827db2089ff5552753a2f413dc375e98c29343e`；main/integration/review=`7cd3dd1fe3aae23a1759d604783b182558fb4c15`，post-integration control=`55e942b0bdc1318372f6c6226f8a469f7fa894e8`。formal=F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad` 未移动，`plan_generation=5`、`v3_plan_generation=2`；tag/publish/用户级 Skill 安装与真实项目 refs 均未发生。A3.0 cumulative acceptance 尚未开始；首版计划 entry=`REVISE / 90`，下一唯一入口是基于本同步提交重做修订计划与 fresh 独立 entry review。CR-006 仍 open、qualified real runs 0/3；A3.0/M3.1/V3/V4/Final Acceptance/P5 均未完成。
 - 当前正式状态、边界和下一入口以 `PROJECT_ROUTE_LOCK.md` 与 `docs/PLANS.md` 为准；若与本页摘要冲突，以两者为准。
 
 ## S3 已会签交付物
@@ -92,7 +92,7 @@ NextStep 是一个 AI 项目闭环落地系统，帮助用户把模糊想法整�
 
 ## 当前交付物
 
-- P5 主路线活动计划：`docs/exec-plans/active/p5-product-implementation-milestones.md`，V1/V2 已 formally-completed，alpha 本地内部候选 `local-candidate-usable`；A3.0-A 已验收集成，下一入口为 A3.0-B Execution Packet preparation
+- P5 主路线活动计划：`docs/exec-plans/active/p5-product-implementation-milestones.md`，V1/V2 已 formally-completed，alpha 本地内部候选 `local-candidate-usable`；A3.0-A/B 已验收集成，下一入口为 A3.0 cumulative 修订计划与 fresh 独立 entry review
 - P5 可承受性护栏计划：`docs/exec-plans/active/p5-scalability-guardrails.md`，三个互斥 SG package gate 与 cumulative gate 均已通过，但 CR-006 未自动关闭，也不提前满足 PC-12、PC-19、V2 或 V4
 - P3 版本与里程碑拆解：`docs/exec-plans/completed/p3-version-and-milestone-breakdown.md`，已会签并归档
 - 当前变更入口：`docs/change-requests/006-scalability-guardrails.md` 仍为 `change_request_closed=false`；V2 正式完成不自动关闭 CR-006，qualified real runs 仍为 0/3
