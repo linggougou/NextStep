@@ -101,7 +101,7 @@ packet 不得未经新的 Change Intake 扩大上限；若可复用现有文件�
 
 - 依赖：A3.0-A accepted candidate；trusted in-process verifier、clock、user-action、Git object/ref transaction ports。
 - 输入：exact candidate、用户实际展示摘要、可信 confirmation envelope、再次读取的 Git/worktree/namespace identity。
-- 输出：零父 control genesis、以 genesis 为唯一父的 activation、adopted-baseline record、双 ref 原子 activation receipt、状态投影、回执丢失恢复与精确回滚回执。
+- 输出：零父 control genesis、以 genesis 为唯一父的 activation、adopted-baseline record、双 ref 原子 activation receipt、状态投影、公开 `project-status` 闭包、回执丢失恢复与精确回滚回执。
 
 ### 6.2 候选产品 allowlist
 
@@ -110,25 +110,39 @@ packet 不得未经新的 Change Intake 扩大上限；若可复用现有文件�
 1. `schemas/v1/adopted-baseline.schema.json`
 2. `schemas/v1/adoption-confirmation.schema.json`
 3. `schemas/v1/adoption-activation.schema.json`
-4. `src/domain/adopted-baseline.ts`
-5. `src/domain/adoption-activation.ts`
-6. `src/adapters/node/adoption-ref-store.ts`
-7. `src/domain/project-status-projection.ts`
-8. `src/adapters/node/project-status-source.ts`
-9. `tests/domain/adopted-baseline.test.ts`
-10. `tests/domain/adoption-activation.test.ts`
-11. `tests/domain/project-status-projection.test.ts`
-12. `tests/adapters/node/adoption-ref-store.test.ts`
-13. `tests/adapters/node/project-status-source.test.ts`
-14. `tests/fixtures/existing-project-adoption/**`
-15. `skills/nextstep/SKILL.md`
+4. `schemas/v1/project-status-projection.schema.json`
+5. `src/domain/adopted-baseline.ts`
+6. `src/domain/adoption-activation.ts`
+7. `src/adapters/node/adoption-ref-store.ts`
+8. `src/domain/project-status-projection.ts`
+9. `src/adapters/node/project-status-source.ts`
+10. `src/cli/project-status.ts`
+11. `src/cli/nextstep.ts`
+12. `tests/domain/adopted-baseline.test.ts`
+13. `tests/domain/adoption-activation.test.ts`
+14. `tests/domain/project-status-projection.test.ts`
+15. `tests/adapters/node/adoption-ref-store.test.ts`
+16. `tests/adapters/node/project-status-source.test.ts`
+17. `tests/cli/project-status.test.ts`
+18. `tests/cli/nextstep.test.ts`
+19. `tests/fixtures/existing-project-adoption/**`
+20. `tests/fixtures/project-status/**`
+21. `skills/nextstep/SKILL.md`
 
 公开 CLI 不包含写入口；trusted activation 由宿主进程内 port 暴露。若现有共享 schema、Git transaction 或 trusted-action 模块需要修改，必须先在 packet 前精确列明并证明复用必要性，不能以本文候选上限作为开放写集。
 
-### 6.3 TDD 与验收
+### 6.3 A3.0-B 与 S3.5-B 的路径协调
+
+- Generation 1 的 `S3.5-B exact-20` 尚未创建 packet，因此其 future exact surface 只保留为历史计划，不构成已占用的执行写集。
+- Generation 2 若获批，必须在 `generation-advance` 与 `generation-ack` 中显式登记一组 adoption-reserved status surface：`schemas/v1/project-status-projection.schema.json`、`src/domain/project-status-projection.ts`、`src/adapters/node/project-status-source.ts`、`src/cli/project-status.ts`、`src/cli/nextstep.ts`、`tests/domain/project-status-projection.test.ts`、`tests/adapters/node/project-status-source.test.ts`、`tests/cli/project-status.test.ts`、`tests/cli/nextstep.test.ts`、`tests/fixtures/project-status/**`。
+- 上述 reserved subset 仅用于承接 adopted-baseline、namespace 分类和 trusted activation 后的公开状态投影，不得顺带吸收 `generation-recovery`、`task-registry`、`control-ref-store` 或 `P4-V04/V05` 的其他恢复职责。
+- Generation 2 未来的 `S3.5-B` packet 必须把这组路径视为既有上游基线：只能在 adoption 已接纳的公开状态契约之上继续恢复语义，不得重复声明所有权、回退 adoption 语义或绕过新的 exact packet。
+
+### 6.4 TDD 与验收
 
 - RED 正例：可信 action 绑定 exact display/candidate；genesis 零父、activation 单父；formal/control expected-missing 同一 transaction；post-check 与 receipt create-or-return。
 - RED 负例：stdin/env/argv 自述确认、过期/replay、verifier 能力缺失、业务 HEAD 作为 control parent、伪 version signoff、单 ref 补齐全部拒绝。
+- RED 公开状态闭包：`PROJECT_NOT_ADOPTED` 只在整个 namespace 为空时出现；single-ref 返回 `REF_PAIR_INCOMPLETE`；extra-only 与 pair+extra 返回 source conflict，且 `project-status` Schema、CLI、`nextstep status` 与 fixture/test 一致。
 - RED 阻塞：事务前后 HEAD/blob/worktree/worktree-list/namespace 漂移；额外 nextstep ref；后继 control 或外部副作用存在时回滚。
 - RED 恢复：对象创建前后、事务 commit 前后、receipt 丢失、rollback post-check 丢失均确定性恢复，不生成第二套 genesis。
 - I：确认前明确展示副作用、未知门禁和回滚限制；成功只声明 adopted baseline。

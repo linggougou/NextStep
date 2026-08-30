@@ -1,5 +1,12 @@
 # Operations Log
 
+## 2026-08-30 CR-007 A4 独立评审退回后的候选精修
+
+- 独立评审：fresh A4 review 在隔离 clone 中给出 `REVISE / 80`，`P0/P1/P2=0/2/0`；评审提交为 `614102a080da7519dbb51190475a4e22179de50c`，其 sole parent 是候选 `2ed18a8dcdfadf6b201b34cd46fbc5184c3034b6`。该 verdict 不批准 CR-007，也不授权 CAS、packet、编码或 refs。
+- 两条必修：其一，`PROJECT_NOT_ADOPTED` 必须只对应整个 `refs/nextstep/*` namespace 为空，不能把 extra-only namespace 误判为未接入；其二，`A3.0-B` 若影响公开 `status`，必须把 `project-status` Schema、CLI、`nextstep status` 聚合入口、fixture 与 CLI 测试闭合到同一 future packet，并说明与 Generation 1 future `S3.5-B exact-20` 的路径协调。
+- 本轮处理：只在原 `exact-seven` 文档候选内精修 CR、设计合同、Generation 2 增量计划与 `.codex` 摘要/留痕，不修改产品代码、Schema、测试、Skill、路线锁、`docs/PLANS.md`、`.codex/exec-plan-v3-generation-1.md` 或任何 Git refs。
+- 当前状态：精修后的文档候选待重新固定并发起新的 fresh 独立评审；在新的 `PASS / 100` 之前，不得请求用户最终批准、generation advance/ack CAS、A3.0 packet、真实项目接入或任何实现动作。
+
 ## 2026-08-30 CR-007 Existing Project Adoption Change Intake 候选
 
 - 生命周期与路线：当前 live 项目仍处于 `S5 / P5`；V1/V2 已 formally-completed，当前唯一正式入口仍是 `V3 Generation 1 plan freeze and independent entry assessment`。本轮只承接用户对 Existing Project Adoption 的 Change Intake 授权，不扩大到 `S3.2`、产品编码、plan-generation CAS、packet、claim/fence、dispatch、formal/control 移动或任何真实项目 refs。

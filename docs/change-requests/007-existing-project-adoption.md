@@ -80,12 +80,13 @@ Adoption 不表示：
 
 状态投影规则：
 
-1. formal/control 均缺失：安全返回 `PROJECT_NOT_ADOPTED`；不声称损坏。
-2. 仅存在一个：返回 `REF_PAIR_INCOMPLETE`，可附不敏感的 `missing_refs` 枚举；禁止自动修复。
-3. activation 有效且尚无后继任务：投影 adopted-baseline 当前阶段、证据分类、未知门禁和显式下一步；`latest_formal_conclusion` 不得使用 `Vx formally completed`。
-4. 已有后继 NextStep task：正常 current task identity 优先；adopted-baseline 作为历史基线保留。
-5. candidate 复核漂移：返回 `ADOPTION_CANDIDATE_STALE`，零 ref 写入。
-6. refs 或 control 内容损坏：继续 fail closed，使用不泄密的结构化 reason；不得降级为未接入。
+1. 只有整个 `refs/nextstep/*` namespace 为空时，才安全返回 `PROJECT_NOT_ADOPTED`；不声称损坏。
+2. 仅存在一个 `formal` 或 `control`，且 namespace 中没有额外 `refs/nextstep/*` 项时，返回 `REF_PAIR_INCOMPLETE`，可附不敏感的 `missing_refs` 枚举；禁止自动修复。
+3. formal/control 均缺失但存在其他 `refs/nextstep/*`，或合法 pair 之外还存在额外 `refs/nextstep/*` 时，返回 `ADOPTION_SOURCE_CONFLICT`；不得降级为“未接入”或自动补齐。
+4. activation 有效且尚无后继任务：投影 adopted-baseline 当前阶段、证据分类、未知门禁和显式下一步；`latest_formal_conclusion` 不得使用 `Vx formally completed`。
+5. 已有后继 NextStep task：正常 current task identity 优先；adopted-baseline 作为历史基线保留。
+6. candidate 复核漂移：返回 `ADOPTION_CANDIDATE_STALE`，零 ref 写入。
+7. refs 或 control 内容损坏：继续 fail closed，使用不泄密的结构化 reason；不得降级为未接入。
 
 ## 7. 可信确认边界
 
@@ -111,6 +112,7 @@ Adoption 不表示：
 ### 8.3 Ref namespace 与事务
 
 - inspect 与激活前要求整个 `refs/nextstep/*` namespace 为空，而非只检查 formal/control。
+- 公开 inspect 只有在整个 namespace 为空时才允许给出 `PROJECT_NOT_ADOPTED`；extra-only namespace 与 pair+extra namespace 都属于 `ADOPTION_SOURCE_CONFLICT`。
 - 事务前重读 namespace、HEAD、blobs、worktree 投影和 candidate digest。
 - 使用 Git `update-ref --stdin` transaction，以 zero OID 作为 formal/control expected-old；两 ref 必须同一 transaction prepare/commit。
 - 事务后重读 namespace；若出现未授权额外 ref，不能报告成功，进入第 9 节的精确恢复判断。
@@ -141,10 +143,10 @@ Adoption 不表示：
 | Code | 条件 | 副作用 |
 |---|---|---|
 | `PROJECT_NOT_ADOPTED` | entire namespace 为空 | 无 |
-| `REF_PAIR_INCOMPLETE` | formal/control 只存在一个 | 无；禁止自动补齐 |
+| `REF_PAIR_INCOMPLETE` | formal/control 只存在一个，且无额外 nextstep refs | 无；禁止自动补齐 |
 | `ADOPTION_CANDIDATE_STALE` | HEAD/blob/worktree/worktree-list/namespace 任一漂移 | 无 |
 | `ADOPTION_CONFIRMATION_REJECTED` | action/envelope/verifier/clock/binding 无效 | 无 |
-| `ADOPTION_SOURCE_CONFLICT` | 真源缺失、重复、越界或结构冲突 | 无 |
+| `ADOPTION_SOURCE_CONFLICT` | 真源缺失、重复、越界、extra-only namespace、pair+extra namespace 或其他结构冲突 | 无 |
 | `ADOPTION_ACTIVATION_CONFLICT` | expected-missing transaction 或提交后身份复核失败 | 不误报成功；进入恢复判断 |
 | `ADOPTION_ROLLBACK_BLOCKED` | 不满足精确双 ref 回滚条件 | 保持 refs 不变 |
 
@@ -164,6 +166,7 @@ Adoption 不表示：
 
 - `A3.0-A`：adoption candidate Schema/domain、只读 Git source、公开 inspect CLI、正负/漂移 fixture。
 - `A3.0-B`：adopted-baseline Schema/projector、trusted confirmation port、零父 genesis/单父 activation、双 ref transaction、回执丢失恢复和精确回滚测试。
+- `A3.0-B` 还必须显式承接 adoption 影响到的公开 `project-status` contract surface：`project-status-projection` Schema、`project-status` CLI、`nextstep status` 聚合入口、对应 CLI/fixture/test 以及与 Generation 1 `S3.5-B` future exact surface 的所有权协调。
 
 两个包分别接受 I/X/P/Profile 与独立 package acceptance；A3.0 累计 PASS 只允许进入 S3.2，不单独完成 PC-14/M3.1。
 

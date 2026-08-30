@@ -29,14 +29,23 @@
 3. control 使用零父 genesis 和以 genesis 为唯一父的 activation commit；业务 HEAD 不进入 control 父链。
 4. trusted in-process activation 使用一次 expected-missing Git ref transaction 原子创建 formal 与 control。
 5. `adopted-baseline` 不等于历史门禁已由 NextStep 验证；证据分类固定为 `verified`、`user-declared`、`unknown`。
-6. 激活前后复核 HEAD/blobs/dirty/index/untracked/worktree/namespace；漂移零副作用失败。
-7. 仅在无后继 control、refs 仍等于 activation OID/候选 HEAD 且 namespace 无额外 ref 时，允许 expected-OID 双 ref 原子回滚。
+6. `PROJECT_NOT_ADOPTED` 只在整个 `refs/nextstep/*` namespace 为空时成立；single-ref、extra-only 和 pair+extra 必须分开 fail closed。
+7. adoption 若改变公开 `status`，必须把 `project-status` Schema、CLI、`nextstep status` 聚合入口、fixture 与 CLI 测试视为同一 contract surface，并在 `A3.0-B` 里闭合。
+8. 激活前后复核 HEAD/blobs/dirty/index/untracked/worktree/namespace；漂移零副作用失败。
+9. 仅在无后继 control、refs 仍等于 activation OID/候选 HEAD 且 namespace 无额外 ref 时，允许 expected-OID 双 ref 原子回滚。
 
 ## 文件与评审边界
 
 - 候选只修改 CR、设计合同、V3 plan-generation 2 增量计划、CR 索引和 `.codex` 留痕。
 - 不修改 `src/**`、`schemas/**`、`tests/**`、`skills/**`、S3.2 原计划正文或任何 Git ref。
 - 独立评审使用 Judge Harness，reviewer 只能追加其 scorecard/verdict，不得修订候选。
+
+## A4 独立评审后的精修点
+
+- fresh review A4=`REVISE / 80`，`P0/P1/P2=0/2/0`；通过项是 ancestry、trusted activation、双 ref 原子事务、精确回滚和 Generation 2 治理边界。
+- 必修 1：统一 namespace 状态机，避免把 extra-only `refs/nextstep/*` 误报为 `PROJECT_NOT_ADOPTED`。
+- 必修 2：闭合 `A3.0-B` 的公开 `project-status` contract surface，并明确它与 Generation 1 future `S3.5-B exact-20` 的路径协调规则。
+- 本轮修订只承接上述两条 P1，不扩大到产品代码、packet、CAS、真实项目 refs 或 `S3.2` 实施。
 
 ## 工具与替代流程
 

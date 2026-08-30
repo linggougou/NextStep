@@ -1,5 +1,15 @@
 # Verification Report
 
+## 2026-08-30 CR-007 A4 独立评审后的候选修订验证
+
+- 上轮 verdict：隔离 clone `/private/tmp/nextstep-adoption-review-a4.le0AW2/repo` 的 fresh review 给出 `REVISE / 80`，`P0/P1/P2=0/2/0`，review commit=`614102a080da7519dbb51190475a4e22179de50c`。退回原因限定为 namespace 状态分类与 `A3.0-B` 的 `project-status` contract surface 闭包。
+- 本轮修订目标：仅关闭上述两条 P1。所有修改继续限定在同一 `exact-seven` 文档候选内，不引入产品代码、Schema、测试、Skill、路线锁、`docs/PLANS.md`、`.codex/exec-plan-v3-generation-1.md` 或 refs 变更。
+- 语义修订 1：CR、设计和测试矩阵统一为四类 namespace 结论：entire namespace empty=`PROJECT_NOT_ADOPTED`；仅单 ref=`REF_PAIR_INCOMPLETE`；extra-only/pair+extra=`ADOPTION_SOURCE_CONFLICT`；其余损坏继续 fail closed。
+- 语义修订 2：`A3.0-B` 明确承接 adoption 影响到的公开 `project-status` contract surface，包括 `project-status-projection` Schema、`project-status` CLI、`nextstep status` 聚合入口、CLI 测试与 `tests/fixtures/project-status/**`，并显式定义它与 Generation 1 future `S3.5-B exact-20` 的 reserved-subset 协调，不扩大 `S3.2`。
+- 机械检查：修订后仍必须通过 `git diff --check`、candidate relative-parent exact-seven、禁止路径反扫、Markdown 本地链接存在性与 worktree clean 检查。若任一失败，不能进入下一轮 fresh review。
+- 测试边界：本轮仍为 docs-only；不重跑 `pnpm check`，也不把 A4 的 `REVISE` 包装为已通过。
+- 当前结论：修订后的候选只具备重新送审资格；是否达到 `PASS / 100` 仍取决于下一轮独立评审。
+
 ## 2026-08-30 CR-007 Existing Project Adoption Change Intake 候选验证
 
 - 验证对象：`CR-007`、既有项目接入设计合同、`V3 Generation 2` 增量计划候选、CR 索引与 `.codex` 候选留痕；固定候选工作树为 `/private/tmp/nextstep-existing-adoption-change-intake.1WBSTx/worktree`，基线 parent=`6ce2fa0e2b957fc0fab49d5ee2d62c503b9cc478`。

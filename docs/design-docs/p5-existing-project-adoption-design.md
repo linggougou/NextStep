@@ -236,13 +236,14 @@ activateAdoption({
 
 项目状态投影按以下优先级裁决：
 
-1. namespace 空：`PROJECT_NOT_ADOPTED`；
-2. formal/control pair 不完整：`REF_PAIR_INCOMPLETE`；
-3. ref、control ancestry 或 tree 无法验证：现有结构损坏类 fail-closed 结论；
-4. 合法 current task 存在：current task identity 为主投影，adopted baseline 作为历史来源；
-5. 无 current task 且存在合法 adopted baseline：展示用户确认阶段、证据等级、未知门禁和下一动作；
-6. 仅有原生 version signoff：按既有投影；
-7. adopted baseline 与 version signoff 冲突：拒绝投影，不猜测优先项。
+1. 整个 `refs/nextstep/*` namespace 为空：`PROJECT_NOT_ADOPTED`；
+2. formal/control pair 只缺一个，且 namespace 中没有额外 `refs/nextstep/*`：`REF_PAIR_INCOMPLETE`；
+3. formal/control 均缺失但存在 extra-only namespace，或合法 pair 之外还存在额外 `refs/nextstep/*`：返回 source conflict / damaged namespace 类 fail-closed 结论；
+4. ref、control ancestry 或 tree 无法验证：现有结构损坏类 fail-closed 结论；
+5. 合法 current task 存在：current task identity 为主投影，adopted baseline 作为历史来源；
+6. 无 current task 且存在合法 adopted baseline：展示用户确认阶段、证据等级、未知门禁和下一动作；
+7. 仅有原生 version signoff：按既有投影；
+8. adopted baseline 与 version signoff 冲突：拒绝投影，不猜测优先项。
 
 原生 NextStep 项目不得被误判为需要 adoption；已有任一 `refs/nextstep/*` 时，公开 inspect 只报告冲突或已有状态，不允许初始化第二套 control 身份。
 
@@ -275,7 +276,8 @@ activateAdoption({
 | 场景 | 结论 | Ref 副作用 | 恢复 |
 |---|---|---:|---|
 | namespace 全空 | `PROJECT_NOT_ADOPTED` | 无 | 允许 inspect |
-| 单 ref 或额外 nextstep ref | `REF_PAIR_INCOMPLETE` / source conflict | 无 | 人工诊断，不自动补齐 |
+| 仅单 ref 且无额外 nextstep refs | `REF_PAIR_INCOMPLETE` | 无 | 人工诊断，不自动补齐 |
+| extra-only namespace 或 pair+extra namespace | source conflict | 无 | 人工诊断，不自动补齐 |
 | HEAD/blob/worktree/worktree-list 漂移 | `ADOPTION_CANDIDATE_STALE` | 无 | 重建 candidate + 新确认 |
 | 不可信/过期/重放确认 | `ADOPTION_CONFIRMATION_REJECTED` | 无 | 获取新可信 action |
 | 对象创建后、事务前崩溃 | 未激活 | 无 | 重跑；悬空对象交给 GC |
@@ -290,6 +292,7 @@ activateAdoption({
 - 路径先做 repository-relative 规范化，拒绝 `..`、绝对路径、NUL、symlink 越界和大小写/Unicode 冲突。
 - 新功能不得引入数据库、守护进程、网络服务、通用迁移 DSL 或新的编排系统。
 - `A3.0-A` 与 `A3.0-B` 各自保持单一领域边界；共享 Git/ref primitives 必须复用既有端口，不复制 transaction 实现。
+- 若 adoption 会改变公开 `status` 输出或 unavailable reason 分类，则 `project-status-projection` Schema、`project-status` CLI、`nextstep status` 聚合入口、CLI 测试与 `tests/fixtures/project-status/**` 视为同一 contract surface，必须在同一 packet allowlist 中闭合，或在计划中明确证明无需修改。
 - 若复杂度预算无法满足，降级为只读 inspect，不开放 activation。
 
 ## 13. 可验收测试合同
@@ -300,12 +303,13 @@ activateAdoption({
 - 负例：路线锁/计划来自工作树、缺失/重复真源、symlink 越界、敏感字段、路径冲突均拒绝。
 - 阻塞：dirty/staged/untracked、ignored 遮蔽、多 worktree 身份不可证明、任意 nextstep ref 存在。
 - 恢复：HEAD/blob/worktree-list 漂移后旧 candidate 明确 stale，新 candidate 不覆盖旧摘要。
-- 投影：`PROJECT_NOT_ADOPTED` 与 `REF_PAIR_INCOMPLETE` 区分稳定。
+- 投影：`PROJECT_NOT_ADOPTED`、`REF_PAIR_INCOMPLETE` 与 extra-only/pair+extra source conflict 区分稳定。
 
 ### 13.2 A3.0-B 激活、投影与回滚
 
 - 正例：零父 genesis、单父 activation、双 ref expected-missing 原子提交、post-check、receipt create-or-return。
 - 负例：shell 自述确认、过期/replay、展示摘要漂移、业务 HEAD 作为 control parent、伪 version signoff 全拒绝。
+- 合同闭包：若 adoption 扩展公开 `status` 投影，则 Schema、CLI、`nextstep` 聚合入口、对应 fixture 与 CLI 测试必须和 projector/source 同包验收。
 - 阻塞：事务前后 namespace 漂移、额外 ref、single-ref partial、verifier 方法缺失、后继状态回滚。
 - 恢复：四个崩溃点覆盖对象前、对象后事务前、事务提交后 receipt 前、rollback transaction 后复核前。
 - 兼容：NextStep-native 状态投影不变；adopted baseline 不宣称历史 PASS。
