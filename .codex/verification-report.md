@@ -1,5 +1,16 @@
 # Verification Report
 
+## 2026-08-30 A3.0-A 验收集成后状态同步验证
+
+- 身份链：同步基线/父=`1825bcfd01feb796a795d20005577b5e7f26eae4`；A3.0-A candidate=`696b03ec25e97c30e52576d971d14f1f565ea729`，independent review/integration main=`1825bcfd01feb796a795d20005577b5e7f26eae4`，review tree=`5b9d932d96786183a213b358c2cc1de379b9b242`。
+- 验收证据：package acceptance attempt 2=`PASS / 100`、P0/P1/P2=`0/0/0`；fresh tests=`589/589`，fail/skip/cancel/todo=`0/0/0/0`，coverage Lines/Branches/Functions=`94.06/89.05/99.35`；Result digest=`sha256:3c8203c1baea88227621eb1c1fe02f20e329e8bbd1e940610a8d147b140298f6`。
+- 控制与 formal：integration control CAS=`c9935db2d39d7990f7e28c8f70aecc7eb953b25e` 已登记 A3.0-A `present-in-main-valid-acceptance`；formal 仍为 F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`，真实项目 refs 未创建。
+- 语义核对：所有当前状态入口均把 A3.0-A 限定为只读 inspect，并将下一唯一入口写为 A3.0-B Execution Packet preparation；未把 candidate 输出升级为 activation、adopted baseline、历史 signoff、A3.0/V3 完成或稳定版。
+- A3.0-B 硬门：后继 packet 仍须独立冻结 trusted in-process verifier/clock/user-action/Git object/ref transaction、零父 genesis、单父 activation、expected-missing formal/control 原子事务、状态投影、回执丢失恢复与仅无后继 exact rollback。当前尚无 packet/claim/fence/dispatch/coding。
+- 范围验证：`git diff --name-only` 必须精确等于获批 exact-ten；不得出现产品代码、Schema、测试、Skill、refs 或受保护未跟踪文件变更。
+- 机械验证：`git diff --check`、旧状态模式反扫和关键 OID/Result/下一入口正向反扫通过后才允许提交。产品 full tests 不重跑，原因是本轮仅同步文档/留痕，且已有同一固定验收对象的 fresh `589/589` 证据。
+- 门禁结论：状态同步通过只允许进入 A3.0-B Execution Packet preparation；CR-006 real runs=`0/3`、A3.0/V3/V4/Final Acceptance/P5 未完成等边界继续保留。
+
 ## 2026-08-30 CR-007 A7 退回修订验证
 
 - A7 review identity：candidate=`ba30dfdbebe0615cb3b847b757a261598eecb3c4`，review=`12bc5a8d0c768f9c493f1b090549cd7b422f3660`，verdict=`REVISE / 92`，P0/P1/P2=`0/1/1`；review exact-two、JSON 字段断言与 diff check 通过。

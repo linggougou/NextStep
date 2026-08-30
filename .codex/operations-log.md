@@ -1,5 +1,15 @@
 # Operations Log
 
+## 2026-08-30 A3.0-A 验收集成后人读状态同步
+
+- 生命周期与路线：当前仍为 `S5 / P5`，服务 `V3 Generation 2 / CR-007 Existing Project Adoption` 的阶段出口。本轮最小闭环只把已经完成的 A3.0-A 独立验收、main 集成与 control gate 同步到人读真源；不新增需求、不改路线、不创建产品或控制对象。
+- 固定事实：A3.0-A candidate=`696b03ec25e97c30e52576d971d14f1f565ea729`，independent review/integration main=`1825bcfd01feb796a795d20005577b5e7f26eae4`，review tree=`5b9d932d96786183a213b358c2cc1de379b9b242`；package acceptance attempt 2=`PASS / 100`、P0/P1/P2=`0/0/0`、fresh tests=`589/589`、coverage Lines/Branches/Functions=`94.06/89.05/99.35`、Result=`sha256:3c8203c1baea88227621eb1c1fe02f20e329e8bbd1e940610a8d147b140298f6`，integration control=`c9935db2d39d7990f7e28c8f70aecc7eb953b25e`。
+- 写集边界：只修改 `PROJECT_ROUTE_LOCK.md`、`README.md`、`docs/PLANS.md`、`docs/PRODUCT_SENSE.md`、`docs/change-requests/007-existing-project-adoption.md`、`docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md`、`docs/exec-plans/active/p5-product-implementation-milestones.md`、`docs/qa/index.md`、`.codex/operations-log.md`、`.codex/verification-report.md` 共 exact-ten；未触碰 `src/**`、`schemas/**`、`tests/**`、`skills/**`、Git refs 或受保护未跟踪文件。
+- 状态裁决：A3.0-A 精确证明只读 inspect、候选生成与零写入，不等于 trusted activation、adopted baseline、历史 signoff 或项目接入成功。formal 仍为 F16 `ea04b57de83d6c548dcb1629b1f61832db8375ad`；真实项目 refs 未创建。
+- 当前入口：唯一下一动作是 A3.0-B Execution Packet preparation。其 packet 必须冻结可信进程内确认、零父 control genesis 与单父 activation、formal/control expected-missing 原子激活、adopted-baseline/status projection、回执恢复和仅无后继状态精确回滚；packet、claim/fence、dispatch、编码与独立验收均尚未发生。
+- 保留边界：CR-006 qualified real runs 仍为 `0/3`；A3.0、V3、V4、Final Acceptance 与 P5 未完成，formal/tag/publish/用户级 Skill 安装均未移动或发生。
+- 验证策略：本轮为 docs/trace-only 状态同步，不重复运行已有 fresh `589/589` 产品全量门禁；执行 `git diff --check`、exact-path、旧当前状态反扫和关键 OID/Result/下一入口正向反扫。
+
 ## 2026-08-30 CR-007 A7 独立评审退回后的治理文字精修
 
 - fresh A7 review=`REVISE / 92`，`P0/P1/P2=0/1/1`，review commit=`12bc5a8d0c768f9c493f1b090549cd7b422f3660`，sole parent=`ba30dfdbebe0615cb3b847b757a261598eecb3c4`。

@@ -4,8 +4,8 @@
 
 - 生命周期阶段：S5 开发落地
 - 当前项目里程碑：P5 产品落地
-- 当前活动里程碑：V3 Generation 2 / CR-007 Existing Project Adoption；S3.1 已 carry forward，当前唯一入口为 A3.0-A execution packet
-- 当前状态：V1/V2 formally-completed；alpha=`local-candidate-usable`。S3.1 accepted Result=`sha256:5bff9b08619f4f1d71367e7df0cab697ebc08d7d2eb430171d170b4be1539678` 已集成并通过 control gate。CR-007 readiness A2=`PASS / 100`，V3 Generation 2 advance=`ecbbdf66f36c84b90580fbf212f42b13c79e862d`、ack/control=`5ce71c116183786d15e92b3c9bf8a9bcd8fc7fad`；main=`e190b9b10d6acc36349bd2abe9c6a54affbee1b7`，formal=F16 未移动，全局 `plan_generation=5`。A3.0 packet/claim/fence/dispatch/编码尚未创建；CR-006 仍 open、qualified real runs=`0/3`，V3/V4/Final Acceptance/P5 未完成。
+- 当前活动里程碑：V3 Generation 2 / CR-007 Existing Project Adoption；S3.1 已 carry forward、A3.0-A 已验收集成，当前唯一入口为 A3.0-B Execution Packet preparation
+- 当前状态：V1/V2 formally-completed；alpha=`local-candidate-usable`。A3.0-A candidate=`696b03ec25e97c30e52576d971d14f1f565ea729`，独立 review/integration main=`1825bcfd01feb796a795d20005577b5e7f26eae4`，review tree=`5b9d932d96786183a213b358c2cc1de379b9b242`；package acceptance attempt 2=`PASS / 100`、tests=`589/589`、coverage Lines/Branches/Functions=`94.06/89.05/99.35`、Result=`sha256:3c8203c1baea88227621eb1c1fe02f20e329e8bbd1e940610a8d147b140298f6`，integration control=`c9935db2d39d7990f7e28c8f70aecc7eb953b25e`。formal=F16 未移动，全局 `plan_generation=5`；真实项目 refs 未创建。A3.0-B 尚未 packet/claim/fence/dispatch/编码；CR-006 仍 open、qualified real runs=`0/3`，V3/V4/Final Acceptance/P5 未完成。
 
 ## 当前活动计划
 
@@ -28,7 +28,7 @@
 
 ## 当前实施入口
 
-P5 已于 2026-08-08 单独启动。V1/V2 已 formally-completed；alpha=`local-candidate-usable`。S3.1 已完成并 carry forward；CR-007 的 V3 Generation 2 已由两个分离 CAS 确认。当前只允许准备 A3.0-A execution packet；不得把该状态解释为 A3.0、V3、V4、Final Acceptance 或 P5 完成，也不得创建真实项目 refs。
+P5 已于 2026-08-08 单独启动。V1/V2 已 formally-completed；alpha=`local-candidate-usable`。S3.1 已完成并 carry forward；CR-007 的 V3 Generation 2 已由两个分离 CAS 确认；A3.0-A 只读 inspect 已通过独立验收并集成。当前只允许准备 A3.0-B Execution Packet；不得把 A3.0-A 的候选生成能力解释为接入成功、历史会签、A3.0/V3/V4/Final Acceptance/P5 完成，也不得创建真实项目 refs。
 
 实施顺序保持 P3 已会签结构：
 
