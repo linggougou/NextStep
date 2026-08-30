@@ -210,6 +210,6 @@ CR-007 已最终批准；只有 live-state reconciliation fresh 独立 PASS、S3
 1. 文档写集和引用闭合；
 2. 本地文档检查通过；
 3. fresh 独立评审精确 PASS；
-4. 向用户报告候选与 verdict 身份，等待用户最终批准 CR。
+4. 向用户报告候选与 verdict 身份，并仅请求下一项分离、精确授权：路径 A 的 `S3.1 Result + fresh attempt 6 acceptance` 收口链，或由用户另行选择并授权路径 B 的 tombstone/rerun 收口链；待先决链完成后，再单独请求 `generation-advance` 与 `generation-ack` 的 exact expected-old CAS 授权。
 
 不得在此退出点声明 V3 Generation 2 已生效、A3.0 可编码或任何项目已被接入。

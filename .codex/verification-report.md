@@ -3480,3 +3480,24 @@ package/skills/nextstep/agents/openai.yaml
 - formal/control 仍精确为 `ea04b57de83d6c548dcb1629b1f61832db8375ad` / `007467180e32a866cbb15eba98a6c79b93b34529`；候选 worktree HEAD 仍为 A8 review commit，证明本轮未执行 refs 或提交副作用。
 - 过度授权反扫通过：所有入口都明确排除 CAS、packet、编码、formal 移动与真实项目 refs；expected-old 明确留待先决链完成后 fresh 绑定。
 - fresh 独立 Judge Harness reviewer 仍只允许新增 exact-two `scorecard.json`/`verdict.md`；门槛为 `PASS / 100`、P0/P1/P2=`0/0/0`。
+
+## 2026-08-30 CR-007 V3 Generation 2 readiness A1 P1 窄修订验证
+
+### 评审输入与写集
+
+- 独立 review authority：commit=`b8fec527ae51ca9880a7859fc6d7c5cb9927b015`，candidate=`17817e78743dcea19b9f0a4642da0e83bff8fd18`，唯一 finding=`docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md:208` 的批准后退出门禁残留旧状态。
+- 本轮修订基于 `17817e7` 新开隔离 worktree，只允许 exact-three：`docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md`、`.codex/operations-log.md`、`.codex/verification-report.md`。
+- 明确反写集：`docs/change-requests/**`、`docs/exec-plans/active/p5-v3-existing-project-adoption-generation-readiness.md`、`.codex/exec-plan-v3-generation-1.md`、`src/**`、`schemas/**`、`tests/**`、`skills/**`、main/formal/control refs、真实项目路径。
+
+### 修订内容与边界
+
+- 第 11 节退出条件不再等待或重复请求“用户最终批准 CR”，而是承认该批准已完成。
+- readiness fresh PASS 后只允许请求下一项分离、精确授权：路径 A 的 `S3.1 Result + fresh attempt 6 acceptance` 收口链，或由用户另行选择并授权路径 B 的 tombstone/rerun 收口链。
+- `generation-advance` 与 `generation-ack` 继续被限定为先决链完成后的独立授权，不被此次窄修订提前放行。
+- 其余 live-state、A8 PASS 范围、expected-old 非预冻结、路径 A/B 边界、carry-forward/rerun/superseded-before-packet/ack 语义保持原候选不变。
+
+### 验证结果
+
+- 使用 `nl -ba`、`git diff --name-only`、`git diff --check` 与 `rg` 反扫批准状态文案、下一授权入口和禁止越权边界。
+- 写集精确为 exact-three；未触碰产品代码、Generation 1 正文计划或 refs。
+- 本轮是 docs-only P1 修订，不运行产品测试。若要放行，仍必须重新获得 fresh 独立 readiness re-review `PASS / 100`、P0/P1/P2=`0/0/0`。

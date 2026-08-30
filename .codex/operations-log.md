@@ -3180,3 +3180,10 @@
 - 在隔离 worktree 基于 review commit=`288c1ca0d92c7c1834a0c65bc2c4cb8efe86e504` 编制 readiness，不触碰 dirty main。fresh 只读复核 formal=`ea04b57de83d6c548dcb1629b1f61832db8375ad`、control=`007467180e32a866cbb15eba98a6c79b93b34529`，确认 S3.1 attempt 5/fence 172 在 control 中仍为 `running` 且无 execution Result；worker candidate=`5ed6bcfd72af3ce517543dc25aa38f7f7c50f83a` 不能自我接受。
 - 将 A8 继续适用的架构 PASS 与已经失效的 live-stage 快照分离；推荐先收口 Generation 1 S3.1，再做 compatibility audit 与 Generation 2 carry-forward。当前 control 仅为观察值，不预填 generation-advance expected-old。
 - CodeGraph 项目索引仍不存在，按路线锁未擅自初始化；继续使用 `rg`、Git refs/tree 与 JSON 机械查询作为替代。当前写集仅限 CR、CR 索引、计划修订、readiness 文档与两份 `.codex` 追加留痕；下一步为本地文档验证和 fresh 独立 readiness review。
+
+## 2026-08-30 CR-007 V3 Generation 2 readiness A1 P1 窄修订
+
+- fresh 独立 readiness review commit=`b8fec527ae51ca9880a7859fc6d7c5cb9927b015`，结论=`REVISE / 95`，I/X/P/Profile=`25/25/25/25`，P0/P1/P2=`0/1/0`。唯一 P1 为 `docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md` 第 11 节仍残留“等待用户最终批准 CR”。
+- 本轮在新的隔离 worktree 基于候选 `17817e78743dcea19b9f0a4642da0e83bff8fd18` 仅修这一个批准后退出门禁，并同步两份 `.codex` 追加留痕 exact-three；不修改 CR 正文、readiness 文档、产品代码、Generation 1 正文计划或任何 refs。
+- 修订后第 11 节明确：CR 最终批准已完成；readiness PASS 只允许请求下一项分离、精确授权，即路径 A 的 `S3.1 Result + fresh attempt 6 acceptance` 收口链，或用户另行选择并授权路径 B 的 tombstone/rerun 收口链。`generation-advance` 与 `generation-ack` 仍需在先决链结束后单独授权。
+- 本轮只执行文档与写集反扫，不运行产品测试。下一步是 fresh 独立 readiness re-review attempt 2；在新的 `PASS / 100` 前，仍不放行 generation CAS、S3.1 Result、acceptance packet、编码或真实项目 refs。
