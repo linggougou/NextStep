@@ -28,6 +28,26 @@ function gitInput(root: string, input: string, ...args: string[]): string {
   return execFileSync("git", ["-C", root, ...args], { encoding: "utf8", input }).trim();
 }
 
+function literalObject(root: string, type: "commit" | "tree", input: string | Buffer): string {
+  return execFileSync("git", ["-C", root, "hash-object", "-w", "--stdin", "-t", type, "--literally"], {
+    encoding: "utf8", input,
+  }).trim();
+}
+
+function literalCommit(root: string, tree: string, parents: readonly string[], headers: readonly string[] = []): string {
+  return literalObject(root, "commit", [
+    `tree ${tree}`, ...parents.map((parent) => `parent ${parent}`), ...headers,
+    "author NextStep Test <nextstep@example.invalid> 0 +0000",
+    "committer NextStep Test <nextstep@example.invalid> 0 +0000", "", "literal control", "",
+  ].join("\n"));
+}
+
+function literalTree(root: string, entries: readonly { mode: string; name: string; oid: string }[]): string {
+  return literalObject(root, "tree", Buffer.concat(entries.flatMap((entry) => [
+    Buffer.from(`${entry.mode} ${entry.name}\0`), Buffer.from(entry.oid, "hex"),
+  ])));
+}
+
 function successorControl(root: string, parent: string, candidate: any, copyMarkers: boolean, mutatedBaseline = false): string {
   const checkpoint = {
     schema_version: "1.0", repository_id: candidate.repository_identity, route_generation: 1,
@@ -311,6 +331,69 @@ test("raw genesis parent 被 shallow 或 grafts 隐藏时 recovery、rollback、
     assert.equal(git(root, "count-objects", "-v"), objectsBefore);
     assert.equal(git(root, "rev-parse", "refs/nextstep/control"), forged.control);
     assert.equal(git(root, "rev-parse", "refs/nextstep/formal"), receipt.formal_oid);
+  }
+});
+
+test("malformed raw commit/tree/blob 矩阵在两个 adapter 与 verifier 前保持零副作用", async (context) => {
+  const scenarios = [
+    "commit-no-separator", "commit-no-tree", "commit-duplicate-tree", "commit-bad-tree",
+    "commit-bad-parent", "commit-multi-parent", "tree-bad-mode", "tree-non-blob",
+    "tree-wrong-name", "tree-extra", "tree-missing", "tree-duplicate", "tree-missing-blob", "blob-noncanonical",
+  ] as const;
+  for (const scenario of scenarios) {
+    const root = await repository();
+    context.after(() => rm(root, { recursive: true, force: true }));
+    const values = await input(root);
+    const receipt = await activateAdoption({
+      projectRoot: root, ...values, roles, projection: values.projection,
+      now: () => new Date("2026-08-30T09:03:00.000Z"),
+    });
+    const originalTree = git(root, "rev-parse", `${receipt.activation_oid}^{tree}`);
+    const blobs = Object.fromEntries(["activation.json", "adopted-baseline.json", "checkpoint.json", "registry.json"].map((name) =>
+      [name, git(root, "rev-parse", `${receipt.activation_oid}:${name}`)]
+    ));
+    const standardEntries = Object.entries(blobs).map(([name, oid]) => ({ mode: "100644", name, oid }));
+    let malformed: string;
+    if (scenario === "commit-no-separator") malformed = literalObject(root, "commit", `tree ${originalTree}\n`);
+    else if (scenario === "commit-no-tree") malformed = literalObject(root, "commit", "author NextStep <nextstep@example.invalid> 0 +0000\n\nmissing tree\n");
+    else if (scenario === "commit-duplicate-tree") malformed = literalCommit(root, originalTree, [receipt.genesis_oid], [`tree ${originalTree}`]);
+    else if (scenario === "commit-bad-tree") malformed = literalObject(root, "commit", `tree not-an-oid\nparent ${receipt.genesis_oid}\n\ninvalid tree\n`);
+    else if (scenario === "commit-bad-parent") malformed = literalObject(root, "commit", `tree ${originalTree}\nparent not-an-oid\n\ninvalid parent\n`);
+    else if (scenario === "commit-multi-parent") malformed = literalCommit(root, originalTree, [receipt.genesis_oid, receipt.formal_oid]);
+    else {
+      let entries = standardEntries;
+      if (scenario === "tree-bad-mode") entries = standardEntries.map((entry) => entry.name === "activation.json" ? { ...entry, mode: "999999" } : entry);
+      if (scenario === "tree-non-blob") entries = standardEntries.map((entry) => entry.name === "activation.json" ? { ...entry, mode: "160000", oid: receipt.formal_oid } : entry);
+      if (scenario === "tree-wrong-name") entries = standardEntries.map((entry) => entry.name === "activation.json" ? { ...entry, name: "wrong.json" } : entry);
+      if (scenario === "tree-extra") entries = [...standardEntries, { mode: "100644", name: "extra.json", oid: blobs["activation.json"] as string }];
+      if (scenario === "tree-missing") entries = standardEntries.filter((entry) => entry.name !== "registry.json");
+      if (scenario === "tree-duplicate") entries = [...standardEntries, { mode: "100644", name: "activation.json", oid: blobs["activation.json"] as string }];
+      if (scenario === "tree-missing-blob") entries = standardEntries.map((entry) => entry.name === "activation.json" ? { ...entry, oid: "f".repeat(40) } : entry);
+      if (scenario === "blob-noncanonical") {
+        const value = JSON.parse(git(root, "cat-file", "blob", blobs["activation.json"] as string));
+        const oid = gitInput(root, `${JSON.stringify(value, null, 2)}\n`, "hash-object", "-w", "--stdin");
+        entries = standardEntries.map((entry) => entry.name === "activation.json" ? { ...entry, oid } : entry);
+      }
+      const rawTree = literalTree(root, entries);
+      malformed = literalCommit(root, rawTree, [receipt.genesis_oid], scenario === "tree-wrong-name" ? ["gpgsig test", " continuation"] : []);
+    }
+    writeFileSync(resolve(root, ".git/refs/nextstep/control"), `${malformed}\n`);
+    const objectsBefore = git(root, "count-objects", "-v");
+    let verifierCalls = 0;
+    await assert.rejects(() => activateAdoption({
+      projectRoot: root, ...values, roles, projection: values.projection,
+      now: () => new Date("2026-08-30T09:03:00.000Z"),
+    }), AdoptionRefStoreError);
+    await assert.rejects(() => readProjectStatusSource(root));
+    await assert.rejects(() => rollbackAdoption({
+      projectRoot: root, receipt, action: rollbackAction(receipt, scenario),
+      verifier: { verifier_kind: "trusted-host", verifyRollback: () => { verifierCalls += 1; return true; } },
+      now: () => new Date("2026-08-30T09:05:00.000Z"),
+    }), AdoptionRefStoreError);
+    assert.equal(verifierCalls, 0, scenario);
+    assert.equal(git(root, "count-objects", "-v"), objectsBefore, scenario);
+    assert.equal(git(root, "rev-parse", "refs/nextstep/control"), malformed, scenario);
+    assert.equal(git(root, "rev-parse", "refs/nextstep/formal"), receipt.formal_oid, scenario);
   }
 });
 

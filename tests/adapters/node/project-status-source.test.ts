@@ -16,6 +16,26 @@ function git(root: string, ...args: string[]): string {
   return execFileSync("git", ["-C", root, ...args], { encoding: "utf8" }).trim();
 }
 
+function literalObject(root: string, type: "commit" | "tree", input: string | Buffer): string {
+  return execFileSync("git", ["-C", root, "hash-object", "-w", "--stdin", "-t", type, "--literally"], {
+    encoding: "utf8", input,
+  }).trim();
+}
+
+function literalCommit(root: string, tree: string, parents: readonly string[], headers: readonly string[] = []): string {
+  return literalObject(root, "commit", [
+    `tree ${tree}`, ...parents.map((parent) => `parent ${parent}`), ...headers,
+    "author NextStep Test <nextstep@example.invalid> 0 +0000",
+    "committer NextStep Test <nextstep@example.invalid> 0 +0000", "", "literal control", "",
+  ].join("\n"));
+}
+
+function literalTree(root: string, entries: readonly { mode: string; name: string; oid: string }[]): string {
+  return literalObject(root, "tree", Buffer.concat(entries.flatMap((entry) => [
+    Buffer.from(`${entry.mode} ${entry.name}\0`), Buffer.from(entry.oid, "hex"),
+  ])));
+}
+
 async function repository(options: { multiParent?: boolean } = {}): Promise<string> {
   const root = await mkdtemp(resolve(tmpdir(), "nextstep-status-"));
   git(root, "init", "-q");
@@ -206,4 +226,54 @@ test("status 使用 raw commit/tree 证明，拒绝 grafts 父链伪装与非 10
     assert.equal((error as ProjectStatusSourceError).code, "INVALID_CONTROL_COMMIT");
     return true;
   });
+});
+
+test("status 对 malformed raw commit/tree/blob 全矩阵 fail closed 且保持 refs/objects", async (context) => {
+  const scenarios = [
+    "commit-no-separator", "commit-no-tree", "commit-duplicate-tree", "commit-bad-tree",
+    "commit-bad-parent", "commit-multi-parent", "tree-bad-mode", "tree-non-blob",
+    "tree-wrong-name", "tree-missing", "tree-duplicate", "tree-missing-blob",
+  ] as const;
+  for (const scenario of scenarios) {
+    const root = await repository();
+    context.after(() => rm(root, { recursive: true, force: true }));
+    const original = git(root, "rev-parse", "refs/nextstep/control");
+    const originalTree = git(root, "rev-parse", `${original}^{tree}`);
+    const parent = git(root, "rev-parse", `${original}^`);
+    const checkpoint = git(root, "rev-parse", `${original}:checkpoint.json`);
+    const registry = git(root, "rev-parse", `${original}:registry.json`);
+    const standardEntries = [
+      { mode: "100644", name: "checkpoint.json", oid: checkpoint },
+      { mode: "100644", name: "registry.json", oid: registry },
+    ];
+    let malformed: string;
+    if (scenario === "commit-no-separator") malformed = literalObject(root, "commit", `tree ${originalTree}\n`);
+    else if (scenario === "commit-no-tree") malformed = literalObject(root, "commit", "author NextStep <nextstep@example.invalid> 0 +0000\n\nmissing tree\n");
+    else if (scenario === "commit-duplicate-tree") malformed = literalCommit(root, originalTree, [parent], [`tree ${originalTree}`]);
+    else if (scenario === "commit-bad-tree") malformed = literalObject(root, "commit", `tree not-an-oid\nparent ${parent}\n\ninvalid tree\n`);
+    else if (scenario === "commit-bad-parent") malformed = literalObject(root, "commit", `tree ${originalTree}\nparent not-an-oid\n\ninvalid parent\n`);
+    else if (scenario === "commit-multi-parent") malformed = literalCommit(root, originalTree, [parent, git(root, "rev-parse", "refs/nextstep/formal")]);
+    else {
+      let entries = standardEntries;
+      if (scenario === "tree-bad-mode") entries = standardEntries.map((entry) => entry.name === "checkpoint.json" ? { ...entry, mode: "999999" } : entry);
+      if (scenario === "tree-non-blob") entries = standardEntries.map((entry) => entry.name === "checkpoint.json" ? { ...entry, mode: "160000", oid: parent } : entry);
+      if (scenario === "tree-wrong-name") entries = standardEntries.map((entry) => entry.name === "checkpoint.json" ? { ...entry, name: "wrong.json" } : entry);
+      if (scenario === "tree-missing") entries = standardEntries.filter((entry) => entry.name !== "registry.json");
+      if (scenario === "tree-duplicate") entries = [...standardEntries, { mode: "100644", name: "checkpoint.json", oid: checkpoint }];
+      if (scenario === "tree-missing-blob") entries = standardEntries.map((entry) => entry.name === "checkpoint.json" ? { ...entry, oid: "f".repeat(40) } : entry);
+      malformed = literalCommit(root, literalTree(root, entries), [parent], scenario === "tree-wrong-name" ? ["gpgsig test", " continuation"] : []);
+    }
+    await writeFile(resolve(root, ".git/refs/nextstep/control"), `${malformed}\n`);
+    const objectsBefore = git(root, "count-objects", "-v");
+    const refsBefore = {
+      formal: git(root, "rev-parse", "refs/nextstep/formal"),
+      control: git(root, "rev-parse", "refs/nextstep/control"),
+    };
+    await assert.rejects(() => readProjectStatusSource(root), ProjectStatusSourceError, scenario);
+    assert.equal(git(root, "count-objects", "-v"), objectsBefore, scenario);
+    assert.deepEqual({
+      formal: git(root, "rev-parse", "refs/nextstep/formal"),
+      control: git(root, "rev-parse", "refs/nextstep/control"),
+    }, refsBefore, scenario);
+  }
 });
