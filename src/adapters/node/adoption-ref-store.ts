@@ -21,6 +21,7 @@ import {
   assertTrustedAdoptionConfirmation,
   createAdoptedBaseline,
   parseAdoptedBaseline,
+  type AdoptedBaselineRecord,
   type AdoptionConfirmationEnvelope,
 } from "../../domain/adopted-baseline.ts";
 import { canonicalizeJson, snapshotJsonValue } from "../../domain/canonical-json.ts";
@@ -196,7 +197,12 @@ function refTransaction(
 }
 
 function readJson(root: string, revisionPath: string): unknown {
-  try { return JSON.parse(git(root, ["show", revisionPath])) as unknown; } catch { fail("ADOPTION_RECOVERY_REQUIRED"); }
+  try {
+    const text = new TextDecoder("utf-8", { fatal: true }).decode(gitBytes(root, ["show", revisionPath]));
+    const value = JSON.parse(text) as unknown;
+    if (canonicalizeJson(value) !== text) fail("ADOPTION_RECOVERY_REQUIRED");
+    return value;
+  } catch { fail("ADOPTION_RECOVERY_REQUIRED"); }
 }
 
 function parents(root: string, oid: string): readonly string[] {
@@ -256,36 +262,21 @@ async function assertCandidateCurrent(root: string, candidate: AdoptionCandidate
   }
 }
 
-function recoverReceipt(
-  root: string,
-  refs: { readonly formal: string; readonly control: string },
-  candidate: AdoptionCandidate,
-  confirmation: AdoptionConfirmationEnvelope,
-): AdoptionActivationReceipt {
-  if (refs.formal !== candidate.candidate_head_oid) fail("ADOPTION_RECOVERY_REQUIRED");
-  const activation = parseAdoptionActivation(readJson(root, `${refs.control}:activation.json`));
-  const baseline = parseAdoptedBaseline(readJson(root, `${refs.control}:adopted-baseline.json`));
-  const activationParents = parents(root, refs.control);
-  if (
-    activationParents.length !== 1 || activationParents[0] !== activation.genesis_oid ||
-    parents(root, activation.genesis_oid).length !== 0 ||
-    activation.baseline_oid !== refs.formal || baseline.baseline_oid !== refs.formal ||
-    activation.candidate_digest !== candidate.candidate_digest ||
-    activation.confirmation_envelope_digest !== confirmation.envelope_digest ||
-    baseline.confirmation_envelope_digest !== confirmation.envelope_digest
-  ) fail("ADOPTION_RECOVERY_REQUIRED");
-  return createAdoptionActivationReceipt(activation, refs.control);
-}
-
-function checkpoint(candidate: AdoptionCandidate, genesisOid: string, projection: ActivateAdoptionOptions["projection"], at: string): unknown {
+function checkpointValue(
+  repositoryIdentity: Sha256Digest,
+  formalOid: string,
+  genesisOid: string,
+  projection: ActivateAdoptionOptions["projection"],
+  at: string,
+): unknown {
   return {
     schema_version: "1.0",
-    repository_id: candidate.repository_identity,
+    repository_id: repositoryIdentity,
     route_generation: 1,
     plan_id: "adopted-existing-project",
     plan_generation: 0,
     formal_ref: "refs/nextstep/formal",
-    formal_oid: candidate.candidate_head_oid,
+    formal_oid: formalOid,
     control_parent_oid: genesisOid,
     highest_task_attempts: {},
     next_stage: `adopted baseline ${projection.stage} ${projection.milestone}; review unknown gates before creating any execution task`,
@@ -294,15 +285,119 @@ function checkpoint(candidate: AdoptionCandidate, genesisOid: string, projection
   };
 }
 
-function registry(candidate: AdoptionCandidate): unknown {
+function registryValue(repositoryIdentity: Sha256Digest): unknown {
   return {
     schema_version: "1.0",
-    repository_id: candidate.repository_identity,
+    repository_id: repositoryIdentity,
     route_generation: 1,
     plan_id: "adopted-existing-project",
     plan_generation: 0,
     tasks: [],
   };
+}
+
+function genesisValue(
+  repositoryIdentity: Sha256Digest,
+  candidateDigest: Sha256Digest,
+  createdAt: string,
+): unknown {
+  return {
+    schema_version: "1.0",
+    kind: "adoption-control-genesis",
+    repository_identity: repositoryIdentity,
+    candidate_digest: candidateDigest,
+    created_at_trusted: createdAt,
+  };
+}
+
+interface VerifiedActivationState {
+  readonly activation: AdoptionActivation;
+  readonly baseline: AdoptedBaselineRecord;
+}
+
+function verifiedActivationState(
+  root: string,
+  refs: { readonly formal: string; readonly control: string },
+): VerifiedActivationState {
+  try {
+    const activation = parseAdoptionActivation(readJson(root, `${refs.control}:activation.json`));
+    const baseline = parseAdoptedBaseline(readJson(root, `${refs.control}:adopted-baseline.json`));
+    const checkpointRecord = readJson(root, `${refs.control}:checkpoint.json`);
+    const registryRecord = readJson(root, `${refs.control}:registry.json`);
+    const genesisRecord = readJson(root, `${activation.genesis_oid}:genesis.json`);
+    const activationParents = parents(root, refs.control);
+    const activationPaths = git(root, ["ls-tree", "-r", "--name-only", refs.control]).split("\n").filter(Boolean).sort();
+    const genesisPaths = git(root, ["ls-tree", "-r", "--name-only", activation.genesis_oid]).split("\n").filter(Boolean).sort();
+    const projection = {
+      stage: baseline.projected_stage,
+      milestone: baseline.projected_milestone,
+      scope: baseline.projected_scope,
+    };
+    const expectedActivation = createAdoptionActivation({
+      repository_identity: activation.repository_identity,
+      candidate_digest: activation.candidate_digest,
+      confirmation_envelope_digest: activation.confirmation_envelope_digest,
+      baseline_oid: refs.formal,
+      genesis_oid: activation.genesis_oid,
+      activated_at_trusted: activation.activated_at_trusted,
+      expected_namespace_digest: digestJson([]),
+    });
+    if (
+      activationParents.length !== 1 || activationParents[0] !== activation.genesis_oid ||
+      parents(root, activation.genesis_oid).length !== 0 ||
+      activationPaths.join("\n") !== "activation.json\nadopted-baseline.json\ncheckpoint.json\nregistry.json" ||
+      genesisPaths.join("\n") !== "genesis.json" ||
+      activation.baseline_oid !== refs.formal || baseline.baseline_oid !== refs.formal ||
+      activation.repository_identity !== baseline.repository_identity ||
+      activation.candidate_digest !== baseline.candidate_digest ||
+      activation.confirmation_envelope_digest !== baseline.confirmation_envelope_digest ||
+      baseline.lifecycle_state !== "rollback-eligible" ||
+      canonicalizeJson(activation) !== canonicalizeJson(expectedActivation) ||
+      canonicalizeJson(genesisRecord) !== canonicalizeJson(genesisValue(
+        activation.repository_identity,
+        activation.candidate_digest,
+        activation.activated_at_trusted,
+      )) ||
+      canonicalizeJson(checkpointRecord) !== canonicalizeJson(checkpointValue(
+        activation.repository_identity,
+        refs.formal,
+        activation.genesis_oid,
+        projection,
+        activation.activated_at_trusted,
+      )) ||
+      canonicalizeJson(registryRecord) !== canonicalizeJson(registryValue(activation.repository_identity))
+    ) fail("ADOPTION_RECOVERY_REQUIRED");
+    return { activation, baseline };
+  } catch {
+    fail("ADOPTION_RECOVERY_REQUIRED");
+  }
+}
+
+function recoverReceipt(
+  root: string,
+  refs: { readonly formal: string; readonly control: string },
+  candidate: AdoptionCandidate,
+  confirmation: AdoptionConfirmationEnvelope,
+  expectedBaseline: AdoptedBaselineRecord,
+): AdoptionActivationReceipt {
+  if (refs.formal !== candidate.candidate_head_oid) fail("ADOPTION_RECOVERY_REQUIRED");
+  const state = verifiedActivationState(root, refs);
+  const expectedActivation = createAdoptionActivation({
+    repository_identity: candidate.repository_identity,
+    candidate_digest: candidate.candidate_digest,
+    confirmation_envelope_digest: confirmation.envelope_digest,
+    baseline_oid: refs.formal,
+    genesis_oid: state.activation.genesis_oid,
+    activated_at_trusted: state.activation.activated_at_trusted,
+    expected_namespace_digest: candidate.nextstep_namespace_digest,
+  });
+  if (
+    canonicalizeJson(state.activation) !== canonicalizeJson(expectedActivation) ||
+    canonicalizeJson(state.baseline) !== canonicalizeJson(expectedBaseline)
+  ) fail("ADOPTION_RECOVERY_REQUIRED");
+  const receipt = createAdoptionActivationReceipt(state.activation, refs.control);
+  if (namespaceDigest(namespace(root)) !== receipt.activated_namespace_digest) fail("ADOPTION_RECOVERY_REQUIRED");
+  return receipt;
 }
 
 export async function activateAdoption(options: ActivateAdoptionOptions): Promise<AdoptionActivationReceipt> {
@@ -322,17 +417,11 @@ export async function activateAdoption(options: ActivateAdoptionOptions): Promis
   const existing = pair(namespace(projectRoot));
   if (existing !== null) {
     postActivationCandidateCheck(projectRoot, candidate, existing);
-    return recoverReceipt(projectRoot, existing, candidate, options.confirmation);
+    return recoverReceipt(projectRoot, existing, candidate, options.confirmation, baseline);
   }
   await assertCandidateCurrent(projectRoot, candidate);
 
-  const genesis = {
-    schema_version: "1.0",
-    kind: "adoption-control-genesis",
-    repository_identity: candidate.repository_identity,
-    candidate_digest: candidate.candidate_digest,
-    created_at_trusted: observed.toISOString(),
-  };
+  const genesis = genesisValue(candidate.repository_identity, candidate.candidate_digest, observed.toISOString());
   const genesisTree = tree(projectRoot, { "genesis.json": jsonBlob(projectRoot, genesis) });
   const genesisOid = git(projectRoot, ["commit-tree", genesisTree], "NextStep adoption control genesis\n", objectEnvironment(observed.toISOString()));
   if (!OID.test(genesisOid) || parents(projectRoot, genesisOid).length !== 0) fail("ADOPTION_TRANSACTION_FAILED");
@@ -348,8 +437,14 @@ export async function activateAdoption(options: ActivateAdoptionOptions): Promis
   const activationTree = tree(projectRoot, {
     "activation.json": jsonBlob(projectRoot, activation),
     "adopted-baseline.json": jsonBlob(projectRoot, baseline),
-    "checkpoint.json": jsonBlob(projectRoot, checkpoint(candidate, genesisOid, options.projection, observed.toISOString())),
-    "registry.json": jsonBlob(projectRoot, registry(candidate)),
+    "checkpoint.json": jsonBlob(projectRoot, checkpointValue(
+      candidate.repository_identity,
+      candidate.candidate_head_oid,
+      genesisOid,
+      options.projection,
+      observed.toISOString(),
+    )),
+    "registry.json": jsonBlob(projectRoot, registryValue(candidate.repository_identity)),
   });
   const activationOid = git(projectRoot, ["commit-tree", activationTree, "-p", genesisOid], "NextStep adopted baseline activation\n", objectEnvironment(observed.toISOString()));
   if (!OID.test(activationOid) || parents(projectRoot, activationOid)[0] !== genesisOid) fail("ADOPTION_TRANSACTION_FAILED");
@@ -364,7 +459,7 @@ export async function activateAdoption(options: ActivateAdoptionOptions): Promis
   const created = pair(namespace(projectRoot));
   if (created === null || created.formal !== candidate.candidate_head_oid || created.control !== activationOid) fail("ADOPTION_POSTCHECK_FAILED");
   postActivationCandidateCheck(projectRoot, candidate, created);
-  return recoverReceipt(projectRoot, created, candidate, options.confirmation);
+  return recoverReceipt(projectRoot, created, candidate, options.confirmation, baseline);
 }
 
 export async function rollbackAdoption(options: {
@@ -397,52 +492,53 @@ export async function rollbackAdoption(options: {
     options.verifier?.verifier_kind !== "trusted-host" || typeof options.verifier.verifyRollback !== "function" ||
     !Number.isFinite(current) || !Number.isFinite(occurred) || occurred > current || current - occurred > 15 * 60 * 1_000
   ) fail("ADOPTION_ROLLBACK_BLOCKED");
-  let verified = false;
-  try { verified = options.verifier.verifyRollback(action) === true; } catch { /* fail closed */ }
-  if (!verified) fail("ADOPTION_ROLLBACK_BLOCKED");
-  const actionDigest = digestJson(action);
-  const rollbackReceipt = createAdoptionRollbackReceipt({
-    activation_receipt: receipt,
-    rollback_action_digest: actionDigest,
-    rolled_back_at_trusted: action.occurred_at_trusted,
-  });
-  const receiptBytes = canonicalizeJson(rollbackReceipt);
-  const receiptBlobOid = git(projectRoot, ["hash-object", "--stdin"], receiptBytes);
-  if (!OID.test(receiptBlobOid)) fail("ADOPTION_ROLLBACK_BLOCKED");
-  const entries = namespace(projectRoot);
-  const refs = pair(entries);
+  let entries: readonly NamespaceEntry[];
+  let refs: { readonly formal: string; readonly control: string } | null;
+  try {
+    entries = namespace(projectRoot);
+    refs = pair(entries);
+  } catch { fail("ADOPTION_ROLLBACK_BLOCKED"); }
   if (refs === null) {
+    const rollbackReceipt = createAdoptionRollbackReceipt({
+      activation_receipt: receipt,
+      rollback_action_digest: digestJson(action),
+      rolled_back_at_trusted: action.occurred_at_trusted,
+    });
+    const receiptBytes = canonicalizeJson(rollbackReceipt);
+    const receiptBlobOid = git(projectRoot, ["hash-object", "--stdin"], receiptBytes);
+    if (!OID.test(receiptBlobOid)) fail("ADOPTION_ROLLBACK_BLOCKED");
     const recovered = gitOptional(projectRoot, ["cat-file", "blob", receiptBlobOid]);
     if (recovered === null) fail("ADOPTION_ROLLBACK_BLOCKED");
     let parsed: AdoptionRollbackReceipt;
     try { parsed = parseAdoptionRollbackReceipt(JSON.parse(recovered)); } catch { fail("ADOPTION_ROLLBACK_BLOCKED"); }
     if (canonicalizeJson(parsed) !== receiptBytes) fail("ADOPTION_ROLLBACK_BLOCKED");
+    let verified = false;
+    try { verified = options.verifier.verifyRollback(action) === true; } catch { /* fail closed */ }
+    if (!verified) fail("ADOPTION_ROLLBACK_BLOCKED");
     return Object.freeze({ status: "rolled-back", receipt_blob_oid: receiptBlobOid, receipt: parsed });
   }
+  let expectedReceipt: AdoptionActivationReceipt;
+  try {
+    const state = verifiedActivationState(projectRoot, refs);
+    expectedReceipt = createAdoptionActivationReceipt(state.activation, refs.control);
+  } catch { fail("ADOPTION_ROLLBACK_BLOCKED"); }
   if (
+    canonicalizeJson(receipt) !== canonicalizeJson(expectedReceipt) ||
     refs.formal !== receipt.formal_oid || refs.control !== receipt.activation_oid ||
     namespaceDigest(entries) !== receipt.activated_namespace_digest ||
     receipt.activated_namespace_digest !== createAdoptionNamespaceDigest(refs.formal, refs.control)
   ) fail("ADOPTION_ROLLBACK_BLOCKED");
-  let activation: AdoptionActivation;
-  let registryValue: { tasks?: unknown };
-  let checkpointValue: { highest_task_attempts?: unknown };
-  try {
-    activation = parseAdoptionActivation(readJson(projectRoot, `${refs.control}:activation.json`));
-    registryValue = readJson(projectRoot, `${refs.control}:registry.json`) as { tasks?: unknown };
-    checkpointValue = readJson(projectRoot, `${refs.control}:checkpoint.json`) as { highest_task_attempts?: unknown };
-  } catch { fail("ADOPTION_ROLLBACK_BLOCKED"); }
-  const activationPaths = git(projectRoot, ["ls-tree", "-r", "--name-only", refs.control]).split("\n").filter(Boolean).sort();
-  const genesisPaths = git(projectRoot, ["ls-tree", "-r", "--name-only", receipt.genesis_oid]).split("\n").filter(Boolean).sort();
-  if (
-    activation.effect_identity !== receipt.effect_identity || activation.rollback_guard.no_external_side_effects !== true ||
-    !Array.isArray(registryValue.tasks) || registryValue.tasks.length !== 0 ||
-    checkpointValue.highest_task_attempts === null || typeof checkpointValue.highest_task_attempts !== "object" ||
-    Object.keys(checkpointValue.highest_task_attempts).length !== 0 ||
-    parents(projectRoot, refs.control).length !== 1 || parents(projectRoot, refs.control)[0] !== activation.genesis_oid ||
-    activationPaths.join("\n") !== "activation.json\nadopted-baseline.json\ncheckpoint.json\nregistry.json" ||
-    genesisPaths.join("\n") !== "genesis.json"
-  ) fail("ADOPTION_ROLLBACK_BLOCKED");
+  let verified = false;
+  try { verified = options.verifier.verifyRollback(action) === true; } catch { /* fail closed */ }
+  if (!verified) fail("ADOPTION_ROLLBACK_BLOCKED");
+  const rollbackReceipt = createAdoptionRollbackReceipt({
+    activation_receipt: receipt,
+    rollback_action_digest: digestJson(action),
+    rolled_back_at_trusted: action.occurred_at_trusted,
+  });
+  const receiptBytes = canonicalizeJson(rollbackReceipt);
+  const receiptBlobOid = git(projectRoot, ["hash-object", "--stdin"], receiptBytes);
+  if (!OID.test(receiptBlobOid)) fail("ADOPTION_ROLLBACK_BLOCKED");
   const writtenBlob = jsonBlob(projectRoot, rollbackReceipt);
   if (writtenBlob !== receiptBlobOid) fail("ADOPTION_ROLLBACK_BLOCKED");
   refTransaction(projectRoot, [

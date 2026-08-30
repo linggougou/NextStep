@@ -16,6 +16,7 @@ import {
 import { createAdoptionCandidate } from "../../../src/domain/adoption-candidate.ts";
 import { createAdoptionConfirmationView, verifyAdoptionConfirmation } from "../../../src/domain/adopted-baseline.ts";
 import { canonicalizeJson } from "../../../src/domain/canonical-json.ts";
+import { digestJson } from "../../../src/domain/content-digest.ts";
 import { projectProjectStatus } from "../../../src/domain/project-status-projection.ts";
 
 function git(root: string, ...args: string[]): string {
@@ -165,6 +166,58 @@ test("事务后回执丢失可 create-or-return，同 effect 不产生第二 gen
   assert.equal(git(root, "rev-parse", "refs/nextstep/control"), before);
 });
 
+test("existing-pair recovery 拒绝非 canonical/错误 genesis tree 与缺失 checkpoint/registry 的 activation tree", async (context) => {
+  for (const scenario of ["wrong-genesis-tree", "noncanonical-genesis", "missing-control-state"] as const) {
+    const root = await repository();
+    context.after(() => rm(root, { recursive: true, force: true }));
+    const values = await input(root);
+    const receipt = await activateAdoption({
+      projectRoot: root, ...values, roles, projection: values.projection,
+      now: () => new Date("2026-08-30T09:03:00.000Z"),
+    });
+    const originalControl = receipt.activation_oid;
+    const originalGenesis = receipt.genesis_oid;
+    let parent = originalGenesis;
+    let activationBlob = git(root, "rev-parse", `${originalControl}:activation.json`);
+    let checkpointBlob = git(root, "rev-parse", `${originalControl}:checkpoint.json`);
+    if (scenario !== "missing-control-state") {
+      const genesisInput = scenario === "wrong-genesis-tree"
+        ? JSON.stringify({ forged: true })
+        : `${JSON.stringify(JSON.parse(git(root, "show", `${originalGenesis}:genesis.json`)), null, 2)}\n`;
+      const wrongBlob = gitInput(root, genesisInput, "hash-object", "-w", "--stdin");
+      const genesisPath = scenario === "wrong-genesis-tree" ? "wrong.json" : "genesis.json";
+      const wrongTree = gitInput(root, `100644 blob ${wrongBlob}\t${genesisPath}\n`, "mktree");
+      parent = git(root, "commit-tree", wrongTree, "-m", "forged genesis");
+      const activation = JSON.parse(git(root, "show", `${originalControl}:activation.json`));
+      const { activation_digest: _activationDigest, ...activationBody } = activation;
+      const forgedActivationBody = { ...activationBody, genesis_oid: parent, control_parent_oid: parent };
+      activationBlob = gitInput(root, canonicalizeJson({
+        ...forgedActivationBody,
+        activation_digest: digestJson(forgedActivationBody),
+      }), "hash-object", "-w", "--stdin");
+      const checkpoint = JSON.parse(git(root, "show", `${originalControl}:checkpoint.json`));
+      checkpointBlob = gitInput(root, canonicalizeJson({ ...checkpoint, control_parent_oid: parent }), "hash-object", "-w", "--stdin");
+    }
+    const entries = [
+      `100644 blob ${activationBlob}\tactivation.json`,
+      `100644 blob ${git(root, "rev-parse", `${originalControl}:adopted-baseline.json`)}\tadopted-baseline.json`,
+      ...(scenario === "missing-control-state" ? [] : [
+        `100644 blob ${checkpointBlob}\tcheckpoint.json`,
+        `100644 blob ${git(root, "rev-parse", `${originalControl}:registry.json`)}\tregistry.json`,
+      ]),
+    ];
+    const forgedTree = gitInput(root, `${entries.sort().join("\n")}\n`, "mktree");
+    const forgedControl = git(root, "commit-tree", forgedTree, "-p", parent, "-m", "forged activation");
+    git(root, "update-ref", "refs/nextstep/control", forgedControl, originalControl);
+
+    await assert.rejects(() => activateAdoption({
+      projectRoot: root, ...values, roles, projection: values.projection,
+      now: () => new Date("2026-08-30T09:03:00.000Z"),
+    }), AdoptionRefStoreError);
+    assert.equal(git(root, "rev-parse", "refs/nextstep/control"), forgedControl);
+  }
+});
+
 test("事务后 worktree 漂移使 post-check fail closed，清除临时漂移后可精确恢复", async (context) => {
   const root = await repository();
   context.after(() => rm(root, { recursive: true, force: true }));
@@ -303,6 +356,43 @@ test("rollback 绑定 current namespace digest，删除后回执丢失可由内�
       now: () => new Date("2026-08-30T09:06:00.000Z"),
     }), AdoptionRefStoreError);
   }
+});
+
+test("forged receipt 在 verifier、对象写入与 ref transaction 前被 ancestry 绑定拒绝", async (context) => {
+  const root = await repository();
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const values = await input(root);
+  const receipt = await activateAdoption({
+    projectRoot: root, ...values, roles, projection: values.projection,
+    now: () => new Date("2026-08-30T09:03:00.000Z"),
+  });
+  const { receipt_digest: _receiptDigest, ...receiptBody } = receipt;
+  const forgedBody = { ...receiptBody, activated_at_trusted: "2026-08-30T09:02:00.000Z" };
+  const forged = { ...forgedBody, receipt_digest: digestJson(forgedBody) };
+  const action = rollbackAction(forged, "forged-receipt");
+  const objectsBefore = git(root, "count-objects", "-v");
+  let verifierCalls = 0;
+  await assert.rejects(() => rollbackAdoption({
+    projectRoot: root, receipt: forged, action,
+    verifier: { verifier_kind: "trusted-host", verifyRollback: () => { verifierCalls += 1; return true; } },
+    now: () => new Date("2026-08-30T09:05:00.000Z"),
+  }), AdoptionRefStoreError);
+  assert.equal(verifierCalls, 0);
+  assert.equal(git(root, "count-objects", "-v"), objectsBefore);
+  assert.equal(git(root, "rev-parse", "refs/nextstep/control"), receipt.activation_oid);
+  assert.equal(git(root, "rev-parse", "refs/nextstep/formal"), receipt.formal_oid);
+
+  const { receipt_digest: _forgedDigest, ...derivedBody } = receipt;
+  const derivedForgeryBody = { ...derivedBody, effect_identity: `sha256:${"e".repeat(64)}` };
+  await assert.rejects(() => rollbackAdoption({
+    projectRoot: root,
+    receipt: { ...derivedForgeryBody, receipt_digest: digestJson(derivedForgeryBody) } as any,
+    action,
+    verifier: { verifier_kind: "trusted-host", verifyRollback: () => { verifierCalls += 1; return true; } },
+    now: () => new Date("2026-08-30T09:05:00.000Z"),
+  }), AdoptionRefStoreError);
+  assert.equal(verifierCalls, 0);
+  assert.equal(git(root, "count-objects", "-v"), objectsBefore);
 });
 
 test("status 沿无 merge 单父 ancestry 定位唯一 adoption anchor，真实 successor task 优先", async (context) => {

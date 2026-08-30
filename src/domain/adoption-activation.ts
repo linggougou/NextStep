@@ -57,8 +57,25 @@ export class AdoptionActivationError extends Error {
 }
 
 const validate = new Ajv({ strict: true, allErrors: true, ownProperties: true }).compile(activationSchema) as ValidateFunction;
+const EMPTY_NAMESPACE_DIGEST = digestJson([]);
 
 function fail(): never { throw new AdoptionActivationError(); }
+
+function effectIdentity(value: {
+  readonly repository_identity: Sha256Digest;
+  readonly candidate_digest: Sha256Digest;
+  readonly confirmation_envelope_digest: Sha256Digest;
+}): Sha256Digest {
+  return digestJson({
+    repository_identity: value.repository_identity,
+    candidate_digest: value.candidate_digest,
+    confirmation_envelope_digest: value.confirmation_envelope_digest,
+  });
+}
+
+function activationReceiptIdentity(effect_identity: Sha256Digest): Sha256Digest {
+  return digestJson({ effect_identity, kind: "activation-receipt" });
+}
 
 export function createAdoptionActivation(input: {
   readonly repository_identity: Sha256Digest;
@@ -69,11 +86,8 @@ export function createAdoptionActivation(input: {
   readonly activated_at_trusted: string;
   readonly expected_namespace_digest: Sha256Digest;
 }): AdoptionActivation {
-  const effectIdentity = digestJson({
-    repository_identity: input.repository_identity,
-    candidate_digest: input.candidate_digest,
-    confirmation_envelope_digest: input.confirmation_envelope_digest,
-  });
+  if (input.expected_namespace_digest !== EMPTY_NAMESPACE_DIGEST) fail();
+  const expectedEffectIdentity = effectIdentity(input);
   const unsigned = {
     schema_version: "1.0" as const,
     record_type: "adoption-activation" as const,
@@ -83,8 +97,8 @@ export function createAdoptionActivation(input: {
     baseline_oid: input.baseline_oid,
     genesis_oid: input.genesis_oid,
     control_parent_oid: input.genesis_oid,
-    effect_identity: effectIdentity,
-    activation_receipt_identity: digestJson({ effect_identity: effectIdentity, kind: "activation-receipt" }),
+    effect_identity: expectedEffectIdentity,
+    activation_receipt_identity: activationReceiptIdentity(expectedEffectIdentity),
     rollback_guard: {
       expected_namespace_digest: input.expected_namespace_digest,
       no_external_side_effects: true as const,
@@ -101,7 +115,14 @@ export function parseAdoptionActivation(value: unknown): AdoptionActivation {
   try { snapshot = snapshotJsonValue(value); } catch { fail(); }
   if (!validate(snapshot) || (snapshot as { record_type?: unknown }).record_type !== "adoption-activation") fail();
   const record = snapshot as AdoptionActivation;
-  if (record.control_parent_oid !== record.genesis_oid || digestJson(projectForDigest(record, ["activation_digest"])) !== record.activation_digest) fail();
+  const expectedEffectIdentity = effectIdentity(record);
+  if (
+    record.control_parent_oid !== record.genesis_oid ||
+    record.effect_identity !== expectedEffectIdentity ||
+    record.activation_receipt_identity !== activationReceiptIdentity(expectedEffectIdentity) ||
+    record.rollback_guard.expected_namespace_digest !== EMPTY_NAMESPACE_DIGEST ||
+    digestJson(projectForDigest(record, ["activation_digest"])) !== record.activation_digest
+  ) fail();
   return record;
 }
 
@@ -143,6 +164,7 @@ export function parseAdoptionActivationReceipt(value: unknown): AdoptionActivati
   const receipt = snapshot as AdoptionActivationReceipt;
   if (
     digestJson(projectForDigest(receipt, ["receipt_digest"])) !== receipt.receipt_digest ||
+    receipt.effect_identity !== effectIdentity(receipt) ||
     receipt.activated_namespace_digest !== createAdoptionNamespaceDigest(receipt.formal_oid, receipt.activation_oid)
   ) fail();
   return receipt;
