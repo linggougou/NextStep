@@ -1,5 +1,12 @@
 # Operations Log
 
+## 2026-08-30 CR-007 A5 独立评审退回后的精确表述修订
+
+- fresh A5 review=`REVISE / 89`，`P0/P1/P2=0/2/0`，review commit=`bff3b6045b6276e129987905fa972192ff2abfaf`，sole parent=`d8f0deba9342e7a27a711a4711825f8461ba577b`；该结论不批准 CR-007 或任何后续控制/实现动作。
+- P1-1：上下文摘要误写“S3.1 已进入实施”；已按 live route 改为 V3 仍停在 Generation 1 计划冻结与 fresh 独立 entry review，S3.1 packet/claim/fence/dispatch/编码均未创建。
+- P1-2：设计与计划的 namespace 冲突表述未使用唯一机器码；已把 extra-only 与 pair+extra 的结论统一为 exact `ADOPTION_SOURCE_CONFLICT`。
+- 修订继续限定在 cumulative exact-seven 内；不修改产品代码、Schema、测试、Skill、路线锁、活动总计划、Generation 1 原计划、S3.2 或任何 refs。下一动作仅为新的 fresh 独立评审。
+
 ## 2026-08-30 CR-007 A4 独立评审退回后的候选精修
 
 - 独立评审：fresh A4 review 在隔离 clone 中给出 `REVISE / 80`，`P0/P1/P2=0/2/0`；评审提交为 `614102a080da7519dbb51190475a4e22179de50c`，其 sole parent 是候选 `2ed18a8dcdfadf6b201b34cd46fbc5184c3034b6`。该 verdict 不批准 CR-007，也不授权 CAS、packet、编码或 refs。

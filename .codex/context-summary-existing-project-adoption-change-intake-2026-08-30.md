@@ -13,7 +13,7 @@
 - `project-status-projection` 还要求 current task identity、已知状态、next action 绑定和合法 version signoff；空白 refs 或伪造 V1/V2 signoff 不能成为接入方案。
 - genealogy-hub 已有 `S5/M1` 路线锁与活动计划，但没有 `refs/nextstep/*`；`status` 返回 `source-unavailable` 是预期 fail closed。
 - S4 已允许 formal 首次指向“用户确认的现有基线”，但未定义独立 control genesis、adopted-baseline 状态、可信激活和双 ref 回滚。
-- V3 Generation 1 的 S3.1 已进入实施，S3.2 exact-14 只负责职责隔离、幂等分派和 registry transition；不能静默扩大。
+- V3 仍停在 Generation 1 计划冻结与 fresh 独立 entry review；S3.1 packet、claim/fence、dispatch 与编码均未创建。S3.2 exact-14 只负责职责隔离、幂等分派和 registry transition，不能静默扩大。
 
 ## Change Intake 分流依据
 
@@ -46,6 +46,13 @@
 - 必修 1：统一 namespace 状态机，避免把 extra-only `refs/nextstep/*` 误报为 `PROJECT_NOT_ADOPTED`。
 - 必修 2：闭合 `A3.0-B` 的公开 `project-status` contract surface，并明确它与 Generation 1 future `S3.5-B exact-20` 的路径协调规则。
 - 本轮修订只承接上述两条 P1，不扩大到产品代码、packet、CAS、真实项目 refs 或 `S3.2` 实施。
+
+## A5 独立评审后的精修点
+
+- fresh review A5=`REVISE / 89`，`P0/P1/P2=0/2/0`；评审确认 A4 两项主修方向成立，但发现 live 阶段摘要与 exact machine code 仍需收敛。
+- 必修 1：当前状态必须忠实写为“V3 Generation 1 计划冻结与 fresh 独立 entry review”，不得把 S3.1 提前写成已进入实施。
+- 必修 2：extra-only 与 pair+extra namespace 的设计、计划、失败矩阵和测试合同统一使用 exact `ADOPTION_SOURCE_CONFLICT`，不得保留其他机器码解释。
+- 本轮只修正上述表述和追加留痕，不改变 A3.0 范围、S3.2、产品代码、CAS 或 refs 边界。
 
 ## 工具与替代流程
 

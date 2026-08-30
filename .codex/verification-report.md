@@ -1,5 +1,12 @@
 # Verification Report
 
+## 2026-08-30 CR-007 A5 退回修订验证
+
+- A5 review identity：candidate=`d8f0deba9342e7a27a711a4711825f8461ba577b`，review=`bff3b6045b6276e129987905fa972192ff2abfaf`，verdict=`REVISE / 89`，P0/P1/P2=`0/2/0`；review exact-two、JSON parse、severity/score 断言与 `git diff --check` 已由 reviewer 和主控复核。
+- 修订 1 只校正 live 阶段事实：V3 仍停在 Generation 1 plan freeze + fresh independent entry review；无 S3.1 packet、claim/fence、dispatch 或编码。
+- 修订 2 只校正 machine-code 一致性：CR、设计优先级、失败矩阵、计划输出和 RED 状态闭包对 extra-only/pair+extra namespace 全部使用 `ADOPTION_SOURCE_CONFLICT`。
+- cumulative 写集仍必须精确为原 exact-seven；本轮 docs-only，不运行产品测试，不修改主仓库或 formal/control refs。完成 `git diff --check`、exact-seven、禁止路径、旧泛化码和旧阶段误述反扫后，才允许 fresh re-review。
+
 ## 2026-08-30 CR-007 A4 独立评审后的候选修订验证
 
 - 上轮 verdict：隔离 clone `/private/tmp/nextstep-adoption-review-a4.le0AW2/repo` 的 fresh review 给出 `REVISE / 80`，`P0/P1/P2=0/2/0`，review commit=`614102a080da7519dbb51190475a4e22179de50c`。退回原因限定为 namespace 状态分类与 `A3.0-B` 的 `project-status` contract surface 闭包。

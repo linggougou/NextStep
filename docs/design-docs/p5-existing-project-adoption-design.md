@@ -238,7 +238,7 @@ activateAdoption({
 
 1. 整个 `refs/nextstep/*` namespace 为空：`PROJECT_NOT_ADOPTED`；
 2. formal/control pair 只缺一个，且 namespace 中没有额外 `refs/nextstep/*`：`REF_PAIR_INCOMPLETE`；
-3. formal/control 均缺失但存在 extra-only namespace，或合法 pair 之外还存在额外 `refs/nextstep/*`：返回 source conflict / damaged namespace 类 fail-closed 结论；
+3. formal/control 均缺失但存在 extra-only namespace，或合法 pair 之外还存在额外 `refs/nextstep/*`：返回 exact `ADOPTION_SOURCE_CONFLICT`；
 4. ref、control ancestry 或 tree 无法验证：现有结构损坏类 fail-closed 结论；
 5. 合法 current task 存在：current task identity 为主投影，adopted baseline 作为历史来源；
 6. 无 current task 且存在合法 adopted baseline：展示用户确认阶段、证据等级、未知门禁和下一动作；
@@ -277,7 +277,7 @@ activateAdoption({
 |---|---|---:|---|
 | namespace 全空 | `PROJECT_NOT_ADOPTED` | 无 | 允许 inspect |
 | 仅单 ref 且无额外 nextstep refs | `REF_PAIR_INCOMPLETE` | 无 | 人工诊断，不自动补齐 |
-| extra-only namespace 或 pair+extra namespace | source conflict | 无 | 人工诊断，不自动补齐 |
+| extra-only namespace 或 pair+extra namespace | `ADOPTION_SOURCE_CONFLICT` | 无 | 人工诊断，不自动补齐 |
 | HEAD/blob/worktree/worktree-list 漂移 | `ADOPTION_CANDIDATE_STALE` | 无 | 重建 candidate + 新确认 |
 | 不可信/过期/重放确认 | `ADOPTION_CONFIRMATION_REJECTED` | 无 | 获取新可信 action |
 | 对象创建后、事务前崩溃 | 未激活 | 无 | 重跑；悬空对象交给 GC |
@@ -303,7 +303,7 @@ activateAdoption({
 - 负例：路线锁/计划来自工作树、缺失/重复真源、symlink 越界、敏感字段、路径冲突均拒绝。
 - 阻塞：dirty/staged/untracked、ignored 遮蔽、多 worktree 身份不可证明、任意 nextstep ref 存在。
 - 恢复：HEAD/blob/worktree-list 漂移后旧 candidate 明确 stale，新 candidate 不覆盖旧摘要。
-- 投影：`PROJECT_NOT_ADOPTED`、`REF_PAIR_INCOMPLETE` 与 extra-only/pair+extra source conflict 区分稳定。
+- 投影：`PROJECT_NOT_ADOPTED`、`REF_PAIR_INCOMPLETE` 与 extra-only/pair+extra 的 `ADOPTION_SOURCE_CONFLICT` 区分稳定。
 
 ### 13.2 A3.0-B 激活、投影与回滚
 

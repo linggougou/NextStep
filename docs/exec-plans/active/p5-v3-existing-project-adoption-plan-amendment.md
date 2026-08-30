@@ -63,7 +63,7 @@ S3.1 Generation 1 仅在以下条件全部满足时可被 Generation 2 显式承
 
 - 依赖：CR-007、设计合同、Generation 2 已完成 advance/ack；S3.1 已按第 4.1 节承接或重新通过。
 - 输入：显式项目根、Git repository identity、candidate HEAD、候选 HEAD 中路线锁/活动计划/验证摘要 blobs、工作区/worktree/`refs/nextstep/*` 只读状态。
-- 输出：Schema 验证、JCS 内容寻址的 `AdoptionCandidate`；只读 inspect 机器回执；`PROJECT_NOT_ADOPTED`、`REF_PAIR_INCOMPLETE`、source conflict 与 stale 分类。
+- 输出：Schema 验证、JCS 内容寻址的 `AdoptionCandidate`；只读 inspect 机器回执；`PROJECT_NOT_ADOPTED`、`REF_PAIR_INCOMPLETE`、`ADOPTION_SOURCE_CONFLICT` 与 stale 分类。
 
 ### 5.2 候选产品 allowlist
 
@@ -142,7 +142,7 @@ packet 不得未经新的 Change Intake 扩大上限；若可复用现有文件�
 
 - RED 正例：可信 action 绑定 exact display/candidate；genesis 零父、activation 单父；formal/control expected-missing 同一 transaction；post-check 与 receipt create-or-return。
 - RED 负例：stdin/env/argv 自述确认、过期/replay、verifier 能力缺失、业务 HEAD 作为 control parent、伪 version signoff、单 ref 补齐全部拒绝。
-- RED 公开状态闭包：`PROJECT_NOT_ADOPTED` 只在整个 namespace 为空时出现；single-ref 返回 `REF_PAIR_INCOMPLETE`；extra-only 与 pair+extra 返回 source conflict，且 `project-status` Schema、CLI、`nextstep status` 与 fixture/test 一致。
+- RED 公开状态闭包：`PROJECT_NOT_ADOPTED` 只在整个 namespace 为空时出现；single-ref 返回 `REF_PAIR_INCOMPLETE`；extra-only 与 pair+extra 返回 exact `ADOPTION_SOURCE_CONFLICT`，且 `project-status` Schema、CLI、`nextstep status` 与 fixture/test 一致。
 - RED 阻塞：事务前后 HEAD/blob/worktree/worktree-list/namespace 漂移；额外 nextstep ref；后继 control 或外部副作用存在时回滚。
 - RED 恢复：对象创建前后、事务 commit 前后、receipt 丢失、rollback post-check 丢失均确定性恢复，不生成第二套 genesis。
 - I：确认前明确展示副作用、未知门禁和回滚限制；成功只声明 adopted baseline。
