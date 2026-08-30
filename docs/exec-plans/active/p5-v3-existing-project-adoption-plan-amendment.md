@@ -2,15 +2,15 @@
 
 ## 1. 身份、状态与授权边界
 
-- 状态：CR-007 架构已由用户最终批准；计划尚未生效，等待 live-state reconciliation、fresh 独立 readiness 评审及后续分离 generation-advance/ack 授权。
+- 状态：CR-007 架构已由用户最终批准；S3.1 已完成独立验收、main 集成与 control gate；计划尚未生效，等待 fresh 独立 readiness/compatibility 评审和两个分离的 generation CAS。
 - 关联：`CR-007`、`P5 Existing Project Adoption 设计合同`。
-- 固定候选基线：main/parent=`6ce2fa0e2b957fc0fab49d5ee2d62c503b9cc478`。
+- 已批准 CR 候选基线：main/parent=`6ce2fa0e2b957fc0fab49d5ee2d62c503b9cc478`；本次 readiness 的 live main=`e3df650a6861274ff076c72276281cbf528e9188`。
 - 固定 formal：`ea04b57de83d6c548dcb1629b1f61832db8375ad`。
-- 2026-08-30 readiness 复核时观察到的 control：`007467180e32a866cbb15eba98a6c79b93b34529`；该值只用于审计，S3.1 仍需收口，因此不得预填为 expected-old CAS。
+- 2026-08-30 S3.1 集成 gate 后观察到的 control：`c8cbba15a3b08f49b8e0d1bfaa7549b15a24dbe9`；它是 readiness 候选的审计基线，实际 CAS 前仍须 expected-old 复核。
 - 全局 `plan_id=p5-product-implementation`、`route_generation=1`、`plan_generation=5` 保持不变。
 - V3 子计划候选：`v3_plan_generation=2`，拟 supersede Generation 1 的未来未执行入口。
 - 本文不修改 `.codex/exec-plan-v3-generation-1.md`，不创建 generation-advance/ack、packet、claim/fence、dispatch、Result，不修改产品代码或任何 refs。
-- 用户最终批准绑定 CR 候选 `36242fbb2e938225c438871ada0731e06b9c37a4` 与独立评审 `288c1ca0d92c7c1834a0c65bc2c4cb8efe86e504`；批准范围只到 Generation 2 advance/ack 的独立准备与授权流程。
+- 用户最终批准绑定 CR 候选 `36242fbb2e938225c438871ada0731e06b9c37a4` 与独立评审 `288c1ca0d92c7c1834a0c65bc2c4cb8efe86e504`；最新“继续落地直到正式稳定版”指令允许在门禁通过后继续执行本计划，但不允许合并两个 CAS、跳过独立评审或触碰真实项目 refs。
 
 ## 2. 修订原因与最小性
 
@@ -42,11 +42,11 @@ A3.0 不新建大里程碑；它属于 M3.1 的入口修复，不拥有 PC-14。
 
 ### 4.0 当前实时状态与先决裁决
 
-- CR 候选形成后，Generation 1 已推进至 S3.1 implementation attempt 5/fence 172；live control 中该记录仍为 `running`、`result_ref=null`、`result_digest=null`。
-- 宿主实际产生 repair candidate=`5ed6bcfd72af3ce517543dc25aa38f7f7c50f83a`，但 worker 自测不是 control Result，也不是独立 acceptance 或集成结论。
-- 推荐路径 A：先在 Generation 1 以另行授权固化 attempt 5 execution Result，创建唯一 fresh S3.1-I-X-P attempt 6，取得 PASS，完成集成/control gate，再进行绑定 accepted subject、Result、review 与 Generation 2 plan digest 的 compatibility audit。
-- 备选路径 B：若用户明确选择不收口 Generation 1，则必须以另行授权使 attempt 5/fence 172 失效并留下不可删除的 tombstone，再于 Generation 2 重跑 S3.1；不得承接 `running`、`REVISE` 或 worker 自测证据。
-- 本 readiness 流程只冻结上述裁决，不执行路径 A/B 的任何 CAS、packet、claim/fence、dispatch、编码、验收或集成。
+- 路径 A 已完成：S3.1 repair subject=`5ed6bcfd72af3ce517543dc25aa38f7f7c50f83a`，execution Result digest=`sha256:9dbf9d3574d3f65800eafe5d526b7718d6d3f7bcd1f34dd35d8c6a7ab010f35f`。
+- fresh S3.1-I-X-P attempt 6=`PASS / 100`，acceptance Result digest=`sha256:5bff9b08619f4f1d71367e7df0cab697ebc08d7d2eb430171d170b4be1539678`，review=`a625089bf2828c7ccee7a286ef0c66a1c28c3457`。
+- main integration checkpoint=`e3df650a6861274ff076c72276281cbf528e9188`；其 tree=`f16068e11a5ff24728055854338b473e8f909630` 与 acceptance review tree 完全一致。并发部分合入通过前向补齐恢复，没有 reset、改写或丢弃历史。
+- control gate=`c8cbba15a3b08f49b8e0d1bfaa7549b15a24dbe9` 已登记 `present-in-main-valid-acceptance`；formal 仍为 `ea04b57de83d6c548dcb1629b1f61832db8375ad`。
+- 路径 B 已不再适用；Generation 2 readiness 只需完成独立 compatibility audit，并在 generation-ack 中显式 carry forward 上述不可变证据。
 
 ### 4.1 S3.1 carry-forward
 
@@ -181,14 +181,14 @@ A3.0-A/B package PASS 后仍需独立 cumulative I/X/P/Profile/Budget：
 
 ## 9. Generation advance 与 ack 候选合同
 
-CR-007 已最终批准；只有 live-state reconciliation fresh 独立 PASS、S3.1 按第 4 节正式收口或失效处理完成、且用户另行授权精确 expected-old 后，主控才可执行两个分离 CAS：
+CR-007 已最终批准，S3.1 已按第 4 节正式收口。fresh 独立 readiness/compatibility 评审达到精确门槛且主控复核 live expected-old 后，才可执行两个分离 CAS：
 
 1. `generation-advance`：单父 expected-old control CAS，绑定 Generation 1/2 plan digests、CR/设计/独立评审、superseded future entries 和 carry-forward 待决状态；
 2. `generation-ack`：另一单父 expected-old CAS，复核 advance 为最新 control，并登记最终入口、S3.1 carry-forward 或 rerun 决定。
 
-两者不能合并，不能预先创建 A3.0 packet，也不能由本次 Change Intake 授权推定。formal 保持不动。
+两者不能合并；advance 成功后必须重新读取 control，ack 成功后才允许准备 A3.0-A packet。formal 保持不动。
 
-准备阶段只可形成字段级 proposal；不得冻结以下运行时值：generation-advance expected-old、S3.1 accepted subject/Result/review、compatibility audit digest、advance control OID 和 ack expected-old。它们必须在先决状态完成后重新读取和绑定。
+readiness 候选可以冻结 S3.1 accepted subject/Result/review/main tree；generation-advance expected-old、compatibility review identity、advance control OID 和 ack expected-old 必须在对应 CAS 前重新读取和绑定。
 
 ## 10. 独立计划评审门禁
 
@@ -210,6 +210,6 @@ CR-007 已最终批准；只有 live-state reconciliation fresh 独立 PASS、S3
 1. 文档写集和引用闭合；
 2. 本地文档检查通过；
 3. fresh 独立评审精确 PASS；
-4. 向用户报告候选与 verdict 身份，并仅请求下一项分离、精确授权：路径 A 的 `S3.1 Result + fresh attempt 6 acceptance` 收口链，或由用户另行选择并授权路径 B 的 tombstone/rerun 收口链；待先决链完成后，再单独请求 `generation-advance` 与 `generation-ack` 的 exact expected-old CAS 授权。
+4. 重新核对 main/formal/control、candidate/review 和 S3.1 carry-forward 证据后，按用户持续开发授权执行两个分离、单父、expected-old CAS；任一身份漂移即停止，不创建 A3.0 packet。
 
 不得在此退出点声明 V3 Generation 2 已生效、A3.0 可编码或任何项目已被接入。

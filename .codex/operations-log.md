@@ -3187,3 +3187,13 @@
 - 本轮在新的隔离 worktree 基于候选 `17817e78743dcea19b9f0a4642da0e83bff8fd18` 仅修这一个批准后退出门禁，并同步两份 `.codex` 追加留痕 exact-three；不修改 CR 正文、readiness 文档、产品代码、Generation 1 正文计划或任何 refs。
 - 修订后第 11 节明确：CR 最终批准已完成；readiness PASS 只允许请求下一项分离、精确授权，即路径 A 的 `S3.1 Result + fresh attempt 6 acceptance` 收口链，或用户另行选择并授权路径 B 的 tombstone/rerun 收口链。`generation-advance` 与 `generation-ack` 仍需在先决链结束后单独授权。
 - 本轮只执行文档与写集反扫，不运行产品测试。下一步是 fresh 独立 readiness re-review attempt 2；在新的 `PASS / 100` 前，仍不放行 generation CAS、S3.1 Result、acceptance packet、编码或真实项目 refs。
+
+## 2026-08-30 S3.1 集成收口与 CR-007 Generation 2 fresh readiness 候选
+
+- S3.1 accepted subject=`5ed6bcfd72af3ce517543dc25aa38f7f7c50f83a`、acceptance Result=`sha256:5bff9b08619f4f1d71367e7df0cab697ebc08d7d2eb430171d170b4be1539678`、review=`a625089bf2828c7ccee7a286ef0c66a1c28c3457`。
+- 并发代理曾把 S3.1 exact-eleven 中的 exact-two 与 review 先行 cherry-pick 到 main；主控没有 reset 或删除历史，而是前向补齐其余 9 个已验收路径，形成 integration checkpoint=`e3df650a6861274ff076c72276281cbf528e9188`。最终 main tree=`f16068e11a5ff24728055854338b473e8f909630` 与 acceptance review tree 完全相同。
+- root fresh `corepack pnpm check` 通过 581/581，覆盖率 Lines=`94.49%`、Branches=`89.90%`、Functions=`99.45%`。
+- control 以 expected-old `f8aaed500cc13ba0a3b12906e7b51faaf16b41a1` 执行单父 exact-two CAS，S3.1 integration gate=`c8cbba15a3b08f49b8e0d1bfaa7549b15a24dbe9`；formal 保持 `ea04b57de83d6c548dcb1629b1f61832db8375ad`。
+- 在新隔离 worktree 基于 main `e3df650...` 重放已批准 CR candidate/review，并吸收旧 readiness 历史；旧 readiness 的 S3.1 running 快照只保留为历史，不作为当前 CAS authority。
+- 新候选把 V3 子计划 generation `1 -> 2` 建模为 scoped state，不改变全局 `plan_generation=5`；advance/ack 分别 exact-three，未来任务为 `superseded-before-packet`，S3.1 在 ack 后才 `carry-forward-confirmed`。
+- 当前仅形成文档/留痕候选；未执行 Generation 2 CAS、未创建 A3.0 packet、未修改产品代码、未移动 formal、未创建真实项目 refs。下一步为 fresh 独立 readiness/compatibility review。

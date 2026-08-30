@@ -17,7 +17,7 @@
 
 ## 已批准、等待代际准备的变更
 
-- [既有项目安全接入（Existing Project Adoption）](./007-existing-project-adoption.md)：用户已最终接受候选 `36242fbb2e938225c438871ada0731e06b9c37a4` 与 fresh 独立评审 A8 `288c1ca0d92c7c1834a0c65bc2c4cb8efe86e504`（`PASS / 100`，P0/P1/P2=`0/0/0`）。架构合同已批准；A8 的 live-stage 快照已被后续 S3.1 control 活动超越，当前先进行 Generation 2 readiness/reconciliation 独立准备。该批准不授权 generation CAS、packet、编码、S3.2 修改或任何真实项目 refs 创建。
+- [既有项目安全接入（Existing Project Adoption）](./007-existing-project-adoption.md)：用户已最终接受候选 `36242fbb2e938225c438871ada0731e06b9c37a4` 与 fresh 独立评审 A8 `288c1ca0d92c7c1834a0c65bc2c4cb8efe86e504`（`PASS / 100`，P0/P1/P2=`0/0/0`）。S3.1 已以 attempt 6 PASS、main exact-tree 集成和 control gate 收口；当前进入 Generation 2 fresh readiness/compatibility 独立评审。Generation 2、A3.0 和任何真实项目 refs 尚未生效或创建。
 
 ## 分流规则
 

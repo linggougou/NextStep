@@ -3501,3 +3501,22 @@ package/skills/nextstep/agents/openai.yaml
 - 使用 `nl -ba`、`git diff --name-only`、`git diff --check` 与 `rg` 反扫批准状态文案、下一授权入口和禁止越权边界。
 - 写集精确为 exact-three；未触碰产品代码、Generation 1 正文计划或 refs。
 - 本轮是 docs-only P1 修订，不运行产品测试。若要放行，仍必须重新获得 fresh 独立 readiness re-review `PASS / 100`、P0/P1/P2=`0/0/0`。
+
+## 2026-08-30 S3.1 集成与 CR-007 Generation 2 fresh readiness 验证
+
+### S3.1 身份闭合
+
+- implementation subject=`5ed6bcfd72af3ce517543dc25aa38f7f7c50f83a`；execution Result digest=`sha256:9dbf9d3574d3f65800eafe5d526b7718d6d3f7bcd1f34dd35d8c6a7ab010f35f`。
+- acceptance Result digest=`sha256:5bff9b08619f4f1d71367e7df0cab697ebc08d7d2eb430171d170b4be1539678`；review=`a625089bf2828c7ccee7a286ef0c66a1c28c3457`，`PASS / 100`、P0/P1/P2=`0/0/0`。
+- integration main=`e3df650a6861274ff076c72276281cbf528e9188`；`main^{tree}` 与 `review^{tree}` 均为 `f16068e11a5ff24728055854338b473e8f909630`。
+- fresh `corepack pnpm check`=`581/581`，0 fail/skip/cancel/todo，Lines=`94.49%`、Branches=`89.90%`、Functions=`99.45%`。
+- integration control=`c8cbba15a3b08f49b8e0d1bfaa7549b15a24dbe9`，唯一父=`f8aaed500cc13ba0a3b12906e7b51faaf16b41a1`；formal 未移动。
+
+### Generation 2 候选完整性
+
+- approved CR candidate=`36242fbb2e938225c438871ada0731e06b9c37a4`、review=`288c1ca0d92c7c1834a0c65bc2c4cb8efe86e504`，A8=`PASS / 100`、P0/P1/P2=`0/0/0`。
+- fresh plan amendment file sha256=`921fbbcbd7de5fd4fae521a092227f5cf3f5cb17ba687cee12861f23ace10cd6`；readiness file sha256=`6d25f4dc526b12b95fad025c340a18ec659291ab745f36e6d9668b03b8c08da8`。
+- scoped contract 明确保持全局 `plan_generation=5`，仅新增 `v3_plan_generation=2`；两个 CAS 均为 checkpoint/registry/唯一 message exact-three。
+- S3.1 当前文档候选没有修改 accepted exact-eleven；S3.2 exact-14 与 `.codex/exec-plan-v3-generation-1.md` 均未修改。
+- 旧未来入口精确列为 `S3.2`、`S3.3`、`S3.4-A/B/C`、`S3.5-A/B`，状态=`superseded-before-packet`；A3.0-A/B 不冒充旧代际墓碑。
+- `git diff --check` 通过。当前未执行 control CAS、packet、产品代码修改、formal movement 或真实项目 ref 创建；必须取得 fresh 独立 review `PASS / 100`、P0/P1/P2=`0/0/0` 后才能继续。
