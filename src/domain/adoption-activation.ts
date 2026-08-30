@@ -33,7 +33,21 @@ export interface AdoptionActivationReceipt {
   readonly formal_oid: string;
   readonly activation_oid: string;
   readonly genesis_oid: string;
+  readonly activated_namespace_digest: Sha256Digest;
   readonly activated_at_trusted: string;
+  readonly receipt_digest: Sha256Digest;
+}
+
+export interface AdoptionRollbackReceipt {
+  readonly schema_version: "1.0";
+  readonly record_type: "adoption-rollback-receipt";
+  readonly repository_identity: Sha256Digest;
+  readonly effect_identity: Sha256Digest;
+  readonly activation_receipt_digest: Sha256Digest;
+  readonly previous_namespace_digest: Sha256Digest;
+  readonly rollback_action_digest: Sha256Digest;
+  readonly rolled_back_at_trusted: string;
+  readonly status: "rolled-back";
   readonly receipt_digest: Sha256Digest;
 }
 
@@ -106,6 +120,7 @@ export function createAdoptionActivationReceipt(
     formal_oid: activation.baseline_oid,
     activation_oid: activationOid,
     genesis_oid: activation.genesis_oid,
+    activated_namespace_digest: createAdoptionNamespaceDigest(activation.baseline_oid, activationOid),
     activated_at_trusted: activation.activated_at_trusted,
   };
   const receipt = snapshotJsonValue({ ...unsigned, receipt_digest: digestJson(unsigned) }) as unknown as AdoptionActivationReceipt;
@@ -113,11 +128,53 @@ export function createAdoptionActivationReceipt(
   return receipt;
 }
 
+export function createAdoptionNamespaceDigest(formalOid: string, controlOid: string): Sha256Digest {
+  if (!/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(formalOid) || !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(controlOid)) fail();
+  return digestJson([
+    { name: "refs/nextstep/control", oid: controlOid },
+    { name: "refs/nextstep/formal", oid: formalOid },
+  ]);
+}
+
 export function parseAdoptionActivationReceipt(value: unknown): AdoptionActivationReceipt {
   let snapshot: unknown;
   try { snapshot = snapshotJsonValue(value); } catch { fail(); }
   if (!validate(snapshot) || (snapshot as { record_type?: unknown }).record_type !== "adoption-activation-receipt") fail();
   const receipt = snapshot as AdoptionActivationReceipt;
+  if (
+    digestJson(projectForDigest(receipt, ["receipt_digest"])) !== receipt.receipt_digest ||
+    receipt.activated_namespace_digest !== createAdoptionNamespaceDigest(receipt.formal_oid, receipt.activation_oid)
+  ) fail();
+  return receipt;
+}
+
+export function createAdoptionRollbackReceipt(input: {
+  readonly activation_receipt: AdoptionActivationReceipt;
+  readonly rollback_action_digest: Sha256Digest;
+  readonly rolled_back_at_trusted: string;
+}): AdoptionRollbackReceipt {
+  const activationReceipt = parseAdoptionActivationReceipt(input.activation_receipt);
+  const unsigned = {
+    schema_version: "1.0" as const,
+    record_type: "adoption-rollback-receipt" as const,
+    repository_identity: activationReceipt.repository_identity,
+    effect_identity: activationReceipt.effect_identity,
+    activation_receipt_digest: activationReceipt.receipt_digest,
+    previous_namespace_digest: activationReceipt.activated_namespace_digest,
+    rollback_action_digest: input.rollback_action_digest,
+    rolled_back_at_trusted: input.rolled_back_at_trusted,
+    status: "rolled-back" as const,
+  };
+  const receipt = snapshotJsonValue({ ...unsigned, receipt_digest: digestJson(unsigned) }) as unknown as AdoptionRollbackReceipt;
+  if (!validate(receipt)) fail();
+  return receipt;
+}
+
+export function parseAdoptionRollbackReceipt(value: unknown): AdoptionRollbackReceipt {
+  let snapshot: unknown;
+  try { snapshot = snapshotJsonValue(value); } catch { fail(); }
+  if (!validate(snapshot) || (snapshot as { record_type?: unknown }).record_type !== "adoption-rollback-receipt") fail();
+  const receipt = snapshot as AdoptionRollbackReceipt;
   if (digestJson(projectForDigest(receipt, ["receipt_digest"])) !== receipt.receipt_digest) fail();
   return receipt;
 }

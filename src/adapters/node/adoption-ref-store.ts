@@ -8,10 +8,14 @@ import { createAdoptionCandidate, parseAdoptionCandidate, type AdoptionCandidate
 import {
   createAdoptionActivation,
   createAdoptionActivationReceipt,
+  createAdoptionNamespaceDigest,
+  createAdoptionRollbackReceipt,
   parseAdoptionActivation,
   parseAdoptionActivationReceipt,
+  parseAdoptionRollbackReceipt,
   type AdoptionActivation,
   type AdoptionActivationReceipt,
+  type AdoptionRollbackReceipt,
 } from "../../domain/adoption-activation.ts";
 import {
   assertTrustedAdoptionConfirmation,
@@ -19,7 +23,7 @@ import {
   parseAdoptedBaseline,
   type AdoptionConfirmationEnvelope,
 } from "../../domain/adopted-baseline.ts";
-import { canonicalizeJson } from "../../domain/canonical-json.ts";
+import { canonicalizeJson, snapshotJsonValue } from "../../domain/canonical-json.ts";
 import { digestJson, type Sha256Digest } from "../../domain/content-digest.ts";
 
 export type AdoptionRefStoreErrorCode =
@@ -61,9 +65,16 @@ export interface ActivateAdoptionOptions {
 export interface AdoptionRollbackAction {
   readonly decision: "rollback";
   readonly receipt_digest: Sha256Digest;
+  readonly current_namespace_digest: Sha256Digest;
   readonly user_action_ref: string;
   readonly nonce_or_replay_key: string;
   readonly occurred_at_trusted: string;
+}
+
+export interface AdoptionRollbackResult {
+  readonly status: "rolled-back";
+  readonly receipt_blob_oid: string;
+  readonly receipt: AdoptionRollbackReceipt;
 }
 
 export interface AdoptionRollbackVerifier {
@@ -110,6 +121,16 @@ function gitBytes(root: string, args: readonly string[]): Buffer {
   }
 }
 
+function gitOptional(root: string, args: readonly string[], input?: string): string | null {
+  try {
+    return execFileSync("git", ["-C", root, ...args], {
+      encoding: "utf8", env: safeEnvironment, input,
+      maxBuffer: 8 * 1024 * 1024, timeout: 10_000,
+      stdio: [input === undefined ? "ignore" : "pipe", "pipe", "pipe"],
+    }).trim();
+  } catch { return null; }
+}
+
 interface NamespaceEntry { readonly name: string; readonly oid: string }
 
 function namespace(root: string): readonly NamespaceEntry[] {
@@ -120,6 +141,10 @@ function namespace(root: string): readonly NamespaceEntry[] {
     if (separator < 1 || !OID.test(entry.oid)) fail("ADOPTION_SOURCE_CONFLICT");
     return Object.freeze(entry);
   }).sort((left, right) => left.name.localeCompare(right.name, "en-US")));
+}
+
+function namespaceDigest(entries: readonly NamespaceEntry[]): Sha256Digest {
+  return digestJson(entries.map((entry) => ({ name: entry.name, oid: entry.oid })));
 }
 
 function pair(entries: readonly NamespaceEntry[]): { readonly formal: string; readonly control: string } | null {
@@ -290,6 +315,9 @@ export async function activateAdoption(options: ActivateAdoptionOptions): Promis
   if (options.confirmation.candidate_digest !== candidate.candidate_digest) fail("ADOPTION_CONFIRMATION_UNTRUSTED");
   const observed = options.now();
   assertCurrentTime(options.confirmation, observed);
+  let baseline: ReturnType<typeof createAdoptedBaseline>;
+  try { baseline = createAdoptedBaseline(candidate, options.confirmation, options.projection); }
+  catch { fail("ADOPTION_CONFIRMATION_UNTRUSTED"); }
 
   const existing = pair(namespace(projectRoot));
   if (existing !== null) {
@@ -298,7 +326,6 @@ export async function activateAdoption(options: ActivateAdoptionOptions): Promis
   }
   await assertCandidateCurrent(projectRoot, candidate);
 
-  const baseline = createAdoptedBaseline(candidate, options.confirmation, options.projection);
   const genesis = {
     schema_version: "1.0",
     kind: "adoption-control-genesis",
@@ -346,38 +373,83 @@ export async function rollbackAdoption(options: {
   readonly action: AdoptionRollbackAction;
   readonly verifier: AdoptionRollbackVerifier | undefined;
   readonly now: () => Date;
-}): Promise<{ readonly status: "rolled-back"; readonly rollback_digest: Sha256Digest }> {
+  readonly afterRefTransaction?: () => void;
+}): Promise<AdoptionRollbackResult> {
   if (!isAbsolute(options.projectRoot) || options.projectRoot.includes("\0")) fail("INVALID_ADOPTION_REQUEST");
   let projectRoot: string;
   try { projectRoot = realpathSync(options.projectRoot); } catch { fail("INVALID_ADOPTION_REQUEST"); }
-  const receipt = parseAdoptionActivationReceipt(options.receipt);
-  const current = options.now().getTime();
-  const occurred = Date.parse(options.action.occurred_at_trusted);
+  let receipt: AdoptionActivationReceipt;
+  try { receipt = parseAdoptionActivationReceipt(options.receipt); }
+  catch { fail("ADOPTION_ROLLBACK_BLOCKED"); }
+  let action: AdoptionRollbackAction;
+  try { action = snapshotJsonValue(options.action) as unknown as AdoptionRollbackAction; }
+  catch { fail("ADOPTION_ROLLBACK_BLOCKED"); }
   if (
-    options.action.decision !== "rollback" || options.action.receipt_digest !== receipt.receipt_digest ||
+    Object.keys(action).sort().join("|") !== "current_namespace_digest|decision|nonce_or_replay_key|occurred_at_trusted|receipt_digest|user_action_ref" ||
+    !/^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$/.test(action.user_action_ref) ||
+    !/^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$/.test(action.nonce_or_replay_key)
+  ) fail("ADOPTION_ROLLBACK_BLOCKED");
+  const current = options.now().getTime();
+  const occurred = Date.parse(action.occurred_at_trusted);
+  if (
+    action.decision !== "rollback" || action.receipt_digest !== receipt.receipt_digest ||
+    action.current_namespace_digest !== receipt.activated_namespace_digest ||
     options.verifier?.verifier_kind !== "trusted-host" || typeof options.verifier.verifyRollback !== "function" ||
     !Number.isFinite(current) || !Number.isFinite(occurred) || occurred > current || current - occurred > 15 * 60 * 1_000
   ) fail("ADOPTION_ROLLBACK_BLOCKED");
   let verified = false;
-  try { verified = options.verifier.verifyRollback(options.action) === true; } catch { /* fail closed */ }
+  try { verified = options.verifier.verifyRollback(action) === true; } catch { /* fail closed */ }
   if (!verified) fail("ADOPTION_ROLLBACK_BLOCKED");
-  const refs = pair(namespace(projectRoot));
-  if (refs === null || refs.formal !== receipt.formal_oid || refs.control !== receipt.activation_oid) fail("ADOPTION_ROLLBACK_BLOCKED");
-  const activation = parseAdoptionActivation(readJson(projectRoot, `${refs.control}:activation.json`));
-  const registryValue = readJson(projectRoot, `${refs.control}:registry.json`) as { tasks?: unknown };
+  const actionDigest = digestJson(action);
+  const rollbackReceipt = createAdoptionRollbackReceipt({
+    activation_receipt: receipt,
+    rollback_action_digest: actionDigest,
+    rolled_back_at_trusted: action.occurred_at_trusted,
+  });
+  const receiptBytes = canonicalizeJson(rollbackReceipt);
+  const receiptBlobOid = git(projectRoot, ["hash-object", "--stdin"], receiptBytes);
+  if (!OID.test(receiptBlobOid)) fail("ADOPTION_ROLLBACK_BLOCKED");
+  const entries = namespace(projectRoot);
+  const refs = pair(entries);
+  if (refs === null) {
+    const recovered = gitOptional(projectRoot, ["cat-file", "blob", receiptBlobOid]);
+    if (recovered === null) fail("ADOPTION_ROLLBACK_BLOCKED");
+    let parsed: AdoptionRollbackReceipt;
+    try { parsed = parseAdoptionRollbackReceipt(JSON.parse(recovered)); } catch { fail("ADOPTION_ROLLBACK_BLOCKED"); }
+    if (canonicalizeJson(parsed) !== receiptBytes) fail("ADOPTION_ROLLBACK_BLOCKED");
+    return Object.freeze({ status: "rolled-back", receipt_blob_oid: receiptBlobOid, receipt: parsed });
+  }
+  if (
+    refs.formal !== receipt.formal_oid || refs.control !== receipt.activation_oid ||
+    namespaceDigest(entries) !== receipt.activated_namespace_digest ||
+    receipt.activated_namespace_digest !== createAdoptionNamespaceDigest(refs.formal, refs.control)
+  ) fail("ADOPTION_ROLLBACK_BLOCKED");
+  let activation: AdoptionActivation;
+  let registryValue: { tasks?: unknown };
+  let checkpointValue: { highest_task_attempts?: unknown };
+  try {
+    activation = parseAdoptionActivation(readJson(projectRoot, `${refs.control}:activation.json`));
+    registryValue = readJson(projectRoot, `${refs.control}:registry.json`) as { tasks?: unknown };
+    checkpointValue = readJson(projectRoot, `${refs.control}:checkpoint.json`) as { highest_task_attempts?: unknown };
+  } catch { fail("ADOPTION_ROLLBACK_BLOCKED"); }
+  const activationPaths = git(projectRoot, ["ls-tree", "-r", "--name-only", refs.control]).split("\n").filter(Boolean).sort();
+  const genesisPaths = git(projectRoot, ["ls-tree", "-r", "--name-only", receipt.genesis_oid]).split("\n").filter(Boolean).sort();
   if (
     activation.effect_identity !== receipt.effect_identity || activation.rollback_guard.no_external_side_effects !== true ||
     !Array.isArray(registryValue.tasks) || registryValue.tasks.length !== 0 ||
-    parents(projectRoot, refs.control).length !== 1
+    checkpointValue.highest_task_attempts === null || typeof checkpointValue.highest_task_attempts !== "object" ||
+    Object.keys(checkpointValue.highest_task_attempts).length !== 0 ||
+    parents(projectRoot, refs.control).length !== 1 || parents(projectRoot, refs.control)[0] !== activation.genesis_oid ||
+    activationPaths.join("\n") !== "activation.json\nadopted-baseline.json\ncheckpoint.json\nregistry.json" ||
+    genesisPaths.join("\n") !== "genesis.json"
   ) fail("ADOPTION_ROLLBACK_BLOCKED");
+  const writtenBlob = jsonBlob(projectRoot, rollbackReceipt);
+  if (writtenBlob !== receiptBlobOid) fail("ADOPTION_ROLLBACK_BLOCKED");
   refTransaction(projectRoot, [
     { kind: "delete", ref: "refs/nextstep/formal", oid: refs.formal },
     { kind: "delete", ref: "refs/nextstep/control", oid: refs.control },
   ]);
+  try { options.afterRefTransaction?.(); } catch { fail("ADOPTION_RECEIPT_LOST"); }
   if (namespace(projectRoot).length !== 0) fail("ADOPTION_POSTCHECK_FAILED");
-  return Object.freeze({ status: "rolled-back", rollback_digest: digestJson({
-    effect_identity: receipt.effect_identity,
-    receipt_digest: receipt.receipt_digest,
-    rolled_back_at: options.now().toISOString(),
-  }) });
+  return Object.freeze({ status: "rolled-back", receipt_blob_oid: receiptBlobOid, receipt: rollbackReceipt });
 }

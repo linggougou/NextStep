@@ -4,7 +4,8 @@
   "title": "NextStep Adoption Activation Records 1.0",
   "oneOf": [
     { "$ref": "#/definitions/activation" },
-    { "$ref": "#/definitions/receipt" }
+    { "$ref": "#/definitions/receipt" },
+    { "$ref": "#/definitions/rollbackReceipt" }
   ],
   "definitions": {
     "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
@@ -45,7 +46,7 @@
       "type": "object", "additionalProperties": false,
       "required": [
         "schema_version", "record_type", "repository_identity", "effect_identity", "candidate_digest",
-        "confirmation_envelope_digest", "formal_oid", "activation_oid", "genesis_oid",
+        "confirmation_envelope_digest", "formal_oid", "activation_oid", "genesis_oid", "activated_namespace_digest",
         "activated_at_trusted", "receipt_digest"
       ],
       "properties": {
@@ -58,7 +59,28 @@
         "formal_oid": { "$ref": "#/definitions/oid" },
         "activation_oid": { "$ref": "#/definitions/oid" },
         "genesis_oid": { "$ref": "#/definitions/oid" },
+        "activated_namespace_digest": { "$ref": "#/definitions/digest" },
         "activated_at_trusted": { "$ref": "#/definitions/timestamp" },
+        "receipt_digest": { "$ref": "#/definitions/digest" }
+      }
+    },
+    "rollbackReceipt": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "schema_version", "record_type", "repository_identity", "effect_identity",
+        "activation_receipt_digest", "previous_namespace_digest", "rollback_action_digest",
+        "rolled_back_at_trusted", "status", "receipt_digest"
+      ],
+      "properties": {
+        "schema_version": { "const": "1.0" },
+        "record_type": { "const": "adoption-rollback-receipt" },
+        "repository_identity": { "$ref": "#/definitions/digest" },
+        "effect_identity": { "$ref": "#/definitions/digest" },
+        "activation_receipt_digest": { "$ref": "#/definitions/digest" },
+        "previous_namespace_digest": { "$ref": "#/definitions/digest" },
+        "rollback_action_digest": { "$ref": "#/definitions/digest" },
+        "rolled_back_at_trusted": { "$ref": "#/definitions/timestamp" },
+        "status": { "const": "rolled-back" },
         "receipt_digest": { "$ref": "#/definitions/digest" }
       }
     }

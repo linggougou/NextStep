@@ -3,13 +3,38 @@ import { Ajv, type ValidateFunction } from "ajv";
 import adoptedBaselineSchema from "../../schemas/v1/adopted-baseline.schema.json" with { type: "json" };
 import adoptionConfirmationSchema from "../../schemas/v1/adoption-confirmation.schema.json" with { type: "json" };
 import { type AdoptionCandidate, parseAdoptionCandidate } from "./adoption-candidate.ts";
-import { snapshotJsonValue } from "./canonical-json.ts";
+import { canonicalizeJson, snapshotJsonValue } from "./canonical-json.ts";
 import { digestJson, projectForDigest, type Sha256Digest } from "./content-digest.ts";
 
 export const ADOPTED_BASELINE_DISCLAIMER = "adopted baseline; historical gates not verified by NextStep" as const;
 
+export interface AdoptionProjection {
+  readonly stage: string;
+  readonly milestone: string;
+  readonly scope: string;
+}
+
+export interface AdoptionConfirmationView {
+  readonly schema_version: "1.0";
+  readonly record_type: "adoption-confirmation-view";
+  readonly repository_identity: Sha256Digest;
+  readonly candidate_digest: Sha256Digest;
+  readonly candidate_head_oid: string;
+  readonly projection: AdoptionProjection;
+  readonly evidence_assessments: readonly {
+    readonly subject: string;
+    readonly classification: "user-declared" | "unknown";
+  }[];
+  readonly unknown_gates: readonly string[];
+  readonly activation_side_effects: readonly string[];
+  readonly declared_non_goals: readonly string[];
+  readonly rollback_restrictions: readonly string[];
+  readonly view_digest: Sha256Digest;
+}
+
 export interface AdoptionConfirmationInput {
   readonly candidate_digest: Sha256Digest;
+  readonly confirmation_view: AdoptionConfirmationView;
   readonly displayed_view_digest: Sha256Digest;
   readonly user_action_ref: string;
   readonly session_identity: Sha256Digest;
@@ -29,6 +54,7 @@ export interface AdoptionConfirmationEnvelope extends AdoptionConfirmationInput 
 export interface AdoptionConfirmationVerifier {
   readonly verifier_kind: "trusted-host";
   verify(input: AdoptionConfirmationInput): boolean;
+  reconstructConfirmationView(candidate: AdoptionCandidate): AdoptionConfirmationView;
 }
 
 export interface AdoptedBaselineRecord {
@@ -88,6 +114,57 @@ function validTime(value: string): number {
   return result;
 }
 
+const ACTIVATION_SIDE_EFFECTS = Object.freeze([
+  "create-formal-and-control-ref-pair",
+  "create-zero-parent-control-genesis",
+  "create-single-parent-adoption-activation",
+  "persist-adopted-baseline-and-status-state",
+]);
+const ROLLBACK_RESTRICTIONS = Object.freeze([
+  "only-before-any-successor-control-state",
+  "only-with-empty-task-outbox-claim-ack-result-promotion-state",
+  "only-with-current-namespace-digest-match",
+  "only-via-trusted-host-action",
+]);
+
+export function createAdoptionConfirmationView(
+  candidateInput: AdoptionCandidate,
+  projection: AdoptionProjection,
+): AdoptionConfirmationView {
+  const candidate = parseAdoptionCandidate(candidateInput);
+  const unsigned = {
+    schema_version: "1.0" as const,
+    record_type: "adoption-confirmation-view" as const,
+    repository_identity: candidate.repository_identity,
+    candidate_digest: candidate.candidate_digest,
+    candidate_head_oid: candidate.candidate_head_oid,
+    projection: snapshotJsonValue(projection) as unknown as AdoptionProjection,
+    evidence_assessments: [
+      { subject: "route-lock", classification: "user-declared" as const },
+      { subject: "active-plan", classification: "user-declared" as const },
+      ...candidate.evidence_sources.map((source) => ({
+        subject: "evidence-summary",
+        classification: source.classification === "user-declared" ? "user-declared" as const : "unknown" as const,
+      })),
+      { subject: "historical-gates", classification: "unknown" as const },
+    ],
+    unknown_gates: [...candidate.unknown_gates, "pre-adoption-history-not-verified"],
+    activation_side_effects: ACTIVATION_SIDE_EFFECTS,
+    declared_non_goals: candidate.declared_non_goals,
+    rollback_restrictions: ROLLBACK_RESTRICTIONS,
+  };
+  return snapshotJsonValue({ ...unsigned, view_digest: digestJson(unsigned) }) as unknown as AdoptionConfirmationView;
+}
+
+function assertConfirmationView(
+  candidate: AdoptionCandidate,
+  view: AdoptionConfirmationView,
+  projection: AdoptionProjection = view.projection,
+): void {
+  const expected = createAdoptionConfirmationView(candidate, projection);
+  if (canonicalizeJson(expected) !== canonicalizeJson(view)) fail("ADOPTION_CONFIRMATION_UNTRUSTED");
+}
+
 export function verifyAdoptionConfirmation(
   candidateInput: AdoptionCandidate,
   input: AdoptionConfirmationInput,
@@ -104,8 +181,14 @@ export function verifyAdoptionConfirmation(
   if (
     snapshot.candidate_digest !== candidate.candidate_digest ||
     verifier?.verifier_kind !== "trusted-host" || typeof verifier.verify !== "function" ||
+    typeof verifier.reconstructConfirmationView !== "function" ||
     snapshot.decision !== "confirm"
   ) fail("ADOPTION_CONFIRMATION_UNTRUSTED");
+  assertConfirmationView(candidate, snapshot.confirmation_view);
+  if (snapshot.displayed_view_digest !== snapshot.confirmation_view.view_digest) fail("ADOPTION_CONFIRMATION_UNTRUSTED");
+  let verifierView: AdoptionConfirmationView;
+  try { verifierView = verifier.reconstructConfirmationView(candidate); } catch { fail("ADOPTION_CONFIRMATION_UNTRUSTED"); }
+  if (canonicalizeJson(verifierView) !== canonicalizeJson(snapshot.confirmation_view)) fail("ADOPTION_CONFIRMATION_UNTRUSTED");
   const current = now().getTime();
   const verified = validTime(snapshot.verified_at_trusted);
   const expires = validTime(snapshot.expires_at_trusted);
@@ -151,11 +234,12 @@ export function assertTrustedAdoptionConfirmation(value: AdoptionConfirmationEnv
 export function createAdoptedBaseline(
   candidateInput: AdoptionCandidate,
   envelopeInput: AdoptionConfirmationEnvelope,
-  projection: { readonly stage: string; readonly milestone: string; readonly scope: string },
+  projection: AdoptionProjection,
 ): AdoptedBaselineRecord {
   const candidate = parseAdoptionCandidate(candidateInput);
   const envelope = parseAdoptionConfirmation(envelopeInput);
   if (envelope.candidate_digest !== candidate.candidate_digest) fail("ADOPTED_BASELINE_INVALID");
+  assertConfirmationView(candidate, envelope.confirmation_view, projection);
   const sourceBlobs = [
     { ...candidate.route_lock, classification: "user-declared" as const },
     { ...candidate.active_plan, classification: "user-declared" as const },
@@ -172,15 +256,11 @@ export function createAdoptedBaseline(
     source_blobs: sourceBlobs,
     candidate_digest: candidate.candidate_digest,
     confirmation_envelope_digest: envelope.envelope_digest,
-    projected_stage: projection.stage,
-    projected_milestone: projection.milestone,
-    projected_scope: projection.scope,
-    evidence_assessments: [
-      { subject: "route-lock", classification: "user-declared" as const },
-      { subject: "active-plan", classification: "user-declared" as const },
-      { subject: "historical-gates", classification: "unknown" as const },
-    ],
-    unknown_gates: [...candidate.unknown_gates, "pre-adoption-history-not-verified"],
+    projected_stage: envelope.confirmation_view.projection.stage,
+    projected_milestone: envelope.confirmation_view.projection.milestone,
+    projected_scope: envelope.confirmation_view.projection.scope,
+    evidence_assessments: envelope.confirmation_view.evidence_assessments,
+    unknown_gates: envelope.confirmation_view.unknown_gates,
     disclaimer: ADOPTED_BASELINE_DISCLAIMER,
     lifecycle_state: "rollback-eligible" as const,
   };

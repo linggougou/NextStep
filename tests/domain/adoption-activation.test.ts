@@ -5,9 +5,11 @@ import { digestJson } from "../../src/domain/content-digest.ts";
 import {
   createAdoptionActivation,
   createAdoptionActivationReceipt,
+  createAdoptionRollbackReceipt,
   AdoptionActivationError,
   parseAdoptionActivation,
   parseAdoptionActivationReceipt,
+  parseAdoptionRollbackReceipt,
 } from "../../src/domain/adoption-activation.ts";
 
 test("activation 和 receipt 均内容寻址，业务 baseline 只作为数据而非 parent", () => {
@@ -26,7 +28,14 @@ test("activation 和 receipt 均内容寻址，业务 baseline 只作为数据�
   const receipt = createAdoptionActivationReceipt(activation, "7".repeat(40));
   assert.equal(receipt.activation_oid, "7".repeat(40));
   assert.match(receipt.receipt_digest, /^sha256:[a-f0-9]{64}$/);
+  assert.match(receipt.activated_namespace_digest, /^sha256:[a-f0-9]{64}$/);
   assert.deepEqual(parseAdoptionActivationReceipt(structuredClone(receipt)), receipt);
+  const rollback = createAdoptionRollbackReceipt({
+    activation_receipt: receipt,
+    rollback_action_digest: `sha256:${"8".repeat(64)}`,
+    rolled_back_at_trusted: "2026-08-30T09:05:00.000Z",
+  });
+  assert.deepEqual(parseAdoptionRollbackReceipt(structuredClone(rollback)), rollback);
 });
 
 test("activation/receipt parser 对未知类型、坏 OID、parent 和 digest fail closed", () => {
@@ -58,5 +67,22 @@ test("activation/receipt parser 对未知类型、坏 OID、parent 和 digest fa
   assert.throws(() => parseAdoptionActivation({ ...wrongParentBody, activation_digest: digestJson(wrongParentBody) }), AdoptionActivationError);
   const receipt = createAdoptionActivationReceipt(valid, "7".repeat(40));
   assert.throws(() => parseAdoptionActivationReceipt({ ...receipt, receipt_digest: `sha256:${"0".repeat(64)}` }), AdoptionActivationError);
+  const { receipt_digest: _receiptDigest, ...receiptBody } = receipt;
+  const changedReceipt = { ...receiptBody, activated_namespace_digest: `sha256:${"0".repeat(64)}` };
+  assert.throws(() => parseAdoptionActivationReceipt({ ...changedReceipt, receipt_digest: digestJson(changedReceipt) }), AdoptionActivationError);
   assert.throws(() => createAdoptionActivationReceipt(valid, "bad"), AdoptionActivationError);
+  assert.throws(() => parseAdoptionRollbackReceipt(null), AdoptionActivationError);
+  for (const parse of [parseAdoptionActivation, parseAdoptionActivationReceipt, parseAdoptionRollbackReceipt]) {
+    assert.throws(() => parse(Object.defineProperty({}, "value", {
+      enumerable: true, get() { throw new Error("getter"); },
+    })), AdoptionActivationError);
+  }
+  assert.throws(() => parseAdoptionRollbackReceipt({
+    ...createAdoptionRollbackReceipt({
+      activation_receipt: receipt,
+      rollback_action_digest: `sha256:${"8".repeat(64)}`,
+      rolled_back_at_trusted: "2026-08-30T09:05:00.000Z",
+    }),
+    receipt_digest: `sha256:${"0".repeat(64)}`,
+  }), AdoptionActivationError);
 });

@@ -5,7 +5,7 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "schema_version", "record_type", "candidate_digest", "displayed_view_digest",
+    "schema_version", "record_type", "candidate_digest", "confirmation_view", "displayed_view_digest",
     "user_action_ref", "session_identity", "verifier_identity", "verified_at_trusted",
     "expires_at_trusted", "nonce_or_replay_key", "decision", "envelope_digest"
   ],
@@ -13,6 +13,7 @@
     "schema_version": { "const": "1.0" },
     "record_type": { "const": "adoption-confirmation-envelope" },
     "candidate_digest": { "$ref": "#/definitions/digest" },
+    "confirmation_view": { "$ref": "#/definitions/view" },
     "displayed_view_digest": { "$ref": "#/definitions/digest" },
     "user_action_ref": { "$ref": "#/definitions/safeId" },
     "session_identity": { "$ref": "#/definitions/digest" },
@@ -26,6 +27,47 @@
   "definitions": {
     "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
     "safeId": { "type": "string", "minLength": 1, "maxLength": 160, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$" },
-    "timestamp": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$" }
+    "timestamp": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$" },
+    "oid": { "type": "string", "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$" },
+    "safeText": { "type": "string", "minLength": 1, "maxLength": 256, "pattern": "^[A-Za-z0-9][A-Za-z0-9 ./_-]*$" },
+    "assessment": {
+      "type": "object", "additionalProperties": false,
+      "required": ["subject", "classification"],
+      "properties": {
+        "subject": { "$ref": "#/definitions/safeText" },
+        "classification": { "enum": ["user-declared", "unknown"] }
+      }
+    },
+    "projection": {
+      "type": "object", "additionalProperties": false,
+      "required": ["stage", "milestone", "scope"],
+      "properties": {
+        "stage": { "$ref": "#/definitions/safeText" },
+        "milestone": { "$ref": "#/definitions/safeText" },
+        "scope": { "$ref": "#/definitions/safeText" }
+      }
+    },
+    "view": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "schema_version", "record_type", "repository_identity", "candidate_digest", "candidate_head_oid",
+        "projection", "evidence_assessments", "unknown_gates", "activation_side_effects",
+        "declared_non_goals", "rollback_restrictions", "view_digest"
+      ],
+      "properties": {
+        "schema_version": { "const": "1.0" },
+        "record_type": { "const": "adoption-confirmation-view" },
+        "repository_identity": { "$ref": "#/definitions/digest" },
+        "candidate_digest": { "$ref": "#/definitions/digest" },
+        "candidate_head_oid": { "$ref": "#/definitions/oid" },
+        "projection": { "$ref": "#/definitions/projection" },
+        "evidence_assessments": { "type": "array", "minItems": 4, "maxItems": 20, "items": { "$ref": "#/definitions/assessment" } },
+        "unknown_gates": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/definitions/safeText" } },
+        "activation_side_effects": { "type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true, "items": { "$ref": "#/definitions/safeText" } },
+        "declared_non_goals": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/definitions/safeText" } },
+        "rollback_restrictions": { "type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true, "items": { "$ref": "#/definitions/safeText" } },
+        "view_digest": { "$ref": "#/definitions/digest" }
+      }
+    }
   }
 }

@@ -9,7 +9,7 @@ import { canonicalizeJson, parseCanonicalJsonBytes } from "../../src/domain/cano
 import { readAdoptionInspectSource } from "../../src/adapters/node/adoption-inspect-source.ts";
 import { activateAdoption } from "../../src/adapters/node/adoption-ref-store.ts";
 import { createAdoptionCandidate } from "../../src/domain/adoption-candidate.ts";
-import { verifyAdoptionConfirmation } from "../../src/domain/adopted-baseline.ts";
+import { createAdoptionConfirmationView, verifyAdoptionConfirmation } from "../../src/domain/adopted-baseline.ts";
 
 const cli = resolve(process.cwd(), "dist/src/cli/project-status.js");
 const fixturePath = resolve(process.cwd(), "tests/fixtures/project-status/available-source.json");
@@ -110,10 +110,17 @@ test("CLI 对 adopted baseline 返回 available/null 正式结论，且无公开
     activePlanPath: "docs/exec-plans/active/current.md",
     evidencePaths: [".codex/verification-report.md"],
   }, { now: () => new Date("2026-08-30T09:00:00.000Z") }));
-  const verifier = { verifier_kind: "trusted-host" as const, verify: () => true };
+  const adoptedProjection = { stage: "S5", milestone: "M1", scope: "existing-project-baseline" } as const;
+  const confirmationView = createAdoptionConfirmationView(candidate, adoptedProjection);
+  const verifier = {
+    verifier_kind: "trusted-host" as const,
+    verify: () => true,
+    reconstructConfirmationView: () => confirmationView,
+  };
   const confirmation = verifyAdoptionConfirmation(candidate, {
     candidate_digest: candidate.candidate_digest,
-    displayed_view_digest: `sha256:${"a".repeat(64)}`,
+    confirmation_view: confirmationView,
+    displayed_view_digest: confirmationView.view_digest,
     user_action_ref: "cli-host-action",
     session_identity: `sha256:${"b".repeat(64)}`,
     verifier_identity: "trusted-host-v1",
@@ -125,7 +132,7 @@ test("CLI 对 adopted baseline 返回 available/null 正式结论，且无公开
   await activateAdoption({
     projectRoot: root, candidate, confirmation,
     roles: { candidate_actor_id: "inspect", activation_actor_id: "host", independent_acceptance_actor_id: "review" },
-    projection: { stage: "S5", milestone: "M1", scope: "existing-project-baseline" },
+    projection: adoptedProjection,
     now: () => new Date("2026-08-30T09:03:00.000Z"),
   });
   const accepted = await run(["--project-root", root]);
