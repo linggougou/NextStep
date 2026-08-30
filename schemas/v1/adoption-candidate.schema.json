@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nextstep.local/schemas/v1/adoption-candidate.schema.json",
+  "title": "NextStep Existing Project Adoption Candidate 1.0",
+  "description": "A3.0-A 的只读既有项目接入候选；它不表示激活、历史门禁通过或开发授权。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "record_type", "repository_identity", "object_format",
+    "candidate_head_oid", "route_lock", "active_plan", "evidence_sources",
+    "proposed_projection", "unknown_gates", "declared_non_goals",
+    "worktree_projection_digest", "nextstep_namespace_digest",
+    "created_at_trusted", "expires_at_trusted", "candidate_digest"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "record_type": { "const": "adoption-candidate" },
+    "repository_identity": { "$ref": "#/definitions/digest" },
+    "object_format": { "enum": ["sha1", "sha256"] },
+    "candidate_head_oid": { "$ref": "#/definitions/oid" },
+    "route_lock": { "$ref": "#/definitions/sourceBlob" },
+    "active_plan": { "$ref": "#/definitions/sourceBlob" },
+    "evidence_sources": {
+      "type": "array", "minItems": 1, "maxItems": 16,
+      "items": { "$ref": "#/definitions/evidenceBlob" }
+    },
+    "proposed_projection": {
+      "type": "object", "additionalProperties": false,
+      "required": ["phase", "stage", "milestone", "scope"],
+      "properties": {
+        "phase": { "$ref": "#/definitions/projectionValue" },
+        "stage": { "$ref": "#/definitions/projectionValue" },
+        "milestone": { "$ref": "#/definitions/projectionValue" },
+        "scope": { "$ref": "#/definitions/projectionValue" }
+      }
+    },
+    "unknown_gates": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": { "$ref": "#/definitions/safeId" }
+    },
+    "declared_non_goals": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": { "$ref": "#/definitions/safeId" }
+    },
+    "worktree_projection_digest": { "$ref": "#/definitions/digest" },
+    "nextstep_namespace_digest": { "$ref": "#/definitions/digest" },
+    "created_at_trusted": { "$ref": "#/definitions/timestamp" },
+    "expires_at_trusted": { "$ref": "#/definitions/timestamp" },
+    "candidate_digest": { "$ref": "#/definitions/digest" }
+  },
+  "definitions": {
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "oid": { "type": "string", "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$" },
+    "timestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+    },
+    "safeId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9.-]*$" },
+    "relativePath": {
+      "type": "string", "minLength": 1, "maxLength": 512,
+      "pattern": "^(?!.*[\\u0000-\\u001f\\u007f])(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$"
+    },
+    "sourceBlob": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "blob_oid", "digest"],
+      "properties": {
+        "path": { "$ref": "#/definitions/relativePath" },
+        "blob_oid": { "$ref": "#/definitions/oid" },
+        "digest": { "$ref": "#/definitions/digest" }
+      }
+    },
+    "evidenceBlob": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "blob_oid", "digest", "classification"],
+      "properties": {
+        "path": { "$ref": "#/definitions/relativePath" },
+        "blob_oid": { "$ref": "#/definitions/oid" },
+        "digest": { "$ref": "#/definitions/digest" },
+        "classification": { "enum": ["verified", "user-declared", "unknown"] }
+      }
+    },
+    "projectionValue": {
+      "type": "object", "additionalProperties": false,
+      "required": ["value", "classification"],
+      "properties": {
+        "value": { "anyOf": [{ "type": "string", "maxLength": 128 }, { "type": "null" }] },
+        "classification": { "enum": ["verified", "user-declared", "unknown"] }
+      }
+    }
+  }
+}

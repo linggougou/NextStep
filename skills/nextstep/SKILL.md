@@ -9,7 +9,7 @@ Operate only within the current `V1 / M1.1 / S1.1`, `V1 / M1.1 / S1.2`, `V1 / M1
 
 ## Internal Alpha Unified CLI
 
-The packaged `v0.2.0-alpha` is a private, UNLICENSED developer preview. After a local temporary install, use `nextstep --help` and invoke only these public commands: `status`, `requirement-intake`, `requirement-freeze`, `product-definition`, `interaction-prototype`, `carrier-decision`, `acceptance-profile`, `write-consistency`, `source-validate`, `version-chain`, `major-milestone`, `small-milestone`, and `execution-packet`.
+The packaged `v0.2.0-alpha` is a private, UNLICENSED developer preview. After a local temporary install, use `nextstep --help` and invoke only these public commands: `status`, `requirement-intake`, `requirement-freeze`, `product-definition`, `interaction-prototype`, `carrier-decision`, `acceptance-profile`, `write-consistency`, `source-validate`, `version-chain`, `major-milestone`, `small-milestone`, and `execution-packet`. The repository-built V3 Generation 2 source also exposes `adoption-inspect`; do not claim it is present in an older tarball until a separately reviewed release packet includes its compiled entry.
 
 For example, send the packaged canonical quickstart to the unified entry:
 
@@ -18,6 +18,22 @@ nextstep version-chain < node_modules/nextstep/examples/quickstart/version-chain
 ```
 
 Expect `VERSION_CHAIN_ACCEPTED` only for an accepted canonical candidate. `contract-probe` and `project-value-validation` are internal and absent from the package. The dispatcher only forwards arguments and standard streams to an existing CLI; it never supplies verifier, session, clock, filesystem, signoff, or host capabilities. CLI installation does not register this Skill and must not copy or overwrite a user-level Skill.
+
+## Inspect An Existing Project Without Adopting It
+
+Use `adoption-inspect` only as the A3.0-A read-only candidate boundary. Supply one absolute project root and repository-relative paths whose content already exists in the candidate HEAD:
+
+```bash
+nextstep adoption-inspect \
+  --project-root /absolute/project/root \
+  --route-lock PROJECT_ROUTE_LOCK.md \
+  --active-plan docs/exec-plans/active/current.md \
+  --verification-summary .codex/verification-report.md
+```
+
+The command requires a clean index/worktree, exactly one provable worktree, an empty `refs/nextstep/*` namespace, and unique non-symlink source blobs from the candidate HEAD. `PROJECT_NOT_ADOPTED` with `ok: true` means only that a reviewable candidate was produced. It does not create refs, confirm the proposed stage, verify historical gates, authorize development, or adopt the project. The candidate keeps stage, milestone, and scope at `unknown`; a trusted host must display and independently confirm an exact candidate before the separately gated A3.0-B activation flow.
+
+`REF_PAIR_INCOMPLETE`, `ADOPTION_SOURCE_CONFLICT`, and `ADOPTION_CANDIDATE_STALE` are fail-closed results. Never repair refs automatically, read mutable worktree Markdown as truth, promote `user-declared` or `unknown` evidence to `verified`, or add a shell write flag. Re-run only after the project owner resolves the source state. A caller revalidating an already displayed candidate may save that candidate alone as JCS outside the target project and add `--previous-candidate-file /absolute/audit/candidate.jcs.json`. The CLI validates the prior candidate's own digest; an unchanged valid observation returns it byte-equivalently, while source or expiry drift returns a replacement candidate without overwriting the old audit record.
 
 ## Inspect The Stage
 

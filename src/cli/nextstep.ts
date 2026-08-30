@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 import { spawn } from "node:child_process";
-import { realpathSync } from "node:fs";
+import { existsSync, realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 const VERSION = "0.2.0-alpha";
-const COMMANDS = Object.freeze({
+const BASE_COMMANDS = {
   status: "project-status.js",
   "requirement-intake": "requirement-intake.js",
   "requirement-freeze": "requirement-freeze.js",
@@ -19,6 +19,12 @@ const COMMANDS = Object.freeze({
   "major-milestone": "major-milestone.js",
   "small-milestone": "small-milestone.js",
   "execution-packet": "execution-packet.js",
+} as const;
+const COMMANDS = Object.freeze({
+  ...BASE_COMMANDS,
+  ...(existsSync(fileURLToPath(new URL("adoption-inspect.js", import.meta.url)))
+    ? { "adoption-inspect": "adoption-inspect.js" as const }
+    : {}),
 });
 
 const HELP = [

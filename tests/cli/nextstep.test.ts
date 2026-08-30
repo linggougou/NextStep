@@ -24,6 +24,7 @@ const publicCommands = [
   "major-milestone",
   "small-milestone",
   "execution-packet",
+  "adoption-inspect",
 ] as const;
 
 interface ProcessResult {
@@ -133,7 +134,7 @@ test("调度核心覆盖 help/version/子进程退出、异常与 signal 的确�
   assert.equal(await runNextStep(["version-chain"], missingCode.runtime), 1);
 });
 
-test("统一入口只展示冻结的 13 个公开命令，并固定 alpha 版本", async () => {
+test("统一入口展示冻结的 14 个公开命令，并固定 alpha 版本", async () => {
   const [withoutArgs, help, version] = await Promise.all([
     run([]),
     run(["--help"]),
@@ -159,7 +160,9 @@ test("统一入口只展示冻结的 13 个公开命令，并固定 alpha 版本
 
 test("统一入口可启动每个 stdin 型公开命令，并保留机器可读的 fail-closed 回执", async () => {
   const secret = "alpha-remediation-secret-that-must-not-appear";
-  const stdinCommands = publicCommands.filter((command) => command !== "status");
+  const stdinCommands = publicCommands.filter(
+    (command) => command !== "status" && command !== "adoption-inspect",
+  );
 
   for (const command of stdinCommands) {
     const result = await run([command], secret);
@@ -200,6 +203,17 @@ test("status 参数逐项透传，并保留成功与失败退出码", async (con
   const rejected = await run(["status", "--project-root", "relative"]);
   assert.equal(rejected.code, 1);
   assert.equal((parseCanonicalJsonBytes(Buffer.from(rejected.stdout)) as any).status, "unavailable");
+});
+
+test("adoption-inspect 参数逐项透传且聚合器不注入写能力", async () => {
+  const calls: Array<{ entry: string; args: readonly string[] }> = [];
+  const runtime = fakeRuntime(async (entry, childArgs) => {
+    calls.push({ entry, args: childArgs });
+    return { code: 0, signal: null };
+  });
+  const childArgs = ["--project-root", "/tmp/project", "--active-plan", "docs/plan.md"];
+  assert.equal(await runNextStep(["adoption-inspect", ...childArgs], runtime.runtime), 0);
+  assert.deepEqual(calls, [{ entry: "adoption-inspect.js", args: childArgs }]);
 });
 
 test("未知、内部、大小写与路径形态命令 fail closed 且不回显敏感值", async () => {
