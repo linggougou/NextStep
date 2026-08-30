@@ -1,0 +1,149 @@
+{
+  "review_id": "p5-cr008-change-intake-entry-review-attempt8-2026-08-30",
+  "task_id": "CR-008-change-intake-entry-review-attempt8",
+  "lane": "entry-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-change-intake-entry-review-v1",
+  "artifact_refs": [
+    "git:cb85025e4978ad07a9d5021b572952c08164ab3e",
+    "docs/change-requests/008-production-trusted-host.md",
+    "docs/change-requests/index.md",
+    "refs/nextstep/formal=ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "refs/nextstep/control=1b244c822ee5aa2a246fce0341a788f2c90f1897"
+  ],
+  "hard_gates": [
+    {
+      "id": "HG1",
+      "name": "变更范围受限且无实现越权",
+      "status": "pass",
+      "evidence": [
+        "git diff --name-only bd5c902f..cb85025e4978ad07a9d5021b572952c08164ab3e => docs/change-requests/008-production-trusted-host.md, docs/change-requests/index.md",
+        "docs/change-requests/008-production-trusted-host.md:245-253"
+      ]
+    },
+    {
+      "id": "HG2",
+      "name": "阻塞 Result、control 与 frozen refs 可机械核验",
+      "status": "pass",
+      "evidence": [
+        "git for-each-ref refs/nextstep => refs/nextstep/control=1b244c822ee5aa2a246fce0341a788f2c90f1897; refs/nextstep/formal=ea04b57de83d6c548dcb1629b1f61832db8375ad",
+        "results/result-cumulative-readiness-a3.0-g5-v3p2-a2-f189-blocked-20260830.json:1-48 @ 1b244c822ee5aa2a246fce0341a788f2c90f1897",
+        "registry.json:5328-5354 @ 1b244c822ee5aa2a246fce0341a788f2c90f1897"
+      ]
+    },
+    {
+      "id": "HG3",
+      "name": "bd5/710/7cd/formal-control 角色区分准确",
+      "status": "pass",
+      "evidence": [
+        "docs/change-requests/008-production-trusted-host.md:34-45",
+        "git rev-list --parents -n 1 cb85025e4978ad07a9d5021b572952c08164ab3e => cb85025e... bd5c902f...",
+        "git rev-list --parents -n 1 71085626b518ce5f8ebf5bfa546f96ea2f834730 => 71085626... 7cd3dd1f..."
+      ]
+    },
+    {
+      "id": "HG4",
+      "name": "授权时序与下一入口未被提前推进",
+      "status": "pass",
+      "evidence": [
+        "docs/change-requests/008-production-trusted-host.md:9,213-220,243-253",
+        "results/result-cumulative-readiness-a3.0-g5-v3p2-a2-f189-blocked-20260830.json:25-45 @ 1b244c822ee5aa2a246fce0341a788f2c90f1897"
+      ]
+    },
+    {
+      "id": "HG5",
+      "name": "索引同步且不把候选写成已批准事实",
+      "status": "pass",
+      "evidence": [
+        "docs/change-requests/index.md:18-24",
+        "docs/change-requests/008-production-trusted-host.md:3-9,26-30"
+      ]
+    },
+    {
+      "id": "HG6",
+      "name": "本机发布限制断言有 fresh 证据支撑",
+      "status": "pass",
+      "evidence": [
+        "docs/change-requests/008-production-trusted-host.md:190-194",
+        "xcode-select -p => /Library/Developer/CommandLineTools",
+        "xcodebuild -version => xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance"
+      ]
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "D1",
+      "name": "事实正确性与证据绑定",
+      "score": 35,
+      "max_score": 35,
+      "reason": "live control、blocker Result、frozen refs 与关键 ancestry 都能逐项对上，未见将文档口述冒充机械事实。",
+      "evidence": [
+        "docs/change-requests/008-production-trusted-host.md:13-18,34-45",
+        "results/result-cumulative-readiness-a3.0-g5-v3p2-a2-f189-blocked-20260830.json:1-48 @ 1b244c822ee5aa2a246fce0341a788f2c90f1897"
+      ]
+    },
+    {
+      "id": "D2",
+      "name": "安全边界与 fail-closed 约束",
+      "score": 25,
+      "max_score": 25,
+      "reason": "trusted host 缺口、不可伪造继续、公开 CLI 不得暴露写入口、helper/key/receipt/replay 边界写得完整且未偷渡实现授权。",
+      "evidence": [
+        "docs/change-requests/008-production-trusted-host.md:20-22,69-76,80-93,150-174,225-241"
+      ]
+    },
+    {
+      "id": "D3",
+      "name": "路线治理与代际门禁",
+      "score": 20,
+      "max_score": 20,
+      "reason": "明确把 CR-008 约束为 Change Intake 候选，并保持 CR review、用户批准、generation 3 plan、entry PASS、advance/ack CAS 分离。",
+      "evidence": [
+        "docs/change-requests/008-production-trusted-host.md:24-30,213-221,243-253",
+        "docs/change-requests/index.md:20-24"
+      ]
+    },
+    {
+      "id": "D4",
+      "name": "验收与发布门禁完整性",
+      "score": 20,
+      "max_score": 20,
+      "reason": "把 package、cumulative、物理 tgz 审计、真实 UI action E2E、Developer ID/notarization 与本机限制拆清，没有用源码测试替代发布门禁。",
+      "evidence": [
+        "docs/change-requests/008-production-trusted-host.md:51,95-146,176-194"
+      ]
+    }
+  ],
+  "penalties": [],
+  "totals": {
+    "raw_score": 100,
+    "penalty_total": 0,
+    "final_score": 100
+  },
+  "verdict": "PASS",
+  "required_fixes": [],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "pass",
+      "summary": "refs、Result digest/control、commit ancestry 与本机 Xcode 状态已做 fresh 机械核验。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "pass",
+      "summary": "候选把 CR-008 保持在 Change Intake 范围内，安全和代际约束完整。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "pass",
+      "summary": "未见模板化空话；关键约束均绑定到具体对象、ref、Result 或门禁。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "PASS / 100",
+      "summary": "无 P0/P1/P2 发现，允许该 candidate 离开 entry review。"
+    }
+  ],
+  "reviewed_at": "2026-08-30T00:00:00+08:00"
+}
