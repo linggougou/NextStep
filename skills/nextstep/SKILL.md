@@ -280,3 +280,18 @@ node dist/src/cli/execution-packet.js
 The standalone shell command cannot supply trusted S4 or accepted-Result authority, so pure stdin invocation is intentionally rejected with a value-safe JCS receipt, generic stderr diagnostic, and non-zero exit code. A trusted host may call `runExecutionPacket` with an in-process `ExecutionPacketEvaluationContext`; only that path can emit deterministic `EXECUTION_PACKET_VALID` with result status exactly `packet-valid-only`. The context clock is read once and enforces `created_at <= now < expires_at`; no evaluation timestamp is written into the deterministic payload. Invalid JSON/JCS, arguments, unknown or sensitive fields, forged S2.3/S4 data, project/control drift, non-unique milestones, missing/conflicting/unauthorized inputs or dependencies, unsafe/overlapping paths, signed-upstream changes, Profile/check conflicts, unsupported host claims, inactive time windows, and packet/dedup/summary/result tampering fail closed.
 
 This command only validates and returns a candidate. It does not persist or dispatch an Execution Packet, create a development task, claim/fence, outbox, dispatch-ready or dispatch ACK, call a host, Git, network or project writer, or move formal/control. S3.1 remains separately gated. Do not claim PC-12, PC-13, M2.2, V2, or P5 complete from an accepted S2.4 receipt.
+
+## S3.1 Capability Preflight
+
+Enter S3.1 only when project truth and control state identify `V3 / M3.1 / S3.1` and the immutable S3.1 packet plus dispatch ACK are present. A trusted host calls the in-process runner with a narrow host port, a one-time isolated project-probe port, and a trusted clock. The two phases are strict: `host-bootstrap` receives no project path or project capability and must first prove a stable independent task identity, create/query/continue/archive behavior, permission isolation, and approval/blocking event return; `project-probe` may run only after bootstrap passes.
+
+The project probe uses disposable fixtures to bind the exact repository, worktree start, formal/control identity, immutable candidate, read-only validation, ACK recovery, final re-verification, external evidence, anchor and expected-old CAS behavior. Evidence is content-addressed and expires; any host, version, project, permission, formal/control or time drift requires a fresh preflight. `full` requires both stages plus atomic create-or-return and automatic archival; a bindable but non-atomic lifecycle is only `manual-isolated`; missing core identity, isolation, final verification or CAS evidence is `blocked`.
+
+Direct shell invocation has no trusted host port and intentionally fails closed:
+
+```bash
+pnpm build
+node dist/src/cli/capability-preflight.js
+```
+
+Do not supply capabilities through stdin, arguments, environment variables or caller-authored `mode: full`. S3.1 produces preflight evidence only. S3.2 dispatch is 尚未完成, M3.1 is 尚未完成, and PC-14 is 尚未完成; this entry does not establish a formally supported full host or authorize formal/control movement.

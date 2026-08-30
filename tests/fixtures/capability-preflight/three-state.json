@@ -1,0 +1,16 @@
+{
+  "blocked": {
+    "host_blockers": ["HOST_STABLE_ID_UNPROVEN"],
+    "project_blockers": []
+  },
+  "full": {
+    "automatic_lifecycle": true,
+    "atomic_create_or_return": true,
+    "automatic_archive": true
+  },
+  "manual_isolated": {
+    "automatic_lifecycle": false,
+    "atomic_create_or_return": false,
+    "automatic_archive": false
+  }
+}
