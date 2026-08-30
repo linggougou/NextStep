@@ -1,0 +1,163 @@
+{
+  "review_id": "p5-v3-cr007-generation2-readiness-g5-v3p2-a1b-2026-08-30",
+  "task_id": "CR-007-V3-GENERATION2-READINESS",
+  "lane": "independent-readiness-review",
+  "review_level": "L3",
+  "rubric_id": "nextstep-p5-v3-generation2-readiness-gate",
+  "artifact_refs": [
+    "git:a7e907c022da1479dcc22e71542f8c9ba75d81cc",
+    "git:e3df650a6861274ff076c72276281cbf528e9188",
+    "git:ea04b57de83d6c548dcb1629b1f61832db8375ad",
+    "git:c8cbba15a3b08f49b8e0d1bfaa7549b15a24dbe9",
+    "git:5ed6bcfd72af3ce517543dc25aa38f7f7c50f83a",
+    "git:a625089bf2828c7ccee7a286ef0c66a1c28c3457",
+    "git:36242fbb2e938225c438871ada0731e06b9c37a4",
+    "git:288c1ca0d92c7c1834a0c65bc2c4cb8efe86e504",
+    "docs/change-requests/007-existing-project-adoption.md",
+    "docs/design-docs/p5-existing-project-adoption-design.md",
+    "docs/exec-plans/active/p5-v3-existing-project-adoption-generation-readiness.md",
+    "docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md"
+  ],
+  "hard_gates": [
+    {
+      "id": "clone-isolation",
+      "status": "pass",
+      "reason": "评审在 detached no-local clone 中完成，未使用 alternates，且候选 HEAD 与 authority 一致。",
+      "evidence": [
+        "clone:/private/tmp/nextstep-cr007-gen2-accept.mWv9Yi/repo",
+        "git:a7e907c022da1479dcc22e71542f8c9ba75d81cc",
+        "ALTERNATES=absent"
+      ]
+    },
+    {
+      "id": "scope-and-write-boundary",
+      "status": "pass",
+      "reason": "候选相对 main 只修改文档与 .codex 留痕，未修改 src/schemas/tests/skills、Generation 1 正文计划或任何 refs。",
+      "evidence": [
+        "git diff e3df650a6861274ff076c72276281cbf528e9188..a7e907c022da1479dcc22e71542f8c9ba75d81cc --name-only",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-generation-readiness.md:75",
+        "DIFF_CHECK=ok"
+      ]
+    },
+    {
+      "id": "generation-contract",
+      "status": "pass",
+      "reason": "全局 plan_generation 保持 5，仅新增 scoped v3_plan_generation=2；S3.1 为 carry-forward pending/confirmed；S3.2..S3.5 为 superseded-before-packet；A3.0-A/B 不伪造旧代际墓碑；两个 CAS 都限定 exact-three。",
+      "evidence": [
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-generation-readiness.md:44-66",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md:64-66",
+        "docs/change-requests/007-existing-project-adoption.md:165-168"
+      ]
+    },
+    {
+      "id": "s31-authority-match",
+      "status": "pass",
+      "reason": "S3.1 authority 与 live main/control 一致：review tree 与 main tree 同为 f16068e11a5ff24728055854338b473e8f909630，control checkpoint 仍为 plan_generation=5 且 pending dispatch=0；两个 Result 文件内声明 digest 与文档冻结值一致。",
+      "evidence": [
+        "git:a625089bf2828c7ccee7a286ef0c66a1c28c3457",
+        "git:e3df650a6861274ff076c72276281cbf528e9188",
+        "git:c8cbba15a3b08f49b8e0d1bfaa7549b15a24dbe9",
+        "results/result-execution-s3.1-g5-v3p1-a5-f172-20260830.json@control",
+        "results/result-package-acceptance-s3.1-g5-v3p1-a6-f173-20260830.json@control"
+      ]
+    },
+    {
+      "id": "approval-state-consistency",
+      "status": "fail",
+      "reason": "同一组当前真源对 CR-007 的批准状态表述不一致：CR 与 Generation 2 计划已声明“用户最终批准”，但设计合同首页仍写“等待...用户最终批准”，且 CR 正文后段仍把“用户最终批准 CR”列为未来推进步骤。",
+      "evidence": [
+        "docs/design-docs/p5-existing-project-adoption-design.md:5",
+        "docs/change-requests/007-existing-project-adoption.md:3",
+        "docs/change-requests/007-existing-project-adoption.md:169",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-plan-amendment.md:5-13"
+      ]
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "Correctness",
+      "score": 23,
+      "max_score": 25,
+      "reason": "代际、写集、S3.1 authority 与 stale future entry 规则大体正确，但批准状态漂移会直接影响后续 gate 顺序判断。",
+      "evidence_refs": [
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-generation-readiness.md:44-66",
+        "docs/design-docs/p5-existing-project-adoption-design.md:5",
+        "docs/change-requests/007-existing-project-adoption.md:169"
+      ]
+    },
+    {
+      "name": "Safety",
+      "score": 25,
+      "max_score": 25,
+      "reason": "未偷渡真实项目 refs、formal movement、V3/P5 completion 或 S3.2 职责扩张；原子 ref pair、genesis/activation 与 rollback guard 合同完整。",
+      "evidence_refs": [
+        "docs/change-requests/007-existing-project-adoption.md:67-75",
+        "docs/design-docs/p5-existing-project-adoption-design.md:223-231",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-generation-readiness.md:66-77"
+      ]
+    },
+    {
+      "name": "Behavioral Regression Control",
+      "score": 24,
+      "max_score": 25,
+      "reason": "未改动 S3.1 exact-eleven、S3.2 exact-14 与 Generation 1 正文计划，且 live main/control 绑定准确；唯一回归风险来自批准状态口径不一致。",
+      "evidence_refs": [
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-generation-readiness.md:31-39",
+        "docs/exec-plans/active/p5-v3-existing-project-adoption-generation-readiness.md:75-77",
+        "docs/design-docs/p5-existing-project-adoption-design.md:5"
+      ]
+    },
+    {
+      "name": "Evidence and Traceability",
+      "score": 24,
+      "max_score": 25,
+      "reason": "候选引用的 main/formal/control/S3.1 identity 均可机械复核；但批准状态在当前文档内未完全收敛，削弱了 route-level traceability。",
+      "evidence_refs": [
+        "git:c8cbba15a3b08f49b8e0d1bfaa7549b15a24dbe9",
+        "git:a625089bf2828c7ccee7a286ef0c66a1c28c3457",
+        "docs/change-requests/007-existing-project-adoption.md:3",
+        "docs/design-docs/p5-existing-project-adoption-design.md:5"
+      ]
+    }
+  ],
+  "penalties": [
+    {
+      "severity": "P1",
+      "deduction": 6,
+      "reason": "批准状态在当前真源之间漂移，会让后续 controller/reviewer 对 readiness 之后是否还需要再次请求 CR 批准做出错误判断。",
+      "evidence_refs": [
+        "docs/design-docs/p5-existing-project-adoption-design.md:5",
+        "docs/change-requests/007-existing-project-adoption.md:169"
+      ]
+    }
+  ],
+  "totals": {
+    "raw_score": 96,
+    "penalty_total": 6,
+    "final_score": 90
+  },
+  "verdict": "REVISE",
+  "required_fixes": [
+    "把 CR-007 当前批准状态在所有现行真源中收敛为同一口径：设计合同首页不能再写“等待用户最终批准”，CR 正文的推进顺序也不能再把“用户最终批准 CR”列为未来未完成动作。修订后应继续保持“readiness PASS 只放行两个分离 generation CAS，不额外要求新的 CR 批准”。"
+  ],
+  "nice_to_have": [],
+  "reviewers": [
+    {
+      "role": "Verifier",
+      "conclusion": "除批准状态一致性外，其余 Git/JSON/docs contract 机械硬门通过。"
+    },
+    {
+      "role": "Strict Judge",
+      "conclusion": "当前 submission 可修复但未达 PASS/100，因为 route-level 批准状态存在现行矛盾。"
+    },
+    {
+      "role": "Anti-Slop Judge",
+      "conclusion": "未见范围偷渡或模板化空话；问题是具体状态漂移，不是风格。"
+    },
+    {
+      "role": "Chief Reviewer",
+      "conclusion": "REVISE；先收敛批准状态，再重新做 fresh readiness review。"
+    }
+  ],
+  "reviewed_at": "2026-08-30T16:45:00+08:00"
+}
