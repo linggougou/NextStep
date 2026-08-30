@@ -196,19 +196,72 @@ function refTransaction(
   git(root, ["update-ref", "--stdin"], commands);
 }
 
-function readJson(root: string, revisionPath: string): unknown {
+interface RawCommit { readonly tree: string; readonly parents: readonly string[] }
+interface RawTreeEntry { readonly mode: string; readonly type: string; readonly oid: string; readonly name: string }
+
+function rawCommit(root: string, oid: string, code: AdoptionRefStoreErrorCode): RawCommit {
   try {
-    const text = new TextDecoder("utf-8", { fatal: true }).decode(gitBytes(root, ["show", revisionPath]));
-    const value = JSON.parse(text) as unknown;
-    if (canonicalizeJson(value) !== text) fail("ADOPTION_RECOVERY_REQUIRED");
-    return value;
-  } catch { fail("ADOPTION_RECOVERY_REQUIRED"); }
+    if (!OID.test(oid)) fail(code);
+    const text = new TextDecoder("utf-8", { fatal: true }).decode(gitBytes(root, ["cat-file", "commit", oid]));
+    const headerEnd = text.indexOf("\n\n");
+    if (headerEnd < 0) fail(code);
+    let treeOid: string | undefined;
+    const parentOids: string[] = [];
+    for (const line of text.slice(0, headerEnd).split("\n")) {
+      if (line.startsWith(" ")) continue;
+      const separator = line.indexOf(" ");
+      const key = line.slice(0, separator);
+      const value = line.slice(separator + 1);
+      if (separator < 1) fail(code);
+      if (key === "tree") {
+        if (treeOid !== undefined || !OID.test(value)) fail(code);
+        treeOid = value;
+      } else if (key === "parent") {
+        if (!OID.test(value)) fail(code);
+        parentOids.push(value);
+      }
+    }
+    if (treeOid === undefined) fail(code);
+    return Object.freeze({ tree: treeOid, parents: Object.freeze(parentOids) });
+  } catch { fail(code); }
 }
 
-function parents(root: string, oid: string): readonly string[] {
-  const values = git(root, ["rev-list", "--parents", "-n", "1", oid]).split(/\s+/);
-  if (values[0] !== oid) fail("ADOPTION_RECOVERY_REQUIRED");
-  return values.slice(1);
+function rawTree(root: string, treeOid: string, code: AdoptionRefStoreErrorCode): readonly RawTreeEntry[] {
+  try {
+    if (!OID.test(treeOid)) fail(code);
+    const text = new TextDecoder("utf-8", { fatal: true }).decode(gitBytes(root, ["ls-tree", "-z", treeOid]));
+    const entries = text.split("\0").filter(Boolean).map((record) => {
+      const match = /^([0-7]{6}) ([^ ]+) ([a-f0-9]{40}|[a-f0-9]{64})\t([\s\S]+)$/.exec(record);
+      if (!match) fail(code);
+      return Object.freeze({ mode: match[1] as string, type: match[2] as string, oid: match[3] as string, name: match[4] as string });
+    });
+    if (new Set(entries.map((entry) => entry.name)).size !== entries.length) fail(code);
+    return Object.freeze(entries);
+  } catch { fail(code); }
+}
+
+function exactBlobTree(
+  root: string,
+  treeOid: string,
+  expectedNames: readonly string[],
+  code: AdoptionRefStoreErrorCode,
+): Readonly<Record<string, string>> {
+  const entries = rawTree(root, treeOid, code);
+  if (
+    entries.length !== expectedNames.length ||
+    entries.some((entry) => entry.mode !== "100644" || entry.type !== "blob") ||
+    entries.map((entry) => entry.name).sort().join("\n") !== [...expectedNames].sort().join("\n")
+  ) fail(code);
+  return Object.freeze(Object.fromEntries(entries.map((entry) => [entry.name, entry.oid])));
+}
+
+function readCanonicalJsonBlob(root: string, oid: string, code: AdoptionRefStoreErrorCode): unknown {
+  try {
+    const text = new TextDecoder("utf-8", { fatal: true }).decode(gitBytes(root, ["cat-file", "blob", oid]));
+    const value = JSON.parse(text) as unknown;
+    if (canonicalizeJson(value) !== text) fail(code);
+    return value;
+  } catch { fail(code); }
 }
 
 function assertRoles(roles: AdoptionRoleSeparation): void {
@@ -320,14 +373,17 @@ function verifiedActivationState(
   refs: { readonly formal: string; readonly control: string },
 ): VerifiedActivationState {
   try {
-    const activation = parseAdoptionActivation(readJson(root, `${refs.control}:activation.json`));
-    const baseline = parseAdoptedBaseline(readJson(root, `${refs.control}:adopted-baseline.json`));
-    const checkpointRecord = readJson(root, `${refs.control}:checkpoint.json`);
-    const registryRecord = readJson(root, `${refs.control}:registry.json`);
-    const genesisRecord = readJson(root, `${activation.genesis_oid}:genesis.json`);
-    const activationParents = parents(root, refs.control);
-    const activationPaths = git(root, ["ls-tree", "-r", "--name-only", refs.control]).split("\n").filter(Boolean).sort();
-    const genesisPaths = git(root, ["ls-tree", "-r", "--name-only", activation.genesis_oid]).split("\n").filter(Boolean).sort();
+    const activationCommit = rawCommit(root, refs.control, "ADOPTION_RECOVERY_REQUIRED");
+    const activationBlobs = exactBlobTree(root, activationCommit.tree, [
+      "activation.json", "adopted-baseline.json", "checkpoint.json", "registry.json",
+    ], "ADOPTION_RECOVERY_REQUIRED");
+    const activation = parseAdoptionActivation(readCanonicalJsonBlob(root, activationBlobs["activation.json"] as string, "ADOPTION_RECOVERY_REQUIRED"));
+    const baseline = parseAdoptedBaseline(readCanonicalJsonBlob(root, activationBlobs["adopted-baseline.json"] as string, "ADOPTION_RECOVERY_REQUIRED"));
+    const checkpointRecord = readCanonicalJsonBlob(root, activationBlobs["checkpoint.json"] as string, "ADOPTION_RECOVERY_REQUIRED");
+    const registryRecord = readCanonicalJsonBlob(root, activationBlobs["registry.json"] as string, "ADOPTION_RECOVERY_REQUIRED");
+    const genesisCommit = rawCommit(root, activation.genesis_oid, "ADOPTION_RECOVERY_REQUIRED");
+    const genesisBlobs = exactBlobTree(root, genesisCommit.tree, ["genesis.json"], "ADOPTION_RECOVERY_REQUIRED");
+    const genesisRecord = readCanonicalJsonBlob(root, genesisBlobs["genesis.json"] as string, "ADOPTION_RECOVERY_REQUIRED");
     const projection = {
       stage: baseline.projected_stage,
       milestone: baseline.projected_milestone,
@@ -343,10 +399,8 @@ function verifiedActivationState(
       expected_namespace_digest: digestJson([]),
     });
     if (
-      activationParents.length !== 1 || activationParents[0] !== activation.genesis_oid ||
-      parents(root, activation.genesis_oid).length !== 0 ||
-      activationPaths.join("\n") !== "activation.json\nadopted-baseline.json\ncheckpoint.json\nregistry.json" ||
-      genesisPaths.join("\n") !== "genesis.json" ||
+      activationCommit.parents.length !== 1 || activationCommit.parents[0] !== activation.genesis_oid ||
+      genesisCommit.parents.length !== 0 ||
       activation.baseline_oid !== refs.formal || baseline.baseline_oid !== refs.formal ||
       activation.repository_identity !== baseline.repository_identity ||
       activation.candidate_digest !== baseline.candidate_digest ||
@@ -424,7 +478,8 @@ export async function activateAdoption(options: ActivateAdoptionOptions): Promis
   const genesis = genesisValue(candidate.repository_identity, candidate.candidate_digest, observed.toISOString());
   const genesisTree = tree(projectRoot, { "genesis.json": jsonBlob(projectRoot, genesis) });
   const genesisOid = git(projectRoot, ["commit-tree", genesisTree], "NextStep adoption control genesis\n", objectEnvironment(observed.toISOString()));
-  if (!OID.test(genesisOid) || parents(projectRoot, genesisOid).length !== 0) fail("ADOPTION_TRANSACTION_FAILED");
+  const createdGenesis = rawCommit(projectRoot, genesisOid, "ADOPTION_TRANSACTION_FAILED");
+  if (createdGenesis.tree !== genesisTree || createdGenesis.parents.length !== 0) fail("ADOPTION_TRANSACTION_FAILED");
   const activation = createAdoptionActivation({
     repository_identity: candidate.repository_identity,
     candidate_digest: candidate.candidate_digest,
@@ -447,7 +502,10 @@ export async function activateAdoption(options: ActivateAdoptionOptions): Promis
     "registry.json": jsonBlob(projectRoot, registryValue(candidate.repository_identity)),
   });
   const activationOid = git(projectRoot, ["commit-tree", activationTree, "-p", genesisOid], "NextStep adopted baseline activation\n", objectEnvironment(observed.toISOString()));
-  if (!OID.test(activationOid) || parents(projectRoot, activationOid)[0] !== genesisOid) fail("ADOPTION_TRANSACTION_FAILED");
+  const createdActivation = rawCommit(projectRoot, activationOid, "ADOPTION_TRANSACTION_FAILED");
+  if (createdActivation.tree !== activationTree || createdActivation.parents.length !== 1 || createdActivation.parents[0] !== genesisOid) {
+    fail("ADOPTION_TRANSACTION_FAILED");
+  }
 
   await assertCandidateCurrent(projectRoot, candidate);
   if (namespace(projectRoot).length !== 0) fail("ADOPTION_CANDIDATE_STALE");

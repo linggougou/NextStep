@@ -14,6 +14,7 @@ import {
   rollbackAdoption,
 } from "../../../src/adapters/node/adoption-ref-store.ts";
 import { createAdoptionCandidate } from "../../../src/domain/adoption-candidate.ts";
+import { createAdoptionActivationReceipt } from "../../../src/domain/adoption-activation.ts";
 import { createAdoptionConfirmationView, verifyAdoptionConfirmation } from "../../../src/domain/adopted-baseline.ts";
 import { canonicalizeJson } from "../../../src/domain/canonical-json.ts";
 import { digestJson } from "../../../src/domain/content-digest.ts";
@@ -119,6 +120,32 @@ function rollbackAction(receipt: any, nonce: string) {
   };
 }
 
+function controlWithMode(root: string, receipt: any, path: string, mode: "100755" | "120000"): string {
+  const entries = ["activation.json", "adopted-baseline.json", "checkpoint.json", "registry.json"].map((name) =>
+    `${name === path ? mode : "100644"} blob ${git(root, "rev-parse", `${receipt.activation_oid}:${name}`)}\t${name}`
+  );
+  const tree = gitInput(root, `${entries.sort().join("\n")}\n`, "mktree");
+  return git(root, "commit-tree", tree, "-p", receipt.genesis_oid, "-m", "mode-forged activation");
+}
+
+function parentedGenesisControl(root: string, receipt: any): { control: string; genesis: string; activation: any } {
+  const genesisTree = git(root, "rev-parse", `${receipt.genesis_oid}^{tree}`);
+  const genesis = git(root, "commit-tree", genesisTree, "-p", receipt.formal_oid, "-m", "parented genesis");
+  const originalActivation = JSON.parse(git(root, "show", `${receipt.activation_oid}:activation.json`));
+  const { activation_digest: _activationDigest, ...activationBody } = originalActivation;
+  const nextActivationBody = { ...activationBody, genesis_oid: genesis, control_parent_oid: genesis };
+  const activation = { ...nextActivationBody, activation_digest: digestJson(nextActivationBody) };
+  const checkpoint = JSON.parse(git(root, "show", `${receipt.activation_oid}:checkpoint.json`));
+  const entries = [
+    `100644 blob ${gitInput(root, canonicalizeJson(activation), "hash-object", "-w", "--stdin")}\tactivation.json`,
+    `100644 blob ${git(root, "rev-parse", `${receipt.activation_oid}:adopted-baseline.json`)}\tadopted-baseline.json`,
+    `100644 blob ${gitInput(root, canonicalizeJson({ ...checkpoint, control_parent_oid: genesis }), "hash-object", "-w", "--stdin")}\tcheckpoint.json`,
+    `100644 blob ${git(root, "rev-parse", `${receipt.activation_oid}:registry.json`)}\tregistry.json`,
+  ];
+  const tree = gitInput(root, `${entries.sort().join("\n")}\n`, "mktree");
+  return { control: git(root, "commit-tree", tree, "-p", genesis, "-m", "parented activation"), genesis, activation };
+}
+
 test("可信激活创建零父 genesis、单父 activation 与同一 expected-missing ref transaction", async (context) => {
   const root = await repository();
   context.after(() => rm(root, { recursive: true, force: true }));
@@ -215,6 +242,75 @@ test("existing-pair recovery 拒绝非 canonical/错误 genesis tree 与缺失 c
       now: () => new Date("2026-08-30T09:03:00.000Z"),
     }), AdoptionRefStoreError);
     assert.equal(git(root, "rev-parse", "refs/nextstep/control"), forgedControl);
+  }
+});
+
+test("raw tree entry mode 伪装在 recovery、rollback、status 前零副作用拒绝", async (context) => {
+  for (const mode of ["100755", "120000"] as const) {
+    const root = await repository();
+    context.after(() => rm(root, { recursive: true, force: true }));
+    const values = await input(root);
+    const receipt = await activateAdoption({
+      projectRoot: root, ...values, roles, projection: values.projection,
+      now: () => new Date("2026-08-30T09:03:00.000Z"),
+    });
+    const control = controlWithMode(root, receipt, "activation.json", mode);
+    git(root, "update-ref", "refs/nextstep/control", control, receipt.activation_oid);
+    const forgedReceipt = createAdoptionActivationReceipt(
+      JSON.parse(git(root, "cat-file", "blob", git(root, "rev-parse", `${control}:activation.json`))),
+      control,
+    );
+    const objectsBefore = git(root, "count-objects", "-v");
+    let verifierCalls = 0;
+
+    await assert.rejects(() => activateAdoption({
+      projectRoot: root, ...values, roles, projection: values.projection,
+      now: () => new Date("2026-08-30T09:03:00.000Z"),
+    }), AdoptionRefStoreError);
+    await assert.rejects(() => readProjectStatusSource(root));
+    await assert.rejects(() => rollbackAdoption({
+      projectRoot: root, receipt: forgedReceipt, action: rollbackAction(forgedReceipt, `mode-${mode}`),
+      verifier: { verifier_kind: "trusted-host", verifyRollback: () => { verifierCalls += 1; return true; } },
+      now: () => new Date("2026-08-30T09:05:00.000Z"),
+    }), AdoptionRefStoreError);
+    assert.equal(verifierCalls, 0);
+    assert.equal(git(root, "count-objects", "-v"), objectsBefore);
+    assert.equal(git(root, "rev-parse", "refs/nextstep/control"), control);
+    assert.equal(git(root, "rev-parse", "refs/nextstep/formal"), receipt.formal_oid);
+  }
+});
+
+test("raw genesis parent 被 shallow 或 grafts 隐藏时 recovery、rollback、status 零副作用拒绝", async (context) => {
+  for (const topologyMask of ["shallow", "grafts"] as const) {
+    const root = await repository();
+    context.after(() => rm(root, { recursive: true, force: true }));
+    const values = await input(root);
+    const receipt = await activateAdoption({
+      projectRoot: root, ...values, roles, projection: values.projection,
+      now: () => new Date("2026-08-30T09:03:00.000Z"),
+    });
+    const forged = parentedGenesisControl(root, receipt);
+    git(root, "update-ref", "refs/nextstep/control", forged.control, receipt.activation_oid);
+    if (topologyMask === "shallow") await writeFile(resolve(root, ".git/shallow"), `${forged.genesis}\n`);
+    else await writeFile(resolve(root, ".git/info/grafts"), `${forged.genesis}\n`);
+    const forgedReceipt = createAdoptionActivationReceipt(forged.activation, forged.control);
+    const objectsBefore = git(root, "count-objects", "-v");
+    let verifierCalls = 0;
+
+    await assert.rejects(() => activateAdoption({
+      projectRoot: root, ...values, roles, projection: values.projection,
+      now: () => new Date("2026-08-30T09:03:00.000Z"),
+    }), AdoptionRefStoreError);
+    await assert.rejects(() => readProjectStatusSource(root));
+    await assert.rejects(() => rollbackAdoption({
+      projectRoot: root, receipt: forgedReceipt, action: rollbackAction(forgedReceipt, topologyMask),
+      verifier: { verifier_kind: "trusted-host", verifyRollback: () => { verifierCalls += 1; return true; } },
+      now: () => new Date("2026-08-30T09:05:00.000Z"),
+    }), AdoptionRefStoreError);
+    assert.equal(verifierCalls, 0);
+    assert.equal(git(root, "count-objects", "-v"), objectsBefore);
+    assert.equal(git(root, "rev-parse", "refs/nextstep/control"), forged.control);
+    assert.equal(git(root, "rev-parse", "refs/nextstep/formal"), receipt.formal_oid);
   }
 });
 

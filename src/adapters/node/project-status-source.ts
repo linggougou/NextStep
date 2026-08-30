@@ -5,6 +5,7 @@ import { promisify } from "node:util";
 import type { ProjectStatusSource } from "../../domain/project-status-projection.ts";
 import { parseAdoptionActivation } from "../../domain/adoption-activation.ts";
 import { parseAdoptedBaseline } from "../../domain/adopted-baseline.ts";
+import { canonicalizeJson } from "../../domain/canonical-json.ts";
 
 export type ProjectStatusSourceErrorCode =
   | "INVALID_PROJECT_ROOT"
@@ -45,48 +46,78 @@ async function git(root: string, args: readonly string[]): Promise<string> {
   }
 }
 
-async function gitOptional(root: string, args: readonly string[]): Promise<string | null> {
-  try {
-    const result = await runFile("git", ["-C", root, ...args], {
-      encoding: "utf8",
-      env: gitEnvironment,
-      maxBuffer: 8 * 1024 * 1024,
-    });
-    return result.stdout;
-  } catch {
-    return null;
+interface RefPair { readonly formal: string; readonly control: string }
+interface RawCommit { readonly tree: string; readonly parents: readonly string[] }
+interface RawTreeEntry { readonly mode: string; readonly type: string; readonly oid: string; readonly name: string }
+
+async function rawCommit(root: string, oid: string): Promise<RawCommit> {
+  if (!OID.test(oid)) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
+  const text = await git(root, ["cat-file", "commit", oid]);
+  const headerEnd = text.indexOf("\n\n");
+  if (headerEnd < 0) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
+  let tree: string | undefined;
+  const parents: string[] = [];
+  for (const line of text.slice(0, headerEnd).split("\n")) {
+    if (line.startsWith(" ")) continue;
+    const separator = line.indexOf(" ");
+    const key = line.slice(0, separator);
+    const value = line.slice(separator + 1);
+    if (separator < 1) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
+    if (key === "tree") {
+      if (tree !== undefined || !OID.test(value)) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
+      tree = value;
+    } else if (key === "parent") {
+      if (!OID.test(value)) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
+      parents.push(value);
+    }
   }
+  if (tree === undefined) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
+  return Object.freeze({ tree, parents: Object.freeze(parents) });
 }
 
-interface RefPair { readonly formal: string; readonly control: string }
-
-async function commitParents(root: string, oid: string): Promise<readonly string[]> {
-  const ancestry = (await git(root, ["rev-list", "--parents", "-n", "1", oid])).trim().split(/\s+/);
-  if (ancestry[0] !== oid || ancestry.slice(1).some((parent) => !OID.test(parent))) {
+async function rawTree(root: string, treeOid: string): Promise<readonly RawTreeEntry[]> {
+  if (!OID.test(treeOid)) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
+  const entries = (await git(root, ["ls-tree", "-z", treeOid])).split("\0").filter(Boolean).map((record) => {
+    const match = /^([0-7]{6}) ([^ ]+) ([a-f0-9]{40}|[a-f0-9]{64})\t([\s\S]+)$/.exec(record);
+    if (!match) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
+    return Object.freeze({ mode: match[1] as string, type: match[2] as string, oid: match[3] as string, name: match[4] as string });
+  });
+  if (new Set(entries.map((entry) => entry.name)).size !== entries.length) {
     throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
   }
-  return ancestry.slice(1);
+  return Object.freeze(entries);
 }
 
-async function treeBlob(root: string, commit: string, path: string): Promise<string | null> {
-  const value = (await gitOptional(root, ["rev-parse", `${commit}:${path}`]))?.trim() ?? null;
-  return value !== null && OID.test(value) ? value : null;
+function blobEntry(entries: readonly RawTreeEntry[], name: string): RawTreeEntry | undefined {
+  const entry = entries.find((value) => value.name === name);
+  if (entry !== undefined && (entry.mode !== "100644" || entry.type !== "blob")) {
+    throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
+  }
+  return entry;
+}
+
+function assertExactBlobTree(entries: readonly RawTreeEntry[], names: readonly string[]): void {
+  if (
+    entries.length !== names.length ||
+    entries.some((entry) => entry.mode !== "100644" || entry.type !== "blob") ||
+    entries.map((entry) => entry.name).sort().join("\n") !== [...names].sort().join("\n")
+  ) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
+}
+
+async function canonicalJsonBlob(root: string, oid: string): Promise<unknown> {
+  try {
+    const text = await git(root, ["cat-file", "blob", oid]);
+    const value = JSON.parse(text) as unknown;
+    if (canonicalizeJson(value) !== text) throw new Error("non-canonical");
+    return value;
+  } catch { throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT"); }
 }
 
 async function adoptionAnchor(root: string, control: string, formal: string): Promise<{
   readonly baselineBlob: string;
   readonly baseline: unknown;
 } | null> {
-  const revisions = (await git(root, ["rev-list", control])).trim().split("\n").filter(Boolean);
   let hasAdoptionMarker = false;
-  for (const revision of revisions) {
-    if (
-      await treeBlob(root, revision, "activation.json") !== null ||
-      await treeBlob(root, revision, "adopted-baseline.json") !== null ||
-      await treeBlob(root, revision, "genesis.json") !== null
-    ) { hasAdoptionMarker = true; break; }
-  }
-  if (!hasAdoptionMarker) return null;
   let cursor = control;
   let markerBlobs: { activation: string; baseline: string; genesis: string } | null = null;
   const observedGenesisBlobs = new Set<string>();
@@ -96,19 +127,22 @@ async function adoptionAnchor(root: string, control: string, formal: string): Pr
   while (true) {
     if (seen.has(cursor)) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
     seen.add(cursor);
-    const parents = await commitParents(root, cursor);
+    const commit = await rawCommit(root, cursor);
+    const parents = commit.parents;
     if (parents.length > 1) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
-    const activationBlob = await treeBlob(root, cursor, "activation.json");
-    const baselineBlob = await treeBlob(root, cursor, "adopted-baseline.json");
-    const genesisBlob = await treeBlob(root, cursor, "genesis.json");
-    if (genesisBlob !== null) observedGenesisBlobs.add(genesisBlob);
-    if ((activationBlob === null) !== (baselineBlob === null)) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
-    if (activationBlob !== null && baselineBlob !== null) {
+    const entries = await rawTree(root, commit.tree);
+    const activationEntry = blobEntry(entries, "activation.json");
+    const baselineEntry = blobEntry(entries, "adopted-baseline.json");
+    const genesisEntry = blobEntry(entries, "genesis.json");
+    if (activationEntry !== undefined || baselineEntry !== undefined || genesisEntry !== undefined) hasAdoptionMarker = true;
+    if (genesisEntry !== undefined) observedGenesisBlobs.add(genesisEntry.oid);
+    if ((activationEntry === undefined) !== (baselineEntry === undefined)) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
+    if (activationEntry !== undefined && baselineEntry !== undefined) {
       let activation;
       let baseline;
       try {
-        activation = parseAdoptionActivation(JSON.parse(await git(root, ["cat-file", "blob", activationBlob])));
-        baseline = parseAdoptedBaseline(JSON.parse(await git(root, ["cat-file", "blob", baselineBlob])));
+        activation = parseAdoptionActivation(await canonicalJsonBlob(root, activationEntry.oid));
+        baseline = parseAdoptedBaseline(await canonicalJsonBlob(root, baselineEntry.oid));
       } catch { throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT"); }
       if (
         activation.baseline_oid !== formal || baseline.baseline_oid !== formal ||
@@ -116,37 +150,65 @@ async function adoptionAnchor(root: string, control: string, formal: string): Pr
         activation.candidate_digest !== baseline.candidate_digest ||
         activation.confirmation_envelope_digest !== baseline.confirmation_envelope_digest
       ) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
-      const actualGenesisBlob = await treeBlob(root, activation.genesis_oid, "genesis.json");
-      if (actualGenesisBlob === null) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
-      const next = { activation: activationBlob, baseline: baselineBlob, genesis: actualGenesisBlob };
+      const genesisCommit = await rawCommit(root, activation.genesis_oid);
+      const genesisEntries = await rawTree(root, genesisCommit.tree);
+      assertExactBlobTree(genesisEntries, ["genesis.json"]);
+      if (genesisCommit.parents.length !== 0) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
+      const actualGenesisBlob = blobEntry(genesisEntries, "genesis.json")?.oid;
+      if (actualGenesisBlob === undefined) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
+      const next = { activation: activationEntry.oid, baseline: baselineEntry.oid, genesis: actualGenesisBlob };
       if (markerBlobs !== null && Object.keys(next).some((key) => next[key as keyof typeof next] !== markerBlobs?.[key as keyof typeof next])) {
         throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
       }
       markerBlobs = next;
       baselineValue = baseline;
-      if (parents.length === 1 && parents[0] === activation.genesis_oid) anchorCount += 1;
+      if (parents.length === 1 && parents[0] === activation.genesis_oid) {
+        assertExactBlobTree(entries, ["activation.json", "adopted-baseline.json", "checkpoint.json", "registry.json"]);
+        const checkpoint = await canonicalJsonBlob(root, blobEntry(entries, "checkpoint.json")?.oid as string);
+        const registry = await canonicalJsonBlob(root, blobEntry(entries, "registry.json")?.oid as string);
+        const expectedCheckpoint = {
+          schema_version: "1.0", repository_id: activation.repository_identity, route_generation: 1,
+          plan_id: "adopted-existing-project", plan_generation: 0,
+          formal_ref: "refs/nextstep/formal", formal_oid: formal, control_parent_oid: activation.genesis_oid,
+          highest_task_attempts: {},
+          next_stage: `adopted baseline ${baseline.projected_stage} ${baseline.projected_milestone}; review unknown gates before creating any execution task`,
+          updated_at: activation.activated_at_trusted, adoption_state: "rollback-eligible",
+        };
+        const expectedRegistry = {
+          schema_version: "1.0", repository_id: activation.repository_identity, route_generation: 1,
+          plan_id: "adopted-existing-project", plan_generation: 0, tasks: [],
+        };
+        if (
+          canonicalizeJson(checkpoint) !== canonicalizeJson(expectedCheckpoint) ||
+          canonicalizeJson(registry) !== canonicalizeJson(expectedRegistry)
+        ) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
+        anchorCount += 1;
+      }
     }
-    if (genesisBlob !== null && markerBlobs !== null && genesisBlob !== markerBlobs.genesis) {
+    if (genesisEntry !== undefined && markerBlobs !== null && genesisEntry.oid !== markerBlobs.genesis) {
       throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
     }
     if (parents.length === 0) break;
     cursor = parents[0] as string;
   }
+  if (!hasAdoptionMarker) return null;
   if (markerBlobs === null) return null;
   if (
     anchorCount !== 1 || baselineValue === undefined || observedGenesisBlobs.size !== 1 ||
     !observedGenesisBlobs.has(markerBlobs.genesis)
   ) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
-  const activation = parseAdoptionActivation(JSON.parse(await git(root, ["cat-file", "blob", markerBlobs.activation])));
-  if ((await commitParents(root, activation.genesis_oid)).length !== 0) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
+  const activation = parseAdoptionActivation(await canonicalJsonBlob(root, markerBlobs.activation));
   let genesis: unknown;
-  try { genesis = JSON.parse(await git(root, ["cat-file", "blob", markerBlobs.genesis])); }
+  try { genesis = await canonicalJsonBlob(root, markerBlobs.genesis); }
   catch { throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT"); }
   if (
     typeof genesis !== "object" || genesis === null ||
+    Object.keys(genesis).sort().join("|") !== "candidate_digest|created_at_trusted|kind|repository_identity|schema_version" ||
+    (genesis as Record<string, unknown>).schema_version !== "1.0" ||
     (genesis as Record<string, unknown>).kind !== "adoption-control-genesis" ||
     (genesis as Record<string, unknown>).repository_identity !== activation.repository_identity ||
-    (genesis as Record<string, unknown>).candidate_digest !== activation.candidate_digest
+    (genesis as Record<string, unknown>).candidate_digest !== activation.candidate_digest ||
+    (genesis as Record<string, unknown>).created_at_trusted !== activation.activated_at_trusted
   ) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
   return { baselineBlob: markerBlobs.baseline, baseline: baselineValue };
 }
@@ -179,16 +241,19 @@ export async function readProjectStatusSource(
   if ((await git(projectRoot, ["cat-file", "-t", first.formal])).trim() !== "commit") {
     throw new ProjectStatusSourceError("SOURCE_UNAVAILABLE");
   }
-  const directParents = await commitParents(projectRoot, first.control);
-  if (directParents.length !== 1) {
+  const directControl = await rawCommit(projectRoot, first.control);
+  if (directControl.parents.length !== 1) {
     throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
   }
-  const controlParent = directParents[0] as string;
-  const checkpointBlob = (await git(projectRoot, ["rev-parse", `${first.control}:checkpoint.json`])).trim();
-  const registryBlob = (await git(projectRoot, ["rev-parse", `${first.control}:registry.json`])).trim();
-  if ([OID.test(checkpointBlob), OID.test(registryBlob)].includes(false)) {
+  const controlParent = directControl.parents[0] as string;
+  const currentEntries = await rawTree(projectRoot, directControl.tree);
+  const checkpointEntry = blobEntry(currentEntries, "checkpoint.json");
+  const registryEntry = blobEntry(currentEntries, "registry.json");
+  if (checkpointEntry === undefined || registryEntry === undefined) {
     throw new ProjectStatusSourceError("SOURCE_UNAVAILABLE");
   }
+  const checkpointBlob = checkpointEntry.oid;
+  const registryBlob = registryEntry.oid;
   let checkpoint: unknown;
   let registry: unknown;
   let adoptedBaseline: unknown;

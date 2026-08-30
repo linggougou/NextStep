@@ -176,3 +176,34 @@ test("带 adopted-baseline blob 的 control 必须以零父 genesis 为唯一父
     return true;
   });
 });
+
+test("status 使用 raw commit/tree 证明，拒绝 grafts 父链伪装与非 100644 blob", async (context) => {
+  const grafted = await repository({ multiParent: true });
+  context.after(() => rm(grafted, { recursive: true, force: true }));
+  const control = git(grafted, "rev-parse", "refs/nextstep/control");
+  const rawParents = git(grafted, "cat-file", "commit", control).split("\n")
+    .filter((line) => line.startsWith("parent ")).map((line) => line.slice(7));
+  assert.equal(rawParents.length, 2);
+  await writeFile(resolve(grafted, ".git/info/grafts"), `${control} ${rawParents[0]}\n`);
+  await assert.rejects(() => readProjectStatusSource(grafted), (error: unknown) => {
+    assert.equal((error as ProjectStatusSourceError).code, "INVALID_CONTROL_COMMIT");
+    return true;
+  });
+
+  const modeRoot = await repository();
+  context.after(() => rm(modeRoot, { recursive: true, force: true }));
+  const original = git(modeRoot, "rev-parse", "refs/nextstep/control");
+  const parent = git(modeRoot, "rev-parse", `${original}^`);
+  const registry = git(modeRoot, "rev-parse", `${original}:registry.json`);
+  const checkpoint = git(modeRoot, "rev-parse", `${original}:checkpoint.json`);
+  const tree = execFileSync("git", ["-C", modeRoot, "mktree"], {
+    encoding: "utf8",
+    input: `100755 blob ${checkpoint}\tcheckpoint.json\n100644 blob ${registry}\tregistry.json\n`,
+  }).trim();
+  const forged = git(modeRoot, "commit-tree", tree, "-p", parent, "-m", "mode-forged control");
+  git(modeRoot, "update-ref", "refs/nextstep/control", forged, original);
+  await assert.rejects(() => readProjectStatusSource(modeRoot), (error: unknown) => {
+    assert.equal((error as ProjectStatusSourceError).code, "INVALID_CONTROL_COMMIT");
+    return true;
+  });
+});
