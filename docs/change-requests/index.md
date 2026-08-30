@@ -17,7 +17,11 @@
 
 ## 已批准、代际已确认的变更
 
-- [既有项目安全接入（Existing Project Adoption）](./007-existing-project-adoption.md)：CR candidate/review 与 Generation 2 readiness A2 均为 `PASS / 100`。S3.1 已 carry forward，V3 Generation 2 已由 advance=`ecbbdf66...`、ack=`5ce71c1...` 两个分离 CAS 确认；A3.0-A/B 已独立验收并集成，main=`7cd3dd1fe3aae23a1759d604783b182558fb4c15`。A3.0 cumulative acceptance 尚未开始；首版计划 entry=`REVISE / 90`，当前唯一入口为基于 live authority 状态同步重做修订计划与 fresh 独立 entry review。真实项目 refs、A3.0/V3/P5 完成均未发生。
+- [既有项目安全接入（Existing Project Adoption）](./007-existing-project-adoption.md)：CR-007 仍为已批准、未关闭；Generation 2 已由两个分离 CAS 确认，A3.0-A/B 已独立验收并集成。A3.0 cumulative acceptance attempt 2 已完成 plan/entry review、dispatch、ACK、source 与 donor preflight，但因生产级 trusted host 缺失而形成 durable blocker，后续分流转入 CR-008 候选。真实项目 refs、A3.0/V3/P5 完成均未发生。
+
+## Change Intake 候选
+
+- [生产级可信宿主（Production Trusted Host）](./008-production-trusted-host.md)：尚未批准、尚未实施。A3.0 cumulative acceptance attempt 2 blocker Result=`sha256:49eef940a268e6b791a349ac053aa8d1d51340a434f4de8060dd57fd85c0f0bf`，current live control=`1b244c822ee5aa2a246fce0341a788f2c90f1897`；当前合法入口仅为 fresh 独立评审，随后由用户决定是否最终批准。本候选不授权 V3 generation 3 plan/CAS、packet、编码、真实用户动作或真实项目 refs。
 
 ## 分流规则
 
