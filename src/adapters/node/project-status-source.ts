@@ -46,9 +46,19 @@ async function git(root: string, args: readonly string[]): Promise<string> {
   }
 }
 
-interface RefPair { readonly formal: string; readonly control: string }
+interface NamespaceRef {
+  readonly name: string;
+  readonly oid: string;
+}
+
+interface RefSnapshot {
+  readonly formal: string;
+  readonly control: string;
+  readonly evidence: readonly NamespaceRef[];
+}
 interface RawCommit { readonly tree: string; readonly parents: readonly string[] }
 interface RawTreeEntry { readonly mode: string; readonly type: string; readonly oid: string; readonly name: string }
+const EVIDENCE_REF = /^refs\/nextstep\/evidence\/[a-z0-9][a-z0-9._-]{0,127}$/;
 
 async function rawCommit(root: string, oid: string): Promise<RawCommit> {
   if (!OID.test(oid)) throw new ProjectStatusSourceError("INVALID_CONTROL_COMMIT");
@@ -213,21 +223,49 @@ async function adoptionAnchor(root: string, control: string, formal: string): Pr
   return { baselineBlob: markerBlobs.baseline, baseline: baselineValue };
 }
 
-async function readRefPair(root: string): Promise<RefPair> {
+function isAllowedNextStepRef(name: string): boolean {
+  return name === "refs/nextstep/formal" || name === "refs/nextstep/control" || EVIDENCE_REF.test(name);
+}
+
+function sameNamespaceRefs(left: readonly NamespaceRef[], right: readonly NamespaceRef[]): boolean {
+  return left.length === right.length && left.every((entry, index) => {
+    const other = right[index];
+    return other !== undefined && other.name === entry.name && other.oid === entry.oid;
+  });
+}
+
+async function readRefSnapshot(root: string): Promise<RefSnapshot> {
   const output = await git(root, [
     "for-each-ref", "--format=%(refname) %(objectname)", "refs/nextstep/",
   ]);
   const refs = new Map(output.trim().split("\n").filter(Boolean).map((line) => {
     const separator = line.indexOf(" ");
+    if (separator < 1) throw new ProjectStatusSourceError("SOURCE_UNAVAILABLE");
     return [line.slice(0, separator), line.slice(separator + 1)] as const;
   }));
   const formal = refs.get("refs/nextstep/formal");
   const control = refs.get("refs/nextstep/control");
   if (refs.size === 0) throw new ProjectStatusSourceError("PROJECT_NOT_ADOPTED");
-  if (refs.size === 1 && ((formal === undefined) !== (control === undefined))) throw new ProjectStatusSourceError("REF_PAIR_INCOMPLETE");
-  if ([formal !== undefined, control !== undefined, refs.size === 2].includes(false)) throw new ProjectStatusSourceError("ADOPTION_SOURCE_CONFLICT");
-  if (!OID.test(formal ?? "") || !OID.test(control ?? "")) throw new ProjectStatusSourceError("SOURCE_UNAVAILABLE");
-  return { formal: formal as string, control: control as string };
+  if ([...refs.keys()].some((name) => !isAllowedNextStepRef(name))) {
+    throw new ProjectStatusSourceError("ADOPTION_SOURCE_CONFLICT");
+  }
+  if ((formal === undefined) !== (control === undefined)) {
+    throw new ProjectStatusSourceError("REF_PAIR_INCOMPLETE");
+  }
+  if (formal === undefined || control === undefined) {
+    throw new ProjectStatusSourceError("ADOPTION_SOURCE_CONFLICT");
+  }
+  const evidence = [...refs.entries()]
+    .filter(([name]) => EVIDENCE_REF.test(name))
+    .map(([name, oid]) => Object.freeze({ name, oid }))
+    .sort((left, right) => left.name.localeCompare(right.name));
+  if (
+    !OID.test(formal) || !OID.test(control) ||
+    evidence.some((entry) => !OID.test(entry.oid))
+  ) {
+    throw new ProjectStatusSourceError("SOURCE_UNAVAILABLE");
+  }
+  return { formal, control, evidence: Object.freeze(evidence) };
 }
 
 export async function readProjectStatusSource(
@@ -237,7 +275,7 @@ export async function readProjectStatusSource(
   if ([isAbsolute(projectRoot), !projectRoot.includes("\0"), Number.isFinite(observedAt.getTime())].includes(false)) {
     throw new ProjectStatusSourceError("INVALID_PROJECT_ROOT");
   }
-  const first = await readRefPair(projectRoot);
+  const first = await readRefSnapshot(projectRoot);
   if ((await git(projectRoot, ["cat-file", "-t", first.formal])).trim() !== "commit") {
     throw new ProjectStatusSourceError("SOURCE_UNAVAILABLE");
   }
@@ -270,8 +308,10 @@ export async function readProjectStatusSource(
     if (error instanceof ProjectStatusSourceError) throw error;
     throw new ProjectStatusSourceError("SOURCE_UNAVAILABLE");
   }
-  const second = await readRefPair(projectRoot);
-  if ([second.formal === first.formal, second.control === first.control].includes(false)) {
+  const second = await readRefSnapshot(projectRoot);
+  if (
+    [second.formal === first.formal, second.control === first.control, sameNamespaceRefs(second.evidence, first.evidence)].includes(false)
+  ) {
     throw new ProjectStatusSourceError("SOURCE_CHANGED");
   }
   return Object.freeze({

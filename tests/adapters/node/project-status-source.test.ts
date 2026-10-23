@@ -110,7 +110,7 @@ test("adapter 拒绝相对项目根、缺 ref 与 control 多父", async (contex
   });
 });
 
-test("namespace 为空、单 ref、extra-only 与 pair+extra 返回精确分类", async (context) => {
+test("namespace 为空、单 ref、unknown extra 与允许的 evidence refs 返回精确分类", async (context) => {
   const empty = await mkdtemp(resolve(tmpdir(), "nextstep-status-namespace-"));
   context.after(() => rm(empty, { recursive: true, force: true }));
   git(empty, "init", "-q");
@@ -136,19 +136,21 @@ test("namespace 为空、单 ref、extra-only 与 pair+extra 返回精确分类"
     assert.equal(error.code, "ADOPTION_SOURCE_CONFLICT");
     return true;
   });
-  git(empty, "update-ref", "refs/nextstep/formal", head);
-  git(empty, "update-ref", "refs/nextstep/control", head);
-  await assert.rejects(() => readProjectStatusSource(empty), (error: unknown) => {
-    assert.ok(error instanceof ProjectStatusSourceError);
-    assert.equal(error.code, "ADOPTION_SOURCE_CONFLICT");
-    return true;
-  });
+
+  const withEvidence = await repository();
+  context.after(() => rm(withEvidence, { recursive: true, force: true }));
+  const control = git(withEvidence, "rev-parse", "refs/nextstep/control");
+  git(withEvidence, "update-ref", "refs/nextstep/evidence/automated-test", control);
+  git(withEvidence, "update-ref", "refs/nextstep/evidence/user-signoff", control);
+  const source = await readProjectStatusSource(withEvidence, new Date("2026-08-26T05:00:00Z"));
+  assert.equal(source.formal_oid, git(withEvidence, "rev-parse", "refs/nextstep/formal"));
+  assert.equal(source.control_oid, control);
 });
 
 test("adapter 源码不含 checkout/fetch/commit/update-ref/缓存或 Markdown 扫描", async () => {
   const source = await readFile(resolve(process.cwd(), "src/adapters/node/project-status-source.ts"), "utf8");
   assert.doesNotMatch(source, /\b(?:checkout|fetch|update-ref)\b|cache|Markdown|\.md\b/);
-  assert.equal(source.match(/await readRefPair\(projectRoot\)/g)?.length, 2);
+  assert.equal(source.match(/await readRefSnapshot\(projectRoot\)/g)?.length, 2);
 });
 
 test("adapter 拒绝非法 clock、非提交 formal、缺 blob 与畸形 JSON", async (context) => {

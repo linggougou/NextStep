@@ -18,7 +18,7 @@ function git(root: string, ...args: string[]): string {
   return execFileSync("git", ["-C", root, ...args], { encoding: "utf8" }).trim();
 }
 
-async function repository(): Promise<string> {
+async function repository(extraRefs: readonly string[] = []): Promise<string> {
   const root = await mkdtemp(resolve(tmpdir(), "nextstep-status-cli-"));
   git(root, "init", "-q");
   git(root, "config", "user.name", "NextStep Test");
@@ -37,7 +37,11 @@ async function repository(): Promise<string> {
   await writeFile(resolve(root, "registry.json"), JSON.stringify(fixture.registry));
   git(root, "add", "checkpoint.json", "registry.json");
   git(root, "commit", "-qm", "control");
-  git(root, "update-ref", "refs/nextstep/control", git(root, "rev-parse", "HEAD"));
+  const control = git(root, "rev-parse", "HEAD");
+  git(root, "update-ref", "refs/nextstep/control", control);
+  for (const ref of extraRefs) {
+    git(root, "update-ref", ref, control);
+  }
   return root;
 }
 
@@ -70,6 +74,31 @@ test("CLI 仅接受绝对 --project-root，成功 stdout 恰一份 JCS JSON", as
   assert.equal((projection as any).freshness, "current");
   assert.equal(git(root, "status", "--porcelain"), before);
   assert.doesNotMatch(`${result.stdout}${result.stderr}`, /secret-that-must-not-appear|private-chat|\bclaim\b|\bfence\b/);
+});
+
+test("CLI 在已知 evidence 子命名空间存在时仍返回 available", async (context) => {
+  const root = await repository([
+    "refs/nextstep/evidence/automated-test",
+    "refs/nextstep/evidence/user-signoff",
+  ]);
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const result = await run(["--project-root", root]);
+  assert.equal(result.code, 0, result.stderr);
+  const projection = parseCanonicalJsonBytes(Buffer.from(result.stdout)) as any;
+  assert.equal(projection.status, "available");
+  assert.equal(projection.source.kind, "native");
+  assert.equal(result.stderr, "");
+});
+
+test("CLI 对未知 nextstep 子命名空间继续 fail closed", async (context) => {
+  const root = await repository(["refs/nextstep/unknown/mutating-surface"]);
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const result = await run(["--project-root", root]);
+  assert.notEqual(result.code, 0);
+  const projection = parseCanonicalJsonBytes(Buffer.from(result.stdout)) as any;
+  assert.equal(projection.status, "unavailable");
+  assert.deepEqual(projection.unavailable_reasons, ["adoption-source-conflict"]);
+  assert.equal(result.stderr, "PROJECT_STATUS_UNAVAILABLE:adoption-source-conflict\n");
 });
 
 test("CLI 对缺参、相对路径、额外参数、ref override、write 与 fetch 均失败", async () => {
